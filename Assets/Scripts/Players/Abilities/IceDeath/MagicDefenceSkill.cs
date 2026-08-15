@@ -58,6 +58,7 @@ public class MagicDefenceSkill : Skill
         {
             _targetPoint = targetInfo.Points[0];
             _castMode    = CastMode.Territory;
+            Targeting.SetTarget(new TargetData(_targetPoint));
         }
     }
     

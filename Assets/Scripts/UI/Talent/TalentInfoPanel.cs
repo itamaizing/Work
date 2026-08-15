@@ -28,7 +28,9 @@ public class TalentInfoPanel : MonoBehaviour
                 cell = descCell;
                 _cells.Add(descCell);
 
-                descCell.TextDescription.text = data.DescriptionsForInfoPanel[i];
+                string descString = DescriptionTextProcessor.Process(data.DescriptionsForInfoPanel[i]);
+                
+                descCell.TextDescription.text = descString;
                 descCell.ShowDividingLine();
                 if (i == pairCnt - 1) descCell.HideDividingLine();
             }
@@ -40,16 +42,22 @@ public class TalentInfoPanel : MonoBehaviour
                 var stateCell = Instantiate(_cellPref, transform);
                 _cells.Add(stateCell);
 
-                stateCell.TextDescription.text =
-                    $"<color=#FFFF00>{st.StateName}</color> - {st.Description}";
-
+                if (st.StateName != "" || st.Description != "")
+                {
+                    string description = DescriptionTextProcessor.Process(st.Description);
+                    stateCell.TextDescription.text =
+                        $"<color={DescriptionTextProcessor.ColorMap[DescriptionTextProcessor.ColorPallete.Y]}>{st.StateName}</color> {description}";
+                }
+                else
+                {
+                    stateCell.TextDescription.text = "";
+                }
                 cell.HideDividingLine();
                 stateCell.ShowDividingLine();
                 if (i == pairCnt - 1) stateCell.HideDividingLine();
             }
         }
     }
-
 
     public void Hide()
     {

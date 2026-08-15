@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class TalentData
 {
-	[SerializeField] private List<string> _descriptionsForInfoPanel;
+	[SerializeField, TextArea] private List<string> _descriptionsForInfoPanel;
 	[SerializeField] private List<TalentStateInfo> _stateInfos = new();
 
 	private string _name;

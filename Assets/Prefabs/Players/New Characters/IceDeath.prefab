@@ -8621,12 +8621,6 @@ PrefabInstance:
       addedObject: {fileID: 5420442362572064916}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3083348233968490285}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 850994493169687921}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6704089103393728732}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -8646,6 +8640,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2584411674874024068}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 850994493169687921}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3083348233968490285}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &323327819542905198 stripped
 MonoBehaviour:
@@ -8697,16 +8697,19 @@ MonoBehaviour:
     _form: 1
     _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -8733,7 +8736,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 17
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -8794,20 +8797,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 50
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 1
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    oldType: 1
     type: 1
     _clickLayer: 3
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 1
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -8895,19 +8901,22 @@ MonoBehaviour:
   _damageValue: 0
   _infoComponent:
     _school: 3
-    _form: 1
+    _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
-    type: 0
+    oldType: 3
+    type: 3
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -8959,7 +8968,7 @@ MonoBehaviour:
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _icyStream: {fileID: 8854865153303019716}
   _circularFrosting: {fileID: 2727420570257355857}
-  _icyStreamShadow: {fileID: 1550736018203531800, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
+  _icyStreamShadow: {fileID: 0}
   _playerLinks: {fileID: 4374618947117916461}
   audioClip: {fileID: 8300000, guid: 424858f5206c73b4186512fa60be6047, type: 3}
 --- !u!114 &4310610476984543593
@@ -9002,16 +9011,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 8192
@@ -9101,20 +9113,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 1
+    _school: 3
+    _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 3
     _whileMoving: 1
     _autoAttack: 1
   _targetingComponent:
-    type: 0
-    _clickLayer: 3
-    _faction: 5
+    oldType: 2
+    type: 2
+    _clickLayer: 2
+    _faction: 6
     _unitType: 1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _outOfRangeBehaviour: 1
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -9213,17 +9228,20 @@ MonoBehaviour:
     _school: 1
     _form: 0
     _damageType: 0
-    _rangeType: 0
-    _skillType: 0
+    _rangeType: 1
     _whileMoving: 0
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: -1
+    _clickLayer: 1
     _faction: -1
-    _unitType: -1
+    _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -9315,20 +9333,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 1
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: -1
+    _unitType: 5
     _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -9355,7 +9376,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 4
+    _radius: 6
     _area: 1
     _castLength: 0
     _castWidth: 0
@@ -9415,20 +9436,23 @@ MonoBehaviour:
   _castDeley: 2.5
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
-    _rangeType: 0
-    _skillType: 1
+    _rangeType: 1
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 1
     type: 1
     _clickLayer: 3
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 1
-    _needLineOfSight: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -9504,7 +9528,13 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _costs:
+    - nameToShow: 5 Energy - Mandatory
+      type: 2
+      value: 5
+      costType: 0
+      shouldModify: 0
+      showInDescription: 0
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -9513,20 +9543,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _skillType: 1
     _whileMoving: 0
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
+    oldType: 1
     type: 1
     _clickLayer: 3
-    _faction: 2
+    _faction: 4
     _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _outOfRangeBehaviour: 1
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -9553,10 +9586,10 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 4
     _area: 0
     _castLength: 4
-    _castWidth: 1
+    _castWidth: 0.5
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
@@ -9609,20 +9642,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 3
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: -1
-    _faction: -1
+    _clickLayer: 1
+    _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -9649,7 +9685,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 3
+    _radius: 1.5
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -9712,16 +9748,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
-    type: 0
-    _clickLayer: -1
-    _faction: -1
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    oldType: 1
+    type: 1
+    _clickLayer: 3
+    _faction: 4
+    _unitType: -1
+    _outOfRangeBehaviour: 1
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -9750,8 +9789,8 @@ MonoBehaviour:
   _areaComponent:
     _radius: 4
     _area: 0
-    _castLength: 0
-    _castWidth: 0
+    _castLength: 4
+    _castWidth: 1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
@@ -9797,11 +9836,11 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
+  - nameToShow: 3 Rune - Mandatory desc
+    type: 3
+    value: 3
     costType: 0
-    shouldModify: 1
+    shouldModify: 0
     showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -9810,20 +9849,23 @@ MonoBehaviour:
   _castDeley: 2
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
-    _clickLayer: -1
-    _faction: -1
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    oldType: 3
+    type: 3
+    _clickLayer: 0
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 1
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -9850,7 +9892,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 5
+    _radius: 4
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -9909,20 +9951,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 10
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -10008,16 +10053,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -10107,16 +10155,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 5
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -10207,16 +10258,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 5
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -10297,20 +10351,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -10394,16 +10451,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -10485,20 +10545,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -10577,20 +10640,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 1
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    oldType: 2
+    type: 2
     _clickLayer: 3
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -10694,16 +10760,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -10893,17 +10962,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041B\u0435\u0434\u044F\u043D\u043E\u0439  \u043F\u043E\u0434\u043A\u0430\u0442
-      \u2013 \u0443\u0435\u0437\u0436\u0430\u0435\u0442 \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u0443\u044E
-      \u0441\u0442\u043E\u0440\u043E\u043D\u0443 \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430
-      + 1 \u043C\u0435\u0442\u0440 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435
-      5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C
-      10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.  \u0412 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0438
-      \u0441\u0435\u0440\u0438\u0438: \u0443\u0435\u0437\u0436\u0430\u0435\u0442
-      \u0432\u043C\u0435\u0441\u0442\u0435 \u0441 \u0446\u0435\u043B\u044C\u044E
-      \u0438\u043B\u0438 \u0443\u0435\u0437\u0436\u0430\u0435\u0442 \u0431\u0435\u0437
-      \u0446\u0435\u043B\u0438 \u043D\u0430 50% \u0434\u0430\u043B\u044C\u0448\u0435."
-    _stateInfos: []
+    - "\u0413\u0435\u0440\u043E\u0439 \u0441\u043A\u043E\u043B\u044C\u0437\u0438\u0442
+      \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u043C \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.\n\t\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+      2-4  (2 + 1\u043C/5\u044D\u043D)\n\t\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      0-10 (0 + 5\u044D\u043D/1\u043C)"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
+      Description: "\u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F
+        \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+        \u043D\u0430 50% \u0438\u043B\u0438 \u0437\u0430\u0445\u0432\u0430\u0442\u044B\u0432\u0430\u0435\u0442
+        \u0446\u0435\u043B\u0438 \u043D\u0430 \u043F\u0443\u0442\u0438"
     IsOpen: 0
     Description: "\u041B\u0435\u0434\u044F\u043D\u043E\u0439 \u043F\u043E\u0434\u043A\u0430\u0442"
     Icon: {fileID: 21300000, guid: 9499c35003f5fb14387943ad17f06e37, type: 3}
@@ -10926,27 +10994,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0410\u0439\u0441 \u0414\u044D\u0437 \u043C\u043E\u0436\u0435\u0442 \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u0442\u044C
-      \u0441\u0435\u0440\u0438\u044F\u043C\u0438, \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u044F
-      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0438 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0435
-      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u043F\u043E\u0434\u0440\u044F\u0434
-      \u043F\u043E \u043E\u0434\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u0432
-      \u043D\u0443\u0436\u043D\u043E\u0439 \u043F\u043E\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438,
-      \u0441\u043E 2\u0433\u043E \u0443\u0434\u0430\u0440\u0430 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
-      \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0441\u044F
-      \u043D\u0430 +30% \u0438 \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
-      \u0441 \u043F\u043E\u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u043C,
-      \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E
-      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. \u041F\u0440\u0438 \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u043C
-      \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0438 \u0441\u0435\u0440\u0438\u0438,
-      \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0439 \u0443\u0434\u0430\u0440
-      \u0438\u043C\u0435\u0435\u0442 \u0431\u043E\u043D\u0443\u0441\u043D\u044B\u0439
-      \u044D\u0444\u0444\u0435\u043A\u0442. \u0421\u0435\u0440\u0438\u0438: \u0424\u0424\u0424\u0424\u0424\u0424
-      - 6 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0443\u0434\u0430\u0440\u043E\u0432 
-      \u0424\u0424\u0424\u0424\u0424\u041C - 6 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
-      1 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0443\u0434\u0430\u0440"
-    _stateInfos: []
+    - "\u041C\u043E\u0436\u0435\u0442 \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u0442\u044C
+      \u0441\u0435\u0440\u0438\u044F\u043C\u0438, \u043A\u043E\u043C\u0431\u0438\u043D\u0438\u0440\u0443\u044F
+      \u0444\u0438\u0437. \u0438 \u043C\u0430\u0433. \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
+      \u0432 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439
+      \u043F\u043E\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438.\n\t[\u0424\u0424\u0424\u0424\u0424\u0424]\n\t[\u0424\u0424\u0424\u0424\u0424\u041C]"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
+      Description: "\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+        40% \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u043E\u0439 \u043D\u0430
+        \u0441\u0435\u0440\u0438\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
     IsOpen: 1
     Description: "\u0421\u0435\u0440\u0438\u0438 \u043D\u0438\u043D\u0434\u0437\u0438"
     Icon: {fileID: 21300000, guid: 167c36e4613aae345aae37dec1c098ed, type: 3}
@@ -10968,13 +11025,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041C\u0435\u0447 \u043B\u044C\u0434\u0430 - \u0431\u044C\u0451\u0442 \u043C\u0435\u0447\u043E\u043C
-      \u0438\u0437 \u043B\u044C\u0434\u0430, \u043D\u0430\u043D\u043E\u0441\u0438\u0442
-      15 \u0443\u0440\u043E\u043D\u0430 \u0438  +1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443
-      \u0443\u0440\u043E\u043D\u0430 \u0437\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C
-      10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442"
+    - "\u0423\u0434\u0430\u0440\u044F\u0435\u0442 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430
+      \u043B\u0435\u0434\u044F\u043D\u044B\u043C \u043C\u0435\u0447\u043E\u043C,
+      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435
+      \u043D\u0430 12 \u0441\u0435\u043A.\n\t\u0423\u0440\u043E\u043D: 15-25 (15
+      + 1/1 \u044D\u043D\u0435\u0440\u0433\u0438\u0438)\n\t\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      40-50 (40 + 1/1 \u0443\u0440\u043E\u043D\u0430)"
     _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
+      Description: "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+        5 \u0441\u0442\u0430\u043A\u043E\u0432 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D\r\n"
     - StateName: "\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435"
       Description: "\u0437\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
         \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F
@@ -11006,29 +11066,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0438
-      \u043D\u0438\u043D\u0434\u0437\u044F \u0432 \u043B\u0435\u0434\u044F\u043D\u043E\u0439
-      \u0442\u0435\u043D\u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u043D\u0430 1% \u043E\u0442
-      \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0432
-      \u0441\u0435\u043A\u0443\u043D\u0434\u0443. \u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0435
-      \u043E\u0434\u043D\u043E\u0432\u0440\u0435\u043C\u0435\u043D\u043D\u043E \u0432
-      \u0442\u0435\u043D\u0438 \u0438  \u0432 \u043B\u0443\u0436\u0435 \u043B\u044C\u0434\u0430
-      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      +3% \u0438\u0442\u043E\u0433\u043E 4%."
-    - "\u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0438
-      \u043D\u0438\u043D\u0434\u0437\u044F \u0432 \u043B\u0443\u0436\u0435 \u043B\u044C\u0434\u0430
-      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u043D\u0430 1% \u043E\u0442
-      \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0432
-      \u0441\u0435\u043A\u0443\u043D\u0434\u0443."
-    _stateInfos: []
+    - "\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0432 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430
+      \u043E\u0441\u043A\u043E\u043B\u043E\u043A \u043B\u044C\u0434\u0430, \u043D\u0430\u043D\u043E\u0441\u044F
+      3-6 \u0443\u0440\u043E\u043D\u0430."
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
+      Description: 
     IsOpen: 1
     Description: "\u041B\u0435\u0434\u044F\u043D\u043E\u0439 \u043E\u0441\u043A\u043E\u043B\u043E\u043A"
-    Icon: {fileID: 21300000, guid: 3a4185520579a514291190bd487ed03e, type: 3}
+    Icon: {fileID: -679815755, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11049,18 +11095,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_5
   _data:
     _descriptionsForInfoPanel:
-    - "\u0415\u0441\u043B\u0438 \u0441\u0435\u0440\u0438\u0438 \u0437\u0430\u0432\u0435\u0440\u0448\u0430\u044E\u0442\u0441\u044F
-      \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u043E\u043D\u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0442
-      1 \u0440\u0443\u043D\u0443 \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E
-      \u043F\u043E\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u0443\u044E \u0440\u0443\u043D\u0443
-      \u0432 \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u0439 \u0441\u0435\u0440\u0438\u0438
+    - "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438
       \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      \u0432 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430 \u0431\u043E\u043B\u044C\u0448\u0435
-      \u0440\u0443\u043D"
+      1 \u0440\u0443\u043D\u0443."
+    - "\u0412\u043E\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u044B\u0435
+      \u043D\u0430 \u0441\u0435\u0440\u0438\u044E \u0440\u0443\u043D\u044B \u0432
+      \u0434\u0432\u043E\u0439\u043D\u043E\u043C \u043E\u0431\u044A\u0435\u043C\u0435."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 5"
-    Icon: {fileID: 1682217589, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Icon: {fileID: 1384636962, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11078,16 +11122,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_6
   _data:
     _descriptionsForInfoPanel:
-    - "\u043E\u0442 \u0430\u0442\u0430\u043A \u0446\u0435\u043B\u0435\u0439 \u0441
-      \u0437\u0430\u043C\u0435\u0434\u043B\u0435\u043D\u0438\u0435\u043C \u0430\u0442\u0430\u043A\u0438
-      \u043E\u0442 \xAB\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\xBB
-      (\u043D\u0430\u043A\u043B\u0430 \u0441 \u043C\u0435\u0447 \u043B\u044C\u0434\u0430
-      \u0442\u0430\u043B. 3\u043D) \u0428\u0430\u043D\u0441 \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u0435
-      \u043D\u0438\u043D\u0434\u0437\u044F 40%, "
+    - "\u041F\u043E\u0441\u043B\u0435 \u041B\u0435\u0434\u044F\u043D\u043E\u0433\u043E
+      \u043F\u043E\u0434\u043A\u0430\u0442\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439
+      \u0444\u0438\u0437. \u0443\u0440\u043E\u043D \u043D\u0430\u043B\u043E\u0436\u0438\u0442
+      \u043D\u0430 \u0446\u0435\u043B\u044C \u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D
+      \u043D\u0430 0.7 \u0437\u0430 \u043F\u0440\u043E\u0439\u0434\u0435\u043D\u043D\u044B\u0439
+      \u043C\u0435\u0442\u0440."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 6"
-    Icon: {fileID: 21300000, guid: 6d4e1cf2b89c20b479a8e402dae25a03, type: 3}
+    Icon: {fileID: 7124191143336618418, guid: f9b6cda558891264498342623612957a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11106,16 +11150,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_7
   _data:
     _descriptionsForInfoPanel:
-    - "\u043A\u043E\u0433\u0434\u0430 \u043D\u0438\u043D\u0434\u0437\u044F \u0443\u043A\u043B\u043E\u043D\u044F\u0435\u0442\u0441\u044F
-      \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A, \u043E\u043D
-      \u043C\u043E\u0436\u0435\u0442 \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C
-      \u043B\u0435\u0434\u044F\u043D\u0443\u044E \u0442\u0435\u043D\u044C \u0431\u0435\u0437
-      \u0437\u0430\u0442\u0440\u0430\u0442 \u0440\u0443\u043D \u043D\u043E \u0441
-      \u0437\u0430\u0442\u0440\u0430\u0442\u043E\u0439 \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
+    - "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0448\u0430\u043D\u0441
+      \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F \u043D\u0430 40% \u0437\u0430\u043C\u0435\u0434\u043B\u0435\u043D\u0438\u044F
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0430\u0442\u0430\u043A\u0438
+      \u043E\u0442 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D
+      \u043D\u0430 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u043C."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 7"
-    Icon: {fileID: 6722426347713488039, guid: 2e802f77fbec0d8429d69534f321d889, type: 3}
+    Icon: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11134,14 +11177,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_8
   _data:
     _descriptionsForInfoPanel:
-    - "\u0418\u0437\u043D\u0430\u0447\u0430\u043B\u044C\u043D\u0430\u044F \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
-      \u0441\u0435\u0440\u0438\u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0432 2 \u0440\u0430\u0437\u0430, (\u0431\u044B\u043B\u043E 30 \u0441\u0442\u0430\u043B\u043E
-      60%)"
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0441\u0442\u0430\u0440\u0442\u043E\u0432\u0443\u044E
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0441\u0435\u0440\u0438\u0438
+      \u0432 2 \u0440\u0430\u0437\u0430."
     _stateInfos: []
     IsOpen: 1
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 8"
-    Icon: {fileID: 21300000, guid: 83cbe403e7272f749ad9c94b038f8bbf, type: 3}
+    Icon: {fileID: 1327896979, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11159,14 +11201,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_9
   _data:
     _descriptionsForInfoPanel:
-    - "\xAB\u041C\u0435\u0447 \u041B\u044C\u0434\u0430\xBB \u043F\u043E \u0437\u0430\u043C\u043E\u0440\u043E\u0436\u0435\u043D\u043D\u044B\u043C
-      \u0446\u0435\u043B\u044F\u043C \u043D\u0430\u043D\u043E\u0441\u0438\u0442 +10%
-      \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u0435\u0442 \u0448\u0430\u043D\u0441
-      \u043A\u0440\u0438\u0442\u0430 15% \xD71,8-2,3 "
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u043D\u0430 30."
     _stateInfos: []
     IsOpen: 1
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 9"
-    Icon: {fileID: 8609838242252685353, guid: 35e2ebaac40f76d48961e2ceb6d77c6d, type: 3}
+    Icon: {fileID: -1680541537, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11184,16 +11224,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_10
   _data:
     _descriptionsForInfoPanel:
-    - "\u043A\u043E\u0433\u0434\u0430 \u043D\u0438\u043D\u0434\u0437\u044F \u0443\u043A\u043B\u043E\u043D\u044F\u0435\u0442\u0441\u044F
-      \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A, \u043E\u043D
-      \u043C\u043E\u0436\u0435\u0442 \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C
-      \u043B\u0435\u0434\u044F\u043D\u0443\u044E \u0442\u0435\u043D\u044C \u0431\u0435\u0437
-      \u0437\u0430\u0442\u0440\u0430\u0442 \u0440\u0443\u043D, \u043D\u043E \u0441
-      \u0437\u0430\u0442\u0440\u0430\u0442\u043E\u0439 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 "
-    _stateInfos: []
+    - 
+    _stateInfos:
+    - StateName: "\u041B\u0435\u0434\u044F\u043D\u0430\u044F \u0442\u0435\u043D\u044C:"
+      Description: "\\n\u0412 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A.
+        \u043F\u043E\u0441\u043B\u0435 \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F
+        \u043D\u0435 \u043F\u043E\u0442\u0440\u0430\u0442\u0438\u0442 \u044D\u043D\u0435\u0440\u0433\u0438\u044E."
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 10"
-    Icon: {fileID: 7124191143336618418, guid: f9b6cda558891264498342623612957a, type: 3}
+    Icon: {fileID: 522920930, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11212,13 +11251,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_11
   _data:
     _descriptionsForInfoPanel:
-    - "\u043F\u043E\u044F\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u043D\u043E\u0432\u044B\u0435
-      \u0441\u0435\u0440\u0438\u0438   2\u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
-      \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438
-      - \u0444\u0444\u043C\u0444 - 4 \u0443\u0434\u0430\u0440\u0430 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-      2\u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-      \u2013 \u043C\u0444\u0444\u043C - 4 \u0443\u0434\u0430\u0440\u0430"
-    _stateInfos: []
+    - 
+    _stateInfos:
+    - StateName: "\u0421\u0435\u0440\u0438\u044F \u043A\u043E\u043C\u0431\u043E"
+      Description: "\\n\u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u043D\u043E\u0432\u044B\u0435
+        \u0441\u0435\u0440\u0438\u0438:\n\t[\u0424\u0424\u041C\u0424]\n\t[\u041C\u041C\u0424\u041C]"
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 11"
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
@@ -11239,12 +11276,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_12
   _data:
     _descriptionsForInfoPanel:
-    - " \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u043F\u043E\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u0443\u044E
-      \u0440\u0443\u043D\u0443 \u0432 \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u0439
-      \u0441\u0435\u0440\u0438\u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      \u0432 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430 \u0431\u043E\u043B\u044C\u0448\u0435
-      \u0440\u0443\u043D."
-    _stateInfos: []
+    - "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0443\u0440\u043E\u043D
+      \u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u0448\u0430\u043D\u0441
+      \u043A\u0440\u0438\u0442\u0430 \u043F\u043E \u0446\u0435\u043B\u044F\u043C
+      \u0441 \u0434\u0435\u0431\u0430\u0444\u0444\u0430\u043C\u0438:\n"
+    _stateInfos:
+    - StateName: 
+      Description: 
+    - StateName: "\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435"
+      Description: "\u0434\u043E\u043F \u0443\u0440\u043E\u043D: 10%, \u0448\u0430\u043D\u0441
+        \u043A\u0440\u0438\u0442\u0430: 30%, \u043A\u0440\u0438\u0442 \u0443\u0440\u043E\u043D:
+        x1.8-2.3\r\n"
+    - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
+      Description: "\u0434\u043E\u043F \u0443\u0440\u043E\u043D: 10%, \u0448\u0430\u043D\u0441
+        \u043A\u0440\u0438\u0442\u0430: 30%, \u043A\u0440\u0438\u0442 \u0443\u0440\u043E\u043D:
+        x1.8-2.3"
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 12"
     Icon: {fileID: 21300000, guid: 08c8d122ee6490c478098cac7c15c649, type: 3}
@@ -11288,32 +11334,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u043D\u0438\u043D\u0434\u0437\u044F \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439
-      \u043F\u043E\u0441\u044B\u043B\u0430\u0435\u0442 \u043B\u0435\u0434\u0435\u043D\u044F\u0449\u0438\u0439
-      \u043F\u043E\u0442\u043E\u043A, \u0432\u0441\u0435 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u0435
-      \u0446\u0435\u043B\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u044E\u0449\u0438\u0435
-      \u0432 \u043F\u043E\u0442\u043E\u043A \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442
-      \u0443\u0440\u043E\u043D \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044E\u0442\u0441\u044F
-      \u0434\u0435\u0431\u0430\u0444\u044B \u0412 \u043F\u0435\u0440\u0432\u044B\u0435
-      0,3 \u0441\u0435\u043A. \u043D\u0430\u043D\u043E\u0441\u0438\u0442 1 \u0435\u0434
-      \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B,
-      \u043A\u0430\u0436\u0434\u044B\u0435 \u043F\u043E\u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0435
-      0,3 \u0441\u0435\u043A + 1 \u0435\u0434. \u0443\u0440\u043E\u043D\u0430 (0,3-1
-      0,6-2, 0,9-3, 1,2-4, 1,5-5, 1,8-6, 2,1-7), \u043A\u0430\u0436\u0434\u044B\u0435
-      0,3 \u0441\u0435\u043A \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0434\u0435\u0431\u0430\u0444 \xAB\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\xBB
-      \u043D\u0430 12 \u0441\u0435\u043A "
+    - "<alpha=#aa><i>\u041F\u041E\u0422\u041E\u041A\u041E\u0412\u041E\u0415</i><alpha=#ff>\n\u0412\u044B\u043F\u0443\u0441\u043A\u0430\u0435\u0442
+      \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439 \u043E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439
+      \u043F\u043E\u0442\u043E\u043A, \u043D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D
+      \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D
+      \u043D\u0430 \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432.
+      \u0423\u0440\u043E\u043D \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043F\u043E \u043C\u0435\u0440\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u044F."
     _stateInfos:
-    - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
-      Description: "\u0446\u0435\u043B\u044C \u043D\u0435 \u043C\u043E\u0436\u0435\u0442
-        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F
-        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u043B\u044E\u0431\u044B\u0435
-        \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435
-        \u0443\u0440\u043E\u043D\u0430 \u0441\u043D\u0438\u043C\u0430\u0435\u0442
-        \u0434\u043B\u0435\u0431\u0430\u0444, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444, \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B."
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: 
+    - StateName: "\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435:"
+      Description: "\u0417\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0435
+        \u043D\u0430 5% \u0438 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043A\u0430\u0441\u0442\u0430
+        \u0444\u0438\u0437. \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+        \u043D\u0430 10%. \u0421\u0442\u0430\u043A\u0430\u0435\u0442\u0441\u044F
+        \u0434\u043E 5. \u041C\u0430\u0433. \u0434\u0435\u0431\u0430\u0444\u0444."
     IsOpen: 0
-    Description: "\u043E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439 
+    Description: "\u041E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439 
       \u043F\u043E\u0442\u043E\u043A"
     Icon: {fileID: 21300000, guid: 86525d715f89f3c449729556c8557842, type: 3}
     Group: 0
@@ -11335,45 +11373,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041B\u0443\u0436\u0430 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F
-      \u2013 \u043D\u0430 \u0437\u0435\u043C\u043B\u0435 \u0440\u0430\u0437\u043C\u0435\u0449\u0430\u0435\u0442
-      \u043B\u0443\u0436\u0443 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434
-      + 1 \u0441\u0435\u043A\u0443\u043D\u0434\u0430 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435
-      5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C
-      20 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438
-      \u0432\u0440\u0430\u0433\u0430 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0434\u0435\u0431\u0430\u0432 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435
-      \u043D\u0430 \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F
-      \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043B\u0443\u0436\u044B.
-      \u041F\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F \u2013 \u0446\u0435\u043B\u044C "
-    - "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0430\u044F
-      \u0442\u0435\u043D\u044C \u2013 \u043E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442
-      \u0442\u0435\u043D\u044C \u043D\u0430 2 \u0441\u0435\u043A \u0438 + 1 \u0441\u0435\u043A.
-      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 10 \u0435\u0434. \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 30 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
-      \u043F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438 \u0432\u0440\u0430\u0433\u0430
-      \u0432 \u0442\u0435\u043D\u044C \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0434\u0435\u0431\u0430\u0444 \u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D. "
+    - "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u0435\u0442 \u0437\u0435\u043C\u043B\u044E
+      \u0432 \u0442\u043E\u0447\u043A\u0435 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
+      + 1 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
+      \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 7 \u0441\u0435\u043A. \u041D\u0430\u0445\u043E\u0434\u044F\u0441\u044C
+      \u0432 \u043B\u0443\u0436\u0435 \u0434\u043E\u043B\u044C\u0448\u0435 0.8 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442
+      \"\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\" \u0434\u043E
+      \u043A\u043E\u043D\u0446\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438"
     _stateInfos:
-    - StateName: "\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F"
-      Description: "\u0446\u0435\u043B\u044C \u043D\u0435 \u043C\u043E\u0436\u0435\u0442
-        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F,
-        \u0443\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
-        \u0444\u0438\u0437\u0438\u0447\u0435\u043A\u0438\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
-        \u043D\u0430 50% \u043F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438
-        \u0431\u043E\u043B\u0435\u0435 \u0447\u0435\u043C 30 \u0435\u0434\u0438\u043D\u0438\u0446
-        \u0444\u0438\u0437\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
-        \u0432 \u0441\u0443\u043C\u043C\u0435 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435
-        \u0441\u043F\u0430\u0434\u0430\u0435\u0442, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444."
-    - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
-      Description: "\u0446\u0435\u043B\u044C \u043D\u0435 \u043C\u043E\u0436\u0435\u0442
-        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F
-        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u043B\u044E\u0431\u044B\u0435
-        \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435
-        \u0443\u0440\u043E\u043D\u0430 \u0441\u043D\u0438\u043C\u0430\u0435\u0442
-        \u0434\u043B\u0435\u0431\u0430\u0444, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444, \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B."
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: "\u041B\u0443\u0436\u0430 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+        \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435"
+    - StateName: "\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435:"
+      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F.
+        \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
+        \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433. \u0434\u0435\u0431\u0430\u0444\u0444."
     IsOpen: 0
     Description: "\u041B\u0443\u0436\u0430 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F"
     Icon: {fileID: 21300000, guid: 060880a1a872c9d41895f9e89e58cd3a, type: 3}
@@ -11396,38 +11412,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
-      \u043D\u0438\u043D\u0434\u0437\u044E \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-      \u0431\u0430\u0444, \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F:
-      \xAB\u0443\u0434\u0430\u0440 \u0441 \u0440\u0443\u043A\u0438\" \u0438 \"\u043E\u0441\u043A\u043E\u043B\u043E\u043A
-      \u043B\u044C\u0434\u0430\" \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442
-      60% \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u0438 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C
-      \u0434\u0435\u0431\u0430\u0444 \u201E\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201C. 
-      \u041A\u043E\u0433\u0434\u0430 \u043D\u0430\u043D\u043E\u0441\u0438\u0442\u0441\u044F
-      \u0443\u0440\u043E\u043D \u0448\u043A\u043E\u043B\u043E\u0439 \u0432\u043E\u0434\u044B
-      \u0441\u043E \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
-      (\u0437\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
-      \u043E\u0431\u043B\u0430\u043A\u043E, \u043B\u0435\u0434\u044F\u043D\u0430\u044F
-      \u0442\u0435\u043D\u044C, \u043E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439
-      \u043F\u043E\u0442\u043E\u043A, \u043B\u0443\u0436\u0430 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F, 
-      \u043A\u0440\u0443\u0433 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F)
-      \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
-      \"\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\" \"\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\"
-      \"\u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\", \u0442\u043E \u043D\u0430\u043D\u043E\u0441\u0438\u043C\u044B\u0439
-      \u0443\u0440\u043E\u043D \u0443\u0432\u0435\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F: 
-      - \u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435 +1 \u0435\u0434
-      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0435\u043C\u044B\u0439
-      \u0441\u0442\u0430\u043A (\u043D\u0435 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
-      \u0441\u0442\u0430\u043A \u043F\u043E 1 \u0435\u0434, \u0430 \u0437\u0430 \u0432\u0441\u0435
-      \u0441\u0442\u0430\u043A\u0438 \u043E\u0431\u0449\u0438\u0439 \u0443\u0440\u043E\u043D
-      , \u043D\u0430\u043F\u0440\u0438\u043C\u0435\u0440 3 \u0441\u0442\u0430\u043A\u0430
-      +3 \u0443\u0440\u043E\u043D\u0430, \u0430 \u043D\u0435 +1 \u0443\u0440\u043E\u043D
-      3 \u0440\u0430\u0437\u0430) - \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435
-      +5 \u0435\u0434 - \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430 +10
-      \u0435\u0434. "
+    - "<alpha=#aa><i>\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0430\u0435\u043C\u0430\u044F</i><alpha=#ff>\n<color=\"Yellow\">\u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+      \u0443\u0434\u0430\u0440</color> \u0438 <color=\"Yellow>\u041E\u0441\u043A\u043E\u043B\u043E\u043A
+      \u043B\u044C\u0434\u0430</color> \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442
+      \u0448\u0430\u043D\u0441 60% \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C
+      \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430
+      ? \u0441\u0435\u043A.\r\n\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
+      \u0443\u0440\u043E\u043D \u0448\u043A\u043E\u043B\u044B \u0432\u043E\u0434\u044B
+      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A
+      \u0434\u0435\u0431\u0430\u0444\u0444\u0430 \u043D\u0430 \u0446\u0435\u043B\u0438:\r\n<indent=5%><color=\"Yellow\">\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435</color>:
+      +1\r\n<color=\"Yellow\">\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435</color>:
+      +5\r\n<color=\"Yellow\">\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430</color>:
+      +10</indent>\r\n\u0417\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043F\u0440\u0438 \u0437\u0430\u0442\u0440\u0430\u0442\u0435 \u0440\u0443\u043D.\r\n<color=\"Blue>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C</color>:
+      1 \u0440\u0443\u043D\u0430 \u0437\u0430 \u043F\u0435\u0440\u0432\u044B\u0435
+      2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0414\u0430\u043B\u0435\u0435
+      10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0432 \u0441\u0435\u043A\u0443\u043D\u0434\u0443."
     _stateInfos: []
     IsOpen: 0
-    Description: "\u043C\u043E\u0440\u043E\u0437\u043D\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F"
+    Description: "\u041C\u043E\u0440\u043E\u0437\u043D\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F"
     Icon: {fileID: 8056498707614395508, guid: f93099b36e559b64894be862e9aa53be, type: 3}
     Group: 0
     Row: 0
@@ -11448,17 +11451,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0438
-      \u043D\u0438\u043D\u0434\u0437\u044F \u0432 \u043B\u0443\u0436\u0435 \u043B\u044C\u0434\u0430
-      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u043D\u0430 1% \u043E\u0442
-      \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0432
-      \u0441\u0435\u043A\u0443\u043D\u0434\u0443"
-    _stateInfos: []
+    - "\u041E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442 \u043B\u0435\u0434\u044F\u043D\u0443\u044E
+      \u0442\u0435\u043D\u044C, \u201C\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0443\u044E\"
+      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 \u043D\u0430
+      \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F
+      \u0436\u0438\u0437\u043D\u0438.\n<indent=5%>\u0412\u0440\u0435\u043C\u044F
+      \u0436\u0438\u0437\u043D\u0438: 2-5\u0441\u0435\u043A (2 + 1/10\u044D\u043D\u0435\u0440\u0433\u0438\u0438)\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      0-30 (0 + 10/1\u0441\u0435\u043A)\n</indent>"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: 
+    - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430:"
+      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
+        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438.
+        \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
+        \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0434\u0435\u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B."
     IsOpen: 0
-    Description: "\u041C\u043E\u0440\u043E\u0437 4"
-    Icon: {fileID: 21300000, guid: a426e118370acca4e82ea335df4cf87c, type: 3}
+    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0430\u044F
+      \u0442\u0435\u043D\u044C"
+    Icon: {fileID: 21300000, guid: 03a6c3f41c3356f428ba170ba3af9be5, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11478,12 +11490,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_5
   _data:
     _descriptionsForInfoPanel:
-    - "\u0412\u044B\u0431\u0440\u0430\u0441\u044B\u0432\u0430\u0435\u0442 \u0437\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
+    - "\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0437\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
       \u043E\u0431\u043B\u0430\u043A\u043E \u0432 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.
-      \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u043E\u043F\u0430\u0432\u0448\u0438\u0439
-      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442
-      \u0443\u0440\u043E\u043D \u0438 \"\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\""
-    _stateInfos: []
+      \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A
+      \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0443\u0440\u043E\u043D \u0438
+      \u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D.\n<indent=5%>\u0423\u0440\u043E\u043D:
+      10 + 1/5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
+      <color=\"Yellow\">\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438\u201D</color>:
+      1 + 1 \u0437\u0430 20 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. .\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      \u0432\u0441\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F</indent>"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+        \u201C\u0413\u043B\u0443\u0431\u043E\u043A\u0443\u044E \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D,
+        \u043A\u043E\u0442\u043E\u0440\u0430\u044F \u0441\u043F\u0430\u0434\u0430\u0435\u0442
+        \u043F\u043E\u0441\u043B\u0435 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F
+        30 \u0443\u0440\u043E\u043D\u0430."
+    - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430:"
+      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
+        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438.
+        \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
+        \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0434\u0435\u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B"
     IsOpen: 0
     Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
       \u043E\u0431\u043B\u0430\u043A\u043E "
@@ -11506,10 +11534,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_7
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionsForInfoPanel:
+    - "\u201C\u041F\u0440\u0438\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u0435\u0442\u201D
+      \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
+      \u0432 4 \u043C\u0435\u0442\u0440\u0430\u0445 \u0432\u043E\u043A\u0440\u0443\u0433
+      \u0433\u0435\u0440\u043E\u044F.\n<indent=5%>\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
+      \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438: 2 - 5 (2 + 1/10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438)\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:\n<indent=20%>0-30
+      (0 + 10\u044D\u043D/1 \u0441\u0435\u043A)\r\n 3 \u0440\u0443\u043D\u044B</indent></indent>"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: "\u041A\u0430\u0441\u0442\u0443\u0435\u0442\u0441\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E"
     IsOpen: 0
-    Description: 
+    Description: "\u041A\u0440\u0443\u0433\u043E\u0432\u043E\u0435 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435"
     Icon: {fileID: 8905119208384491342, guid: 4130fc38c4d02e449a63eeb7b52cf1f6, type: 3}
     Group: 0
     Row: 0
@@ -11530,14 +11566,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_8
   _data:
     _descriptionsForInfoPanel:
-    - "\u043F\u0440\u0438 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u043C\u043E\u0440\u043E\u0437\u043D\u043E\u0439
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
-      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0435
-      \u0440\u0443\u043D\u0443 \u043B\u044C\u0434\u0430 \u0431\u0443\u0434\u0443\u0442
-      \u0438\u043C\u0435\u0442\u044C \u0431\u043E\u043D\u0443\u0441\u043D\u044B\u0439
-      \u044D\u0444\u0444\u0435\u043A\u0442 \u043A\u0430\u043A \u0432 \u043A\u043E\u043D\u0446\u0435
-      \u0441\u0435\u0440\u0438\u0438 "
-    _stateInfos: []
+    - 
+    _stateInfos:
+    - StateName: "\u041C\u043E\u0440\u043E\u0437\u043D\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F:"
+      Description: "\\n\u0421\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438,
+        \u0442\u0440\u0435\u0431\u0443\u044E\u0449\u0438\u0435 \u0440\u0443\u043D\u0443
+        \u043B\u044C\u0434\u0430 \u043F\u043E\u043B\u0443\u0447\u0430\u0442 \u0431\u043E\u043D\u0443\u0441
+        \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F \u0441\u0435\u0440\u0438\u0438.\r\n"
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 8"
     Icon: {fileID: 21300000, guid: 05e9dc472a8a279439a75ccf171a5a6f, type: 3}
@@ -11559,12 +11594,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_9
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C
-      \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \xAB\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\xBB
-      \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F \u0434\u0435\u0431\u0430\u0444
-      \xAB\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\xBB \u043D\u0430
-      \u0432\u0440\u0435\u043C\u044F \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u043C\u043E\u0433\u043E
-      \xAB\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\xBB,"
+    - "\u041F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u0435 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u043D\u0438\u0435
+      <color=\"Yellow\">\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\u201D</color>
+      \u043F\u0440\u0435\u0432\u0440\u0430\u0442\u0438\u0442 \u0435\u0433\u043E \u0432
+      <color=\"Yellow>\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D</color>."
+    - "5 \u0441\u0442\u0430\u043A <color=\"Yellow\">\u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D</color>
+      \u043D\u0430\u043B\u043E\u0436\u0438\u0442 <color=\"Yellow\">\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D</color>
+      \u043D\u0430 2 \u0441\u0435\u043A."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 9"
@@ -11586,21 +11622,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_10
   _data:
     _descriptionsForInfoPanel:
-    - "\u0413\u0435\u0440\u043E\u0439 \u043A\u0438\u0434\u0430\u0435\u0442 \u043F\u043E
-      \u043A\u0430\u0440\u0442\u0435 \u043B\u0435\u0434\u044F\u043D\u0443\u044E \u0441\u0442\u0440\u0435\u043B\u0443,
-      \u043F\u043E\u043F\u0430\u0434\u0430\u044F \u0432 \u043F\u0435\u0440\u0432\u0443\u044E
-      \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0443\u044E \u0442\u0435\u043D\u044C
-      \u043D\u0430\u043D\u043E\u0441\u0438\u0442\u0441\u044F \u0443\u0440\u043E\u043D
-      \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u0434\u0435\u0431\u0430\u0444
-      \xAB\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\xBB \u0443\u0440\u043E\u043D
-      20-25 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 +3 \u0443\u0440\u043E\u043D\u0430
-      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
-      \u043C\u0430\u043A\u0441 25 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043A\u0430\u0441\u0442
-      2,5 \u0441\u0435\u043A, \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C
-      6 \u043A\u043B\u0435\u0442\u043E\u043A, \u0437\u0430\u0442\u0440\u0430\u0442\u044B
-      1 \u0440\u0443\u043D\u0430 \u043B\u044C\u0434\u0430"
-    _stateInfos: []
-    IsOpen: 0
+    - "\u0412\u044B\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u043B\u0435\u0434\u044F\u043D\u0443\u044E
+      \u0441\u0442\u0440\u0435\u043B\u0443 \u0432 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.
+      \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A
+      \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0443\u0440\u043E\u043D \u0438
+      \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430
+      ? \u0441\u0435\u043A.\n<indent=5%>\u0423\u0440\u043E\u043D: [20-25] + [0-15]
+      (3\u0443\u0440/5\u044D\u043D)\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      0-25 (0 + 5\u044D\u043D/ 3\u0443\u0440</indent>"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: "\u041D\u0430\u043D\u043E\u0441\u0438\u0442 30% \u0443\u0440\u043E\u043D\u0430
+        \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+        \u201C\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D
+        \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
+        \u043F\u043E\u0437\u0430\u0434\u0438 \u0446\u0435\u043B\u0438."
+    IsOpen: 1
     Description: "\u0413\u043B\u044B\u0431\u0430 \u043B\u044C\u0434\u0430"
     Icon: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
     Group: 0
@@ -11622,13 +11659,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_11
   _data:
     _descriptionsForInfoPanel:
-    - "\u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
-      \u0440\u0435\u0433\u0435\u043D\u0430\u0440\u0446\u0438\u0438 \u0440\u0443\u043D
+    - "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
+      \u0440\u0443\u043D \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
       \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u0446\u0435\u043B\u044C
-      \u0441 \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u043C \xAB\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u043C\xBB
-      \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0438 +10%, \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430
-      +5%,  \xAB\u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\xBB  +20%,
-      \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430 +10%. "
+      \u0441 \u044D\u0444\u0444\u0435\u043A\u0442\u043E\u043C:\r\n<indent=5%>\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D
+      +10% (+5% \u0434\u043B\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432)\r\n\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D
+      +20% (+10% \u0434\u043B\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432)</indent>\r\n"
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 11"
@@ -11651,15 +11687,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_12
   _data:
     _descriptionsForInfoPanel:
-    - " \xAB\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\xBB
-      \u0438 \"\u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\" \u0432\u044B\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044E\u0442
-      30 \u0443\u0440\u043E\u043D\u0430 \u0438 \u043D\u0435 \u0441\u043F\u0430\u0434\u0430\u044E\u0442
-      \u0441 \u0446\u0435\u043B\u0435\u0439, (\u043F\u043E\u0441\u043B\u0435 30 \u0443\u0440\u043E\u043D\u0430
-      \u0441\u043F\u0430\u0434\u0430\u044E\u0442 \u0441 \u0446\u0435\u043B\u0435\u0439),
-      \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438
-      \xAB\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\xBB,
-      \xAB\u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438\xBB \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C
-      30 \u0435\u0434\u0438\u043D\u0438\u0446 \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F  "
+    - "<color=\"Yellow>\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D</color>
+      \u0438 <color=\"Yellow>\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D</color>
+      \u0432\u044B\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044E\u0442 \u0434\u043E
+      30 \u0443\u0440\u043E\u043D\u0430"
     _stateInfos: []
     IsOpen: 0
     Description: "\u0413\u043B\u0443\u0431\u043E\u043A\u0430\u044F \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
@@ -11681,9 +11712,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_13
   _data:
     _descriptionsForInfoPanel:
-    - "\u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u043E\u0431\u0449\u0438\u0439 \u0437\u0430\u043F\u0430\u0441 \u0440\u0443\u043D
-      \u043D\u0430 5 \u0448\u0442"
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441
+      \u0440\u0443\u043D \u043D\u0430 5."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 13"
@@ -11728,18 +11758,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "20% \u043E\u0442 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
-      \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0432 \u0432\u0438\u0434\u0435 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
-      100 \u0435\u0434\u0438\u043D\u0438\u0446 \u0441\u0443\u043C\u0430\u0440\u043D\u043E\u0433\u043E
-      \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0442
-      1  \u0440\u0443\u043D\u0443"
-    _stateInfos: []
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
+      \u0446\u0435\u043B\u044C \u201C\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B\u201D
+      \u043D\u0430 12 \u0441\u0435\u043A.\r\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      20</indent>"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: 
+    - StateName: "\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B:"
+      Description: "\u041A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434\u0443
+        \u0441 \u0448\u0430\u043D\u0441\u043E\u043C 5% \u043F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u0442
+        \u0422\u0440\u0443\u043F \u0440\u044F\u0434\u043E\u043C \u0441 \u0446\u0435\u043B\u044C\u044E.
+        \u0428\u0430\u043D\u0441 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+        \u0432 2 \u0440\u0430\u0437\u0430, \u0435\u0441\u043B\u0438 \u0446\u0435\u043B\u044C
+        \u0441\u0442\u043E\u0438\u0442 \u043D\u0430 \u043C\u0435\u0441\u0442\u0435."
     IsOpen: 0
-    Description: "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B"
-    Icon: {fileID: 21300000, guid: 3e6d7c097245f3a48b5d0c1a985c8f0e, type: 3}
+    Description: "\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B"
+    Icon: {fileID: 21300000, guid: 1e7fdd7f8d2544b4abc30cf32b1431ec, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
@@ -11759,14 +11794,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D - \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442
-      \u043E\u0434\u043D\u0443 \u0440\u0443\u043D\u0443 \u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      70  \u044D\u043D\u0435\u0440\u0433\u0438\u0438. "
-    - "\u0416\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      - \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442 70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      1 \u0440\u0443\u043D\u0443."
-    _stateInfos: []
+    - "<color=\"Yellow>\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D</color>:
+      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442 \u043E\u0434\u043D\u0443
+      \u0440\u0443\u043D\u0443, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C
+      70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. \r\n<color=\"Yellow>\u0416\u0430\u0442\u0432\u0430
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438</color>: \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442
+      70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u0447\u0442\u043E\u0431\u044B
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C 1
+      \u0440\u0443\u043D\u0443.\r\n"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: "\u041D\u0435 \u0443\u0445\u043E\u0434\u0438\u0442 \u043D\u0430
+        \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0443"
     IsOpen: 0
     Description: "\u0416\u0430\u0442\u0432\u0430"
     Icon: {fileID: 21300000, guid: ba741e0a405245447ae2ba2fee7fd82a, type: 3}
@@ -11790,16 +11829,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041A\u0430\u0436\u0434\u0430\u044F 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430
-      \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u0435\u0442 1% \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u0438
-      \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 9 \u0441\u0435\u043A\u0443\u043D\u0434
-      \u0423\u043F\u0440\u043E\u0447\u043D\u0451\u043D\u043D\u0430\u044F \u043F\u043B\u043E\u0442\u044C,
-      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0438\u043C\u0435\u044E\u0449\u0443\u044E\u0441\u044F
-      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0443\u044E \u0437\u0430\u0449\u0438\u0442\u0443
-      \u043D\u0430 20%, \u0441\u0443\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
-      \u0434\u043E 5 \u0440\u0430\u0437."
-    _stateInfos: []
+    - "\u041A\u0430\u0436\u0434\u0430\u044F 1 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
+      \u0438\u043C\u0435\u0435\u0442 1% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C
+      \u043D\u0430 \u0433\u0435\u0440\u043E\u044F \"\u0423\u043F\u0440\u043E\u0447\u0435\u043D\u043D\u043D\u0430\u044F
+      \u043F\u043B\u043E\u0442\u044C\" \u043D\u0430 9 \u0441\u0435\u043A."
+    _stateInfos:
+    - StateName: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u043D\u0430\u044F
+        \u043F\u043B\u043E\u0442\u044C:"
+      Description: "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
+        \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0443\u044E \u0437\u0430\u0449\u0438\u0442\u0443
+        \u043D\u0430 5%. \u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0431\u0430\u0444\u0444. \u0421\u0442\u0430\u043A\u0430\u0435\u0442\u0441\u044F
+        \u0434\u043E 5 \u0440\u0430\u0437."
     IsOpen: 0
     Description: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u043C\u0451\u0440\u0442\u0432\u043E\u0439
       \u043F\u043B\u043E\u0442\u0438"
@@ -11822,12 +11864,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_4
   _data:
     _descriptionsForInfoPanel:
-    - "\u043E\u0441\u043B\u0435 \u0441\u0443\u043C\u0430\u0440\u043D\u043E\u0433\u043E
-      \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u044F 30 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430 \xAB\u0444\u0440\u043E\u0441\u0442 \u0434\u0435\u0437\u043E\u043C\xBB
-      \u0438\u043B\u0438 \xAB\u0442\u0440\u0443\u043F\u043E\u043C\xBB \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0437\u0430\u0440\u044F\u0434 \u0441\u043F\u0438\u0440\u0430\u043B\u044C \u0441\u043C\u0435\u0440\u0442\u0438"
-    _stateInfos: []
+    - "\u041D\u0430\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442 \u0447\u0430\u0441\u0442\u0438\u0446\u0443
+      \u0441\u043C\u0435\u0440\u0442\u0438 \u0432 \u0446\u0435\u043B\u044C.\n<indent=5%>\u041F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A:
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442 15 (+0-30 1/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438)
+      \u0443\u0440\u043E\u043D\u0430.\r\n\u0422\u0440\u0443\u043F: \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      30 (+0-60 2/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F.\r\n\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      0-30.</indent>\r\n\u041D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442
+      1 \u0437\u0430\u0440\u044F\u0434, \u043A\u043E\u0433\u0434\u0430 \u0433\u0435\u0440\u043E\u0439
+      \u0438\u043B\u0438 \u0435\u0433\u043E \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430
+      \u043D\u0430\u043D\u043E\u0441\u044F\u0442 30 \u0444\u0438\u0437. \u0443\u0440\u043E\u043D\u0430.
+      \u041C\u0430\u043A\u0441\u0438\u043C\u0443\u043C ?.\r\n"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: 
     IsOpen: 0
     Description: " \u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438"
     Icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}
@@ -11850,23 +11899,290 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_5
   _data:
     _descriptionsForInfoPanel:
-    - "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435
+    - "\u0413\u0435\u0440\u043E\u0439 \u0438 \u0435\u0433\u043E \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0438
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0442
+      \u0440\u0435\u0441\u0443\u0440\u0441 \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435
       20% \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430. \u041F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438
-      100 \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      1 \u0440\u0443\u043D\u0443. \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442
-      \u043A\u0430\u043A \u0430\u0443\u0440\u0430, \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0438
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      20% \u043C\u0430\u043D\u043D\u044B \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430"
+      \u0443\u0440\u043E\u043D\u0430. \u041F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438
+      100 \u0443\u0440\u043E\u043D\u0430 \u0433\u0435\u0440\u043E\u0439 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      1 \u0440\u0443\u043D\u0443."
     _stateInfos: []
     IsOpen: 0
     Description: "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B"
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+    Icon: {fileID: 21300000, guid: 8db85bf2eaf1eda48a38b28a94c1dadf, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
+--- !u!114 &6704089103393728732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc3a1da4a30aa94dafb502b55997a79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplodingCorpseTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - 
+    _stateInfos:
+    - StateName: "\u0422\u0440\u0443\u043F:"
+      Description: "\\n\u041F\u0440\u0438 \u0441\u043C\u0435\u0440\u0442\u0438 \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F,
+        \u043D\u0430\u043D\u043E\u0441\u044F 20 \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u043A\u0440\u0443\u0433
+        \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u0427\u0443\u043C\u0443\u201D
+        \u043D\u0430 ? \u0441\u0435\u043A.\r\n"
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &2612455436425407303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec7b5ee5b05ace449dc2e299285714a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbsotptionTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "<b>\u0422\u0440\u0443\u043F</b>:\n\u0412\u043E\u0440\u0443\u0435\u0442 20
+      (+0-40 1/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F
+      \u0442\u0440\u0443\u043F\u0430\r\n\r\n<b>\u041F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A</b>:\n\u041D\u0430\u043D\u043E\u0441\u0438\u0442
+      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0443 (1% + 0.1%/1 \u044D\u043D\u0435\u0440\u0433\u0438\u044E
+      \u043C\u0430\u043A\u0441 \u0445\u043F) \u0443\u0440\u043E\u043D\u0430 \u0438
+      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
+      \u0433\u0435\u0440\u043E\u044F \u0441\u0442\u043E\u043B\u044C\u043A\u043E \u0436\u0435
+      \u0441\u0442\u0430\u043A\u043E\u0432 \u201C\u0427\u0443\u0436\u043E\u0439 \u0441\u0438\u043B\u044B\u201D
+      \u043D\u0430 12 \u0441\u0435\u043A.\r\n<color=\"Yellow>\u0427\u0443\u0436\u0430\u044F
+      \u0441\u0438\u043B\u0430</color>: \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
+      \u0437\u0430\u043F\u0430\u0441 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F.
+      \u041E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u043F\u0440\u0438
+      \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438.
+      \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444\u0444.
+      \u0428\u043A\u043E\u043B\u0430 \u0442\u044C\u043C\u044B.\r\n\r\n<b>\u0413\u0435\u0440\u043E\u0439</b>:\n\u0422\u0440\u0430\u0442\u0438\u0442
+      \u0441\u0432\u043E\u0435 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435,
+      \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C
+      0-160 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 (4\u044D\u043D\u0435\u0440\u0433\u0438\u0438/1\u0445\u043F).
+      \u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0440\u0435\u0433\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044E
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u043A\u043E\u043D\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0435\u0442
+      1 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435 \u0432 4 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
+      \u0434\u043E \u043F\u043E\u043B\u043D\u043E\u0433\u043E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F\r\n
+      <indent=5%>\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:</indent>\n<indent=20%>0-40
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438\r\n1 \u0440\u0443\u043D\u0430</indent>"
+    _stateInfos: []
+    IsOpen: 1
+    Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435"
+    Icon: {fileID: 21300000, guid: a78251261ef4e80459022c6f987b7ee8, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &4791106817473003114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f166bf8d544f384ebfc7ad8b75167e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HarvestTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - 
+    _stateInfos:
+    - StateName: "\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D:"
+      Description: "\u041F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u0442 \u0442\u0440\u0443\u043F\r\n\r\n"
+    - StateName: "\u0416\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438:"
+      Description: "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0434\u043E\u043F.
+        \u0443\u0440\u043E\u043D \u0437\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u044E
+        \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0439 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
+        \u043D\u0430 50%."
+    IsOpen: 0
+    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0436\u0430\u0442\u0432"
+    Icon: {fileID: 21300000, guid: 320be945beda75f4b848dd57579ecb6c, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &1301816107117140889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4838d4e9b4124b144a2152912e8b25ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IncreaseVampiricTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B
+      \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 2 \u0440\u0430\u0437\u0430
+      \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435, \u043A\u043E\u0433\u0434\u0430
+      \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u201C\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435
+      \u043C\u0435\u0440\u0442\u0432\u043E\u0439 \u043F\u043B\u043E\u0442\u0438\u201D"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0432\u0430\u043C\u0438\u0440\u0438\u0437\u043C\u0430
+      \u0441\u0438\u043B"
+    Icon: {fileID: 8056498707614395508, guid: f93099b36e559b64894be862e9aa53be, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &8227483818893757246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 261d0ebe05359ff4d929528ac0a034f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SecondarySpiralTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\xAB\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438\"
+      \u043F\u043E\u043F\u0430\u0434\u0430\u044F \u0432 \u0446\u0435\u043B\u044C
+      \u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 3 \u043C\u0435\u0442\u0440\u043E\u0432
+      \u0432\u044B\u043B\u0435\u0442\u0430\u0435\u0442 \u201E\u0427\u0430\u0441\u0442\u0438\u0446\u0430
+      \u0441\u043C\u0435\u0440\u0442\u0438\xBB \u0441 75% \u0443\u0440\u043E\u043D\u043E\u043C
+      \u0432 \u0446\u0435\u043B\u0438 \u043D\u0430 \u043A\u043E\u043C \xAB\u043F\u043E\u0440\u0442\u0430\u043B
+      \u0442\u044C\u043C\u044B\xBB"
+    _stateInfos:
+    - StateName: "\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438:"
+      Description: "\\n\u041F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438,
+        \u0442\u0430\u043A\u0436\u0435 \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442
+        \u043D\u0430 \u0432\u0441\u0435 \u0446\u0435\u043B\u0438 \u043F\u043E\u0431\u043B\u0438\u0437\u043E\u0441\u0442\u0438
+        \u0441 \u201C\u041F\u043E\u0440\u0442\u0430\u043B\u043E\u043C \u0442\u044C\u043C\u044B\u201D
+        \u0441 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C\u044E
+        75%."
+    IsOpen: 0
+    Description: "\u0421\u043C\u0435\u0440\u0442\u044C 10"
+    Icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &7324349567343164473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0c95c0556d94a2488134556c7765e93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InstantAbsorptionTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - 
+    _stateInfos:
+    - StateName: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435:"
+      Description: "\\n\u041A\u0430\u0441\u0442\u0443\u0435\u0442\u0441\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E
+        \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
+        \u0441 \u201C\u041F\u043E\u0440\u0442\u0430\u043B\u043E\u043C \u0442\u044C\u043C\u044B\u201D.\n\u041F\u043E\u043F\u0430\u0434\u0430\u044F
+        \u043F\u043E \u0446\u0435\u043B\u0438 \u0441 \"\u0427\u0443\u043C\u043E\u0439\":\n<indent=5%>\u0421\u043D\u0438\u043C\u0430\u0435\u0442
+        1 \u0441\u0442\u0430\u043A \u201C\u0427\u0443\u043C\u044B\u201D, \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u044F
+        \u043A \u201C\u0427\u0443\u0436\u043E\u0439 \u0441\u0438\u043B\u0435\u201D
+        \u0443\u0440\u043E\u043D, \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u044B\u0439
+        \u0447\u0443\u043C\u043E\u0439 \u0438 \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u044F
+        \u0437\u0430\u0440\u044F\u0434 \u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F,
+        \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 6.\n\u0417\u0430\u0440\u044F\u0434\u044B
+        \u0440\u0430\u0441\u0445\u043E\u0434\u0443\u044E\u0442\u0441\u044F \u043D\u0430
+        <color=\"Yellow><u>\u0417\u0430\u0449\u0438\u0442\u0443 \u043E\u0442 \u043C\u0430\u0433\u0438\u0438</u></color>.</indent>"
+    IsOpen: 0
+    Description: "\u0421\u043C\u0435\u0440\u0442\u044C 11"
+    Icon: {fileID: 21300000, guid: 31dbceb263cafaa458e7f30743b9267a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &2584411674874024068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd35bcebf78be6d4ca7a26ad0f204b45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicShieldTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
+      \u0446\u0435\u043B\u044C \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+      \u0449\u0438\u0442\u201D \u0438\u043B\u0438 \u0441\u043E\u0437\u0434\u0430\u0435\u0442
+      \u043E\u0431\u043B\u0430\u0441\u0442\u044C %\u0437\u0430\u0449\u0438\u0442\u044B\u043E\u0442\u043C\u0430\u0433\u0438\u0438%\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+      2 \u0440\u0443\u043D\u044B. \r\n\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435:
+      60 + 15 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+      2 + 1 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.</indent>"
+    _stateInfos:
+    - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
+      Description: 
+    - StateName: "\u041E\u0431\u043B\u0430\u0441\u0442\u044C\u0437\u0430\u0449\u0438\u0442\u044B\u043E\u0442\u043C\u0430\u0433\u0438\u0438\u2122:"
+      Description: "\u0412\u0441\u0435 \u0446\u0435\u043B\u0438 \u0432 \u043E\u0431\u043B\u0430\u0441\u0442\u0438
+        \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0449\u0438\u0442\u201D \u0438 \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435
+        \u0438\u0441\u0442\u043E\u0449\u0435\u043D\u0438\u0435?\u201D \u0441 \u043E\u0431\u0449\u0435\u0439
+        \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C\u044E.\r\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
+        4 \u0440\u0443\u043D\u044B.\r\n\u041F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C:
+        120 + 15 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 .\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+        2 + 1 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.</indent>\r\n"
+    - StateName: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0449\u0438\u0442:"
+      Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0443\u0440\u043E\u043D \u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0435
+        \u0434\u0435\u0431\u0430\u0444\u0444\u044B. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0431\u0430\u0444\u0444."
+    - StateName: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0438\u0441\u0442\u043E\u0449\u0435\u043D\u0438\u0435:"
+      Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435
+        \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0435
+        \u0431\u0430\u0444\u0444\u044B. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0434\u0435\u0431\u0430\u0444\u0444."
+    IsOpen: 1
+    Description: "\u0417\u0430\u0449\u0438\u0442\u0430 \u043E\u0442 \u043C\u0430\u0433\u0438\u0438"
+    Icon: {fileID: 21300000, guid: 1528fdab5129db143969848ac9d45298, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &850994493169687921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d6cbf7f68e2fe42b7465394dc177d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathSpiralTalents
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 1
+  character: {fileID: 4374618947117916461}
+  _deathSpiral: {fileID: 5605713643324713456}
+  _ability: {fileID: 4220410774128686972}
 --- !u!114 &3083348233968490285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11901,16 +12217,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -11963,295 +12282,3 @@ MonoBehaviour:
   _energyPerHit: 5
   _energyRestorePercentOnComplete: 0.4
   _availablePatterns: []
---- !u!114 &850994493169687921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44d6cbf7f68e2fe42b7465394dc177d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathSpiralTalents
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    IsOpen: 0
-    Description: 
-    Icon: {fileID: 0}
-    Group: 0
-    Row: 1
-  character: {fileID: 4374618947117916461}
-  _deathSpiral: {fileID: 5605713643324713456}
-  _ability: {fileID: 4220410774128686972}
---- !u!114 &6704089103393728732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cc3a1da4a30aa94dafb502b55997a79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ExplodingCorpseTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u043A\u043E\u0433\u0434\u0430 \u0442\u0440\u0443\u043F \u0443\u043C\u0438\u0440\u0430\u0435\u0442
-      \u043E\u043D \u0432\u0440\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430\u043D\u043E\u0441\u044F
-      20 \u0435\u0434 \u0444\u0438\u0437 \u0443\u0440\u043E\u043D\u0430 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435
-      1 \u043C\u0435\u0442\u0440\u0430 \u043E\u0442 \u0441\u0435\u0431\u044F \u0438
-      \u0437\u0430\u0440\u0430\u0436\u0430\u044F \u0446\u0435\u043B\u0438 \u0447\u0443\u043C\u043E\u0439."
-    _stateInfos: []
-    IsOpen: 0
-    Description: 
-    Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
---- !u!114 &2612455436425407303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dec7b5ee5b05ace449dc2e299285714a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AbsotptionTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "- \xAB\u0442\u0440\u0443\u043F\xBB \u043E\u0442\u043D\u0438\u043C\u0435\u0442\u0441\u044F
-      \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E \u043A\u043E\u043B\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E
-      \u0436\u0438\u0437\u043D\u0438 \u0443 \u0442\u0440\u0443\u043F\u0430 \u0432\u043F\u043B\u043E\u0442\u044C
-      \u0434\u043E \u0435\u0433\u043E \u0441\u043C\u0435\u0440\u0442\u0438 \u0438
-      \u043A\u043E\u043B\u043B\u0438\u0435\u0447\u0441\u0442\u0432\u043E \u043E\u0442\u043D\u044F\u0442\u043E\u0433\u043E
-      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F
-      \u0444\u0440\u043E\u0441\u0442 \u0434\u0435\u0437\u0443. 1 \u0440\u0443\u043D\u0430
-      \u043E\u0442\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F 20 \u0435\u0434
-      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F + \u043F\u043E 1 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      \u043A\u0430\u0436\u0434\u0430\u044F 1 \u0435\u0434 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F
-      \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 40 \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
-    - "- \"\u0432\u0440\u0430\u0433\u0430\" \u043D\u0430\u043D\u0435\u0441\u0451\u0442
-      \u0443\u0440\u043E\u043D \u043E\u0442 \u0438\u043C\u0435\u044E\u0449\u0435\u0433\u043E\u0441\u044F
-      \u0437\u0430\u043F\u0430\u0441\u0430 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F
-      \u0432\u0440\u0430\u0433\u0430, \u043A\u043E\u043B\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E
-      \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
-      \u043D\u0430\u043B\u043E\u0436\u0438\u0442 \u043D\u0430 \u0430\u0439\u0441
-      \u0434\u0435\u0437\u0430 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435
-      \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \xAB\u0447\u0443\u0436\u0438\u0435
-      \u0441\u0438\u043B\u0430\xBB \u043D\u0430 12 \u0441\u0435\u043A\u0443\u043D\u0434,
-      \u0448\u043A\u043E\u043B\u0430 \u0442\u044C\u043C\u044B, \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u044E\u0449\u0435\u0435
-      \u043E\u0431\u0449\u0438\u0439 \u0437\u0430\u043F\u0430\u0441\u0430 \u0436\u0438\u0437\u043D\u0435\u0439
-      \u0444\u0440\u043E\u0441\u0442 \u0434\u0435\u0437\u0443, \u043D\u0430 \u0440\u0430\u0437\u043C\u0435\u0440
-      \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430,
-      \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438
-      \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F.
-      1 \u0440\u0443\u043D\u0430 \u043E\u0442\u043D\u0438\u043C\u0430\u0435\u0442
-      1% \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F + \u043F\u043E 1 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      \u043A\u0430\u0436\u0434\u044B\u0439 0,1% \u0435\u0434.\u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F
-      \u043E\u0442 \u0438\u043C\u0435\u044E\u0449\u0435\u0433\u043E\u0441\u044F \u0437\u0430\u043F\u0430\u0441\u0430.
-      \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 40 \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
-    - "- \xAB\u0441\u0435\u0431\u044F\" \u043D\u0430\u043D\u0435\u0441\u0451\u0442
-      \u0443\u0440\u043E\u043D \u0441\u0435\u0431\u0435 \u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442
-      \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u044E
-      \u0441\u0431\u0440\u0430\u0441\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u044D\u0444\u0444\u043A\u0442
-      \u0437\u0430\u043C\u0435\u0434\u043B\u0435\u043D\u0438\u044F \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 (\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C
-      \xAB\u0440\u0435\u0441\u0443\u0440\u0441\u044B \u043D\u0438\u043D\u0434\u0437\u044F\xBB
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0437\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442\u0441\u044F
-      \u0441\u043F\u0443\u0441\u0442\u044F 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
-      \u0441 \u043F\u043E\u0441\u043B\u0435\u0434\u0435\u043D\u0439 \u0437\u0430\u0442\u0440\u0430\u0442\u044B)
-      1 \u0440\u0443\u043D\u0430 + \u043A\u0430\u0436\u0434\u0430\u044F 1 \u0435\u0434
-      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      4 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 . \u0434\u043E \u043F\u043E\u043B\u043D\u043E\u0433\u043E
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043D\u0430\u043F\u0440\u0438\u043C\u0435\u0440
-      \u043D\u0435 \u0431\u044B\u043B\u043E 40 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
-      \u0437\u0430\u0442\u0440\u0430\u0442\u0438\u0442\u0441\u044F 10 \u0445\u043F"
-    _stateInfos: []
-    IsOpen: 1
-    Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435"
-    Icon: {fileID: 21300000, guid: a78251261ef4e80459022c6f987b7ee8, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
---- !u!114 &4791106817473003114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f166bf8d544f384ebfc7ad8b75167e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HarvestTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "- \"\u0436\u0430\u0442\u0432\u0430 \u0440\u0443\u043D\" \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F
-      \u0442\u0440\u0443\u043F \u0440\u044F\u0434\u043E\u043C \u0441 \u0444\u0440\u043E\u0441\u0442
-      \u0434\u0435\u0437\u043E\u043C"
-    - "- \"\u0436\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438\"
-      \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0430\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
-      \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0430\u044F \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u044C\u043D\u044B\u0439
-      \u0443\u0440\u043E\u043D \u0432\u0440\u0430\u0433\u0443 \u0437\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u044E,
-      \u0431\u0443\u0434\u0435\u0442 \u0432\u044B\u0448\u0435 \u043D\u0430 50%."
-    _stateInfos: []
-    IsOpen: 0
-    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0436\u0430\u0442\u0432"
-    Icon: {fileID: 21300000, guid: 320be945beda75f4b848dd57579ecb6c, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
---- !u!114 &1301816107117140889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4838d4e9b4124b144a2152912e8b25ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IncreaseVampiricTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\xAB\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B\"
-      (\u0442\u0430\u043B 5\u0441) \u043D\u0430 \u0444\u0440\u043E\u0441\u0442 \u0434\u0435\u0437\u0430
-      \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435 \u0432 2
-      \u0440\u0430\u0437\u0430 \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439
-      \"\u0423\u043F\u0440\u043E\u0447\u043D\u043D\u043D\u043E\u0439 \u043C\u0451\u0440\u0442\u0432\u043E\u0439
-      \u043F\u043B\u043E\u0442\u0438\" (\u0442\u0430\u043B 3\u0441) "
-    _stateInfos: []
-    IsOpen: 0
-    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0432\u0430\u043C\u0438\u0440\u0438\u0437\u043C\u0430
-      \u0441\u0438\u043B"
-    Icon: {fileID: 8056498707614395508, guid: f93099b36e559b64894be862e9aa53be, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
---- !u!114 &8227483818893757246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 261d0ebe05359ff4d929528ac0a034f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SecondarySpiralTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\xAB\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438\"
-      \u043F\u043E\u043F\u0430\u0434\u0430\u044F \u0432 \u0446\u0435\u043B\u044C
-      \u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 3 \u043C\u0435\u0442\u0440\u043E\u0432
-      \u0432\u044B\u043B\u0435\u0442\u0430\u0435\u0442 \u201E\u0427\u0430\u0441\u0442\u0438\u0446\u0430
-      \u0441\u043C\u0435\u0440\u0442\u0438\xBB \u0441 75% \u0443\u0440\u043E\u043D\u043E\u043C
-      \u0432 \u0446\u0435\u043B\u0438 \u043D\u0430 \u043A\u043E\u043C \xAB\u043F\u043E\u0440\u0442\u0430\u043B
-      \u0442\u044C\u043C\u044B\xBB"
-    _stateInfos: []
-    IsOpen: 0
-    Description: 
-    Icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
---- !u!114 &7324349567343164473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0c95c0556d94a2488134556c7765e93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InstantAbsorptionTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\"\u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435\" \u043D\u0430
-      \u0446\u0435\u043B\u044C \u0441 \u043F\u043E\u0440\u0442\u0430\u043B\u043E\u043C
-      \u0442\u044C\u043C\u044B \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E"
-    - "\u043D\u0430 \u0446\u0435\u043B\u044C \u0441 \u0447\u0443\u043C\u043E\u0439
-      \u0441\u043D\u0438\u043C\u0430\u0435\u0442 1\u0441\u0442\u0430\u043A \u0447\u0443\u043C\u044B,
-      \u0438 \u0432 \u0437\u0430\u0432\u0438\u0441\u0438\u043C\u043E\u0441\u0442\u0438
-      \u043E\u0442 \u0442\u043E\u0433\u043E \u0441\u043A\u043E\u043B\u044C\u043A\u043E
-      \u0447\u0443\u043C\u0430 \u043D\u0430\u043D\u0435\u0441\u043B\u0430 \u0443\u0440\u043E\u043D\u0430
-      \u043D\u0430 \u044D\u0442\u043E\u0442 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u044C
-      \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E
-      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0442 \u043E\u0431\u0449\u0438\u0439
-      \u0437\u0430\u043F\u0430\u0441 \u0436\u0438\u0437\u043D\u0435\u0439 \u043A
-      \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044E \xAB\u0447\u0443\u0436\u0438\u0435
-      \u0441\u0438\u043B\u0430\""
-    - "\u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0441\u0442\u0430\u043A \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F,
-      \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 6 \u0441\u0442\u0430\u043A\u043E\u0432,
-      \u0441\u0442\u0430\u043A \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
-      \u043C\u043E\u0436\u043D\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
-      \u0434\u043B\u044F \u201E\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0439
-      \u0437\u0430\u0449\u0438\u0442\u044B\u201C (\u0442\u0430\u043B 13\u0441), \u0435\u0441\u043B\u0438
-      \u043C\u044B \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u043C \xAB\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0443\u044E
-      \u0437\u0430\u0449\u0438\u0442\u0443\xBB \u0438 \u0435\u0441\u0442\u044C \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u0439
-      \u0437\u0430\u0440\u044F\u0434 \xAB\u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F\xBB,
-      \u0442\u043E \u043F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u043D\u043E
-      \u043F\u043E\u0442\u0440\u0430\u0442\u0438\u0442\u0441\u044F \u0437\u0430\u0440\u044F\u0434
-      \"\u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F\""
-    _stateInfos: []
-    IsOpen: 0
-    Description: 
-    Icon: {fileID: 21300000, guid: 31dbceb263cafaa458e7f30743b9267a, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
---- !u!114 &2584411674874024068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8789458529339427208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd35bcebf78be6d4ca7a26ad0f204b45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicShieldTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u043D\u0430 \u0441\u0435\u0431\u044F, \u0441\u043E\u044E\u0437\u043D\u0443\u044E
-      \u0438\u043B\u0438 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0443\u044E \u0446\u0435\u043B\u044C,
-      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
-      \xAB\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0449\u0438\u0442\xBB
-      \u043D\u0430 \"\u0425\" \u0441\u0435\u043A\u0443\u043D\u0434 \u043A\u043E\u0442\u043E\u0440\u044B\u0439
-      \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \"\u0425\" \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430 \u043D\u0430 \u0441\u0435\u0431\u0435/\u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0435
-      \u0438\u043B\u0438 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
-      \u0445\u0438\u043B\u0430 \u0435\u0441\u043B\u0438 \u043D\u0430 \u0432\u0440\u0430\u0433\u0435,
-      \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
-      \u043D\u0430 \u0446\u0435\u043B\u044C \u043D\u0435\u043B\u044C\u0437\u044F
-      \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043E\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0435
-      (\u0441\u043E\u044E\u0437\u043D\u0430\u044F \u0446\u0435\u043B\u044C) \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435
-      (\u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0430\u044F \u0446\u0435\u043B\u044C)
-      \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F, \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F
-      \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0431\u044B\u043B\u0438 \u043D\u0430
-      \u0446\u0435\u043B\u0438 \u0434\u043E \u044D\u0442\u043E\u0433\u043E \u043E\u0441\u0442\u0430\u044E\u0442\u0441\u044F,
-      \u043D\u043E \u043D\u0435 \u043D\u0430\u043D\u043E\u0441\u044F\u0442 \u0443\u0440\u043E\u043D
-      \u0438\u043B\u0438 \u0445\u0438\u043B"
-    _stateInfos: []
-    IsOpen: 1
-    Description: "\u0417\u0430\u0449\u0438\u0442\u0430 \u043E\u0442 \u043C\u0430\u0433\u0438\u0438"
-    Icon: {fileID: 21300000, guid: 1528fdab5129db143969848ac9d45298, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4374618947117916461}
