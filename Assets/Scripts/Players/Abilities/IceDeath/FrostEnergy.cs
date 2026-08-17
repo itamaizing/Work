@@ -243,7 +243,7 @@ public class FrostEnergy : Skill
 
         if (bonusDamage <= 0f) return;
 
-        Damage bonus = new Damage { Value = bonusDamage, Type = DamageType.Magical };
+        Damage bonus = new Damage { Value = bonusDamage, Type = DamageType.Magical, DamageKey = "Additional"};
         sourceSkill.ApplyDamage(bonus, target.gameObject);
     }
     

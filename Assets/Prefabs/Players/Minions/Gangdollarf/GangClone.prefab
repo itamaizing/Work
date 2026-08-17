@@ -28470,15 +28470,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _skillType: 1
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 3
     _faction: 0
     _unitType: -1
     _outOfRangeBehaviour: 1
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -28536,10 +28540,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _firework: {fileID: 3150633468305956490, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
   _damageRangeMin: -2
   _damageRangeMax: 1
@@ -28590,15 +28593,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: 3
     _unitType: 5
     _outOfRangeBehaviour: 1
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -28644,10 +28651,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
@@ -28702,15 +28708,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 3
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -28768,10 +28778,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
@@ -28822,15 +28831,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: 4
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -28876,10 +28889,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -28925,15 +28937,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 2
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -28979,10 +28995,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
@@ -29021,15 +29036,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 2
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29075,10 +29094,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &6541281367918590680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29113,15 +29131,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: 1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29167,10 +29189,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _maxJumps: 5
   _damageReductionPerJump: 0.2
@@ -29216,15 +29237,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29282,10 +29307,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &483165492512868837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29326,15 +29350,19 @@ MonoBehaviour:
     _form: 1
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29380,10 +29408,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   duration: 2
 --- !u!114 &-6863981154326105301
 MonoBehaviour:
@@ -29425,15 +29452,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 0
     _unitType: 1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29479,10 +29510,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
@@ -29530,15 +29560,19 @@ MonoBehaviour:
     _form: 1
     _damageType: 0
     _rangeType: 1
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29584,10 +29618,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particlePref: {fileID: 0}
   _schoolSolvent: {fileID: 8795641180420630933}
 --- !u!114 &4401943882256093312
@@ -29630,15 +29663,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 2
     _faction: -1
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -29684,10 +29721,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
@@ -29725,15 +29761,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 3
     _faction: 4
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -29779,12 +29819,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _waveParticlePrefab: {fileID: 2853573148958249888, guid: 13f66c9ee9497d94cbf157c81c55bac7, type: 3}
-  _particle: {fileID: 5826002358924147001}
   _pushRange: 3
   _pushDuration: 0.2
   _previewPivot: {fileID: 5180525657422494941}
@@ -29829,15 +29867,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -29883,10 +29925,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &3127105790014565672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29947,15 +29988,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -30001,10 +30046,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _meshTranformation: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   _debuffDuration: 6
 --- !u!114 &4358863268785994334
@@ -30047,15 +30091,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -30101,10 +30149,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerRenderers:
   - {fileID: 3976331384424644822, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
   - {fileID: 6145141374176819678, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
@@ -30179,15 +30226,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -30233,10 +30284,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _buffDuration: 3
   _chainBreakTime: 2
   _invisDamageMultiplier: 2
@@ -30280,15 +30330,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -30334,10 +30388,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _stoneVFX: {fileID: 5127687933100530446, guid: 8eb87cb5622d932438feef9299091bc3, type: 3}
   _aoeRadius: 2
 --- !u!114 &8020773605070885895
@@ -30374,15 +30427,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -30428,10 +30485,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _snapshotInterval: 0.1
   _rewindTime: 3
 --- !u!114 &4909088627474570662
@@ -30474,15 +30530,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -30528,10 +30588,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _immortalityTime: 4
 --- !u!114 &7485692047686332734
 MonoBehaviour:
@@ -30573,15 +30632,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -30627,10 +30690,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _whirlpoolTilePrefab: {fileID: 3817491765434079413, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   _duration: 5
   _whirlRadius: 6
@@ -30677,15 +30739,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 1
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -30731,10 +30797,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _stunDuration: 4.5
   _burnDuration: 5
@@ -30779,15 +30844,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 1
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -30833,10 +30902,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _counterSpell: {fileID: 8856192836074503412}
 --- !u!114 &1141373627185781475
 MonoBehaviour:
@@ -30872,15 +30940,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 5
     _rangeType: 0
-    _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -30926,10 +30998,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _agent: {fileID: 3438971125766708576}
   _stopDistance: 0.5
 --- !u!114 &-1162350683604376873

@@ -27,6 +27,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
 
     private readonly Dictionary<Health, int> _exposureTicks = new();
     private readonly Dictionary<GameObject, int> _serverExposureTicks = new();
+    private readonly Dictionary<Health, int> _scorchedSoulProcCounts = new();
     public bool IsAoe => true;
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
@@ -37,6 +38,8 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+    
+    private Coroutine _fireBreathDamageCoroutine;
 
     #region Const
     private const float DebuffTickInterval = 0.3f;
@@ -128,11 +131,13 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
     protected override IEnumerator CastJob()
     {
         ClearExposureTicks();
-        if(isClient)
+        if (isClient)
             CmdClearServerExposureTicks();
 
         CmdSpawnFireBreath();
-        yield return StartCoroutine(ApplyFireBreathDamage());
+
+        _fireBreathDamageCoroutine = StartCoroutine(ApplyFireBreathDamage());
+        yield return _fireBreathDamageCoroutine;
     }
 
     [Command]
@@ -163,12 +168,15 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
             NetworkServer.Destroy(_fireBreathInstance.gameObject);
     }
 
-    private void TryApplyScorchedSoulDebuff(Health enemy, float elapsedTime)
+    private void TryApplyScorchedSoulDebuff(Health enemy, float distanceMultiplier)
     {
         CmdOnDamageEnd(enemy.gameObject);
-        float baseChance = BaseScorchedSoulChance;
-        int tickIndex = Mathf.FloorToInt(elapsedTime / DebuffTickInterval);
-        float currentChance = baseChance * Mathf.Pow(2, tickIndex);
+
+        int procIndex = _scorchedSoulProcCounts.GetValueOrDefault(enemy, 0);
+        _scorchedSoulProcCounts[enemy] = procIndex + 1;
+
+        float baseChance = BaseScorchedSoulChance * Mathf.Pow(2, procIndex);
+        float currentChance = baseChance * distanceMultiplier;
 
         currentChance = Mathf.Clamp(currentChance, 0f, MaxScorchedSoulChance);
 
@@ -176,9 +184,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         if (roll <= currentChance)
         {
             if (enemy.TryGetComponent<CharacterState>(out var stateManager))
-            {
                 CmdApplyScorchedSoulDebuff(stateManager.netIdentity);
-            }
         }
     }
 
@@ -239,7 +245,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
                 else
                     _enemiesDict[enemy] = 2;
 
-                TryApplyScorchedSoulDebuff(enemy, elapsedTime);
+                TryApplyScorchedSoulDebuff(enemy, distanceMultiplier);
             }
         }
     }
@@ -335,16 +341,23 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
     {
         CmdClearData();
         _enemiesDict.Clear();
+        _scorchedSoulProcCounts.Clear();
         _lastEnergyTickPercent = 0f;
         _currentDurationReduction = 0f;
         _initialSpeed = 1f;
         _channelComponent.CastDuration = _originalCastDuration;
         UpdateWaitInterval();
-        
-        if (_fireBreathInstance != null) 
+
+        if (_fireBreathDamageCoroutine != null)
+        {
+            StopCoroutine(_fireBreathDamageCoroutine);
+            _fireBreathDamageCoroutine = null;
+        }
+
+        if (_fireBreathInstance != null)
             Destroy(_fireBreathInstance.gameObject);
-        
-        if(isClient)
+
+        if (isClient)
             CmdDestroyFireBreath();
     }
 

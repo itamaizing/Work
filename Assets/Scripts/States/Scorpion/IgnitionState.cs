@@ -22,7 +22,8 @@ public class IgnitionState : RefreshingState
     {
         _currentTick = 0;
         _tickTimer = 0f;
-        duration = MaxTicks;
+        MaxTicks = Mathf.Max(1, Mathf.CeilToInt(durationToExit / TickInterval));
+        duration = durationToExit;
         _schoolState = Schools.Fire;
     }
 
@@ -43,29 +44,22 @@ public class IgnitionState : RefreshingState
     
     public void UpdateFireBreathBonus(float bonus)
     {
-        MaxTicks += (int)bonus;
-        _fireBreathBonus = (int)bonus;
+        MaxTicks += Mathf.CeilToInt(bonus / TickInterval);
+        _fireBreathBonus = bonus;
     }
 
     private void ApplyTick()
     {
-        if(characterState.isClient) return;
-        
-        float finalDamage = _currentTick + _fireBreathBonus;
+        if (characterState.isClient) return;
 
-        var damage = new Damage
-        {
-            Value = finalDamage,
-            Type = DamageType.Magical,
-        };
+        float finalDamage = _currentTick + _damageBonus + _fireBreathBonus;
+
+        var damage = new Damage { Value = finalDamage, Type = DamageType.Magical };
         health.TryTakeDamage(ref damage, skill);
 
         float chance = BaseScorchedChance * _currentTick;
         if (Random.Range(0f, 100f) <= chance)
-        {
-            characterState.AddState(States.ScorchedSoul, 6f, 0f,
-                personWhoMadeBuff.gameObject, nameof(IgnitionState));
-        }
+            characterState.AddState(States.ScorchedSoul, 6f, 0f, personWhoMadeBuff.gameObject, nameof(IgnitionState));
     }
 
     public override void ExitState()
@@ -102,10 +96,9 @@ public class IgnitionState : RefreshingState
     {
         _currentTick = 0;
         _tickTimer = 0f;
-        duration = MaxTicks;
+        MaxTicks = Mathf.Max(1, Mathf.CeilToInt(durationToExit / TickInterval));
+        duration = durationToExit;
         _damageBonus = ExtractNumber(skillName);
-        MaxTicks += (int)_damageBonus;
-        _currentTick = (int)_damageBonus;
         BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
         return this;
     }

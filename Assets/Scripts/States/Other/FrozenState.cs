@@ -117,7 +117,8 @@ public class FrozenState : RefreshingState
     }
     private void OnDamaged(Damage damage, Skill ability)
     {
-        _damageCount += damage.Value;
+        if(damage.DamageKey != "Additional")
+            _damageCount += damage.Value;
         if (_damageCount > damageToExit)
         {
             if (characterState == null || characterState.gameObject == null) return;

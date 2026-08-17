@@ -6,6 +6,8 @@ public class IcyStreamShadow : NetworkBehaviour
 {
     [Header("Stream Settings")]
     [SerializeField] private float _tickInterval = 0.3f;
+    [SerializeField] private float _streamLength = 4f;
+    [SerializeField] private float _streamWidth = 1f;
     [SerializeField] private Transform _streamStartPoint;
 
     [Header("Visual")]
@@ -27,8 +29,6 @@ public class IcyStreamShadow : NetworkBehaviour
     private int _startTick = 1;
     private int _maxTicks = 7;
 
-    private const float FrostEnergyCoolingBonusPerStack = 1f;
-
     public void Init(Character owner, Character target, int startTick, int maxTicks)
     {
         _owner = owner;
@@ -39,13 +39,12 @@ public class IcyStreamShadow : NetworkBehaviour
 
     public void StartShadowStream()
     {
-         if (!isServer) return;
-        if (_cachedTarget == null) return;
+        if (!isServer) return;
         if (_isStreaming) return;
 
         _isStreaming = true;
 
-        SpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget.gameObject);
+        SpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget != null ? _cachedTarget.gameObject : null);
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
     }
@@ -69,9 +68,7 @@ public class IcyStreamShadow : NetworkBehaviour
     {
         for (int tick = _startTick; tick <= _maxTicks; tick++)
         {
-            if (_cachedTarget == null || _cachedTarget.IsDead) break;
             yield return new WaitForSeconds(_tickInterval);
-
             ApplyTick(tick);
         }
 
@@ -88,49 +85,56 @@ public class IcyStreamShadow : NetworkBehaviour
     private void ApplyTick(int tickNumber)
     {
         if (!isServer) return;
-        if (_cachedTarget == null) return;
-        if (_cachedTarget.IsDead) return;
 
         Damage damage = new Damage
         {
             Value = tickNumber,
-            Type = _damageType
+            Type = _damageType,
+            School = Schools.Water
         };
 
-        ApplyDamage(_cachedTarget, damage);
-        ApplyCooling(_cachedTarget);
+        Vector3 start = _streamStartPoint != null ? _streamStartPoint.position : transform.position;
+        Vector3 end = start + transform.forward * _streamLength;
+
+        Collider[] hits = Physics.OverlapCapsule(start, end, _streamWidth * 0.5f);
+
+        foreach (var col in hits)
+        {
+            if (col.TryGetComponent<Character>(out var target))
+            {
+                if (target == _owner || target.IsDead) continue;
+
+                ApplyDamage(target, damage);
+                ApplyCooling(target);
+            }
+        }
     }
 
     private void ApplyDamage(Character target, Damage damage)
     {
         if (target == null || target.IsDead) return;
 
-        target.Health.TryTakeDamage(ref damage, _iceShadowObject.SkillShadow);
+        if (_iceShadowObject != null && _iceShadowObject.SkillShadow != null)
+        {
+            _iceShadowObject.SkillShadow.ApplyDamage(damage, target.gameObject);
+        }
+        else
+        {
+            target.Health.TryTakeDamage(ref damage, null);
+        }
     }
 
     private void ApplyCooling(Character target)
     {
-        if (target == null) return;
+        if (target == null || target.IsDead) return;
 
-        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
-
-        int currentStacks = target.CharacterState.CheckStateStacks(States.Cooling);
-        int stacksAfter = currentStacks + 1;
-
-        if (hasFrostEnergy)
-        {
-            float bonusDamage = stacksAfter * FrostEnergyCoolingBonusPerStack;
-
-            Damage bonus = new Damage
-            {
-                Value = bonusDamage,
-                Type = DamageType.Magical
-            };
-
-            target.Health.TryTakeDamage(ref bonus, _iceShadowObject.SkillShadow);
-        }
-
-        target.CharacterState.AddState(States.Cooling, 12f, 0, _owner.gameObject, "IcyStreamShadow");
+        target.CharacterState.AddState(
+            States.Cooling, 
+            12f, 
+            0, 
+            _owner != null ? _owner.gameObject : gameObject, 
+            "IcyStreamShadow"
+        );
     }
 
     public override void OnStopServer()
@@ -146,13 +150,16 @@ public class IcyStreamShadow : NetworkBehaviour
     [Server]
     private void SpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
     {
-        if (_icyStreamPrefab == null || startPoint == null || targetPoint == null) return;
+        if (_icyStreamPrefab == null || startPoint == null) return;
 
-        GameObject effect = Instantiate( _icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
+        GameObject effect = Instantiate(_icyStreamPrefab, startPoint.transform.position, transform.rotation);
 
         NetworkServer.Spawn(effect);
 
-        RpcInitEffects(effect, startPoint, targetPoint);
+        if (targetPoint != null)
+        {
+            RpcInitEffects(effect, startPoint, targetPoint);
+        }
 
         _activeEffect = effect;
     }

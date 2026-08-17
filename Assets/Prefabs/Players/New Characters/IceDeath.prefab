@@ -8967,6 +8967,7 @@ MonoBehaviour:
     _castTriggers: []
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _icyStream: {fileID: 8854865153303019716}
+  _blockOfIce: {fileID: 1852313743646574494}
   _circularFrosting: {fileID: 2727420570257355857}
   _icyStreamShadow: {fileID: 0}
   _playerLinks: {fileID: 4374618947117916461}
@@ -9122,7 +9123,7 @@ MonoBehaviour:
   _targetingComponent:
     oldType: 2
     type: 2
-    _clickLayer: 2
+    _clickLayer: 3
     _faction: 6
     _unitType: 1
     _outOfRangeBehaviour: 1

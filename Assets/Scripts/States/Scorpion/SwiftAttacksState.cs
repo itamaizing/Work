@@ -4,14 +4,16 @@ using UnityEngine;
 public class SwiftAttacksState : RefreshingState
 {
     private int _attacksLeft = 3;
-    private float _baseMultiplier = 2f;
+    private const float SpeedBonusPercent = 1.0f;
+
+    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(SpeedBonusPercent, ModifierType.Percent);
+
+    private readonly List<Skill> _affectedSkills = new();
 
     public override States State => States.SwiftAttacks;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
-
-    private List<Skill> _affectedSkills = new();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
@@ -20,45 +22,86 @@ public class SwiftAttacksState : RefreshingState
         duration = durationToExit;
         _attacksLeft = 3;
 
-        foreach (var skill in characterState.Character.Abilities.Abilities)
-        {
-            _affectedSkills.Add(skill);
-            skill.ExtraAnimationSpeedMultiplier *= _baseMultiplier;
+        _castSpeedModifier.Source = this;
 
-            skill.CastEnded += OnAttackPerformed;
+        ApplySpeedBuff();
+
+        _affectedSkills.Clear();
+        if (characterState?.Character?.Abilities?.Abilities != null)
+        {
+            foreach (var skill in characterState.Character.Abilities.Abilities)
+            {
+                if (skill != null)
+                {
+                    _affectedSkills.Add(skill);
+                    skill.CastEnded += OnAttackPerformed;
+                }
+            }
         }
-        
+
         MaxStacksCount = 1;
         currentStacksCount = 1;
     }
-    
-    public void OnAttackPerformed()
+
+    private void ApplySpeedBuff()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (castSpeedAttr != null && !castSpeedAttr.Modifiers.Contains(_castSpeedModifier))
+        {
+            castSpeedAttr.AddModifier(_castSpeedModifier);
+        }
+    }
+
+    private void RemoveSpeedBuff()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (castSpeedAttr != null)
+        {
+            castSpeedAttr.RemoveModifier(_castSpeedModifier);
+        }
+    }
+
+    private void OnAttackPerformed()
     {
         if (_attacksLeft <= 0) return;
 
         _attacksLeft--;
 
         if (_attacksLeft <= 0)
+        {
             ExitState();
+        }
     }
 
     public override void UpdateState()
     {
         if (duration <= 0)
+        {
             ExitState();
+        }
     }
 
     public override void ExitState()
     {
-        currentStacksCount = 1;
-        if (characterState != null)
+        currentStacksCount = 0;
+        
+        foreach (var skill in _affectedSkills)
         {
-            foreach (var skill in _affectedSkills)
+            if (skill != null)
             {
-                skill.ExtraAnimationSpeedMultiplier = 1;
                 skill.CastEnded -= OnAttackPerformed;
             }
         }
+        _affectedSkills.Clear();
+
+        RemoveSpeedBuff();
+        base.ExitState();
         characterState?.RemoveState(this);
     }
 

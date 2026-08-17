@@ -50,6 +50,8 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private readonly List<Character> _capturedTargets = new();
 
     private Coroutine _slideCoroutine;
+    
+    private bool _aimedAtEnemy;
 
     protected override bool IsCanCast
     {
@@ -79,6 +81,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 candidatePoint = Vector3.positiveInfinity;
+        Character enemyTarget = null;
 
         while (float.IsPositiveInfinity(candidatePoint.x))
         {
@@ -90,9 +93,14 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
                 if (tempTarget != null && tempTarget is IDamageable dmg)
                 {
                     if (IsAllyTarget(dmg) || dmg as Character == Hero)
+                    {
                         Targeting.ClearTempTarget();
+                    }
                     else
+                    {
                         candidatePoint = tempTarget.Transform.position;
+                        enemyTarget = dmg as Character;
+                    }
                 }
                 else
                 {
@@ -105,6 +113,9 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
         TargetInfo info = new TargetInfo();
         info.Points.Add(candidatePoint);
+        if (enemyTarget != null)
+            info.AddTarget(enemyTarget);
+
         callbackDataSaved(info);
     }
 
@@ -112,6 +123,8 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     {
         if (targetInfo != null && targetInfo.Points.Count > 0)
             _mousePos = targetInfo.Points[0];
+
+        _aimedAtEnemy = targetInfo != null && targetInfo.GetTargets().Count > 0;
     }
 
     protected override IEnumerator CastJob()
@@ -130,6 +143,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         _mousePos = Vector3.positiveInfinity;
         _currentRollRange = 0f;
         _additionalCost = 0f;
+        _aimedAtEnemy = false;
     }
 
     public override IEnumerator CustomDrawJob(float time = DynamicRendererJobTime)
@@ -213,7 +227,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         _capturedTargets.Clear();
 
         if (_slideCoroutine != null) StopCoroutine(_slideCoroutine);
-        _slideCoroutine = StartCoroutine(ClientSlideCoroutine(lookDir, finalRange, seriesMode));
+        _slideCoroutine = StartCoroutine(ClientSlideCoroutine(lookDir, finalRange, seriesMode, _aimedAtEnemy));
 
         _isSeriesCompletedThisCast = false;
         _isSeriesPotentialFinal = false;
@@ -221,7 +235,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         _currentRollRange = 0f;
     }
 
-    private IEnumerator ClientSlideCoroutine(Vector3 direction, float totalRange, bool seriesMode)
+    private IEnumerator ClientSlideCoroutine(Vector3 direction, float totalRange, bool seriesMode, bool aimedAtEnemy)
     {
         float speed = 1f / _durationOfJumpPerCell;
         float duration = totalRange / speed;
@@ -257,7 +271,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
                 CmdSyncCapturedPosition(cap, desiredPos);
             }
 
-            Vector3 origin = _hero.transform.position + Vector3.up * 0.5f;
+            Vector3 origin = _hero.transform.position + Vector3.up * (_castRadius + 0.2f);
             RaycastHit[] hits = Physics.SphereCastAll(
                 origin, _castRadius, direction,
                 speed * Time.deltaTime + 0.1f,
@@ -268,17 +282,15 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
             foreach (var hit in hits)
             {
-                Transform root = hit.collider.transform.root;
-                if (root == _hero.transform.root) continue;
-
-                Character ch = root.GetComponent<Character>();
+                Character ch = hit.collider.GetComponentInParent<Character>();
+                if (ch == _hero) continue;
 
                 if (ch == null)
                 {
                     shouldStop = true;
                     break;
                 }
-                
+
                 if (_capturedTargets.Contains(ch)) continue;
                 if (_processedTargets.Contains(ch)) continue;
                 _processedTargets.Add(ch);
@@ -291,7 +303,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
                     break;
                 }
 
-                if (isAlly)
+                if (isAlly || !aimedAtEnemy)
                 {
                     StartCoroutine(PushAsideCoroutine(ch, perpDirBase));
                 }
@@ -407,11 +419,18 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         target.transform.position = endPos;
     }
 
-    private bool IsAllyTarget(IDamageable target) =>
-        target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsAllyTarget(IDamageable target)
+    {
+        if (target == null) return false;
+        return target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    }
 
-    private bool IsAllyCharacter(Character ch) =>
-        ch.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsAllyCharacter(Character ch)
+    {
+        if (ch == null) return false;
+        return ch.gameObject.layer == LayerMask.NameToLayer("Allies");
+        
+    }
 
     private Vector3 GetMousePoint(LayerMask mask)
     {

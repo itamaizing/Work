@@ -318,8 +318,10 @@ public class ComboSeriesSystem : Skill
         float cost = skill.EnergyCostOnHit + _energyPerHit;
         _energy.CmdUse(_energyPerHit);
         _totalEnergySpentThisSeries += cost;
-        if(_isAdditionalRuneOnSeries)
+        if (_isAdditionalRuneOnSeries)
+        {
             _totalRuneSpentThisSeries += skill.RuneCostOnHit;
+        }
     }
 
     private void StartNewSeries(Character target)

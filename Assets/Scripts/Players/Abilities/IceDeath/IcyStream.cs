@@ -73,6 +73,13 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
             _streamCoroutine = null;
         }
 
+        _isTicking = false;
+        
+        if (_isStreaming)
+        {
+            OnSeriesDamaged?.Invoke(null,this);
+        }
+
         CmdDestroyIcyStreamEffect();
         CmdResetEnergyMultiplier();
         _isStreaming = false;
