@@ -96,11 +96,16 @@ public class Restoration : Skill,IPolaritySwitchable
         OnModeChange -= UpdateMode;
     }
 
-    [Command]
-    public void CmdEnableRestorationHealBooster(bool value)
+    public void EnableRestorationHealBooster(bool value)
     {
         if(isClient)
-            _restorationHealBooster.Enable(value);
+            CmdEnableRestorationHealBooster(value);
+    }
+
+    [Command]
+    private void CmdEnableRestorationHealBooster(bool value)
+    {
+        _restorationHealBooster.Enable(value);
     }
 
     public void SetStackingRestorationTalent(bool value)
@@ -148,6 +153,8 @@ public class Restoration : Skill,IPolaritySwitchable
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
+
+        Cooldown.OnForceRefreshUI();
     }
 
     private void HandleRestorationLight()

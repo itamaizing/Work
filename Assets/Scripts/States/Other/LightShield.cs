@@ -45,8 +45,6 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
         {
             ExitState();

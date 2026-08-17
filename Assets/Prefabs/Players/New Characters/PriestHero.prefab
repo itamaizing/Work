@@ -4469,85 +4469,6 @@ Transform:
   - {fileID: 6447695506050595170}
   m_Father: {fileID: 4149593394498926482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &548143770205081752
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1110070738435946966}
-    m_Modifications:
-    - target: {fileID: 370168952362397782, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3053057471696042613, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134015956607503482, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_Name
-      value: vfx_light_retribution
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134015956607503482, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
---- !u!2083052967 &3298260292842138349 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 3053057471696042613, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-  m_PrefabInstance: {fileID: 548143770205081752}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &5648921583304631301 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5331810724777964701, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
-  m_PrefabInstance: {fileID: 548143770205081752}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3993837404921344375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6834,9 +6755,6 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5648921583304631301}
-    - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6195693656064518676}
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -7349,7 +7267,7 @@ MonoBehaviour:
   _castDeley: 1.8
   _damageValue: 0
   _infoComponent:
-    _school: 7
+    _school: 0
     _form: 0
     _damageType: 0
     _rangeType: 1
@@ -8410,7 +8328,7 @@ MonoBehaviour:
     shouldModify: 1
     showInDescription: 1
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 12
   _cooldownComponent:
     _baseCooldown: 12
   _castDeley: 0
@@ -8478,14 +8396,14 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
-  _lightVFX: {fileID: 3298260292842138349}
+  _lightVFXPrefab: {fileID: 3053057471696042613, guid: 6daa9c0dcf0dff34db978190f8e2bac3, type: 3}
   _aoeRadius: 1.5
   _beamUpOffset: 8
   _delayBeforeFirstBeam: 1
   _delayBetweenBeams: 1
   lightInfo: {fileID: 11400000, guid: 607da4e4c6a1ccc4eae1328d8b1b80ab, type: 2}
   darkInfo: {fileID: 11400000, guid: 47444e8d6469b4348802cfadc202776c, type: 2}
-  _damageCirclePrefab: {fileID: 8951481029242878353, guid: a62ed93896e53f74f9507bccd1c9acb0, type: 3}
+  _damageCirclePrefab: {fileID: 0}
   _lightCenterColor: {r: 766.9961, g: 619.3136, b: 0, a: 0}
   _lightFresnelColor: {r: 1, g: 0.9137255, b: 0.050980393, a: 1}
   _lightVoronoiColor: {r: 5.3403134, g: 3.9702854, b: 0, a: 0.45490196}
@@ -9266,7 +9184,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
+  _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 1c068b3a1e4a26b44ab80bf62b2d16d8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
@@ -9310,14 +9228,14 @@ MonoBehaviour:
   _chargeComponent:
     _usesCharges: 1
     _isComboPart: 0
-    _cooldownType: 0
-    _maxCharges: 3
+    _cooldownType: 2
+    _maxCharges: 0
     _baseCooldown: 0
-    affectedByCDR: 1
+    affectedByCDR: 0
   _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 3
+  _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
     _radius: 0
@@ -9346,6 +9264,7 @@ MonoBehaviour:
   _shadowPrefab: {fileID: 6941272477236383263, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
   _shadowSpeedMultiplier: 0.5
   _darkDamageThreshold: 50
+  _maxShadowCharges: 3
 --- !u!114 &5133618027215628989
 MonoBehaviour:
   m_ObjectHideFlags: 0

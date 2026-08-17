@@ -200,5 +200,12 @@ public class CooldownComponent : BaseSkillComponent
     {
         isSyncronized = true;
     }
+    
+    public void OnForceRefreshUI()
+    {
+        if (!IsActive) return;
+        OnStart?.Invoke((float)_currentMax);
+        OnModify?.Invoke(RemainingTime, _currentMax);
+    }
     #endregion Methods
 }

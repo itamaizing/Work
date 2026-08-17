@@ -40,6 +40,7 @@ public class RestorationState : RefreshingState
         duration = durationToExit;
         _timer = _tickInterval;
         _isActive = true;
+        base.personWhoMadeBuff = personWhoMadeBuff;
 
         MaxStacksCount = IsStackingMode ? 2 : 1;
         currentStacksCount = 1;
@@ -68,8 +69,8 @@ public class RestorationState : RefreshingState
 
     private void ApplyHealTick()
     {
-        float baseHeal = _healPerTickBase * currentStacksCount + GetSpiritEnergyBonus(characterState.Character);
-        float healValue = baseHeal;
+        float baseHeal = _healPerTickBase * currentStacksCount;
+        float healValue = baseHeal + GetSpiritEnergyBonus(characterState.Character);
         
         var spark = personWhoMadeBuff?.Abilities?.GetSkill<SparkOfLight>();
         spark?.OverhealManaBooster.OnAnyHealTaken(characterState.Character, healValue, spark);
@@ -92,6 +93,9 @@ public class RestorationState : RefreshingState
     {
         if (!IsStackingMode)
             return base.Stack(time);
+        
+        if (currentStacksCount < MaxStacksCount)
+            currentStacksCount++;
 
         duration = _baseDuration;
         RemainingDuration = _baseDuration;

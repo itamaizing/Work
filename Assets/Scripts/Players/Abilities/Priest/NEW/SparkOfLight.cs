@@ -152,7 +152,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     {
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+        Hero.Abilities.SkillPanelUpdate();
 
+        Cooldown.OnForceRefreshUI();
+        
         ClearData();
         Targeting.ClearTarget();
         //_characterTarget = null;

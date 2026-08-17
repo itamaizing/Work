@@ -78,11 +78,12 @@ public class DestructionState : RefreshingState
         {
             Value = damageValue,
             Type = DamageType.Magical,
+            School = Schools.Dark
         };
 
-        if(characterState.isClient)
-            health.CmdTryTakeDamage(damage, null);
-        
+        if (personWhoMadeBuff != null && personWhoMadeBuff.isOwned)
+            personWhoMadeBuff.Abilities.GetSkill<Restoration>().CmdApplyDamage(damage,characterState.gameObject);
+
         if (damageToExit == -1f)
         {
             float chance = Random.Range(0f, 100f);

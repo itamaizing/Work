@@ -9,11 +9,12 @@ public class ShadowSkill : Skill
 {
     [SerializeField] private ShadowMinion _shadowPrefab;
     [SerializeField] private float _shadowSpeedMultiplier = 0.5f;
-    [SerializeField] private float _darkDamageThreshold   = 50f;
+    [SerializeField] private float _darkDamageThreshold = 50f;
+    [SerializeField] private int _maxShadowCharges = 3;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Shadow");
-    protected override bool IsCanCast => CheckCanCast();
+    protected override bool IsCanCast => true;
 
     private float _accumulatedDarkDamage = 0f;
     private float _clickRadius = 0.5f;
@@ -24,22 +25,92 @@ public class ShadowSkill : Skill
     public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
     #endregion
 
-    private bool CheckCanCast() =>
-        true;
-
     private bool IsEnemyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Enemy");
-    
-    protected override void Awake()
-    {
-        base.Awake();
-        _currentChargers = 0;
-        
-        CheckChargers();
-    }
 
     public void AnimCastShadow() => AnimStartCastCoroutine();
-    public void AnimShadowEnd()  => AnimCastEnded();
+    public void AnimShadowEnd() => AnimCastEnded();
+
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
+
+        Charges.OnCurrentChange += OnChargesChanged;
+        UpdateDisactive();
+        
+        Hero.CharacterState.OnStateAdded += OnCharacterStateChanged;
+        Hero.CharacterState.OnStateRemoved += OnCharacterStateChanged;
+    }
+    
+    private void OnCharacterStateChanged(AbstractCharacterState state)
+    {
+        if (state.State == States.DarkFormState)
+        {
+            UpdateDisactive();
+        }
+    }
+
+    private void OnDisable()
+    {
+        Hero.DamageTracker.OnDamageTracked -= TrackDarkDamage;
+        Charges.OnCurrentChange -= OnChargesChanged;
+
+        if (Hero?.CharacterState != null)
+        {
+            Hero.CharacterState.OnStateAdded -= OnCharacterStateChanged;
+            Hero.CharacterState.OnStateRemoved -= OnCharacterStateChanged;
+        }
+    }
+
+    private void OnChargesChanged(int current)
+    {
+        UpdateDisactive();
+    }
+
+    private void UpdateDisactive()
+    {
+        if (Hero == null || Hero.CharacterState == null)
+        {
+            Disactive = true;
+            return;
+        }
+
+        bool shouldBeDisactive = !Charges.HasCharges || 
+                                 !Hero.CharacterState.CheckForState(States.DarkFormState);
+
+        Disactive = shouldBeDisactive;
+    }
+
+    [ClientRpc]
+    private void TrackDarkDamage(Damage damage, GameObject target)
+    {
+        if (!isOwned) return;
+        if (damage.School != Schools.Dark) return;
+
+        _accumulatedDarkDamage += damage.Value;
+
+        while (_accumulatedDarkDamage >= _darkDamageThreshold)
+        {
+            _accumulatedDarkDamage -= _darkDamageThreshold;
+            
+            if (Charges.MaxCharges < _maxShadowCharges)
+            {
+                Charges.AddMax(cooldowned: false);
+            }
+            else
+            {
+                _accumulatedDarkDamage = 0f;
+                break;
+            }
+        }
+    }
+
+    public void AddChargers(int num)
+    {
+        for (int i = 0; i < num; i++)
+            Charges.AddMax(cooldowned: false);
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -51,37 +122,6 @@ public class ShadowSkill : Skill
     {
         Targeting.ClearTarget();
         _clickPoint = Vector3.zero;
-    }
-    
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
-    }
-
-    private void OnDisable()
-    {
-        Hero.DamageTracker.OnDamageTracked -= TrackDarkDamage;
-    }
-
-    [ClientRpc]
-    private void TrackDarkDamage(Damage damage, GameObject target)
-    {
-        if(!isOwned) return;
-        if (damage.School != Schools.Dark) return;
-
-        _accumulatedDarkDamage += damage.Value;
-
-        while (_accumulatedDarkDamage >= _darkDamageThreshold)
-        {
-            _accumulatedDarkDamage -= _darkDamageThreshold;
-            AddCharge();
-
-            if (Chargers > 0)
-            {
-                Disactive = false;
-            }
-        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -114,41 +154,9 @@ public class ShadowSkill : Skill
         var target = Targeting.GetTarget()?.Character;
         if (target == null) yield break;
 
+        Charges.ModifyMax(-1);
         CmdSpawnShadow(target.gameObject);
         yield return null;
-    }
-
-    private void AddCharge()
-    {
-        if (_currentChargers < _maxCharges)
-            Chargers = _currentChargers + 1;
-        
-        CheckChargers();
-    }
-
-    public void AddChargers(int num)
-    {
-        if (_currentChargers < _maxCharges)
-        {
-            Chargers = _currentChargers + num;
-            if (Chargers > _maxCharges)
-            {
-                Chargers = _maxCharges;
-            }
-        }
-        CheckChargers();
-    }
-
-    private void CheckChargers()
-    {
-        if (_currentChargers > 0)
-        {
-            Disactive = false;
-        }
-        else
-        {
-            Disactive = true;
-        }
     }
 
     [Command]
@@ -158,21 +166,8 @@ public class ShadowSkill : Skill
         if (target.IsDead) return;
 
         ShadowMinion shadow = Instantiate(_shadowPrefab, transform.position, transform.rotation);
-
         NetworkServer.Spawn(shadow.gameObject, connectionToClient);
-
         TargetRpcInitShadow(connectionToClient, shadow.gameObject, targetGO, _shadowSpeedMultiplier);
-    }
-    
-    public override bool TryUseCharge()
-    {
-        if (_currentChargers <= 0) return false;
-
-        Chargers = _currentChargers - 1;
-
-        CheckChargers();
-        
-        return true;
     }
 
     [TargetRpc]

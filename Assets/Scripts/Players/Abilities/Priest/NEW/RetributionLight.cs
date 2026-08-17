@@ -8,7 +8,7 @@ using UnityEngine.VFX;
 public class RetributionLight : Skill,IPolaritySwitchable
 {
     [Header("Effect Settings")]
-    [SerializeField] private VisualEffect _lightVFX;
+    [SerializeField] private VisualEffect _lightVFXPrefab;
     [SerializeField] private float _aoeRadius = 1.5f;
     [SerializeField] private float _beamUpOffset = 8f;
     [SerializeField] private float _delayBeforeFirstBeam = 1f;
@@ -76,14 +76,6 @@ public class RetributionLight : Skill,IPolaritySwitchable
     {
     }
 
-    private void ClearPoints()
-    {
-        _clickPoint      = Vector3.zero;
-        _castOriginPoint = Vector3.zero;
-        DestroyCirclePreview(ref _damageCircleInstance);
-        DestroyCirclePreview(ref _healCircleInstance);
-    }
-    
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
@@ -123,9 +115,6 @@ public class RetributionLight : Skill,IPolaritySwitchable
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_lightVFX != null)
-            _lightVFX.outputEventReceived -= OnVFXOutputEvent;
-
         TargetInfo targetInfo = new TargetInfo();
 
         while (!GetMouseButton)
@@ -142,28 +131,58 @@ public class RetributionLight : Skill,IPolaritySwitchable
 
     protected override IEnumerator CastJob()
     {
+        CommitUse();
+
+        Vector3 localClickPoint  = _clickPoint;
+        Vector3 localOriginPoint = _castOriginPoint;
+
         _cachedDamageDealt = 0f;
         _isDamagePhase     = true;
 
-        if (_lightVFX != null)
-            _lightVFX.outputEventReceived += OnVFXOutputEvent;
-        
-        SpawnOrMoveCircle(ref _damageCircleInstance, _damageCirclePrefab, _clickPoint);
-        SpawnOrMoveCircle(ref _healCircleInstance,   _damageCirclePrefab,   _castOriginPoint);
+        SpawnOrMoveCircle(ref _damageCircleInstance, _damageCirclePrefab, localClickPoint);
+        SpawnOrMoveCircle(ref _healCircleInstance,   _damageCirclePrefab, localOriginPoint);
 
         yield return new WaitForSeconds(_delayBeforeFirstBeam);
 
-        CmdMoveAndPlayVFX(_clickPoint);
+        CmdSpawnAndPlayVFX(localClickPoint, localOriginPoint);
 
         yield return null;
     }
+    
+    [Command]
+    private void CmdSpawnAndPlayVFX(Vector3 clickPoint, Vector3 originPoint)
+    {
+        VisualEffect vfxInstance = Instantiate(_lightVFXPrefab);
+        NetworkServer.Spawn(vfxInstance.gameObject, connectionToClient);
 
-    private void OnVFXOutputEvent(VFXOutputEventArgs args)
+        TargetRpcSetupVFX(connectionToClient, vfxInstance.gameObject, clickPoint, originPoint);
+    }
+    
+    [TargetRpc]
+    private void TargetRpcSetupVFX(NetworkConnectionToClient conn, GameObject vfxGO, Vector3 clickPoint, Vector3 originPoint)
+    {
+        if (vfxGO == null) return;
+    
+        var vfxInstance = vfxGO.GetComponent<VisualEffect>();
+        if (vfxInstance == null) return;
+    
+        UpdateVFXColors(vfxInstance);
+
+        vfxInstance.outputEventReceived += (args) => 
+            OnVFXOutputEvent(args, vfxInstance, clickPoint, originPoint);
+    
+        vfxInstance.transform.SetParent(null);
+        vfxInstance.transform.position = new Vector3(clickPoint.x, _beamUpOffset, clickPoint.z);
+        vfxInstance.Stop();
+        vfxInstance.Play();
+    }
+
+    private void OnVFXOutputEvent(VFXOutputEventArgs args, VisualEffect vfxInstance, Vector3 clickPoint, Vector3 originPoint)
     {
         if (args.nameId == _onFinishedEventId)
         {
-            if (_isDamagePhase) OnDamageVFXFinished();
-            else                OnHealVFXFinished();
+            if (_isDamagePhase) OnDamageVFXFinished(vfxInstance, clickPoint, originPoint);
+            else                OnHealVFXFinished(vfxInstance, originPoint);
         }
 
         if (args.nameId == _onDecalsEventId)
@@ -175,57 +194,50 @@ public class RetributionLight : Skill,IPolaritySwitchable
                     _firstBeamDecalsEnded = true;
                     return;
                 }
-
-                OnHealVFXDecalsEnded();
+                OnHealVFXDecalsEnded(vfxInstance);
             }
         }
     }
 
-    private void OnDamageVFXFinished()
+    private void OnDamageVFXFinished(VisualEffect vfxInstance, Vector3 clickPoint, Vector3 originPoint)
     {
         if (!isOwned) return;
 
         DestroyCirclePreview(ref _damageCircleInstance);
-
-        _cachedDamageDealt  = ApplyAreaDamage(_clickPoint);
+        _cachedDamageDealt    = ApplyAreaDamage(clickPoint, originPoint);
         _firstBeamDecalsEnded = false;
-        _isDamagePhase      = false;
+        _isDamagePhase        = false;
 
-        StartCoroutine(DelayedHealBeam());
+        StartCoroutine(DelayedHealBeam(vfxInstance, originPoint));
     }
     
-    private IEnumerator DelayedHealBeam()
+    private IEnumerator DelayedHealBeam(VisualEffect vfxInstance, Vector3 originPoint)
     {
-        Vector3 originPoint = _castOriginPoint;
-        
         SpawnOrMoveCircle(ref _healCircleInstance, _damageCirclePrefab, originPoint);
-    
         yield return new WaitForSeconds(_delayBetweenBeams);
-
-        CmdMoveAndPlayVFX(originPoint);
+        CmdMoveAndPlayVFX(vfxInstance.gameObject, originPoint);
     }
 
-    private void OnHealVFXFinished()
+    private void OnHealVFXFinished(VisualEffect vfxInstance, Vector3 originPoint)
     {
         if (!isOwned) return;
 
         DestroyCirclePreview(ref _healCircleInstance);
 
         if (isLightMode)
-            ApplyAreaHeal(_castOriginPoint, _cachedDamageDealt);
+            ApplyAreaHeal(originPoint, _cachedDamageDealt);
         else
-            ApplyAreaDarkDamage(_castOriginPoint, _cachedDamageDealt);
+            ApplyAreaDarkDamage(originPoint, _cachedDamageDealt);
     }
 
-    private void OnHealVFXDecalsEnded()
+    private void OnHealVFXDecalsEnded(VisualEffect vfxInstance)
     {
-        CmdDisableVFX();
-        ClearPoints();
+        CmdDisableVFX(vfxInstance.gameObject);
     }
 
-    private float ApplyAreaDamage(Vector3 position)
+    private float ApplyAreaDamage(Vector3 clickPoint, Vector3 originPoint)
     {
-        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(clickPoint, _aoeRadius, Targeting.Layer);
 
         var targets = new List<GameObject>();
         foreach (var hit in hits)
@@ -233,17 +245,15 @@ public class RetributionLight : Skill,IPolaritySwitchable
             if (!hit.TryGetComponent<Character>(out var target)) continue;
             if (!IsEnemyTarget(target)) continue;
             if (target.IsDead) continue;
-
             targets.Add(target.gameObject);
         }
 
-        CmdApplyDamageAndCalculate(position, targets.ToArray());
-
+        CmdApplyDamageAndCalculate(clickPoint, originPoint, targets.ToArray());
         return 0f;
     }
     
     [Command]
-    private void CmdApplyDamageAndCalculate(Vector3 position, GameObject[] targets)
+    private void CmdApplyDamageAndCalculate(Vector3 position, Vector3 originPoint, GameObject[] targets)
     {
         float totalDamage = 0f;
 
@@ -253,36 +263,29 @@ public class RetributionLight : Skill,IPolaritySwitchable
             if (!targetGO.TryGetComponent<Character>(out var target)) continue;
             if (target.IsDead) continue;
 
-            float damageValue = Buff.Damage.GetBuffedValue(Damage);
-
             Damage damage = new Damage
             {
-                Value = damageValue,
-                Type  = Info.DamageType,
+                Value  = Buff.Damage.GetBuffedValue(Damage),
+                Type   = Info.DamageType,
                 School = Info.School
             };
 
             float healthBefore = target.Health.CurrentValue;
-
             ApplyDamage(damage, targetGO);
-
             if (target.IsDead) continue;
 
             float actualDamage = healthBefore - target.Health.CurrentValue;
-            if (actualDamage > 0f)
-                totalDamage += actualDamage;
+            if (actualDamage > 0f) totalDamage += actualDamage;
         }
 
-        TargetRpcOnDamageCalculated(connectionToClient, totalDamage);
+        TargetRpcOnDamageCalculated(connectionToClient, totalDamage, originPoint);
     }
     
     [TargetRpc]
-    private void TargetRpcOnDamageCalculated(NetworkConnectionToClient target, float totalDamage)
+    private void TargetRpcOnDamageCalculated(NetworkConnectionToClient conn, float totalDamage, Vector3 originPoint)
     {
         _cachedDamageDealt = totalDamage;
-
-        _isDamagePhase = false;
-        StartCoroutine(DelayedHealBeam());
+        _isDamagePhase     = false;
     }
 
     private void ApplyAreaHeal(Vector3 position, float totalHeal)
@@ -328,7 +331,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
         foreach (var hit in hits)
         {
             if (!hit.TryGetComponent<Character>(out var target)) continue;
-            if (IsEnemyTarget(target)) continue;
+            if (!IsEnemyTarget(target)) continue;
             if (target.IsDead) continue;
 
             aliveEnemies.Add(target);
@@ -352,32 +355,35 @@ public class RetributionLight : Skill,IPolaritySwitchable
     }
 
     [Command]
-    private void CmdMoveAndPlayVFX(Vector3 position) => RpcMoveAndPlayVFX(position);
+    private void CmdMoveAndPlayVFX(GameObject vfxGO, Vector3 position) 
+        => RpcMoveAndPlayVFX(vfxGO, position);
 
     [ClientRpc]
-    private void RpcMoveAndPlayVFX(Vector3 position)
+    private void RpcMoveAndPlayVFX(GameObject vfxGO, Vector3 position)
     {
-        if (_lightVFX == null) return;
+        if (vfxGO == null) return;
+        var vfx = vfxGO.GetComponent<VisualEffect>();
+        if (vfx == null) return;
 
-        _lightVFX.transform.SetParent(null);
-        _lightVFX.gameObject.SetActive(true);
-        _lightVFX.transform.position = new Vector3(position.x, _beamUpOffset, position.z);
-        _lightVFX.Stop();
-        _lightVFX.Play();
+        vfx.transform.SetParent(null);
+        vfx.gameObject.SetActive(true);
+        vfx.transform.position = new Vector3(position.x, _beamUpOffset, position.z);
+        vfx.Stop();
+        vfx.Play();
     }
 
     [Command]
-    private void CmdDisableVFX() => RpcDisableVFX();
+    private void CmdDisableVFX(GameObject vfxGO) => RpcDisableVFX(vfxGO);
 
     [ClientRpc]
-    private void RpcDisableVFX()
+    private void RpcDisableVFX(GameObject vfxGO)
     {
-        if (_lightVFX == null) return;
+        if (vfxGO == null) return;
+        var vfx = vfxGO.GetComponent<VisualEffect>();
+        if (vfx == null) return;
 
-        _lightVFX.outputEventReceived -= OnVFXOutputEvent;
-        _lightVFX.Stop();
-        _lightVFX.gameObject.SetActive(false);
-        _lightVFX.transform.SetParent(transform);
+        vfx.Stop();
+        Destroy(vfxGO); // уничтожаем инстанс по завершению
     }
 
     public void SwitchMode()
@@ -404,19 +410,22 @@ public class RetributionLight : Skill,IPolaritySwitchable
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
 
+        Cooldown.OnForceRefreshUI();
+
         UpdateVFXColors();
     }
     
-    private void UpdateVFXColors()
+    private void UpdateVFXColors(VisualEffect vfx = null)
     {
-        if (_lightVFX == null) return;
+        var target = vfx;
+        if (target == null) return;
 
         Color centerColor  = isLightMode ? _lightCenterColor  : _darkCenterColor;
-        Color fresnelColor  = isLightMode ? _lightFresnelColor  : _darkFresnelColor;
-        Color voronoiColor  = isLightMode ? _lightVoronoiColor  : _darkVoronoiColor;
+        Color fresnelColor = isLightMode ? _lightFresnelColor : _darkFresnelColor;
+        Color voronoiColor = isLightMode ? _lightVoronoiColor : _darkVoronoiColor;
 
-        _lightVFX.SetVector4("CenterColor",  centerColor);
-        _lightVFX.SetVector4("FresnelColor",  fresnelColor);
-        _lightVFX.SetVector4("VoronoiColor",  voronoiColor);
+        target.SetVector4("CenterColor",  centerColor);
+        target.SetVector4("FresnelColor", fresnelColor);
+        target.SetVector4("VoronoiColor", voronoiColor);
     }
 }

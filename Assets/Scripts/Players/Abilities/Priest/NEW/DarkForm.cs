@@ -44,7 +44,7 @@ public class DarkForm : Skill
         yield return null;
     }
 
-    private void Deactivate()
+    public void Deactivate()
     {
         if (!_isActive) return;
         _isActive = false;

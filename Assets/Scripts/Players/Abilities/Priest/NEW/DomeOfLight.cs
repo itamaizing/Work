@@ -245,6 +245,8 @@ public class DomeOfLight : Skill, IPolaritySwitchable
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
 
+        Cooldown.OnForceRefreshUI();
+
         UpdateParticleColor();
     }
     
