@@ -93,7 +93,7 @@ public class Ghost : Skill
                     return false;
             }
 
-            if (Charges.HasCharges && (_chargesHaveSeparateCooldown || !Cooldown.IsActive)) return true;
+            if (Charges.HasCharges && (Charges.CooldownType == ChargeCooldownType.Independant || !Cooldown.IsActive)) return true;
 
             return false;
         }
@@ -625,7 +625,7 @@ public class Ghost : Skill
 
         SpawnGhost(targetPosition, ghostVisual.transform.rotation);
 
-        if (_pendingSpawn.Count > 0 && Charges.HasCharges && (isSkillEnableBoostLogic || _chargesHaveSeparateCooldown || !Cooldown.IsActive)) 
+        if (_pendingSpawn.Count > 0 && Charges.HasCharges && (isSkillEnableBoostLogic || Charges.CooldownType == ChargeCooldownType.Independant || !Cooldown.IsActive)) 
             StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
         else 
             _isSpawningGhostVisual = false;

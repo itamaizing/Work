@@ -96,12 +96,7 @@ public class PlagueAbsorption : Skill
 		{
 			if (_charges <= 0)
 			{
-				foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources[skillCost.type];
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-				}
-				//_firstShot = false;
+				Cost.TryPayMandatory();
 			}
 			if (startCooldown)
 			{

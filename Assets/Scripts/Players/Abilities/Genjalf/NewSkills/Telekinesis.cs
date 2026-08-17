@@ -209,14 +209,6 @@ namespace Gangdollarff
         
         protected override bool CheckResourcesOnSkill()
         {
-            foreach (var cost in _skillEnergyCosts)
-            {
-                if (!_hero.Resources.TryGetValue(cost.type, out var resource))
-                    return false;
-                if (resource.CurrentValue < Buff.ManaCost.GetBuffedValue(cost.value))
-                    return false;
-            }
-
             return Cost.EnoughResources();
         }
 

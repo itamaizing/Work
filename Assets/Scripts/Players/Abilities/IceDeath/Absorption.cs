@@ -1,124 +1,126 @@
-﻿using Mirror;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
+﻿//OLD
 
-public class Absorption : Skill
-{
-	[SerializeField] private Character _playerLinks;
-	//private IcyCorpse _target;
-	private Energy _energy;
+//using Mirror;
+//using System;
+//using System.Collections;
+//using System.Collections.Generic;
+//using Unity.VisualScripting;
+//using UnityEngine;
 
-	protected override bool IsCanCast
-	{
-		get { return Targeting.GetTarget()?.Character != null; }
-	}
+//public class Absorption : Skill
+//{
+//	[SerializeField] private Character _playerLinks;
+//	//private IcyCorpse _target;
+//	private Energy _energy;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+//	protected override bool IsCanCast
+//	{
+//		get { return Targeting.GetTarget()?.Character != null; }
+//	}
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+//    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
 
-    /*private void Update()
-	{
-		if(!_active) return;
+//    protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
-		if (Input.GetMouseButton(0))
-		{
-			var _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			RaycastHit2D[] hits =
-				Physics2D.CircleCastAll(_mousePos, _radius, Vector2.zero);
-			for (int i = 0; i < hits.Length; i++)
-			{
-				if (hits[i].collider.TryGetComponent<IcyCorpse>(out var shadow))
-				{
-					CmdAction(shadow.gameObject);
-					if (shadow.IsAlive)
-					{
-						CmdAction(shadow.gameObject);
-					}
-				}
-			}
-			_active = false;
-		}
-	}*/
-    private void Start()
-	{
-		//_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-	}
+//    /*private void Update()
+//	{
+//		if(!_active) return;
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        Targeting.SetTarget((ITargetable)(IcyCorpse)targetInfo.GetTargets()[0]);
-    }
+//		if (Input.GetMouseButton(0))
+//		{
+//			var _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+//			RaycastHit2D[] hits =
+//				Physics2D.CircleCastAll(_mousePos, _radius, Vector2.zero);
+//			for (int i = 0; i < hits.Length; i++)
+//			{
+//				if (hits[i].collider.TryGetComponent<IcyCorpse>(out var shadow))
+//				{
+//					CmdAction(shadow.gameObject);
+//					if (shadow.IsAlive)
+//					{
+//						CmdAction(shadow.gameObject);
+//					}
+//				}
+//			}
+//			_active = false;
+//		}
+//	}*/
+//    private void Start()
+//	{
+//		//_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+//	}
 
-    [Command]
-	private void CmdAction(GameObject bodyObj)
-	{
-		Debug.Log(bodyObj.name);
-		Action(bodyObj);
-		//RpcAction(bodyObj);
-	}
+//    public override void LoadTargetData(TargetInfo targetInfo)
+//    {
+//        Targeting.SetTarget((ITargetable)(IcyCorpse)targetInfo.GetTargets()[0]);
+//    }
 
-	[ClientRpc]
-	private void RpcAction(GameObject bodyObj) 
-	{
-		Debug.Log(bodyObj.name);
-		Action(bodyObj);
-	}
+//    [Command]
+//	private void CmdAction(GameObject bodyObj)
+//	{
+//		Debug.Log(bodyObj.name);
+//		Action(bodyObj);
+//		//RpcAction(bodyObj);
+//	}
 
-	private void Action(GameObject bodyObj)
-	{
-		Debug.Log(bodyObj.name);
-		IcyCorpse body = bodyObj.GetComponent<IcyCorpse>();
-		//NetworkServer.UnSpawn(body.gameObject);
-		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
-		//_energy.TryUse(_energy.CurrentValue);
-		//_player.Health.AddHeal(regen);
-		body.DestroyCorpse();
+//	[ClientRpc]
+//	private void RpcAction(GameObject bodyObj) 
+//	{
+//		Debug.Log(bodyObj.name);
+//		Action(bodyObj);
+//	}
 
-	}
+//	private void Action(GameObject bodyObj)
+//	{
+//		Debug.Log(bodyObj.name);
+//		IcyCorpse body = bodyObj.GetComponent<IcyCorpse>();
+//		//NetworkServer.UnSpawn(body.gameObject);
+//		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
+//		//_energy.TryUse(_energy.CurrentValue);
+//		//_player.Health.AddHeal(regen);
+//		body.DestroyCorpse();
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+//	}
 
-        while (Targeting.GetTarget()?.Character == null)
-		{
-			if (GetMouseButton)
-			{
-				Targeting.FindTempTarget();
-				if(Targeting.GetTarget()?.Character is IcyCorpse)
-				{
+//	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+//	{
+//		if (_energy == null)
+//			_energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-				}
-				else
-				{
-					Targeting.ClearTarget();
-				}
-					//_target = (IcyCorpse)GetRaycastTarget();
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new();
-		targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-		callbackDataSaved(targetInfo);
-	}
+//        while (Targeting.GetTarget()?.Character == null)
+//		{
+//			if (GetMouseButton)
+//			{
+//				Targeting.FindTempTarget();
+//				if(Targeting.GetTarget()?.Character is IcyCorpse)
+//				{
 
-	protected override IEnumerator CastJob()
-	{
-		Debug.Log("cast job");
-		CmdAction(Targeting.GetTarget()?.Character.gameObject);
+//				}
+//				else
+//				{
+//					Targeting.ClearTarget();
+//				}
+//					//_target = (IcyCorpse)GetRaycastTarget();
+//			}
+//			yield return null;
+//		}
+//		TargetInfo targetInfo = new();
+//		targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+//		callbackDataSaved(targetInfo);
+//	}
 
-		yield return null;
-	}
+//	protected override IEnumerator CastJob()
+//	{
+//		Debug.Log("cast job");
+//		CmdAction(Targeting.GetTarget()?.Character.gameObject);
 
-	protected override void ClearData()
-	{
-		Targeting.ClearTarget();
-		//_target = null;
-		return;
-	}
-}
+//		yield return null;
+//	}
+
+//	protected override void ClearData()
+//	{
+//		Targeting.ClearTarget();
+//		//_target = null;
+//		return;
+//	}
+//}

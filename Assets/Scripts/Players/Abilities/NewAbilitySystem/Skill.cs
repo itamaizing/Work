@@ -20,31 +20,29 @@ public abstract class Skill : NetworkBehaviour
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
+    //[Header("Costs")]
     [SerializeField] CostComponent _costComponent;
     public CostComponent Cost => _costComponent;
-    #region ResourceToDelete
-    [SerializeField] protected List<SkillResourceCost> _skillEnergyCosts;
-    [SerializeField] protected List<SkillResourceCost> _additionalSkillEnergyCosts;
-    #endregion
 
-    [SerializeField] protected float _cooldownTime;
+    //[Header("Cooldown")]
     [SerializeField] private CooldownComponent _cooldownComponent;
     public CooldownComponent Cooldown => _cooldownComponent;
 
     [SerializeField] protected float _castDeley;
     [SerializeField] protected float _damageValue;
 
+    //[Space(0.1f), Header("Skill Info")]
     [SerializeField] protected InfoComponent _infoComponent;
     public InfoComponent Info => _infoComponent;
 
+    //[Header("Targeting")]
     [SerializeField] TargetingComponent _targetingComponent;
     public TargetingComponent Targeting => _targetingComponent;
     #region TargetingToDelete
-    [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     #endregion
 
-    [Header("Streaming settings")]
+    //[Header("Channeling (stream) settings")]
     [SerializeField] protected ChannelComponent _channelComponent;
     public ChannelComponent Channeling => _channelComponent;
     #region ChannelToDelete
@@ -53,31 +51,23 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillResourceCost> _manaCostPerTick;
     #endregion
 
-    [Header("Charge settings")]
+    //[Header("Charge settings")]
     [SerializeField] protected ChargeComponent _chargeComponent;
     public ChargeComponent Charges => _chargeComponent;
-    #region ChargesTodDelete
-    [SerializeField] private bool _isUseCharges;
-    [SerializeField] protected bool _useChargesAsComboPart = false; // test
-    [SerializeField] protected bool _chargesHaveSeparateCooldown;
-    [SerializeField] protected int _maxCharges;
-    [SerializeField] protected float _chargeCooldown;
-    #endregion
 
-    [Header("Area settings")]
+    //[Space(0.1f), Header("Area settings")]
     [SerializeField] protected AreaComponent _areaComponent;
     public AreaComponent AreaInfo => _areaComponent;
-    [Header("Area settings")]
+    //[Header("Area settings")]
     [SerializeField] protected float _autoAttackDelay;
 
-    [Header("Render settings")]
+    //[Header("Render settings")]
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
     public InformationRenderComponent Renderer => _informationRenderComponent;
 
-    [Header("Availability")]
+    //[Header("Availability")]
     [SerializeField] protected bool _disactive = false;
-    [SerializeField] protected bool _earlyCooldown = false;
-    [Header("Counter settings")]
+    //[Header("Counter settings")]
     [SerializeField] protected float maxCounter;
     [SerializeField] public TagComponent _tags;
     [SerializeField] private AnimationComponent _animationComponent;
@@ -190,8 +180,8 @@ public abstract class Skill : NetworkBehaviour
     public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public virtual bool IsHaveResources { get => IsHaveResourceOnSkill && !Cooldown.IsActive && Charges.HasCharges; }
-    public List<SkillResourceCost> SkillEnergyCosts { get => _skillEnergyCosts; }
-    public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
+    public List<SkillResourceCost> SkillEnergyCosts { get => Cost.TypeOf(SkillCostType.Mandatory); }
+    public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => Cost.TypeOf(SkillCostType.Bonus); }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; protected set => _isCasting = value; }
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
@@ -267,11 +257,11 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual void Awake()
     {
-        if (_isUseCharges)
+        if (Charges.UsesCharges)
         {
-            _currentChargers = _maxCharges;
-            _remainingCooldownTimeChargers = new List<float>(new float[_maxCharges]);
-            _currentChargeCooldownJob = new List<Coroutine>(new Coroutine[_maxCharges]);
+            _currentChargers = Charges.MaxCharges;
+            _remainingCooldownTimeChargers = new List<float>(new float[Charges.MaxCharges]);
+            _currentChargeCooldownJob = new List<Coroutine>(new Coroutine[Charges.MaxCharges]);
         }
         else
             _currentChargers = 1;
@@ -500,7 +490,7 @@ public abstract class Skill : NetworkBehaviour
     {
         if (_isPreparing == false)
         {
-            foreach (var skillCost in _skillEnergyCosts)
+            foreach (var skillCost in Cost.Values)
             {
                 //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.type);
                 var resource = _hero.Resources[skillCost.type];
@@ -604,7 +594,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCancel(bool forceCancel = false)
     {
-        foreach (var skillCost in _skillEnergyCosts)
+        foreach (var skillCost in Cost.Values)
         {
             //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.type);
             var resource = _hero.Resources[skillCost.type];
@@ -913,7 +903,7 @@ public abstract class Skill : NetworkBehaviour
     #region Methods
     public virtual bool TryUseCharge()
     {
-        if (_isUseCharges == false)
+        if (Charges.UsesCharges == false)
             return true;
 
         Charges.TryUse();
@@ -923,13 +913,13 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers--;
             CurrentChargeChanged?.Invoke(_currentChargers);
 
-            if (_rechargeJob == null && _chargesHaveSeparateCooldown == false)
+            if (_rechargeJob == null && Charges.CooldownType == ChargeCooldownType.Sequential)
             {
                 _rechargeJob = StartCoroutine(RechargeCoroutine());
             }
-            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
+            else if (_rechargeJob == null && Charges.CooldownType == ChargeCooldownType.Independant)
             {
-                for (int i = 0; i < _maxCharges; i++)
+                for (int i = 0; i < Charges.MaxCharges; i++)
                 {
                     if (_remainingCooldownTimeChargers[i] <= 0)
                     {
@@ -960,7 +950,7 @@ public abstract class Skill : NetworkBehaviour
             yield return null;
         }
 
-        if (_currentChargers < _maxCharges)
+        if (_currentChargers < Charges.MaxCharges)
         {
             _currentChargers++;
             CurrentChargeChanged?.Invoke(_currentChargers);
@@ -969,7 +959,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual IEnumerator RechargeCoroutine()
     {
-        while (_currentChargers < _maxCharges)
+        while (_currentChargers < Charges.MaxCharges)
         {
             ChargeStartCooldown?.Invoke(Charges.CooldownTime);
             float time = 0;
@@ -978,7 +968,7 @@ public abstract class Skill : NetworkBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-            if (_currentChargers < _maxCharges)
+            if (_currentChargers < Charges.MaxCharges)
             {
                 _currentChargers++;
                 CurrentChargeChanged?.Invoke(_currentChargers);
@@ -1185,7 +1175,7 @@ public abstract class Skill : NetworkBehaviour
     protected virtual bool TryPayCost(bool startCooldown = true)
     {
         if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
-        return TryPayCost(_skillEnergyCosts, startCooldown);
+        return TryPayCost(Cost.TypeOf(SkillCostType.Mandatory), startCooldown);
     }
     #endregion
 
@@ -1369,9 +1359,9 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
         _isAutoMode = false;
 
-        if (_isUseCharges)
+        if (Charges.UsesCharges)
         {
-            _currentChargers = _maxCharges;
+            _currentChargers = Charges.MaxCharges;
             CurrentChargeChanged?.Invoke(_currentChargers);
         }
 

@@ -71,7 +71,7 @@ public class RestorativeAttacks_Scorpion : Skill
     
     private void AddCharge()
     {
-        if (_currentChargers < _maxCharges)
+        if (_currentChargers < Charges.MaxCharges)
             Chargers = _currentChargers + 1;
         
         CheckChargers();

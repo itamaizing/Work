@@ -161,13 +161,17 @@ public class ChargeComponent : BaseSkillComponent
         _skill.CmdModifyRechargeTime(delta, tickAll);
     }
 
-    public bool TryUse()
+    public bool TryUse(float? customTime = null, bool? shouldModify = null)
     {
         if (RemainingCharges <= 0)
             return false;
 
-        float cdTime = _baseCooldown;
-        if (affectedByCDR)
+        float cdTime = customTime.HasValue ? customTime.Value : _baseCooldown;
+
+        if (!shouldModify.HasValue)
+            shouldModify = affectedByCDR;
+        
+        if (shouldModify.Value)
         {
             cdTime = _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown);
         }

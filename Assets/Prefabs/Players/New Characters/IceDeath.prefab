@@ -9015,9 +9015,9 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    oldType: 0
-    type: 0
-    _clickLayer: -1
+    oldType: 2
+    type: 2
+    _clickLayer: 2
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0

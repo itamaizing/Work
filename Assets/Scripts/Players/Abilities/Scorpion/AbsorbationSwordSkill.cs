@@ -32,7 +32,7 @@ public class AbsorbationSwordSkill : Skill
 
     public override string AdditionalDescription =>
         $"Поглощает 1 снарядное заклинание.\n" +
-        $"Заряды: {_currentCharges}/{_maxCharges} (накопление за 30 маг. урона)";
+        $"Заряды: {_currentCharges}/{Charges.MaxCharges} (накопление за 30 маг. урона)";
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -157,7 +157,7 @@ public class AbsorbationSwordSkill : Skill
 
     private void AddCharge()
     {
-        if (_currentChargers < _maxCharges)
+        if (_currentChargers < Charges.MaxCharges)
             Chargers = _currentChargers + 1;
 
         CheckChargers();

@@ -185,6 +185,14 @@ public class PoisonBall : Skill, IAltAbility
     public void HealingPoisonBall(bool value)
     {
         _isHealingPoisonBall = value;
+        if (value == true)
+        {
+            Targeting.Faction = (TargetFaction.Ally | TargetFaction.Self | TargetFaction.Enemy);
+        }
+        else
+        {
+            Targeting.Faction = TargetFaction.Enemy;
+        }
     }
 
     public void IncreasingPoisonBallCharges(bool value)
@@ -222,12 +230,23 @@ public class PoisonBall : Skill, IAltAbility
         TryPayCost(true);
     }
 
+    protected override void UseCooldownOrCharges()
+    {
+        if (_isHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
+        {
+            Debug.Log("Shortened CD");
+            Charges.TryUse(Charges.BaseCooldown / 2);
+            return;
+        }
+        Charges.TryUse();
+    }
+
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
 
         _baseCastWidth = AreaInfo.CastWidth;
-        _originalChargeCooldown = _chargeCooldown;
+        _originalChargeCooldown = Charges.CooldownTime;
 
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
@@ -346,7 +365,7 @@ public class PoisonBall : Skill, IAltAbility
                 _firstClickDone = true;
             }
 
-            CooldownChange();
+            //CooldownChange();
             yield return null;
         }
 
@@ -477,6 +496,7 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.IsOriginalTargetPlayer = target == _player.gameObject;
             _poisonBallInfo.IsOriginalTargetAllies = target.layer == LayerMask.NameToLayer("Allies");
             _poisonBallInfo.IsOriginalTargetEnemy = target.layer == LayerMask.NameToLayer("Enemy");
+            Debug.Log($"{_poisonBallInfo.IsOriginalTargetPlayer} {_poisonBallInfo.IsOriginalTargetAllies} {_poisonBallInfo.IsOriginalTargetEnemy}");
         }
         else
         {
@@ -504,11 +524,13 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_isHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
         {
-            _chargeCooldown = _originalChargeCooldown / 2;
+            //_chargeCooldown = Charges.CooldownTime / 2;
+            _skillAttributes[SkillAttributeName.Cooldown].AddModifier(new(0.5f, ModifierType.Multiplier, source: this));
         }
         else
         {
-            _chargeCooldown = _originalChargeCooldown;
+            _skillAttributes[SkillAttributeName.Cooldown].RemoveBySource(this);
+            //_chargeCooldown = Charges.CooldownTime;
         }
     }
 

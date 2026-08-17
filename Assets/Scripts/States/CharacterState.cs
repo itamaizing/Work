@@ -700,7 +700,7 @@ public class CharacterState : NetworkBehaviour
 		}
 
 		duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
-		if (duration <= 0f) return;
+		if (duration <= 0f && duration != -1) return;
 
 		for (int i = 0; i < _currentStates.Count; i++)
 		{

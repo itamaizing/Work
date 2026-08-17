@@ -15582,7 +15582,7 @@ MonoBehaviour:
     _usesCharges: 1
     _isComboPart: 0
     _cooldownType: 1
-    _maxCharges: 2
+    _maxCharges: 1
     _baseCooldown: 14
     affectedByCDR: 0
   _isUseCharges: 1

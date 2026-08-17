@@ -281,12 +281,9 @@ public class PoisonSlap : Skill
 
     private void UseRecharge()
     {
-        float baseCooldownTime = _cooldownTime;
 
         _isCanDamageDeal = false;
         TryPayCost(true);
-
-        _cooldownTime = baseCooldownTime;
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush)

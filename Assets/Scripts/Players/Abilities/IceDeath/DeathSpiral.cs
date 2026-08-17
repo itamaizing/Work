@@ -61,8 +61,8 @@ public class DeathSpiral : Skill,IEnergyDamagable
         _rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
         _energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-        _currentCharges = MaxCharges;
-        _maxCharges = MaxCharges;
+        _currentCharges = Charges.MaxCharges;
+        //_maxCharges = MaxCharges;
         CheckChargers();
         
 	    _hero.DamageTracker.OnDamageTracked += TrackDamage;
@@ -77,7 +77,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 
     private void AddCharge()
     {
-        if (_currentCharges < _maxCharges)
+        if (_currentCharges < Charges.MaxCharges)
             _currentCharges++;
 
         CheckChargers();

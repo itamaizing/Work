@@ -49,7 +49,7 @@ public class HellTeleportSkill : Skill
     [TargetRpc]
     private void TargetAddCharge(GameObject obj)
     {
-        if (_currentChargers < _maxCharges)
+        if (_currentChargers < Charges.MaxCharges)
         {
             Chargers = _currentChargers + 1;
         }

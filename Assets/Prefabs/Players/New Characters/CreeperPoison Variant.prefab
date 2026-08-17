@@ -18938,15 +18938,6 @@ MonoBehaviour:
   _costComponent:
     _base: 4
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -18969,9 +18960,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -18989,11 +18977,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.1
     _area: 0
@@ -19006,7 +18989,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19062,9 +19044,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 8
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 0
@@ -19087,9 +19066,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19107,11 +19083,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.1
     _area: 0
@@ -19124,7 +19095,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19167,15 +19137,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 9
   _cooldownComponent:
     _baseCooldown: 9
   _castDeley: 0
@@ -19198,9 +19159,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19218,11 +19176,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
@@ -19235,7 +19188,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19282,9 +19234,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 24
   _castDeley: 0
@@ -19307,9 +19256,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19324,14 +19270,9 @@ MonoBehaviour:
     _usesCharges: 1
     _isComboPart: 0
     _cooldownType: 0
-    _maxCharges: 3
-    _baseCooldown: 14
+    _maxCharges: 2
+    _baseCooldown: 24
     affectedByCDR: 0
-  _isUseCharges: 1
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 1
-  _maxCharges: 2
-  _chargeCooldown: 24
   _areaComponent:
     _radius: 0
     _area: 0
@@ -19344,7 +19285,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19393,9 +19333,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 0
@@ -19418,9 +19355,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19438,11 +19372,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 10
     _area: 0
@@ -19455,7 +19384,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19496,9 +19424,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -19511,19 +19436,16 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    oldType: 0
-    type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
+    oldType: 3
+    type: 3
+    _clickLayer: -1
+    _faction: 4
+    _unitType: -1
+    _outOfRangeBehaviour: 1
     _needLineOfSight: 0
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19541,11 +19463,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 6
     _area: 0
@@ -19558,7 +19475,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19605,9 +19521,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -19630,9 +19543,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19650,11 +19560,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.1
     _area: 0
@@ -19667,7 +19572,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19708,9 +19612,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -19733,9 +19634,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19753,11 +19651,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -19770,7 +19663,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19805,9 +19697,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 8
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 0
@@ -19830,9 +19719,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19850,11 +19736,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -19867,7 +19748,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19902,9 +19782,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -19927,9 +19804,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19947,11 +19821,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -19964,7 +19833,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -19999,9 +19867,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -20024,9 +19889,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -20044,11 +19906,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20061,7 +19918,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20097,9 +19953,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -20122,9 +19975,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -20142,11 +19992,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20159,7 +20004,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20202,9 +20046,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 6
   _cooldownComponent:
     _baseCooldown: 6
   _castDeley: 0
@@ -20227,9 +20068,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20247,11 +20085,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20264,7 +20097,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20304,9 +20136,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 6
   _cooldownComponent:
     _baseCooldown: 6
   _castDeley: 0
@@ -20329,9 +20158,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20349,11 +20175,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 2
     _area: 0
@@ -20366,7 +20187,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 1
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20405,9 +20225,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 6
   _cooldownComponent:
     _baseCooldown: 6
   _castDeley: 0
@@ -20430,9 +20247,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20450,11 +20264,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20467,7 +20276,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 1
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20504,9 +20312,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -20529,9 +20334,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20549,11 +20351,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20566,7 +20363,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20601,15 +20397,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 24
   _cooldownComponent:
     _baseCooldown: 24
   _castDeley: 0
@@ -20632,9 +20419,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20652,11 +20436,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20669,7 +20448,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20702,34 +20480,28 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 5
+    _form: 1
+    _damageType: 1
     _rangeType: 0
     _whileMoving: 0
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
-    oldType: 0
-    type: 0
-    _clickLayer: -1
-    _faction: -1
+    oldType: 4
+    type: 4
+    _clickLayer: 0
+    _faction: 4
     _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20747,11 +20519,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 3
     _area: 0
@@ -20764,7 +20531,6 @@ MonoBehaviour:
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20825,9 +20591,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 8
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 0.2
@@ -20843,16 +20606,13 @@ MonoBehaviour:
     oldType: 0
     type: 0
     _clickLayer: -1
-    _faction: -1
+    _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20870,11 +20630,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 3
     _area: 0
@@ -20887,7 +20642,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -20924,15 +20678,6 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 24
   _cooldownComponent:
     _baseCooldown: 24
   _castDeley: 0
@@ -20955,9 +20700,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20975,11 +20717,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20992,7 +20729,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -21025,21 +20761,12 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 12
   _cooldownComponent:
     _baseCooldown: 12
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 5
     _form: 0
     _damageType: 0
     _rangeType: 0
@@ -21056,9 +20783,6 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -21076,11 +20800,6 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -21093,7 +20812,6 @@ MonoBehaviour:
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0

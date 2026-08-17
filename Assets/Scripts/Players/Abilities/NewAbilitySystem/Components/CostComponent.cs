@@ -77,6 +77,14 @@ public class CostComponent : BaseSkillComponent
         }
         set { _base = value; }
     }
+    public List<SkillResourceCost> Values
+    {
+        get => _costs;
+    }
+    public List<SkillResourceCost> TypeOf(SkillCostType type)
+    {
+        return _costs?.Where(x => x.costType == type).ToList() ?? new List<SkillResourceCost>();
+    }
     #endregion
 
     #region Methods

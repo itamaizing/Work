@@ -131,7 +131,14 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         get => _targetLayer;
         set => _targetLayer = value;
     }
-    public TargetFaction Faction { get => _faction; }
+    public TargetFaction Faction { 
+        get => _faction;
+        set
+        {
+            _faction = value;
+            SetUpPhysicLayers();
+        }
+    }
     public UnitType Units { get => _unitType; }
     public OutOfRangeClick OutRange { get => _outOfRangeBehaviour; }
 
