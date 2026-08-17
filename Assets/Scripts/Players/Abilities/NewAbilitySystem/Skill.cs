@@ -9,69 +9,41 @@ public abstract class Skill : NetworkBehaviour
 {
     #region Variables
     #region InspectorSettings
-    [Header("Talent State")]
+    [Header("[Talent State]")]
     [SerializeField] protected bool _isTalentSpell = false;
     [SerializeField] protected bool _isSkillActive = true;
-
-    [Header("AbilitiesInfo")]
-    [SerializeField] private AbilityInfo _abilityInfo;
-
-    [Header("Main Settings")]
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
-    [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
-    //[Header("Costs")]
-    [SerializeField] CostComponent _costComponent;
-    public CostComponent Cost => _costComponent;
-
-    //[Header("Cooldown")]
-    [SerializeField] private CooldownComponent _cooldownComponent;
-    public CooldownComponent Cooldown => _cooldownComponent;
-
-    [SerializeField] protected float _castDeley;
-    [SerializeField] protected float _damageValue;
-
-    //[Space(0.1f), Header("Skill Info")]
+    [Header("[Skill Info]")]
+    [SerializeField] private AbilityInfo _abilityInfo;
     [SerializeField] protected InfoComponent _infoComponent;
-    public InfoComponent Info => _infoComponent;
-
-    //[Header("Targeting")]
     [SerializeField] TargetingComponent _targetingComponent;
-    public TargetingComponent Targeting => _targetingComponent;
     #region TargetingToDelete
     [SerializeField] protected LayerMask _obstacle;
     #endregion
+    [SerializeField] CostComponent _costComponent;
+    [SerializeField] protected float _damageValue;
+    [Header("[Cooldown]")]
+    [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
+    [SerializeField] private CooldownComponent _cooldownComponent;
+    [SerializeField] protected ChargeComponent _chargeComponent;
 
-    //[Header("Channeling (stream) settings")]
+    [Header("[Channeling]")]
+    [SerializeField] protected float _autoAttackDelay;
+    [SerializeField] protected float _castDeley;
     [SerializeField] protected ChannelComponent _channelComponent;
-    public ChannelComponent Channeling => _channelComponent;
     #region ChannelToDelete
     [SerializeField] protected float _castDuration;
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected List<SkillResourceCost> _manaCostPerTick;
     #endregion
-
-    //[Header("Charge settings")]
-    [SerializeField] protected ChargeComponent _chargeComponent;
-    public ChargeComponent Charges => _chargeComponent;
-
-    //[Space(0.1f), Header("Area settings")]
+    [Header("[Area settings]")]
     [SerializeField] protected AreaComponent _areaComponent;
-    public AreaComponent AreaInfo => _areaComponent;
-    //[Header("Area settings")]
-    [SerializeField] protected float _autoAttackDelay;
-
-    //[Header("Render settings")]
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
-    public InformationRenderComponent Renderer => _informationRenderComponent;
-
-    //[Header("Availability")]
     [SerializeField] protected bool _disactive = false;
-    //[Header("Counter settings")]
     [SerializeField] protected float maxCounter;
     [SerializeField] public TagComponent _tags;
     [SerializeField] private AnimationComponent _animationComponent;
-    public AnimationComponent Animation => _animationComponent;
     #endregion InspectorSettings
 
     #region CastReduction
@@ -165,6 +137,15 @@ public abstract class Skill : NetworkBehaviour
     public StatsBuff Buff => _statsBuff;
     public SkillAttributes Attributes => _skillAttributes; //TODO: Прикрепить SyncDictionary, чтобы аттрибуты синхронились по сети
     public SyncDictionary<SkillAttributeName, float> SyncAttributes { get => _syncAttributes; }
+    public InfoComponent Info => _infoComponent;
+    public TargetingComponent Targeting => _targetingComponent;
+    public CostComponent Cost => _costComponent;
+    public CooldownComponent Cooldown => _cooldownComponent;
+    public ChargeComponent Charges => _chargeComponent;
+    public ChannelComponent Channeling => _channelComponent;
+    public AreaComponent AreaInfo => _areaComponent;
+    public InformationRenderComponent Renderer => _informationRenderComponent;
+    public AnimationComponent Animation => _animationComponent;
 
     #region Scriptable Objects
     public string Name => _abilityInfo.Name;

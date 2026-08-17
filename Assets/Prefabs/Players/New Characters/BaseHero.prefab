@@ -30833,6 +30833,7 @@ MonoBehaviour:
   syncInterval: 0
   _hero: {fileID: 5630810179120932799}
   _characterPrefabs: []
+  _clonePrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
 --- !u!114 &8892991801291212352

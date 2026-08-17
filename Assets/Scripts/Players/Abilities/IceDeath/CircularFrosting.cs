@@ -7,6 +7,9 @@ using UnityEngine;
 public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 {
     [SerializeField] private ParticleSystemController _particleSystem;
+    [SerializeField] private float _runeCost = 3f; 
+    [SerializeField] private float _maxEnergyForBonus = 30f;
+    [SerializeField] private float _energyPerSecondStep = 10f;
 
     private float _delayDuration;
     private float _delayStartTime;
@@ -22,9 +25,6 @@ public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipating
 
     private float _baseDuration = 2f;
     private float _duration = 2f;
-    private float _runeCost = 3f; 
-    private float _maxEnergyForBonus = 30f;
-    private float _energyPerSecondStep = 10f;
     private float _currentRuneCost;
     private float _currentEnergyCost;
     private Energy _energy;

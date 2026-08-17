@@ -401,7 +401,7 @@ public class Ghost : Skill
         if (ghost == null || target == null) yield break;
         if (!(ghost is MinionComponent minion)) yield break;
         if (!ghost.TryGetComponent<NavMeshAgent>(out var agent)) yield break;
-        if (!TryConsumeMana(teleportManaUse)) yield break;
+        if (!Cost.TryPaySingle(teleportManaUse, ResourceType.Mana)) yield break;
 
         agent.stoppingDistance = 1.5f;
         agent.updateRotation = true;
@@ -595,16 +595,6 @@ public class Ghost : Skill
         return false;
     }
 
-    private bool TryConsumeMana(float amount)
-    {
-        if (_manaResource != null && _manaResource.CurrentValue >= amount)
-        {
-            _manaResource.CmdUse(amount);
-            return true;
-        }
-        return false;
-    }
-
     private IEnumerator SpawnGhostVisualEffect(Vector3 targetPosition)
     {
         _isSpawningGhostVisual = true;
@@ -704,7 +694,7 @@ public class Ghost : Skill
         {
             TeleportToGhost(_ghostToTeleport);
         }
-        else if (!float.IsPositiveInfinity(_spawnPosition.x) && TryConsumeMana(12))
+        else if (!float.IsPositiveInfinity(_spawnPosition.x) && Cost.TryPaySingle(12, ResourceType.Mana))
         {
             Vector3 spawnPosition = _spawnPosition;
             StartCoroutine(SpawnGhostVisualEffect(spawnPosition));
