@@ -225,16 +225,16 @@ public class PoisonBall : Skill, IAltAbility
 
     #endregion
 
-    public void PayCostPoisonBall()
+    public void PayCostPoisonBall(TargetData target)
     {
-        TryPayCost(true);
+        CheckWhoTarget(target);
+        UseCooldownOrCharges();
     }
 
     protected override void UseCooldownOrCharges()
     {
         if (_isHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
         {
-            Debug.Log("Shortened CD");
             Charges.TryUse(Charges.BaseCooldown / 2);
             return;
         }
@@ -332,7 +332,7 @@ public class PoisonBall : Skill, IAltAbility
                 Vector3 click = Targeting.GetMousePoint();
 
                 Targeting.FindTempTarget(click, _radiusFindTarget, true);
-                CheckWhoTarget();
+                //CheckWhoTarget(Targeting.GetTempTarget());
 
                 Character tempTarget = Targeting.GetTempTarget()?.Character;
                 _isTarget = tempTarget != null;
@@ -487,16 +487,15 @@ public class PoisonBall : Skill, IAltAbility
 
     #region CheckingMethods
 
-    private void CheckWhoTarget()
+    private void CheckWhoTarget(TargetData target)
     {
-        if (Targeting.GetTempTarget()?.Character != null)
+        if (target?.Character != null)
         {
-            var target = Targeting.GetTempTarget().Character.gameObject;
+            var targetGO = target.Character.gameObject;
 
-            _poisonBallInfo.IsOriginalTargetPlayer = target == _player.gameObject;
-            _poisonBallInfo.IsOriginalTargetAllies = target.layer == LayerMask.NameToLayer("Allies");
-            _poisonBallInfo.IsOriginalTargetEnemy = target.layer == LayerMask.NameToLayer("Enemy");
-            Debug.Log($"{_poisonBallInfo.IsOriginalTargetPlayer} {_poisonBallInfo.IsOriginalTargetAllies} {_poisonBallInfo.IsOriginalTargetEnemy}");
+            _poisonBallInfo.IsOriginalTargetPlayer = targetGO == _player.gameObject;
+            _poisonBallInfo.IsOriginalTargetAllies = targetGO.layer == LayerMask.NameToLayer("Allies");
+            _poisonBallInfo.IsOriginalTargetEnemy = targetGO.layer == LayerMask.NameToLayer("Enemy");
         }
         else
         {
@@ -996,6 +995,7 @@ public class PoisonBall : Skill, IAltAbility
 
         ChooseSpeed(secondPoint, anchorPlayerPos);
         ChooseDirectionPush(thirdPoint, anchorPlayerPos);
+        CheckWhoTarget(Targeting.Target);
 
         _activeCastIsFast = _isFast;
         _activeCastIsPushTarget = _isPushTarget;

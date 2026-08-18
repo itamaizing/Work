@@ -146,7 +146,7 @@ public class PoisonSlap : Skill
     {
         if (_isUsedPoisonBallCharger)
         {
-            _poisonBall.PayCostPoisonBall();
+            _poisonBall.PayCostPoisonBall(Targeting.GetTarget());
         }
 
         DamageDeal(Targeting.GetTarget()?.Character);
@@ -260,7 +260,7 @@ public class PoisonSlap : Skill
     {
         if (_isUsedPoisonBallCharger)
         {
-            _poisonBall.PayCostPoisonBall();
+            _poisonBall.PayCostPoisonBall(Targeting.Target);
         }
 
         if (Targeting.GetTarget()?.Character != null)
@@ -283,7 +283,8 @@ public class PoisonSlap : Skill
     {
 
         _isCanDamageDeal = false;
-        TryPayCost(true);
+        Cost.TryPayMandatory();
+        //TryPayCost(true);
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush)
