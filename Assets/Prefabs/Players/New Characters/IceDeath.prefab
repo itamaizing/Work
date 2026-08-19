@@ -7712,7 +7712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.size
@@ -7881,23 +7881,23 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 1829443914020651821}
+      objectReference: {fileID: 7166984722522855005}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 1667643855165766473}
+      objectReference: {fileID: 1829443914020651821}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 2120838471947791779}
+      objectReference: {fileID: 1667643855165766473}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 6843156634071377161}
+      objectReference: {fileID: 2120838471947791779}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 2915456004242444519}
+      objectReference: {fileID: 6843156634071377161}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -7977,15 +7977,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 3472443819795571823}
+      objectReference: {fileID: 2915456004242444519}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 5991041448957374658}
+      objectReference: {fileID: 3472443819795571823}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
-      objectReference: {fileID: 1827268369753905710}
+      objectReference: {fileID: 5991041448957374658}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[13]'
       value: 
@@ -8592,6 +8592,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8330460733378844494}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7166984722522855005}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1829443914020651821}
@@ -9736,6 +9739,9 @@ MonoBehaviour:
     _prepareTriggers: []
     _castTriggers: []
   _particleSystem: {fileID: 8916151325973806605}
+  _runeCost: 3
+  _maxEnergyForBonus: 30
+  _energyPerSecondStep: 10
 --- !u!114 &2036370849879020904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11228,6 +11234,29 @@ MonoBehaviour:
   character: {fileID: 4374618947117916461}
   _iceCloud: {fileID: 752221787785051408}
   _skillManager: {fileID: 4220410774128686972}
+--- !u!114 &7166984722522855005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4cf5b9608d5214aac011781c07a86d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_6
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0422\u0435\u043D\u044C \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0435\u0442
+      \u0442\u0435\u043A\u0443\u0449\u0438\u0439 \u043A\u0430\u0441\u0442 \u0433\u0435\u0440\u043E\u044F."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041C\u043E\u0440\u043E\u0437 6"
+    Icon: {fileID: 7124191143336618418, guid: f9b6cda558891264498342623612957a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
 --- !u!114 &1829443914020651821
 MonoBehaviour:
   m_ObjectHideFlags: 0

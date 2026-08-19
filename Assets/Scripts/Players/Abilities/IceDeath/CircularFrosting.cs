@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
+public class CircularFrosting : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 {
     [SerializeField] private ParticleSystemController _particleSystem;
     [SerializeField] private float _runeCost = 3f; 
@@ -31,6 +31,8 @@ public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipating
     private RuneComponent _rune;
     private bool _talentFrostingFrozen;
 
+    private Coroutine _delayedFrostingCoroutine;
+
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -53,7 +55,7 @@ public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipating
     {
         base.Init(render, hero);
         if (_energy == null) _energy = (Energy)hero.Resources[ResourceType.Energy];
-        if(_rune == null) _rune = (RuneComponent)hero.Resources[ResourceType.Rune];
+        if (_rune == null) _rune = (RuneComponent)hero.Resources[ResourceType.Rune];
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -77,7 +79,7 @@ public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipating
 
         _currentRuneCost = _runeCost;
 
-        FindEnemies();
+        FindEnemies(transform.position);
         ExplosionFrosting();
 
         if (_isSeriesComplete)
@@ -86,23 +88,55 @@ public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipating
             _isSeriesComplete = false;
         }
 
-        _particleSystem?.Play();
+        PlayEffectAtPosition(transform.position);
 
         yield return null;
         _currentEnergyCost = 0;
         _currentRuneCost = 0;
     }
 
-    private void FindEnemies()
+    [ClientRpc]
+    public void TriggerDelayedFrosting(float remainingDelay, Vector3 originPosition)
+    {
+        if (_delayedFrostingCoroutine != null)
+            StopCoroutine(_delayedFrostingCoroutine);
+
+        _delayedFrostingCoroutine = StartCoroutine(DelayedFrostingRoutine(remainingDelay, originPosition));
+    }
+
+    private IEnumerator DelayedFrostingRoutine(float delay, Vector3 originPosition)
+    {
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
+
+        if (Hero == null || Hero.IsDead) yield break;
+
+        FindEnemies(originPosition);
+        ExplosionFrosting();
+        PlayEffectAtPosition(originPosition);
+
+        _delayedFrostingCoroutine = null;
+    }
+
+    private void PlayEffectAtPosition(Vector3 position)
+    {
+        if (_particleSystem == null) return;
+
+        _particleSystem.transform.position = position;
+        _particleSystem.Play();
+    }
+
+    private void FindEnemies(Vector3 originPosition)
     {
         _enemies.Clear();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
+        Collider[] hits = Physics.OverlapSphere(originPosition, AreaInfo.Radius);
 
         foreach (var col in hits)
         {
             Character character = col.GetComponent<Character>();
-            if (character != null && character != Hero && !_enemies.Contains(character)) _enemies.Add(character);
+            if (character != null && character != Hero && !_enemies.Contains(character)) 
+                _enemies.Add(character);
         }
     }
 
@@ -149,14 +183,13 @@ public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipating
         _delayDuration = duration;
         _delayStartTime = Time.time;
         _delayActive = true;
-
-        _wasInterruptedInDelay = true;
-        _remainingDelay = 0f;
     }
 
     private void OnCastDelayEnded()
     {
         _delayActive = false;
+        _wasInterruptedInDelay = false;
+        _remainingDelay = 0f;
     }
 
     private void OnSkillCanceledHandler()

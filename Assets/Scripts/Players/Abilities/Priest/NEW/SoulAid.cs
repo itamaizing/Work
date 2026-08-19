@@ -83,38 +83,6 @@ public class SoulAid : Skill
         //_target = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        while (Targeting.GetTempTarget()?.Character == null)
-        {
-            AreaInfo.Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
-            
-            if (GetMouseButton)
-            {
-                Vector3 clickPoint = Targeting.GetMousePoint();
-                
-                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
-                
-                if (Targeting.GetTempTarget().Character is Character character)
-                {
-                    if (Targeting.GetTempTarget().Character != null && !IsAllyTarget(character))
-                    {
-                        Targeting.ClearTempTarget();
-                    }
-                    else
-                    {
-                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
-                    }
-                }
-            }
-            yield return null;
-        }
-        TargetInfo targetInfo = new TargetInfo();
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-        callbackDataSaved(targetInfo);
-    }
 
     public void EnableCooldownReduce(bool isActive)
     {

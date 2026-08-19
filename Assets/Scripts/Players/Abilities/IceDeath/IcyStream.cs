@@ -1,9 +1,10 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
+public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 {
     public struct IcyStreamState
     {
@@ -28,6 +29,7 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
 
     private float _freeWindowDuration = 0.6f;
     private Coroutine _streamCoroutine;
+    private Coroutine _shadowStreamCoroutine;
     private GameObject _activeEffect;
 
     private bool _isStreaming;
@@ -77,7 +79,7 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
         
         if (_isStreaming)
         {
-            OnSeriesDamaged?.Invoke(null,this);
+            OnSeriesDamaged?.Invoke(null, this);
         }
 
         CmdDestroyIcyStreamEffect();
@@ -104,6 +106,14 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
         _isStreaming = true;
         _energySpent = 0f;
         _currentTick = 0;
+
+        CurrentState = new IcyStreamState
+        {
+            CurrentTick = 0,
+            MaxTicks = MaxTicks,
+            Direction = transform.forward,
+            StreamOrigin = transform.position
+        };
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
         CmdSpawnIcyStreamEffect(_isFinalHit);
@@ -155,7 +165,7 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
                 _isTicking = false;
             }
             
-            OnSeriesDamaged?.Invoke(null,this);
+            OnSeriesDamaged?.Invoke(null, this);
 
             CurrentState = new IcyStreamState
             {
@@ -165,14 +175,79 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
                 StreamOrigin = transform.position
             };
 
-            ApplyTick(tick);
+            ApplyTick(tick, transform.position, transform.forward);
+        }
+    }
+    
+    [ClientRpc]
+    public void TriggerShadowStream(Vector3 originPos, Quaternion rotation, int startTick, int maxTicks)
+    {
+        if (_shadowStreamCoroutine != null)
+            StopCoroutine(_shadowStreamCoroutine);
+
+        _shadowStreamCoroutine = StartCoroutine(ShadowStreamRoutine(originPos, rotation, startTick, maxTicks));
+        CmdSpawnShadowStreamEffect(originPos, rotation);
+    }
+
+    private IEnumerator ShadowStreamRoutine(Vector3 originPos, Quaternion rotation, int startTick, int maxTicks)
+    {
+        int start = Mathf.Max(1, startTick);
+        int total = Mathf.Max(start, maxTicks);
+        Vector3 forward = rotation * Vector3.forward;
+
+        for (int tick = start; tick <= total; tick++)
+        {
+            yield return new WaitForSeconds(_tickInterval);
+            if (Hero == null || Hero.IsDead) break;
+
+            ApplyTick(tick, originPos, forward);
+        }
+
+        CmdDestroyIcyStreamEffect();
+        _shadowStreamCoroutine = null;
+    }
+
+    [Command]
+    private void CmdSpawnShadowStreamEffect(Vector3 position, Quaternion rotation)
+    {
+        if (_icyStreamPrefab == null) return;
+
+        GameObject fx = Instantiate(_icyStreamPrefab, position, rotation);
+
+        NetworkServer.Spawn(fx, connectionToClient);
+        _activeEffect = fx;
+
+        RpcSetupShadowStreamEffect(fx, position, rotation);
+    }
+    
+    [ClientRpc]
+    private void RpcSetupShadowStreamEffect(GameObject fx, Vector3 position, Quaternion rotation)
+    {
+        if (fx == null) return;
+
+        fx.transform.position = position;
+        fx.transform.rotation = rotation;
+
+        fx.transform.localScale = Vector3.one;
+
+        var particleSystems = fx.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in particleSystems)
+        {
+            ps.Clear();
+            ps.Play(true);
+        }
+
+        var renderers = fx.GetComponentsInChildren<Renderer>();
+        foreach (var rend in renderers)
+        {
+            rend.enabled = true;
         }
     }
 
-    private void ApplyTick(int tickNumber)
+    private void ApplyTick(int tickNumber, Vector3 originPosition, Vector3 direction)
     {
-        Vector3 start = transform.position;
-        Vector3 end = transform.position + transform.forward * _streamLength;
+        Vector3 start = originPosition;
+        Vector3 end = originPosition + direction * _streamLength;
 
         Collider[] hits = Physics.OverlapCapsule(start, end, _streamWidth * 0.5f, Targeting.Layer);
 
@@ -252,7 +327,7 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
     [ClientRpc]
     private void SetParticleSizeOnClients(GameObject particleObject)
     {
-        if(particleObject == null) return;
+        if (particleObject == null) return;
         var ps = particleObject.GetComponentInChildren<ParticleSystem>();
         var main = ps.main;
         main.startSize = main.startSize.constant * 2;
@@ -330,6 +405,11 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
             StopCoroutine(_streamCoroutine);
             _streamCoroutine = null;
         }
+        if (_shadowStreamCoroutine != null)
+        {
+            StopCoroutine(_shadowStreamCoroutine);
+            _shadowStreamCoroutine = null;
+        }
     }
 
     #region Series
@@ -361,5 +441,4 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
     }
 
     #endregion
-
 }

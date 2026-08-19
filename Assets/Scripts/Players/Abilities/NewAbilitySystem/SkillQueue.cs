@@ -5,6 +5,16 @@ using UnityEngine;
 
 public class SkillQueue : MonoBehaviour
 {
+    public interface IPreemptsQueue
+    {
+        /// <summary>
+        /// Вызывается очередью, когда этот скилл — головной в очереди, а место занято другим (busySkill).
+        /// Возвращает true, если скилл сам оборвал busySkill (через TryCancel) и заберёт его состояние.
+        /// Если false — очередь продолжает ждать естественного завершения busySkill, как раньше.
+        /// </summary>
+        bool TryPreemptCurrentCast(Skill busySkill);
+    }
+    
     [SerializeField] private SkillRenderer _skillRenderer;
 
     private Queue<Skill> _skills = new Queue<Skill>();
@@ -22,6 +32,14 @@ public class SkillQueue : MonoBehaviour
 
     private void Update()
     {
+        if (_skills.TryPeek(out Skill headSkill))
+        {
+            if (IsBusy && headSkill is IPreemptsQueue preemptor)
+            {
+                preemptor.TryPreemptCurrentCast(_currentSkill);
+            }
+        }
+        
         if (IsBusy)
             return;
         
@@ -31,16 +49,16 @@ public class SkillQueue : MonoBehaviour
                 Draw(skill);
 
             if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            {
+                _targetInfo = targetInfo;
+                foreach (var item in _targetInfo.GetTargets())
                 {
-                    _targetInfo = targetInfo;
-                    foreach (var item in _targetInfo.GetTargets())
+                    if (item is Character character)
                     {
-                        if (item is Character character)
-                        {
-                            character.SelectedCircle.SwitchSelectCircle(true);
-                        }
+                        character.SelectedCircle.SwitchSelectCircle(true);
                     }
                 }
+            }
 
             if (skill.TryCast())
             {
