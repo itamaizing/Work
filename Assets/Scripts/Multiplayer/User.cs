@@ -263,6 +263,28 @@ public class LevelCharacterManager
     {
 
     }
+    
+    public void ApplyServerLevelData(HeroComponent hero, int level, int experience, int skillPoints)
+    {
+        _character = hero;
+
+        _currentLevel = Mathf.Clamp(level, 1, _maxLevel);
+        _currentExperience = experience;
+        _experienceForNextLevel = CalculateExperienceForNextLevel();
+
+        if (_currentLevel >= _maxLevel)
+        {
+            _currentLevel = _maxLevel;
+            _currentExperience = _maxExperienceAtMaxLevel;
+            _experienceForNextLevel = _maxExperienceAtMaxLevel;
+        }
+        
+        SaveLevelData();
+
+        OnLevelChanged?.Invoke(_currentLevel);
+        OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
+        DisplayCurrentHeroLevelInfo();
+    }
 
     public bool TryGetCurrentHero(out HeroComponent hero)
     {

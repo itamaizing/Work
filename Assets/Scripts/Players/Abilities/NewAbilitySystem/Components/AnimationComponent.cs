@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor.Animations;
+#endif
 using UnityEngine;
 
 [Serializable]
@@ -178,17 +180,21 @@ public class AnimationComponent : BaseSkillComponent
         if (_triggerToClip.ContainsKey(trigger))
             return _triggerToClip[trigger];
 
-        AnimatorController controller = _animator.runtimeAnimatorController as AnimatorController;
-        if (controller == null)
-        {
-            Debug.LogError("No runtime controller");
-            return null;
-        }
+#if UNITY_EDITOR
+    AnimatorController controller = _animator.runtimeAnimatorController as AnimatorController;
+    
+    // Если используется Override Controller в редакторе:
+    if (controller == null && _animator.runtimeAnimatorController is AnimatorOverrideController overrideController)
+    {
+        controller = overrideController.runtimeAnimatorController as AnimatorController;
+    }
 
+    if (controller != null)
+    {
         foreach (var layer in controller.layers)
         {
-            // Apparently, Unity хранит переходы из "AnyState -> state" отдельно от ВСЕХ переходов)))
-            var allTransitions = layer.stateMachine.anyStateTransitions.Concat(layer.stateMachine.states.SelectMany(s => s.state.transitions));
+            var allTransitions = layer.stateMachine.anyStateTransitions
+                .Concat(layer.stateMachine.states.SelectMany(s => s.state.transitions));
 
             foreach (var transition in allTransitions)
             {
@@ -197,15 +203,21 @@ public class AnimationComponent : BaseSkillComponent
                     if (condition.parameter == trigger)
                     {
                         var clip = transition.destinationState.motion as AnimationClip;
-                        _triggerToClip.TryAdd(trigger, clip);
-                        _clipDurations.TryAdd(clip.name, clip.length);
-                        //Debug.Log($"[Animation] Cached [{trigger}]: {clip.name}");
-                        return clip;
+                        if (clip != null)
+                        {
+                            _triggerToClip.TryAdd(trigger, clip);
+                            _clipDurations.TryAdd(clip.name, clip.length);
+                            return clip;
+                        }
                     }
                 }
             }
         }
-        Debug.LogError($"Couldn't find any transition for trigger{trigger}");
+    }
+#else
+        Debug.LogWarning("GetAnimationFromTrigger via AnimatorController is not supported in builds!");
+#endif
+
         return null;
     }
     #endregion

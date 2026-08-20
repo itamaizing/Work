@@ -204,7 +204,45 @@ public class ServerManager : NetworkBehaviour
         if (LevelCharacterManager.Instance != null)
         {
             LevelCharacterManager.Instance.SetHero(hero);
+
+            RequestHeroLevelFromServer(hero);
         }
+    }
+
+    private void RequestHeroLevelFromServer(HeroComponent hero)
+    {
+        if (MPNetworkManager.Instance == null || MPNetworkManager.Instance.UserID < 0)
+            return;
+
+        Dictionary<string, string> data = new Dictionary<string, string>()
+        {
+            { "id", MPNetworkManager.Instance.UserID.ToString() },
+            { "heroName", hero.Data.Name }
+        };
+        
+        Debug.LogError("heroName: "+ hero.Data.Name);
+
+        NetworkHTTP.Instance.PostGetHeroData(
+            data,
+            success: json => OnHeroLevelReceived(hero, json),
+            error: err => Debug.LogWarning($"[ServerManager] Сервер недоступен, остаёмся на PlayerPrefs: {err}")
+        );
+    }
+
+    private void OnHeroLevelReceived(HeroComponent hero, string json)
+    {
+        if (string.IsNullOrEmpty(json) || json.Contains("\"success\":false"))
+        {
+            Debug.LogWarning($"[ServerManager] GetHeroData вернул ошибку: {json}");
+            return;
+        }
+
+        // Игрок мог уже переключиться на другого героя, пока летел запрос — не применяем устаревший ответ
+        if (!LevelCharacterManager.Instance.TryGetCurrentHero(out var currentHero) || currentHero != hero)
+            return;
+
+        HeroData data = NetworkHTTP.ConvertInHeroData(json);
+        LevelCharacterManager.Instance.ApplyServerLevelData(hero, data.lvl, data.exp, data.skillpoints);
     }
 
     public void SetMode(GameMode mode)
