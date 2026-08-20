@@ -21,6 +21,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     private bool _isActive = false;
 
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
+    
+    public AttributeSystem AttributeSystem => _attributeSystem;
 
     private void Awake()
     {

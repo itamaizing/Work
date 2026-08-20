@@ -37,6 +37,32 @@ public class NetworkHTTP : MonoBehaviour
     {
         _postCoroutine = StartCoroutine(PostJob(uri, data, success, error = null));
     }
+    
+    public void PostGetTalentData(Dictionary<string, string> data, Action<string> success, Action<string> error = null)
+    {
+        Post(URLLibrary.GetTalentData, data, success, error);
+    }
+
+    public void PostSetTalentData(string json, Action<string> success, Action<string> error = null)
+    {
+        _postCoroutine = StartCoroutine(PostJsonJob(URLLibrary.SetTalentData, json, success, error));
+    }
+
+    private IEnumerator PostJsonJob(string uri, string json, Action<string> success, Action<string> error = null)
+    {
+        var request = new UnityWebRequest(uri, "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+            error?.Invoke(request.error);
+        else
+            success?.Invoke(request.downloadHandler.text);
+    }
 
     /// <summary>
     /// Gets the number of bottles by id

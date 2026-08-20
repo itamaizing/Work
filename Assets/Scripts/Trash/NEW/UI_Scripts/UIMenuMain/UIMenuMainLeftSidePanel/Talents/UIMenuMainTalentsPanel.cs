@@ -18,6 +18,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
+        Debug.LogError("TryShow");
+        
         ResetPanel();
 
         _talentSystem = talentSystem;

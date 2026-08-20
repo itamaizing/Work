@@ -54,10 +54,19 @@ public class UIMenuMainWindow : MonoBehaviour
     {
         var currentHero = hero;
 
-		SaveManager.Instance.SetHero(currentHero);
+        SaveManager.Instance.SetHero(currentHero);
         ServerManager.Instance.SetPlayer(hero);
 
         UpdateCharacterPanels();
+
+        if (MPNetworkManager.Instance != null && MPNetworkManager.Instance.UserID > 0)
+        {
+            TalentNetworkManager.Instance.LoadServerArrangement(currentHero, onComplete: () =>
+            {
+                if (GetHero() == currentHero)
+                    UpdateCharacterPanels();
+            });
+        }
     }
 
     public void SetHeroSaveIndex(int index)
@@ -68,7 +77,7 @@ public class UIMenuMainWindow : MonoBehaviour
         UpdateCharacterPanels();
     }
 
-    private HeroComponent GetHero()
+    public HeroComponent GetHero()
     {
         return _charactersPanel.CurrentHero;
     }
@@ -87,7 +96,5 @@ public class UIMenuMainWindow : MonoBehaviour
             _skillPanel.FillMenu(hero.Abilities, hero);
         
         _attributesPanel.Show(hero);
-
-       
     }
 }

@@ -13,6 +13,8 @@ public class URLLibrary
     private const string _getBottle = "GetBottle.php";
     private const string _setHeroData = "SetHeroData.php";
     private const string _getHeroData = "GetHeroData.php";
+    private const string _getHeroesTalent = "GetTalentData.php";
+    private const string _setHeroesTalent = "SetTalentData.php";
     private const string _startGame = "startGame.php";
     private const string _webSocketPort = "8888";
     private const string _webSocket = "ws://";
@@ -56,4 +58,6 @@ public class URLLibrary
 
     public static string MainServer => _mainServer;
     public static string LocalHost => _localHost;
+    public static string GetTalentData { get { return GameFolder + _getHeroesTalent; } }
+    public static string SetTalentData { get { return GameFolder + _setHeroesTalent; } }
 }
