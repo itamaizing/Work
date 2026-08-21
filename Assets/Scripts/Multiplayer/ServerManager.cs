@@ -211,7 +211,7 @@ public class ServerManager : NetworkBehaviour
 
     private void RequestHeroLevelFromServer(HeroComponent hero)
     {
-        if (MPNetworkManager.Instance == null || MPNetworkManager.Instance.UserID < 0)
+        if (MPNetworkManager.Instance == null || !MPNetworkManager.Instance.IsServer())
             return;
 
         Dictionary<string, string> data = new Dictionary<string, string>()
@@ -219,8 +219,6 @@ public class ServerManager : NetworkBehaviour
             { "id", MPNetworkManager.Instance.UserID.ToString() },
             { "heroName", hero.Data.Name }
         };
-        
-        Debug.LogError("heroName: "+ hero.Data.Name);
 
         NetworkHTTP.Instance.PostGetHeroData(
             data,
@@ -237,7 +235,6 @@ public class ServerManager : NetworkBehaviour
             return;
         }
 
-        // Игрок мог уже переключиться на другого героя, пока летел запрос — не применяем устаревший ответ
         if (!LevelCharacterManager.Instance.TryGetCurrentHero(out var currentHero) || currentHero != hero)
             return;
 

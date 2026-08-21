@@ -39,7 +39,6 @@ public abstract class Talent : MonoBehaviour
 
 	public void SetActive(bool isActive, int lvl = 0)
 	{
-		Debug.Log(isActive + "Lvl: " + lvl);
 		_data.SetOpen(isActive);
 		_data.SetLevel(lvl);
 		if (isActive && OpenCondition.CanOpen)

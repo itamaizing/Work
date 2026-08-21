@@ -110,11 +110,12 @@ public class NetworkHTTP : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                 error?.Invoke(www.error);
+                //Debug.LogError($"Data send error : {www.downloadHandler.text}");
             }
             else
             {
                 success?.Invoke(www.downloadHandler.text);
-                
+                //Debug.LogError($"Data send success : {www.downloadHandler.text}");
             }
         }
     }

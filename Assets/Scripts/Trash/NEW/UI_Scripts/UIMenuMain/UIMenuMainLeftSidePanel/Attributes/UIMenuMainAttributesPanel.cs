@@ -17,12 +17,18 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     private AttributeSystem _attributeSystem;
     private Character _hero;
+    
+    private int _freeAttributePoints;
+
+    public bool CanAddPoint() => _freeAttributePoints > 0;
 
     private bool _isActive = false;
 
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
     
     public AttributeSystem AttributeSystem => _attributeSystem;
+    
+    private GameObject _menuAttributeSystemGO;
 
     private void Awake()
     {
@@ -36,8 +42,12 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         _hero = hero;
         if (isMenu)
         {
-            _attributeSystem = new AttributeSystem();
-            //_attributeSystem.Init2(hero.Data);
+            if (_menuAttributeSystemGO != null)
+                Destroy(_menuAttributeSystemGO);
+
+            _menuAttributeSystemGO = new GameObject("MenuAttributeSystem_" + hero.Data.Name);
+            _menuAttributeSystemGO.transform.SetParent(transform);
+            _attributeSystem = _menuAttributeSystemGO.AddComponent<AttributeSystem>();
             _attributeSystem.Init(hero.Data);
         }
         else
@@ -50,7 +60,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         //foreach (var item in DB_Attribute.UpgradableAttributes)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
-            attribute.Fills(item);
+            attribute.Fills(item, this);
             //attribute.Fills(_attributeSystem.Attributes[item]);
             //Debug.Log(item.GetValue());
             //attribute.OnValueChange += UpdateAttributesPoints;
@@ -110,12 +120,13 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     public void UpdateAttributesPoints()
     {
         foreach (var attribute in _attributes)
-        {
             attribute.UpdateValue();
-        }
 
-        _attributesText.ChangeKey(SaveManager.Instance.LoadAttributePoints());
-        //_attributesText.ChangeKey(_attributeSystem.Points);
+        if (MPNetworkManager.Instance.IsServer()) //Если айди игрока <=0, то подключения к серверу нет => грузим с PlayerPrefs
+        {
+            _freeAttributePoints = SaveManager.Instance.LoadAttributePoints();
+            _attributesText.ChangeKey(_freeAttributePoints);
+        }
     }
     
     private void ShowDescription(string text)
@@ -131,5 +142,38 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     private void HideDescription()
     {
         _descriptionPanel.HideDescription();
+    }
+    
+    public void OnAttributePointAdded()
+    {
+        _freeAttributePoints--;
+        _attributesText.ChangeKey(_freeAttributePoints);
+    }
+
+    public void OnAttributePointRemoved()
+    {
+        _freeAttributePoints++;
+        _attributesText.ChangeKey(_freeAttributePoints);
+    }
+
+    public void ApplyServerAttributePoints(List<TalentNetworkManager.ServerAttributeEntry> attributes, int freeAttributePoints)
+    {
+        if (_attributeSystem == null) return;
+
+        foreach (var attribute in _attributeSystem.Attributes.Values)
+        {
+            var entry = attributes?.FirstOrDefault(a => a.name == attribute.Name);
+            int targetPoints = entry?.points ?? 0;
+
+            attribute.RemoveBySource("AttributePoint");
+            for (int i = 0; i < targetPoints; i++)
+                attribute.AddModifier(new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint"));
+        }
+
+        foreach (var item in _attributes)
+            item.SyncModifiers();
+
+        _freeAttributePoints = freeAttributePoints;
+        _attributesText.ChangeKey(_freeAttributePoints);
     }
 }

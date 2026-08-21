@@ -72,6 +72,11 @@ public class MPNetworkManager : NetworkManager
         Debug.Log("TEST");
     }
 
+    public bool IsServer()
+    {
+        return _userID > 0;
+    }
+    
     public override void OnClientDisconnect()
     {
         base.OnClientDisconnect();

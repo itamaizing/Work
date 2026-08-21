@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -18,16 +19,18 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     //public event UnityAction OnValueChange;
     public event UnityAction<string> OnPointerEntered;
     public event UnityAction OnPointerExited;
+    
+    private UIMenuMainAttributesPanel _owner;
 
-    public void Fills(Attribute attribute)
+    public void Fills(Attribute attribute, UIMenuMainAttributesPanel owner)
     {
+        _owner = owner;
         _currentAttributes = attribute;
 
         foreach (var modif in _currentAttributes.Modifiers)
         {
             _modifs.Add(modif);
         }
-        //Debug.Log("Attribute " + _attributeValue.name + " " + _modifs.Count);
         Sprite attr_icon = DB_Attribute.CharacterAttributes[Enum.Parse<CharacterAttributeName>(attribute.Name)].icon;
         if (attr_icon != null )
             _icon.sprite = attr_icon;
@@ -36,20 +39,24 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void Add()
     {
+        if (_owner != null && !_owner.CanAddPoint()) return;
+
         var modif = new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint");
         _modifs.Add(modif);
 
         SaveManager.Instance.AddAttributesModif(_currentAttributes, modif);
         _attributeValue.ChangeKey(_modifs.Count);
+        _owner?.OnAttributePointAdded();
     }
 
     public void Reduce()
     {
-        if(_modifs.Count <= 0) return;
-        
+        if (_modifs.Count <= 0) return;
+
         SaveManager.Instance.RemoveAttributesModif(_currentAttributes, _modifs[0]);
         _modifs.RemoveAt(0);
         _attributeValue.ChangeKey(_modifs.Count);
+        _owner?.OnAttributePointRemoved();
     }
 
     public void UpdateValue()
@@ -61,10 +68,17 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     {
         Destroy(gameObject);
     }
+    
+    public void SyncModifiers()
+    {
+        _modifs.Clear();
+        foreach (var modif in _currentAttributes.Modifiers)
+            _modifs.Add(modif);
+        _attributeValue.ChangeKey(_modifs.Count);
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log(_currentAttributes.Name);
         if(_currentAttributes != null)
             OnPointerEntered?.Invoke(_currentAttributes.Name);
     }

@@ -319,6 +319,25 @@ public class LevelCharacterManager
         CheckForLevelUp();
         SaveLevelData();
 
+        if (MPNetworkManager.Instance.UserID > 0)
+        {
+            Dictionary<string, string> data = new Dictionary<string, string>()
+            {
+                { "id", MPNetworkManager.Instance.UserID.ToString() },
+                { "heroName", _character.Data.Name },
+                { "heroLVL", _currentLevel.ToString()},
+                { "heroExp", _currentExperience.ToString()},
+                { "heroSkillPoints", (_currentLevel - _character.TalentManager.ActiveTalents.Count).ToString()},
+                { "attributePoints", _character.AttributeSystem.Points.ToString()},
+            };
+            
+            NetworkHTTP.Instance.PostSetHeroData(
+                data,
+                success: json => Debug.Log("[ServerManager] данные персонажа успешно загружены на сервер"),
+                error: err => Debug.LogWarning($"[ServerManager] Сервер недоступен, остаёмся на PlayerPrefs: {err}")
+            );
+        }
+        
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
     }
 

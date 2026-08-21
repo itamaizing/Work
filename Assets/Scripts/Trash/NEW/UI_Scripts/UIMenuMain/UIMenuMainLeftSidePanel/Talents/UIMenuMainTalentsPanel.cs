@@ -18,8 +18,6 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
-        Debug.LogError("TryShow");
-        
         ResetPanel();
 
         _talentSystem = talentSystem;
@@ -81,7 +79,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     if (_talantsText == null) return;
     if (_talentSystem == null) return;
 
-    int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel() + 10;
+    int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel();
 
     int usedPoints = _talentSystem.GetActiveTalentCount();
     int freePoints = maxPoints - usedPoints;

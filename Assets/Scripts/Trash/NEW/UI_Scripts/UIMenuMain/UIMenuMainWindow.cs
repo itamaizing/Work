@@ -11,6 +11,9 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
     [SerializeField] private UIMenuMainPlayerInfoPanel _infoPanel;
 
+    private HeroComponent _currentHero;
+    public HeroComponent CurrentHero => _currentHero;
+
     private void Start()
     {
         Show();
@@ -31,14 +34,19 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void UI_StartClient()
     {
+        if (_currentHero != null)
+        {
+            TalentNetworkManager.Instance.SaveArrangement();
+        }
+        
         ServerManager.Instance.StartClient();
     }
 
     void Show()
     {
         if (Application.isBatchMode ||
-    SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null ||
-    !Application.isPlaying)
+            SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null ||
+            !Application.isPlaying)
         {
             return;
         }
@@ -46,27 +54,25 @@ public class UIMenuMainWindow : MonoBehaviour
         _charactersPanel.Show();
         _gameTypesPanel.Show();
         _savesPanel.Show();
-        
+
         UpdateCharacterPanels();
+        TryLoadServerArrangement(GetHero());
     }
+
 
     public void SetHero(HeroComponent hero)
     {
-        var currentHero = hero;
+        if (_currentHero != null)
+        {
+            TalentNetworkManager.Instance.SaveArrangement();
+        }
+        _currentHero = hero;
 
-        SaveManager.Instance.SetHero(currentHero);
-        ServerManager.Instance.SetPlayer(hero);
+        SaveManager.Instance.SetHero(_currentHero);
+        ServerManager.Instance.SetPlayer(_currentHero);
 
         UpdateCharacterPanels();
-
-        if (MPNetworkManager.Instance != null && MPNetworkManager.Instance.UserID > 0)
-        {
-            TalentNetworkManager.Instance.LoadServerArrangement(currentHero, onComplete: () =>
-            {
-                if (GetHero() == currentHero)
-                    UpdateCharacterPanels();
-            });
-        }
+        TryLoadServerArrangement(_currentHero);
     }
 
     public void SetHeroSaveIndex(int index)
@@ -80,6 +86,22 @@ public class UIMenuMainWindow : MonoBehaviour
     public HeroComponent GetHero()
     {
         return _charactersPanel.CurrentHero;
+    }
+    
+    private void TryLoadServerArrangement(HeroComponent hero)
+    {
+        if (hero == null) return;
+        if (MPNetworkManager.Instance == null || !MPNetworkManager.Instance.IsServer()) return;
+
+        TalentNetworkManager.Instance.LoadServerArrangement(
+            hero,
+            _attributesPanel,
+            isStillCurrent: () => GetHero() == hero,
+            onComplete: () =>
+            {
+                if (GetHero() == hero)
+                    UpdateCharacterPanels();
+            });
     }
 
     private void UpdateCharacterPanels()
