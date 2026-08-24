@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using UnityEngine;
 
@@ -9,22 +8,19 @@ public interface ISaveData
     int LoadInt(string key, int defaultValue = 0);
     void SaveString(string key, string value);
     string LoadString(string key, string defaultValue = "");
+    void SaveFloat(string key, float value);
+    float LoadFloat(string key, float defaultValue = 0f);
 }
 
 public class PlayerPrefsSaveData : ISaveData
 {
     public void SaveInt(string key, int value)
     {
-       // Debug.Log("SAVED TALENTS  " + key + value);
         PlayerPrefs.SetInt(key, value);
         PlayerPrefs.Save();
     }
 
-    public int LoadInt(string key, int defaultValue = 0)
-    {
-		//Debug.Log("Load TALENTS  " + key + defaultValue + " loaded: "+ PlayerPrefs.GetInt(key, defaultValue));
-		return PlayerPrefs.GetInt(key, defaultValue);
-    }
+    public int LoadInt(string key, int defaultValue = 0) => PlayerPrefs.GetInt(key, defaultValue);
 
     public void SaveString(string key, string value)
     {
@@ -32,10 +28,15 @@ public class PlayerPrefsSaveData : ISaveData
         PlayerPrefs.Save();
     }
 
-    public string LoadString(string key, string defaultValue = "")
+    public string LoadString(string key, string defaultValue = "") => PlayerPrefs.GetString(key, defaultValue);
+
+    public void SaveFloat(string key, float value)
     {
-        return PlayerPrefs.GetString(key, defaultValue);
+        PlayerPrefs.SetFloat(key, value);
+        PlayerPrefs.Save();
     }
+
+    public float LoadFloat(string key, float defaultValue = 0f) => PlayerPrefs.GetFloat(key, defaultValue);
 }
 
 public class SaveManager : MonoBehaviour
@@ -46,11 +47,9 @@ public class SaveManager : MonoBehaviour
     private HeroComponent _character;
     private int _currentSaveGroup = 0;
     private ISaveData _saveData;
-    //private AttributeSaveManager _attributeManager;
-    private TalentSaveManager _talentManager;
+    private readonly SaveSystem _saveSystem = new SaveSystem();
 
-    private AttributeSystem _attributeSystem;
-    private SaveSystem _saveSystem = new SaveSystem();
+    private IHeroProgressRepository _repository;
 
     private void Awake()
     {
@@ -58,9 +57,6 @@ public class SaveManager : MonoBehaviour
         {
             _instance = this;
             _saveData = new PlayerPrefsSaveData();
-            _talentManager = new TalentSaveManager(_saveData, _instance);
-            //_attributeManager = new AttributeSaveManager(_saveData);
-            //_attributeModifier = new AttributeModifier(_attributeManager);
         }
         else
         {
@@ -68,104 +64,90 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    private bool UseServerPersistence => MPNetworkManager.Instance != null && MPNetworkManager.Instance.UserID > 0;
+    
+    public void Initialize()
+    {
+        if (_repository != null) return;
+
+        _repository = UseServerPersistence
+            ? new ServerHeroProgressRepository()
+            : new LocalHeroProgressRepository(_saveData, _saveSystem);
+    }
+
     public void SetHero(HeroComponent hero)
     {
+        Initialize();
         _character = hero;
-        _attributeSystem = hero.AttributeSystem;
-        LoadHeroData();
     }
 
     public void SetSaveIndex(int index)
     {
         _currentSaveGroup = index;
-        LoadHeroData();
     }
 
-    public void SaveAttributePoints(int points)
+    public void LoadHeroProgress(UIMenuMainAttributesPanel attributesPanel, Func<bool> isStillCurrent, Action onComplete)
     {
-        //_saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
-        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", points);
-        Debug.Log("save " + points);
-    }
-    
-    public int LoadAttributePoints()
-    {
-        int points = 0;
-        _saveSystem.Load<int>($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", e => points = e);
-        Debug.Log("load " + points);
-        return points;
-    }
-
-    public void AddAttributesModif(Attribute attribute, AttributeModifier modif)
-    {
-        attribute.AddModifier(modif);
-        SaveAttribute(attribute);
-    }
-
-    public void RemoveAttributesModif(Attribute attribute, AttributeModifier modif)
-    {
-        attribute.RemoveModifier(modif);
-        SaveAttribute(attribute);
-    }
-
-    public void SaveAttribute(Attribute attribute)
-    {
-        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", attribute.Modifiers);
-    }
-
-    public List<AttributeModifier> LoadAttribute(Attribute attribute)
-    {
-        List<AttributeModifier> modifs = new();
-        _saveSystem.Load<List<AttributeModifier>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", 
-            e => modifs = e);
-
-        Attribute atrib = _attributeSystem.Attributes.Values.FirstOrDefault(a => a.Name == attribute.Name);
-        if (atrib != null)
-        {
-            foreach (AttributeModifier modif in modifs)
-            {
-                atrib.AddModifier(modif);
-            }
-        }
-        Debug.Log(modifs.Count);
-
-        return modifs;
+        if (!EnsureRepository()) { onComplete?.Invoke(); return; }
+        _repository.Load(_character, attributesPanel, _currentSaveGroup, isStillCurrent, onComplete);
     }
 
     public void SaveTalent(int idGroup, int row, string idTalent, bool isActive, int lvl)
     {
-        _talentManager.SaveTalent(_character, idGroup, row, idTalent, isActive, lvl, _currentSaveGroup);
+        if (!EnsureRepository()) return;
+
+        var group = _character.TalentManager.TalentsGroups.FirstOrDefault(g => g.ID == idGroup);
+        var talent = group?.TalentRows[row].Talents?.FirstOrDefault(t => t.Data.Name == idTalent);
+        if (group == null || talent == null) return;
+        if (isActive && !_character.TalentManager.CanOpenTalent) return;
+
+        bool prevOpen = talent.Data.IsOpen;
+        int prevLvl = talent.Data.Level;
+
+        talent.Data.SetOpen(isActive);
+        talent.Data.SetLevel(lvl);
+        _character.TalentManager.SetActive(idGroup, row, idTalent, isActive);
+
+        _repository.SaveTalent(_character, idGroup, row, idTalent, isActive, lvl, _currentSaveGroup,
+            onFreeTalentPointsChanged: pts => _character.TalentManager.SetPoints(pts),
+            onFailed: () =>
+            {
+                talent.Data.SetOpen(prevOpen);
+                talent.Data.SetLevel(prevLvl);
+                _character.TalentManager.SetActive(idGroup, row, idTalent, prevOpen);
+            });
     }
 
-    public void LoadTalent(int idGroup, int row, string idTalent, bool needActivate)
+    public void SaveAttributePoint(Attribute attribute, int delta)
     {
-        _talentManager.LoadTalent(_character, idGroup, row, idTalent, needActivate, _currentSaveGroup);
+        if (!EnsureRepository()) return;
+
+        _repository.SaveAttributePoint(_character, attribute.Name, delta, _currentSaveGroup,
+            onFreeAttributePointsChanged: pts => { },
+            onFailed: () => {  });
     }
 
-    public int ReduceFreePoints(int pointsToDeduct)
+    public void SaveHeroLevel(int level, int experience, int skillPoints, int attributePoints)
     {
-        return 0; //_attributeModifier.ReduceFreePoints(_character, pointsToDeduct, _currentSaveGroup);
+        if (!EnsureRepository()) return;
+        _repository.SaveLevel(_character, _currentSaveGroup, level, experience, skillPoints, attributePoints);
     }
 
-    public void ReduceAttributePoints(int pointsToDeduct)
+    public void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed)
     {
-        //_attributeModifier.ReduceAttributePoints(_character, pointsToDeduct, _currentSaveGroup);
+        Initialize();
+        _repository.SaveBottles(userKey, bottles, bottleVolume, onSaved, onFailed);
     }
 
-    public void SaveAllData()
+    public void LoadBottles(string userKey, Action<int, float> onLoaded, Action onFailed = null)
     {
-        //_attributeManager.SaveAllAttributes(_character, _currentSaveGroup);
-        _talentManager.SaveAllTalents(_character, _currentSaveGroup);
+        Initialize();
+        _repository.LoadBottles(userKey, onLoaded, onFailed);
     }
 
-    public void LoadAllData()
+    private bool EnsureRepository()
     {
-        //_attributeManager.LoadAllAttributes(_character, _currentSaveGroup);
-        _talentManager.LoadAllTalents(_character, _currentSaveGroup);
-    }
-
-    private void LoadHeroData()
-    {
-        LoadAllData();
+        Initialize();
+        return _repository != null;
     }
 }

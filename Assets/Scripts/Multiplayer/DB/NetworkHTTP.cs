@@ -100,6 +100,13 @@ public class NetworkHTTP : MonoBehaviour
     {
         Post(URLLibrary.GetHeroData, data, success, error);
     }
+    
+    public void PostSetTalentSingle(string json, Action<string> success, Action<string> error = null)
+        => _postCoroutine = StartCoroutine(PostJsonJob(URLLibrary.SetTalentSingle, json, success, error));
+
+    public void PostSetAttributePoint(string json, Action<string> success, Action<string> error = null)
+        => _postCoroutine = StartCoroutine(PostJsonJob(URLLibrary.SetAttributePoint, json, success, error));
+    
 
     private IEnumerator PostJob(string uri, Dictionary<string, string> data, Action<string> success, Action<string> error = null)
     {

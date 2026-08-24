@@ -40,23 +40,25 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     public void Add()
     {
         if (_owner != null && !_owner.CanAddPoint()) return;
-
         var modif = new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint");
         _modifs.Add(modif);
-
-        SaveManager.Instance.AddAttributesModif(_currentAttributes, modif);
+        _currentAttributes.AddModifier(modif);
+        SaveManager.Instance.SaveAttributePoint(_currentAttributes, +1);
         _attributeValue.ChangeKey(_modifs.Count);
-        _owner?.OnAttributePointAdded();
+        _owner?.UpdateAttributesPoints();
     }
 
     public void Reduce()
     {
         if (_modifs.Count <= 0) return;
 
-        SaveManager.Instance.RemoveAttributesModif(_currentAttributes, _modifs[0]);
+        var modif = _modifs[0];
+        _currentAttributes.RemoveModifier(modif);
         _modifs.RemoveAt(0);
+
+        SaveManager.Instance.SaveAttributePoint(_currentAttributes, -1);
         _attributeValue.ChangeKey(_modifs.Count);
-        _owner?.OnAttributePointRemoved();
+        _owner?.UpdateAttributesPoints();
     }
 
     public void UpdateValue()

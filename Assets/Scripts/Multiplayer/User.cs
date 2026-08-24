@@ -1,7 +1,5 @@
 using Mirror;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,11 +7,7 @@ public class User : NetworkBehaviour
 {
     public static User Instance;
 
-    private const string ID = "id";
-    private const string BOTTLE = "bottle";
-
     private int _id = -37;
-    private int _bottle;
 
     public int Id { get => _id; }
 
@@ -23,12 +17,9 @@ public class User : NetworkBehaviour
         {
             _id = id;
 
-            Dictionary<string, string> data = new Dictionary<string, string>()
-            {
-            {ID, _id.ToString()},
-            };
-
-            NetworkHTTP.Instance.Post(URLLibrary.GetBottle, data, Success);
+            SaveManager.Instance.LoadBottles(_id.ToString(),
+                onLoaded: (bottles, volume) => BottleUserManager.Instance.ApplyLoadedBottleData(bottles, volume),
+                onFailed: null);
         }
     }
 
@@ -44,7 +35,6 @@ public class User : NetworkBehaviour
 
                 AddPlayer(ServerManager.Instance.CurrentHeroIndex);
             }
-
             else if (Instance != null && Instance != this)
             {
                 Destroy(this.gameObject);
@@ -68,19 +58,6 @@ public class User : NetworkBehaviour
         MPNetworkManager.Instance.Players.Add(player);
     }
 
-    private void Success(string data)
-    {
-        if (int.TryParse(data, out int bottle))
-        {
-            Debug.Log(bottle);
-            _bottle = bottle;
-        }
-        else
-        {
-            //Error?.Invoke(data);
-        }
-    }
-
     private void OnDestroy()
     {
         if (Instance == this)
@@ -93,7 +70,7 @@ public class User : NetworkBehaviour
 
     private void InitializeManagers()
     {
-        BottleUserManager.Instance?.SetUser("User_" + _id);
+        BottleUserManager.Instance?.SetUser(_id.ToString());
         BottleUserManager.Instance?.BottleInitialize();
         LevelCharacterManager.Instance?.LevelInitialize();
     }
@@ -109,36 +86,22 @@ public class BottleUserManager
     private int _currentBottles = 0;
     private float _currentBottleVolume = 0f;
     private string _currentUser;
-    private string mainMenuSceneName = "MainMenu";
 
     public event Action<int> OnBottlesChanged;
 
-    public void BottlesChanged(int count)
+    public void SetUser(string user)
     {
-        OnBottlesChanged?.Invoke(count);
-    }
-
-    public void ResetBottleData()
-    {
-        if (string.IsNullOrEmpty(_currentUser))
-            return;
-
-        _currentBottles = 0;
-        _currentBottleVolume = 0f;
-
-        PlayerPrefs.DeleteKey(_currentUser + "_Bottles");
-        PlayerPrefs.DeleteKey(_currentUser + "_BottleVolume");
-
-        PlayerPrefs.Save();
-
-        OnBottlesChanged?.Invoke(_currentBottles);
+        _currentUser = user;
+        Debug.Log($"Current user set to: {_currentUser}");
     }
 
     public void BottleInitialize()
     {
         _instance = this;
-        LoadBottleData();
-        LogBottleInfoOnClient();
+
+        if (!string.IsNullOrEmpty(_currentUser))
+            SaveManager.Instance.LoadBottles(_currentUser, ApplyLoadedBottleData, onFailed: null);
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -147,23 +110,34 @@ public class BottleUserManager
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    public void ApplyLoadedBottleData(int bottles, float volume)
     {
-        if (scene.name == mainMenuSceneName)
-        {
-            LogBottleInfoOnClient();
-        }
+        _currentBottles = bottles;
+        _currentBottleVolume = volume;
+        LogBottleInfoOnClient();
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
-    public void SetUser(string user)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        _currentUser = user;
-        Debug.Log($"Current user set to: {_currentUser}");
-        LoadBottleData();
+        LogBottleInfoOnClient();
+    }
+
+    public void ResetBottleData()
+    {
+        if (string.IsNullOrEmpty(_currentUser)) return;
+
+        int previousBottles = _currentBottles;
+        _currentBottles = 0;
+        _currentBottleVolume = 0f;
+
+        Persist(rollbackTo: previousBottles);
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     public void AddBottleVolume(float amount)
     {
+        int previousBottles = _currentBottles;
         _currentBottleVolume += amount;
 
         if (_currentBottleVolume >= 1f)
@@ -172,26 +146,25 @@ public class BottleUserManager
             _currentBottleVolume = 0f;
         }
 
-        SaveBottleData();
-
+        Persist(rollbackTo: previousBottles);
         OnBottlesChanged?.Invoke(_currentBottles);
     }
 
+
     public bool TryUseBottle()
     {
-        if (_currentBottles > 0)
-        {
-            _currentBottles--;
-            SaveBottleData();
-            return true;
-        }
-        return false;
+        if (_currentBottles <= 0) return false;
+
+        int previousBottles = _currentBottles;
+        _currentBottles--;
+        Persist(rollbackTo: previousBottles);
+        return true;
     }
 
     public int GetCurrentBottles() => _currentBottles;
     public float GetCurrentBottleVolume() => _currentBottleVolume;
 
-    private void SaveBottleData()
+    private void Persist(int rollbackTo)
     {
         if (string.IsNullOrEmpty(_currentUser))
         {
@@ -199,29 +172,19 @@ public class BottleUserManager
             return;
         }
 
-        PlayerPrefs.SetInt(_currentUser + "_Bottles", _currentBottles);
-        PlayerPrefs.SetFloat(_currentUser + "_BottleVolume", _currentBottleVolume);
-        PlayerPrefs.Save();
-
-        Debug.Log($"Bottle data saved for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
-
-        OnBottlesChanged?.Invoke(_currentBottles);
-    }
-
-    private void LoadBottleData()
-    {
-        if (string.IsNullOrEmpty(_currentUser))
-        {
-            Debug.LogWarning("Cannot load bottle data: User not set.");
-            return;
-        }
-
-        _currentBottles = PlayerPrefs.GetInt(_currentUser + "_Bottles", _currentBottles);
-        _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", _currentBottleVolume);
-
-        Debug.Log($"Bottle data loaded for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
-
-        OnBottlesChanged?.Invoke(_currentBottles);
+        SaveManager.Instance.SaveBottles(_currentUser, _currentBottles, _currentBottleVolume,
+            onSaved: confirmedBottles =>
+            {
+                if (confirmedBottles == _currentBottles) return;
+                _currentBottles = confirmedBottles;
+                OnBottlesChanged?.Invoke(_currentBottles);
+            },
+            onFailed: () =>
+            {
+                _currentBottles = rollbackTo;
+                Debug.LogWarning("[BottleUserManager] Сохранение бутылок не удалось, откат до " + _currentBottles);
+                OnBottlesChanged?.Invoke(_currentBottles);
+            });
     }
 
     public void LogBottleInfoOnClient()
@@ -253,18 +216,12 @@ public class LevelCharacterManager
 
     public void LevelInitialize()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
+        if (_instance == null) _instance = this;
     }
 
-    public void Dispose()
-    {
-
-    }
+    public void Dispose() { }
     
-    public void ApplyServerLevelData(HeroComponent hero, int level, int experience, int skillPoints)
+    public void ApplyLoadedLevelData(HeroComponent hero, int level, int experience)
     {
         _character = hero;
 
@@ -278,8 +235,6 @@ public class LevelCharacterManager
             _currentExperience = _maxExperienceAtMaxLevel;
             _experienceForNextLevel = _maxExperienceAtMaxLevel;
         }
-        
-        SaveLevelData();
 
         OnLevelChanged?.Invoke(_currentLevel);
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
@@ -291,24 +246,17 @@ public class LevelCharacterManager
         hero = _character;
         return hero != null;
     }
-
+    
     public void SetHero(HeroComponent hero)
     {
         _character = hero;
-        LoadLevelData();
-        DisplayCurrentHeroLevelInfo();
-        //ResetLevelData();
     }
 
-    public HeroComponent GetHero()
-    {
-        return _character;
-    }
+    public HeroComponent GetHero() => _character;
 
     public void SetSaveIndex(int index)
     {
         _currentSaveGroup = index;
-        LoadLevelData();
     }
 
     public void AddExperience(int experience)
@@ -317,27 +265,12 @@ public class LevelCharacterManager
 
         _currentExperience += experience;
         CheckForLevelUp();
-        SaveLevelData();
 
-        if (MPNetworkManager.Instance.UserID > 0)
-        {
-            Dictionary<string, string> data = new Dictionary<string, string>()
-            {
-                { "id", MPNetworkManager.Instance.UserID.ToString() },
-                { "heroName", _character.Data.Name },
-                { "heroLVL", _currentLevel.ToString()},
-                { "heroExp", _currentExperience.ToString()},
-                { "heroSkillPoints", (_currentLevel - _character.TalentManager.ActiveTalents.Count).ToString()},
-                { "attributePoints", _character.AttributeSystem.Points.ToString()},
-            };
-            
-            NetworkHTTP.Instance.PostSetHeroData(
-                data,
-                success: json => Debug.Log("[ServerManager] данные персонажа успешно загружены на сервер"),
-                error: err => Debug.LogWarning($"[ServerManager] Сервер недоступен, остаёмся на PlayerPrefs: {err}")
-            );
-        }
-        
+        int skillPoints = _currentLevel - _character.TalentManager.ActiveTalents.Count;
+        int attributePoints = _currentLevel - _character.AttributeSystem.GetSpentPoints();
+
+        SaveManager.Instance.SaveHeroLevel(_currentLevel, _currentExperience, skillPoints, attributePoints);
+
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
     }
 
@@ -350,7 +283,6 @@ public class LevelCharacterManager
         PlayerPrefs.DeleteKey(baseKey + "_Level");
         PlayerPrefs.DeleteKey(baseKey + "_Experience");
         PlayerPrefs.DeleteKey(baseKey + "_ExperienceForNextLevel");
-
         PlayerPrefs.Save();
 
         _currentLevel = 1;
@@ -362,7 +294,7 @@ public class LevelCharacterManager
     }
 
     public void LevelChanged() => OnLevelChanged?.Invoke(_currentLevel);
-
+    
     public void PreloadHeroLevelData(HeroComponent hero, int saveIndex = 0)
     {
         string key = hero.Data.Name + "_Group" + saveIndex;
@@ -402,36 +334,11 @@ public class LevelCharacterManager
         }
     }
 
-    private int CalculateExperienceForNextLevel()
-    {
-        return _currentLevel * 100;
-    }
+    private int CalculateExperienceForNextLevel() => _currentLevel * 100;
 
     public int GetCurrentLevel() => _currentLevel;
     public int GetCurrentExperience() => _currentExperience;
     public int GetExperienceForNextLevel() => _experienceForNextLevel;
-
-    private void SaveLevelData()
-    {
-        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_Level", _currentLevel);
-        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_Experience", _currentExperience);
-        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_ExperienceForNextLevel", _experienceForNextLevel);
-        PlayerPrefs.Save();
-    }
-
-    private void LoadLevelData()
-    {
-        _currentLevel = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_Level", 1);
-        _currentExperience = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_Experience", 0);
-        _experienceForNextLevel = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_ExperienceForNextLevel", 100);
-
-        if (_currentLevel >= _maxLevel)
-        {
-            _currentLevel = _maxLevel;
-            _currentExperience = _maxExperienceAtMaxLevel;
-            _experienceForNextLevel = _maxExperienceAtMaxLevel;
-        }
-    }
 
     public void ResetLevelData()
     {

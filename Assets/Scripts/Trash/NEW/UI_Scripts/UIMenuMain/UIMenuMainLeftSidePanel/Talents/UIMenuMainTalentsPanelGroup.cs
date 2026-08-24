@@ -111,12 +111,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
     void OnTalentSelected(TalentData talent, bool isOpen, int lvl)
     {
-		SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Row, talent.Name, isOpen, lvl);
-        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Row, talent.Name, _isGameUI);
-
+        SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Row, talent.Name, isOpen, lvl);
         UpdateActiveTalentsCount();
         _attributesPanel.UpdateAttributesPoints();
-
         OnTalentChanged?.Invoke();
     }
 

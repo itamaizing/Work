@@ -32,6 +32,13 @@ public class AttributeSystem : NetworkBehaviour
 
     private int _points = 0;
     public int Points => _points;
+    
+    private Level _lvl;
+    private int _prevLevelValue;
+    
+    public event Action<int> OnPointsChanged;
+
+    public bool CanAddPoint => _points > 0;
 
     public void Init(CharacterData data)
     {
@@ -65,6 +72,14 @@ public class AttributeSystem : NetworkBehaviour
         }
         TemporaryResourceDisplay = _resources.Values.ToList();
         SubscribeToAttributeModify();
+    }
+    
+    public int GetSpentPoints()
+    {
+        int spent = 0;
+        foreach (var attribute in _attributes.Values)
+            spent += attribute.Modifiers.Count(m => m.Source == "AttributePoint");
+        return spent;
     }
 
     [Server]

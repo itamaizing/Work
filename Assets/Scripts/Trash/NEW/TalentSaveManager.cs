@@ -14,46 +14,34 @@ public class TalentSaveManager
         _saveManager = saveManager;
     }
 
-	public void SaveTalent(HeroComponent character, int idGroup, int row, string idTalent, bool isActive, int lvl, int saveGroup)
+    public void SaveTalent(HeroComponent character, int idGroup, int row, string idTalent, bool isActive, int lvl, int saveGroup)
     {
-        var isTalentActive = isActive ? lvl : 0;
-		Debug.Log("IsActive: " + isActive + " isTalentActive: " + isTalentActive + " lvl: " + lvl);
-		//var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
-		// var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
-		if (isActive && !character.TalentManager.CanOpenTalent) return;
+	    if (isActive && !character.TalentManager.CanOpenTalent) return;
 
-		var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
-		var talentRow = talentGroup.TalentRows[row];
-		var talent = talentRow.Talents?.FirstOrDefault(o => o.Data.Name == idTalent);
+	    var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
+	    var talentRow = talentGroup.TalentRows[row];
+	    var talent = talentRow.Talents?.FirstOrDefault(o => o.Data.Name == idTalent);
+	    if (talentGroup == null || talent == null) return;
 
-		if (talentGroup == null || talent == null) return;
+	    talent.Data.SetOpen(isActive);
+	    character.TalentManager.SetActive(idGroup, row, idTalent, isActive);
 
+	    if (MPNetworkManager.Instance.IsServer()) return;
 
-		talent.Data.SetOpen(isActive);
-		character.TalentManager.SetActive(idGroup, row, idTalent, isActive);
-        var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
+	    var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
+	    //if (isActive) _saveManager.SaveAttributePoints(points);
+	    //else HandleDeactivation(points);
 
-        if (isActive)
-        {
-            _saveManager.SaveAttributePoints(points);
-        }
-        else
-        {
-            HandleDeactivation(points);
-        }
-
-        Debug.Log("SHOULD " + lvl + " TALENT " + $"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}");
-
-        _saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", lvl);
-		_saveData.SaveInt($"{character.Data.Name}_TalentPointsCount", character.TalentManager.Points);
+	    _saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", lvl);
+	    _saveData.SaveInt($"{character.Data.Name}_TalentPointsCount", character.TalentManager.Points);
     }
 
     private void HandleDeactivation(int points)
     {
         int remainingPoints = points;
 
-        remainingPoints = _saveManager.ReduceFreePoints(remainingPoints);
-		_saveManager.ReduceAttributePoints(remainingPoints);
+        //remainingPoints = _saveManager.ReduceFreePoints(remainingPoints);
+		//_saveManager.ReduceAttributePoints(remainingPoints);
 
 		//if (remainingPoints > 0)
   //      {
@@ -88,62 +76,43 @@ public class TalentSaveManager
 	}*/
 
 	public void LoadTalent(HeroComponent character, int idGroup, int row, string idTalent, bool needActive, int saveGroup)
-    {
-        /*var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
-        var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);*/
+	{
+		if (MPNetworkManager.Instance.IsServer()) return;
 
 		var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		var talentRow = talentGroup.TalentRows[row];
 		var talent = talentRow.Talents?.FirstOrDefault(o => o.Data.Name == idTalent);
-
 		if (talentGroup == null || talent == null) return;
 
-        int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
+		int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
 		character.TalentManager.SetPoints(_saveData.LoadInt($"{character.Data.Name}_TalentPointsCount"));
 
-        talent.Data.SetOpen(isActive >= 1);
-        talent.Data.SetLevel(isActive);
-		Debug.Log("Lvl talent: " + talent.Data.Level + " " + isActive);
-        talentGroup.SetActive(talent.Data, isActive >= 1, isActive);
-		Debug.Log("Lvl talent2: " + talent.Data.Level + " " + isActive);
+		talent.Data.SetOpen(isActive >= 1);
+		talent.Data.SetLevel(isActive);
+		talentGroup.SetActive(talent.Data, isActive >= 1, isActive);
 
-        if (needActive)
-        {
-            character.TalentManager.CmdSwitchTalent(idGroup, row, idTalent, isActive >= 1);
-			// talentGroup.CmdActiveTalent(talent.Data, isActive == 1);
-			//talentGroup.ClientActivateTalent(talent.Data, isActive == 1);
-			//CmdActiveTalent(talentGroup, talent.Data, isActive == 1);
-
-		}
-    }
+		if (needActive)
+			character.TalentManager.CmdSwitchTalent(idGroup, row, idTalent, isActive >= 1);
+	}
 
 	public void SaveAllTalents(HeroComponent character, int saveGroup)
-    {
-        foreach (var talentGroup in character.TalentManager.TalentsGroups)
-        {
-			foreach (var row in talentGroup.TalentRows)
-			{
-				foreach (var talent in row.Talents)
-				{
-					_saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", talent.Data.IsOpen ? 1 : 0);
-				}
-			}
-        }
-    }
+	{
+		if (MPNetworkManager.Instance.IsServer()) return;
+		foreach (var talentGroup in character.TalentManager.TalentsGroups)
+		foreach (var row in talentGroup.TalentRows)
+		foreach (var talent in row.Talents)
+			_saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", talent.Data.IsOpen ? 1 : 0);
+	}
 
-    public void LoadAllTalents(HeroComponent character, int saveGroup)
-    {
-        foreach (var talentGroup in character.TalentManager.TalentsGroups)
-        {
-			foreach (var row in talentGroup.TalentRows)
-			{
-				foreach (var talent in row.Talents)
-				{
-					int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
-					//int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", talent.Data.IsOpen ? 1 : 0);
-					talent.Data.SetOpen(isActive == 1);
-				}
-			}
-        }
-    }
+	public void LoadAllTalents(HeroComponent character, int saveGroup)
+	{
+		if (MPNetworkManager.Instance.IsServer()) return;
+		foreach (var talentGroup in character.TalentManager.TalentsGroups)
+		foreach (var row in talentGroup.TalentRows)
+		foreach (var talent in row.Talents)
+		{
+			int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
+			talent.Data.SetOpen(isActive == 1);
+		}
+	}
 }

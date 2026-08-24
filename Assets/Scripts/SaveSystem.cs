@@ -32,6 +32,32 @@ public class SaveSystem
         }
     }
 
+    public T LoadOrDefault<T>(string key, T defaultValue = default)
+    {
+        string path = BuildPath(key);
+        if (!File.Exists(path))
+        {
+            return defaultValue;
+        }
+
+        try
+        {
+            using (var filestream = new StreamReader(path))
+            {
+                var json = filestream.ReadToEnd();
+                if (string.IsNullOrWhiteSpace(json)) return defaultValue;
+
+                var data = JsonConvert.DeserializeObject<T>(json);
+                return data != null ? data : defaultValue;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[SaveSystem] Ошибка чтения ключа {key}: {ex.Message}");
+            return defaultValue;
+        }
+    }
+
     private string BuildPath(string key)
     {
         return Path.Combine(Application.persistentDataPath, key);

@@ -71,6 +71,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         }
 
         UpdateAttributesPoints();
+
     }
 
     [ContextMenu("Run Custom Debug Function")]
@@ -79,23 +80,34 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         if(_isActive)
         {
             _isActive = false;
-            Show(_hero);
+            ShowHide(_isActive);
         }
         else
         {
             _isActive = true;
-            ResetPanel();
+            ShowHide(_isActive);
         }
+    }
+    
+    private void OnEnable()
+    {
+        LevelCharacterManager.Instance.OnLevelChanged += OnLevelUp;
     }
 
     private void OnDisable()
     {
+        LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
         foreach (var attribute in _attributes)
         {
             //attribute.OnValueChange -= UpdateAttributesPoints;
             attribute.OnPointerEntered -= ShowDescription;
             attribute.OnPointerExited -= HideDescription;
         }
+    }
+    
+    private void OnLevelUp(int newLevel)
+    {
+        UpdateAttributesPoints();
     }
 
     private void ResetPanel()
@@ -122,11 +134,14 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         foreach (var attribute in _attributes)
             attribute.UpdateValue();
 
-        if (MPNetworkManager.Instance.IsServer()) //Если айди игрока <=0, то подключения к серверу нет => грузим с PlayerPrefs
+        if (_attributeSystem != null)
         {
-            _freeAttributePoints = SaveManager.Instance.LoadAttributePoints();
-            _attributesText.ChangeKey(_freeAttributePoints);
+            int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel();
+            int spent = _attributeSystem.GetSpentPoints();
+            _freeAttributePoints = maxPoints - spent;
         }
+
+        _attributesText.ChangeKey(_freeAttributePoints);
     }
     
     private void ShowDescription(string text)
@@ -143,20 +158,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         _descriptionPanel.HideDescription();
     }
-    
-    public void OnAttributePointAdded()
-    {
-        _freeAttributePoints--;
-        _attributesText.ChangeKey(_freeAttributePoints);
-    }
 
-    public void OnAttributePointRemoved()
-    {
-        _freeAttributePoints++;
-        _attributesText.ChangeKey(_freeAttributePoints);
-    }
-
-    public void ApplyServerAttributePoints(List<TalentNetworkManager.ServerAttributeEntry> attributes, int freeAttributePoints)
+    public void ApplyServerAttributePoints(List<ServerHeroProgressRepository.AttributeEntry> attributes, int freeAttributePoints)
     {
         if (_attributeSystem == null) return;
 

@@ -34,11 +34,6 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void UI_StartClient()
     {
-        if (_currentHero != null)
-        {
-            TalentNetworkManager.Instance.SaveArrangement();
-        }
-        
         ServerManager.Instance.StartClient();
     }
 
@@ -50,37 +45,39 @@ public class UIMenuMainWindow : MonoBehaviour
         {
             return;
         }
+        
+        string userKey = MPNetworkManager.Instance.UserID.ToString();
+        BottleUserManager.Instance.SetUser(userKey);
+        SaveManager.Instance.LoadBottles(userKey,
+            onLoaded: (bottles, volume) => BottleUserManager.Instance.ApplyLoadedBottleData(bottles, volume),
+            onFailed: null);
 
         _charactersPanel.Show();
         _gameTypesPanel.Show();
         _savesPanel.Show();
 
         UpdateCharacterPanels();
-        TryLoadServerArrangement(GetHero());
+        SaveManager.Instance.LoadHeroProgress(_attributesPanel, isStillCurrent: () => GetHero() == _currentHero, onComplete: () => { if (GetHero() == _currentHero) UpdateCharacterPanels(); });
     }
 
 
     public void SetHero(HeroComponent hero)
     {
-        if (_currentHero != null)
-        {
-            TalentNetworkManager.Instance.SaveArrangement();
-        }
         _currentHero = hero;
 
         SaveManager.Instance.SetHero(_currentHero);
         ServerManager.Instance.SetPlayer(_currentHero);
 
         UpdateCharacterPanels();
-        TryLoadServerArrangement(_currentHero);
+        SaveManager.Instance.LoadHeroProgress(_attributesPanel, isStillCurrent: () => GetHero() == _currentHero, onComplete: () => { if (GetHero() == _currentHero) UpdateCharacterPanels(); });
     }
 
     public void SetHeroSaveIndex(int index)
     {
         SaveManager.Instance.SetSaveIndex(index);
-        SaveManager.Instance.LoadAllData();
-
-        UpdateCharacterPanels();
+        SaveManager.Instance.LoadHeroProgress(_attributesPanel,
+            isStillCurrent: () => true,
+            onComplete: UpdateCharacterPanels);
     }
 
     public HeroComponent GetHero()
@@ -92,16 +89,6 @@ public class UIMenuMainWindow : MonoBehaviour
     {
         if (hero == null) return;
         if (MPNetworkManager.Instance == null || !MPNetworkManager.Instance.IsServer()) return;
-
-        TalentNetworkManager.Instance.LoadServerArrangement(
-            hero,
-            _attributesPanel,
-            isStillCurrent: () => GetHero() == hero,
-            onComplete: () =>
-            {
-                if (GetHero() == hero)
-                    UpdateCharacterPanels();
-            });
     }
 
     private void UpdateCharacterPanels()
