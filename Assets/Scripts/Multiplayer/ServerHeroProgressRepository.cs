@@ -20,7 +20,8 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
     [Serializable] private class TalentSingleResponse { public bool success; public int freeTalentPoints; }
     [Serializable] private class AttributePointResponse { public bool success; public int freeAttributePoints; }
     [Serializable] private class SetBottleResponse { public bool success; public int bottles; }
-    
+    [Serializable] private class AbilityPanelResponse { public bool success; public List<SkillPanelSave> layout; }
+
     public void Load(HeroComponent hero, UIMenuMainAttributesPanel attributesPanel, int saveGroup,
         Func<bool> isStillCurrent, Action onComplete)
     {
@@ -200,6 +201,62 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
         );
     }
 
+    public void SaveAbilityLayout(string heroName, int saveGroup, List<SkillPanelSave> layout,
+        Action<List<SkillPanelSave>> onSaved, Action onFailed)
+    {
+        var data = new Dictionary<string, string>
+        {
+            { "id", MPNetworkManager.Instance.UserID.ToString() },
+            { "heroName", heroName },
+            { "layout", JsonConvert.SerializeObject(layout) }
+        };
+
+        NetworkHTTP.Instance.PostSetAbilityPanel(data,
+            success: json =>
+            {
+                var result = JsonConvert.DeserializeObject<AbilityPanelResponse>(json);
+                if (result == null || !result.success)
+                {
+                    Debug.LogWarning("Расстановка способностей не сохранена: " + json);
+                    onFailed?.Invoke();
+                    return;
+                }
+                onSaved?.Invoke(result.layout ?? layout);
+            },
+            error: err =>
+            {
+                Debug.LogWarning($"[ServerHeroProgressRepository] Не удалось сохранить панель способностей: {err}");
+                onFailed?.Invoke();
+            });
+    }
+
+    public void LoadAbilityLayout(string heroName, int saveGroup, Action<List<SkillPanelSave>> onLoaded, Action onFailed = null)
+    {
+        var data = new Dictionary<string, string>
+        {
+            { "id", MPNetworkManager.Instance.UserID.ToString() },
+            { "heroName", heroName }
+        };
+
+        NetworkHTTP.Instance.PostGetAbilityPanel(data,
+            success: json =>
+            {
+                var result = JsonConvert.DeserializeObject<AbilityPanelResponse>(json);
+                if (result == null || !result.success)
+                {
+                    Debug.LogWarning("Не удалось загрузить панель способностей: " + json);
+                    onFailed?.Invoke();
+                    return;
+                }
+                onLoaded?.Invoke(result.layout);
+            },
+            error: err =>
+            {
+                Debug.LogWarning($"[ServerHeroProgressRepository] Сервер недоступен (панель способностей): {err}");
+                onFailed?.Invoke();
+            });
+    }
+
     public void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed)
     {
         Dictionary<string, string> data = new Dictionary<string, string>()
@@ -226,7 +283,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                 onFailed?.Invoke();
             });
     }
-    
+
     public void LoadBottles(string userKey, Action<int, float> onLoaded, Action onFailed = null)
     {
         Dictionary<string, string> data = new Dictionary<string, string>() { { "id", userKey } };

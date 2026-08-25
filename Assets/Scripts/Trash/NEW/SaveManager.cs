@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -63,7 +64,7 @@ public class SaveManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    
     private bool UseServerPersistence => MPNetworkManager.Instance != null && MPNetworkManager.Instance.UserID > 0;
     
     public void Initialize()
@@ -85,7 +86,7 @@ public class SaveManager : MonoBehaviour
     {
         _currentSaveGroup = index;
     }
-
+    
     public void LoadHeroProgress(UIMenuMainAttributesPanel attributesPanel, Func<bool> isStillCurrent, Action onComplete)
     {
         if (!EnsureRepository()) { onComplete?.Invoke(); return; }
@@ -123,14 +124,27 @@ public class SaveManager : MonoBehaviour
         if (!EnsureRepository()) return;
 
         _repository.SaveAttributePoint(_character, attribute.Name, delta, _currentSaveGroup,
-            onFreeAttributePointsChanged: pts => { },
-            onFailed: () => {  });
+            onFreeAttributePointsChanged: pts => {},
+            onFailed: () => {});
     }
 
     public void SaveHeroLevel(int level, int experience, int skillPoints, int attributePoints)
     {
         if (!EnsureRepository()) return;
         _repository.SaveLevel(_character, _currentSaveGroup, level, experience, skillPoints, attributePoints);
+    }
+    
+    public void SaveAbilityLayout(string heroName, List<SkillPanelSave> layout,
+        Action<List<SkillPanelSave>> onSaved = null, Action onFailed = null)
+    {
+        Initialize();
+        _repository.SaveAbilityLayout(heroName, _currentSaveGroup, layout, onSaved, onFailed);
+    }
+
+    public void LoadAbilityLayout(string heroName, Action<List<SkillPanelSave>> onLoaded, Action onFailed = null)
+    {
+        Initialize();
+        _repository.LoadAbilityLayout(heroName, _currentSaveGroup, onLoaded, onFailed);
     }
 
     public void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed)

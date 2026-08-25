@@ -91,6 +91,20 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
         _saveData.SaveInt($"{heroKey}_Group{saveGroup}_Experience", experience);
     }
 
+    public void SaveAbilityLayout(string heroName, int saveGroup, List<SkillPanelSave> layout,
+        Action<List<SkillPanelSave>> onSaved, Action onFailed)
+    {
+        _saveSystem.Save($"{heroName}_Group{saveGroup}_AbilityPanel", layout);
+        onSaved?.Invoke(layout);
+    }
+
+    public void LoadAbilityLayout(string heroName, int saveGroup, Action<List<SkillPanelSave>> onLoaded, Action onFailed = null)
+    {
+        List<SkillPanelSave> save = null;
+        _saveSystem.Load<List<SkillPanelSave>>($"{heroName}_Group{saveGroup}_AbilityPanel", e => save = e);
+        onLoaded?.Invoke(save);
+    }
+
     public void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed)
     {
         _saveData.SaveInt($"{userKey}_Bottles", bottles);

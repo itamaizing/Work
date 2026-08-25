@@ -17,6 +17,8 @@ public class URLLibrary
     private const string _setHeroesTalent = "SetTalentData.php";
     private static string _setHeroTalentSingle = "SetTalentSingle.php";
     private static string _setHeroAttributePoint = "SetAttributePoint.php";
+    private const string _getAbilityPanel = "GetAbilityPanel.php";
+    private const string _setAbilityPanel = "SetAbilityPanel.php";
     private const string _startGame = "startGame.php";
     private const string _webSocketPort = "8888";
     private const string _webSocket = "ws://";
@@ -64,4 +66,6 @@ public class URLLibrary
     public static string SetTalentData { get { return GameFolder + _setHeroesTalent; } }
     public static string SetTalentSingle { get { return GameFolder + _setHeroTalentSingle; } }
     public static string SetAttributePoint { get { return GameFolder + _setHeroAttributePoint; } }
+    public static string GetAbilityPanel { get { return GameFolder + _getAbilityPanel; } }
+    public static string SetAbilityPanel { get { return GameFolder + _setAbilityPanel; } }
 }

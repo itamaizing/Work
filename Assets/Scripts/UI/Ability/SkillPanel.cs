@@ -26,7 +26,7 @@ public class SkillPanel : MonoBehaviour
     private bool _isActive;
     private bool _isSelect;
     private bool _isMenu = false;
-    private SaveSystem _saveSystem = new();
+    private Coroutine _loadPanelCoroutine;
 
     private void Start()
     {
@@ -42,6 +42,12 @@ public class SkillPanel : MonoBehaviour
             _skillIcons[i].Init(i);
             _skillIcons[i].CurrentSkillChanged += SkillChanged;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (_loadPanelCoroutine != null)
+            StopCoroutine(_loadPanelCoroutine);
     }
 
     public void Fill(SkillManager abilities)
@@ -88,7 +94,16 @@ public class SkillPanel : MonoBehaviour
 
     public void FillMenu(SkillManager abilities, Character character)
     {
+        if (_isMenu && _playerAbilities != null && _playerAbilities != abilities)
+            SavePanel();
+
         _isMenu = true;
+
+        if (_loadPanelCoroutine != null)
+        {
+            StopCoroutine(_loadPanelCoroutine);
+            _loadPanelCoroutine = null;
+        }
 
         ClearPanel();
 
@@ -99,11 +114,8 @@ public class SkillPanel : MonoBehaviour
         }
 
         _playerAbilities = abilities;
-       /* if (hero != null)
-        {
-            Debug.Log("Init");
-            hero.TalentManager.Initialize(hero.LVL);
-        }*/
+        
+        var selectedSnapshot = (Skill[])_playerAbilities.SelectedSkills.Clone();
 
         int j = 0;
         foreach (Skill skill in _playerAbilities.DefaultSkills)
@@ -126,7 +138,7 @@ public class SkillPanel : MonoBehaviour
             icon.PointerExit += OnPointerExitIcon;
             j++;
         }
-        foreach (Skill skill in _playerAbilities.SelectedSkills)
+        foreach (Skill skill in selectedSnapshot)
         {
             if (skill == null)
             {
@@ -153,7 +165,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
-        StartCoroutine(LoadPanelJob());
+        _loadPanelCoroutine = StartCoroutine(LoadPanelJob());
     }
 
     public void FillMinionPanel(SkillManager abilities)
@@ -256,7 +268,11 @@ public class SkillPanel : MonoBehaviour
                 }
             }
         }
-        //SavePanel();
+    }
+    
+    public void UI_SaveAbilityLayout()
+    {
+        if (_isMenu) SavePanel();
     }
 
     private void SkillChanged(int index, Skill skill)
@@ -320,10 +336,17 @@ public class SkillPanel : MonoBehaviour
 
     private void OnSkillAdded(Skill skill)
     {
+
         if (_isMenu)
+        {
+            Debug.LogError("FillMenu");
             FillMenu(_playerAbilities, _hero);
+        }
         else
+        {
+            Debug.LogError("Just Fill");
             Fill(_playerAbilities);
+        }
 		//UpdatePanel();
 	}
 
@@ -399,7 +422,7 @@ public class SkillPanel : MonoBehaviour
     }
 
     [ContextMenu("swapTest")]
-    public void TestSwapSkillIcon() // Delete this ---------------------------------------------------------------------------------
+    public void TestSwapSkillIcon()
     {
         DraggableIcon temp;
         int index1 = 0;
@@ -413,12 +436,12 @@ public class SkillPanel : MonoBehaviour
     }
 
     [ContextMenu("swapTest2")]
-    public void TestSwapSkillIcon2() // Delete this ---------------------------------------------------------------------------------
+    public void TestSwapSkillIcon2()
     {
         SwapSkillIcon(0, 2);
     }
 
-    public void SwapSkillIcon(int index1, int index2) // Delete this ---------------------------------------------------------------------------------
+    public void SwapSkillIcon(int index1, int index2)
     {
         DraggableIcon tempIcon1;
         DraggableIcon tempIcon2;
@@ -439,7 +462,7 @@ public class SkillPanel : MonoBehaviour
         tempIcon.OnEndDrag(null);
     }
 
-    private void SetSkillIconFrame(int indexFrom, int indexTo) // I didn't test it
+    private void SetSkillIconFrame(int indexFrom, int indexTo)
     {
         DraggableIcon tempIcon = _skillIcons[indexFrom].CurrentIcon;
 
@@ -454,69 +477,62 @@ public class SkillPanel : MonoBehaviour
         List<SkillPanelSave> save = new();
         for(int i = 0; i< _skillIcons.Length; i++)
         {
-            if (_skillIcons[i].CurrentIcon != null)
-            {
-                SkillPanelSave item = new();
-                item.Name = _skillIcons[i].CurrentIcon.Skill.Name;
-                item.Id = i;
+            var icon = _skillIcons[i].CurrentIcon;
+            if (icon == null) continue;
+            
+            if (!icon.Skill.IsSkillActive) continue;
 
-                save.Add(item);
-                //Debug.Log("Ico  " + i + " Ability" + _skillIcons[i].CurrentIcon.Skill.Name);
-            }
+            save.Add(new SkillPanelSave { Name = icon.Skill.Name, Id = i });
         }
-        _saveSystem.Save($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", save);   
+        
+        SaveManager.Instance.SaveAbilityLayout(_playerAbilities.Hero.Data.Name, save);
     }
 
     [ContextMenu("Load")]
     private void LoadPanel()
     {
-        List<SkillPanelSave> save = new();
-        _saveSystem.Load<List<SkillPanelSave>>($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", e => save = e);
-
-        if (save == null)
-            return;
-
-        foreach(var skillSave in save)
+        SaveManager.Instance.LoadAbilityLayout(_playerAbilities.Hero.Data.Name, save =>
         {
-            DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skillSave.Name);
+            if (save == null)
+                return;
 
-            if (icon != null)
+            foreach (var skillSave in save)
+            {
+                DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skillSave.Name);
+                if (icon == null) continue;
+
                 SetSkillIconFrame(icon, skillSave.Id);
-        }
+            }
+        });
     }
 
     private void LoadOneSkill(Skill skill)
     {
-        List<SkillPanelSave> save = new();
-        _saveSystem.Load<List<SkillPanelSave>>($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", e => save = e);
-        if (save == null) return;
-
-        DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skill.Name);
-        SkillIcon cell = _skillIcons.FirstOrDefault(a => a.CurrentIcon == icon);
-        SkillPanelSave saveItem = save.FirstOrDefault(a => a.Name == skill.Name);
-
-        if (icon == null || cell == null) return;
-        //cell.CurrentIcon = null;
-        
-
-        if (_skillIcons[saveItem.Id].CurrentIcon != null)
+        SaveManager.Instance.LoadAbilityLayout(_playerAbilities.Hero.Data.Name, save =>
         {
-            DraggableIcon iconTemp = _skillIcons[saveItem.Id].CurrentIcon;
-            SkillIcon cellTemp = _skillIcons.FirstOrDefault(a => a.CurrentIcon == null);
-            cellTemp.CurrentIcon = iconTemp;
-            iconTemp.UpdatePosition(cellTemp.transform);
-            //_skillIcons[saveItem.Id].CurrentIcon = null;
-            //_skillIcons[saveItem.Id].ClearData();
+            if (save == null) return;
 
-        }
-        _skillIcons[saveItem.Id].CurrentIcon = icon;
-        icon.UpdatePosition(_skillIcons[saveItem.Id].transform);
-        //cell.ClearData();
-        cell.CurrentIcon = null;
-        SkillChanged(saveItem.Id, icon.Skill);
+            DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skill.Name);
+            SkillIcon cell = _skillIcons.FirstOrDefault(a => a.CurrentIcon == icon);
+            SkillPanelSave saveItem = save.FirstOrDefault(a => a.Name == skill.Name);
 
-        OnBeginDrag();
-        OnEndDrag();
+            if (icon == null || cell == null) return;
+
+            if (_skillIcons[saveItem.Id].CurrentIcon != null)
+            {
+                DraggableIcon iconTemp = _skillIcons[saveItem.Id].CurrentIcon;
+                SkillIcon cellTemp = _skillIcons.FirstOrDefault(a => a.CurrentIcon == null);
+                cellTemp.CurrentIcon = iconTemp;
+                iconTemp.UpdatePosition(cellTemp.transform);
+            }
+            _skillIcons[saveItem.Id].CurrentIcon = icon;
+            icon.UpdatePosition(_skillIcons[saveItem.Id].transform);
+            cell.CurrentIcon = null;
+            SkillChanged(saveItem.Id, icon.Skill);
+
+            OnBeginDrag();
+            OnEndDrag();
+        });
     }
 
     private IEnumerator LoadPanelJob()
@@ -525,6 +541,7 @@ public class SkillPanel : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         yield return new WaitForEndOfFrame();
         LoadPanel();
+        _loadPanelCoroutine = null;
     }
 }
 

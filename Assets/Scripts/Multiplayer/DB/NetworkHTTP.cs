@@ -106,7 +106,23 @@ public class NetworkHTTP : MonoBehaviour
 
     public void PostSetAttributePoint(string json, Action<string> success, Action<string> error = null)
         => _postCoroutine = StartCoroutine(PostJsonJob(URLLibrary.SetAttributePoint, json, success, error));
-    
+
+    /// <summary>
+    /// Gets the saved ability-panel layout (skill-per-slot) for id+heroName.
+    /// </summary>
+    public void PostGetAbilityPanel(Dictionary<string, string> data, Action<string> success, Action<string> error = null)
+    {
+        Post(URLLibrary.GetAbilityPanel, data, success, error);
+    }
+
+    /// <summary>
+    /// Saves the ability-panel layout. data keys: "id", "heroName", "layout" (JSON-serialized
+    /// List&lt;SkillPanelSave&gt;).
+    /// </summary>
+    public void PostSetAbilityPanel(Dictionary<string, string> data, Action<string> success, Action<string> error = null)
+    {
+        Post(URLLibrary.SetAbilityPanel, data, success, error);
+    }
 
     private IEnumerator PostJob(string uri, Dictionary<string, string> data, Action<string> success, Action<string> error = null)
     {

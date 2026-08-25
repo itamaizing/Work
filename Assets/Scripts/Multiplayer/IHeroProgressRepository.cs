@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public interface IHeroProgressRepository
 {
@@ -12,6 +13,11 @@ public interface IHeroProgressRepository
         Action<int> onFreeAttributePointsChanged, Action onFailed);
 
     void SaveLevel(HeroComponent hero, int saveGroup, int level, int experience, int skillPoints, int attributePoints);
+
+    void SaveAbilityLayout(string heroName, int saveGroup, List<SkillPanelSave> layout,
+        Action<List<SkillPanelSave>> onSaved, Action onFailed);
+
+    void LoadAbilityLayout(string heroName, int saveGroup, Action<List<SkillPanelSave>> onLoaded, Action onFailed = null);
     
     void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed);
 

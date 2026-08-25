@@ -73,7 +73,6 @@ public class ServerManager : NetworkBehaviour
             OnServerRoomCreatedSuccess("localhost:7777");
             return;
         }
-
         //request
         /*
         Dictionary<string, string> data = new Dictionary<string, string>()

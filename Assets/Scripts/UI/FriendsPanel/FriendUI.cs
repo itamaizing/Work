@@ -131,7 +131,7 @@ public class FriendUI : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Ошибка: " + response.error);
+            Debug.LogError("пїЅпїЅпїЅпїЅпїЅпїЅ: " + response.error);
         }
         UpdateFriendUI();
         FriendListUpdated?.Invoke(_friends);
@@ -181,7 +181,7 @@ public class FriendUI : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Ошибка: " + response.error);
+            Debug.LogError("пїЅпїЅпїЅпїЅпїЅпїЅ: " + response.error);
         }
 
         foreach (FriendData friend in _friendsRequst)

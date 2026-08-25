@@ -71,7 +71,9 @@ public class WebSocketClient : MonoBehaviour
     public void SendMessageToServer(string message)
     {
         if (_webSocket != null && _webSocket.State == WebSocketState.Open)
+        {
             _webSocket.SendText(message);
+        }
     }
 
     private void OnWebSocketMessage(byte[] bytes)
