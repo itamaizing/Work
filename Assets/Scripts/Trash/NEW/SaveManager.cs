@@ -45,6 +45,8 @@ public class SaveManager : MonoBehaviour
     private static SaveManager _instance;
     public static SaveManager Instance => _instance;
 
+    public int CurrentSaveGroup => _currentSaveGroup;
+
     private HeroComponent _character;
     private int _currentSaveGroup = 0;
     private ISaveData _saveData;
@@ -163,5 +165,11 @@ public class SaveManager : MonoBehaviour
     {
         Initialize();
         return _repository != null;
+    }
+    
+    public void LoadHeroProgressForMatch(HeroComponent hero, int userId, int saveGroup, Action onComplete)
+    {
+        if (!EnsureRepository()) { onComplete?.Invoke(); return; }
+        _repository.LoadForMatch(hero, userId, saveGroup, onComplete);
     }
 }

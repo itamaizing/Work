@@ -6,8 +6,22 @@ using UnityEngine;
 
 public class ServerHeroProgressRepository : IHeroProgressRepository
 {
-    [Serializable] public class TalentEntry { public int group; public int row; public string name; public int lvl; }
-    [Serializable] public class AttributeEntry { public string name; public int points; }
+    [Serializable]
+    public class TalentEntry
+    {
+        public int group;
+        public int row;
+        public string name;
+        public int lvl;
+    }
+
+    [Serializable]
+    public class AttributeEntry
+    {
+        public string name;
+        public int points;
+    }
+
     [Serializable]
     public class TalentAttributeResponse
     {
@@ -17,15 +31,40 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
         public List<TalentEntry> talents;
         public List<AttributeEntry> attributes;
     }
-    [Serializable] private class TalentSingleResponse { public bool success; public int freeTalentPoints; }
-    [Serializable] private class AttributePointResponse { public bool success; public int freeAttributePoints; }
-    [Serializable] private class SetBottleResponse { public bool success; public int bottles; }
-    [Serializable] private class AbilityPanelResponse { public bool success; public List<SkillPanelSave> layout; }
+
+    [Serializable]
+    private class TalentSingleResponse
+    {
+        public bool success;
+        public int freeTalentPoints;
+    }
+
+    [Serializable]
+    private class AttributePointResponse
+    {
+        public bool success;
+        public int freeAttributePoints;
+    }
+
+    [Serializable]
+    private class SetBottleResponse
+    {
+        public bool success;
+        public int bottles;
+    }
+
+    [Serializable]
+    private class AbilityPanelResponse
+    {
+        public bool success;
+        public List<SkillPanelSave> layout;
+    }
 
     public void Load(HeroComponent hero, UIMenuMainAttributesPanel attributesPanel, int saveGroup,
         Func<bool> isStillCurrent, Action onComplete)
     {
         int pending = 2;
+
         void OnPartDone()
         {
             pending--;
@@ -87,13 +126,25 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
         Func<bool> isStillCurrent, string json, Action onDone)
     {
         var serverData = JsonConvert.DeserializeObject<TalentAttributeResponse>(json);
-        if (serverData == null || !serverData.success) { onDone?.Invoke(); return; }
-        if (isStillCurrent != null && !isStillCurrent()) { onDone?.Invoke(); return; }
+        if (serverData == null || !serverData.success)
+        {
+            onDone?.Invoke();
+            return;
+        }
+
+        if (isStillCurrent != null && !isStillCurrent())
+        {
+            onDone?.Invoke();
+            return;
+        }
 
         foreach (var group in hero.TalentManager.TalentsGroups)
         foreach (var row in group.TalentRows)
         foreach (var talent in row.Talents)
-            group.SetActive(talent.Data, false, 0);
+        {
+            talent.Data.SetOpen(false);
+            talent.Exit();
+        }
 
         foreach (var entry in serverData.talents)
         {
@@ -103,7 +154,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
 
             talent.Data.SetOpen(true);
             talent.Data.SetLevel(entry.lvl);
-            group.SetActive(talent.Data, true, entry.lvl);
+            talent.Enter();
         }
 
         hero.TalentManager.SetPoints(serverData.freeTalentPoints);
@@ -117,7 +168,8 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
         onDone?.Invoke();
     }
 
-    public void SaveTalent(HeroComponent hero, int idGroup, int row, string idTalent, bool isActive, int lvl, int saveGroup,
+    public void SaveTalent(HeroComponent hero, int idGroup, int row, string idTalent, bool isActive, int lvl,
+        int saveGroup,
         Action<int> onFreeTalentPointsChanged, Action onFailed)
     {
         var payload = new
@@ -142,6 +194,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                     onFailed?.Invoke();
                     return;
                 }
+
                 onFreeTalentPointsChanged?.Invoke(result.freeTalentPoints);
             },
             error: err =>
@@ -173,6 +226,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                     onFailed?.Invoke();
                     return;
                 }
+
                 onFreeAttributePointsChanged?.Invoke(result.freeAttributePoints);
             },
             error: err =>
@@ -182,7 +236,8 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
             });
     }
 
-    public void SaveLevel(HeroComponent hero, int saveGroup, int level, int experience, int skillPoints, int attributePoints)
+    public void SaveLevel(HeroComponent hero, int saveGroup, int level, int experience, int skillPoints,
+        int attributePoints)
     {
         Dictionary<string, string> data = new Dictionary<string, string>()
         {
@@ -221,6 +276,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                     onFailed?.Invoke();
                     return;
                 }
+
                 onSaved?.Invoke(result.layout ?? layout);
             },
             error: err =>
@@ -230,7 +286,8 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
             });
     }
 
-    public void LoadAbilityLayout(string heroName, int saveGroup, Action<List<SkillPanelSave>> onLoaded, Action onFailed = null)
+    public void LoadAbilityLayout(string heroName, int saveGroup, Action<List<SkillPanelSave>> onLoaded,
+        Action onFailed = null)
     {
         var data = new Dictionary<string, string>
         {
@@ -248,6 +305,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                     onFailed?.Invoke();
                     return;
                 }
+
                 onLoaded?.Invoke(result.layout);
             },
             error: err =>
@@ -275,6 +333,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                     onFailed?.Invoke();
                     return;
                 }
+
                 onSaved?.Invoke(result.bottles);
             },
             error: err =>
@@ -305,5 +364,101 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                 Debug.LogWarning($"[ServerHeroProgressRepository] Сервер недоступен (бутылки): {err}");
                 onFailed?.Invoke();
             });
+    }
+
+    public void LoadForMatch(HeroComponent hero, int userId, int saveGroup, Action onComplete)
+    {
+        int pending = 2;
+
+        void OnPartDone()
+        {
+            if (--pending == 0) onComplete?.Invoke();
+        }
+
+        LoadHeroLevelForMatch(hero, userId, OnPartDone);
+        LoadTalentsAndAttributesForMatch(hero, userId, OnPartDone);
+    }
+
+    private void LoadHeroLevelForMatch(HeroComponent hero, int userId, Action onDone)
+    {
+        var data = new Dictionary<string, string> { { "id", userId.ToString() }, { "heroName", hero.Data.Name } };
+
+        NetworkHTTP.Instance.PostGetHeroData(data,
+            success: json =>
+            {
+                if (string.IsNullOrEmpty(json) || json.Contains("\"success\":false")) { onDone?.Invoke(); return; }
+
+                var heroData = NetworkHTTP.ConvertInHeroData(json);
+                LevelCharacterManager.Instance.ApplyLoadedLevelData(hero, heroData.lvl, heroData.exp);
+                
+                hero.LVL.ApplyLoadedLevelLocal(
+                    LevelCharacterManager.Instance.GetCurrentLevel(),
+                    LevelCharacterManager.Instance.GetCurrentExperience(),
+                    LevelCharacterManager.Instance.GetExperienceForNextLevel());
+
+                onDone?.Invoke();
+            },
+            error: err => onDone?.Invoke());
+    }
+
+    private void LoadTalentsAndAttributesForMatch(HeroComponent hero, int userId, Action onDone)
+    {
+
+        var data = new Dictionary<string, string>
+        {
+            { "id", MPNetworkManager.Instance.UserID.ToString() },
+            { "heroName", hero.Data.Name }
+        };
+
+        NetworkHTTP.Instance.PostGetTalentData(data,
+            success: json => ApplyTalentAttributeDataForMatch(hero, json, onDone),
+            error: err =>
+            {
+                Debug.LogWarning("[ServerHeroProgressRepository] Сервер недоступен (таланты, матч): " + err);
+                onDone?.Invoke();
+            });
+    }
+
+    private void ApplyTalentAttributeDataForMatch(HeroComponent hero, string json, Action onDone)
+    {
+        var serverData = JsonConvert.DeserializeObject<TalentAttributeResponse>(json);
+        if (serverData == null || !serverData.success)
+        {
+            onDone?.Invoke();
+            return;
+        }
+
+        foreach (var group in hero.TalentManager.TalentsGroups)
+        foreach (var row in group.TalentRows)
+        foreach (var talent in row.Talents)
+        {
+            talent.Data.SetOpen(false);
+            talent.Exit();
+        }
+
+        foreach (var entry in serverData.talents)
+        {
+            var group = hero.TalentManager.TalentsGroups.FirstOrDefault(g => g.ID == entry.group);
+            var talent = group?.TalentRows[entry.row].Talents.FirstOrDefault(t => t.Data.Name == entry.name);
+            if (talent == null) continue;
+
+            talent.Data.SetOpen(true);
+            talent.Data.SetLevel(entry.lvl);
+            talent.Enter();
+        }
+
+        hero.TalentManager.SetPoints(serverData.freeTalentPoints);
+
+        foreach (var attribute in hero.AttributeSystem.Attributes.Values)
+        {
+            var entry = serverData.attributes?.FirstOrDefault(a => a.name == attribute.Name);
+            int targetPoints = entry?.points ?? 0;
+
+            attribute.RemoveBySource("AttributePoint");
+            for (int i = 0; i < targetPoints; i++)
+                attribute.AddModifier(new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint"));
+        }
+
+        onDone?.Invoke();
     }
 }

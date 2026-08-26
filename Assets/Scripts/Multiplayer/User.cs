@@ -33,7 +33,7 @@ public class User : NetworkBehaviour
                 _id = MPNetworkManager.Instance.UserID;
                 InitializeManagers();
 
-                AddPlayer(ServerManager.Instance.CurrentHeroIndex);
+                AddPlayer(ServerManager.Instance.CurrentHeroIndex, SaveManager.Instance.CurrentSaveGroup);
             }
             else if (Instance != null && Instance != this)
             {
@@ -44,12 +44,17 @@ public class User : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    private void AddPlayer(int characterIndex)
+    private void AddPlayer(int characterIndex, int saveGroup)
     {
         GameObject player = Instantiate(MPNetworkManager.Instance.HeroList[characterIndex].gameObject);
         NetworkServer.Spawn(player, connectionToClient);
-        MPNetworkManager.Instance.AddPlayer(player);
-        RpcAddPlayer(player);
+
+        var hero = player.GetComponent<HeroComponent>();
+        SaveManager.Instance.LoadHeroProgressForMatch(hero, _id, saveGroup, onComplete: () =>
+        {
+            MPNetworkManager.Instance.AddPlayer(player);
+            RpcAddPlayer(player);
+        });
     }
 
     [ClientRpc]

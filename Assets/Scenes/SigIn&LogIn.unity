@@ -2054,7 +2054,7 @@ MonoBehaviour:
   - GameMode: 6
     GameObjcet: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
   - GameMode: 7
-    GameObjcet: {fileID: 0}
+    GameObjcet: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
   _currentGameRulesIndex: 0
   _userID: -37
 --- !u!114 &452850708

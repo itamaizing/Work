@@ -20,6 +20,8 @@ public class TalentSystem : NetworkBehaviour
     private Level _lvl;
     private int _points = 1;
     private int _prevValue = 1;
+    
+    private bool _initialized;
 
    public Level Level { get => _lvl; set => _lvl = value; }
 
@@ -68,8 +70,14 @@ public class TalentSystem : NetworkBehaviour
     // [Command]
     public void Initialize(Level level)
     {
-        Debug.Log($"_points: {_points}");
-        if(level != null)
+        if (_initialized)
+        {
+            RefreshTalentVisuals();
+            return;
+        }
+        _initialized = true;
+
+        if (level != null)
         {
             _lvl = level;
             _lvl.LVLUped += AddPoint;
@@ -78,20 +86,17 @@ public class TalentSystem : NetworkBehaviour
         _prevValue = _lvl.Value;
         _points = _lvl.Value;
 
-        foreach (var talentRow in _talents.SelectMany(talentsGroup => talentsGroup.TalentRows))
+        RefreshTalentVisuals();
+    }
+    
+    private void RefreshTalentVisuals()
+    {
+        foreach (var talentRow in _talents.SelectMany(g => g.TalentRows))
+        foreach (var talent in talentRow.Talents)
         {
-            foreach (var talent in talentRow.Talents)
-            {
-                talent.Data.Name = talent.GetType().Name;
-                if (talent.Data.IsOpen)
-                {
-                    talent.Enter();
-                }
-                else
-                {
-                    talent.Exit();
-                }
-            }
+            talent.Data.Name = talent.GetType().Name;
+            if (talent.Data.IsOpen) talent.Enter();
+            else talent.Exit();
         }
     }
 
@@ -133,6 +138,7 @@ public class TalentSystem : NetworkBehaviour
     public void SetPoints(int value)
     {
         _points = value;
+        _prevValue = _lvl != null ? _lvl.Value : _prevValue;
     }
 
    /* public void SetActive(int row, int id, bool value)

@@ -22,4 +22,6 @@ public interface IHeroProgressRepository
     void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed);
 
     void LoadBottles(string userKey, Action<int, float> onLoaded, Action onFailed = null);
+    
+    void LoadForMatch(HeroComponent hero, int userId, int saveGroup, Action onComplete);
 }

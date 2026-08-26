@@ -118,4 +118,39 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
         float volume = _saveData.LoadFloat($"{userKey}_BottleVolume", 0f);
         onLoaded?.Invoke(bottles, volume);
     }
+    
+    public void LoadForMatch(HeroComponent hero, int userId, int saveGroup, Action onComplete)
+    {
+        string heroKey = hero.Data.Name;
+
+        int level = _saveData.LoadInt($"{heroKey}_Group{saveGroup}_Level", 1);
+        int experience = _saveData.LoadInt($"{heroKey}_Group{saveGroup}_Experience", 0);
+        LevelCharacterManager.Instance.ApplyLoadedLevelData(hero, level, experience);
+
+        int talentPoints = _saveData.LoadInt($"{heroKey}_TalentPointsCount", 0);
+        hero.TalentManager.SetPoints(talentPoints);
+
+        foreach (var talentGroup in hero.TalentManager.TalentsGroups)
+        foreach (var row in talentGroup.TalentRows)
+        foreach (var talent in row.Talents)
+        {
+            int lvl = _saveData.LoadInt($"{heroKey}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
+            talent.Data.SetOpen(lvl >= 1);
+            talent.Data.SetLevel(lvl);
+            talentGroup.SetActive(talent.Data, lvl >= 1, lvl);
+        }
+
+        foreach (var attribute in hero.AttributeSystem.Attributes.Values)
+        {
+            List<AttributeModifier> modifiers = null;
+            _saveSystem.Load<List<AttributeModifier>>($"{heroKey}_Group{saveGroup}_{attribute.Name}_Points", loaded => modifiers = loaded);
+
+            attribute.RemoveBySource("AttributePoint");
+            if (modifiers != null)
+                foreach (var modifier in modifiers)
+                    attribute.AddModifier(modifier);
+        }
+
+        onComplete?.Invoke();
+    }
 }
