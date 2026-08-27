@@ -22,6 +22,7 @@ public class TalentSystem : NetworkBehaviour
     private int _prevValue = 1;
     
     private bool _initialized;
+    private bool _pointsLoaded;
 
    public Level Level { get => _lvl; set => _lvl = value; }
 
@@ -64,6 +65,7 @@ public class TalentSystem : NetworkBehaviour
         if (_lvl != null)
         {
             _lvl.LVLUped -= AddPoint;
+            _lvl.LevelLoaded -= OnLevelLoaded;
         }
     }
 
@@ -81,12 +83,20 @@ public class TalentSystem : NetworkBehaviour
         {
             _lvl = level;
             _lvl.LVLUped += AddPoint;
+            _lvl.LevelLoaded += OnLevelLoaded;
         }
 
         _prevValue = _lvl.Value;
-        _points = _lvl.Value;
+
+        if (!_pointsLoaded)
+            _points = _lvl.Value;
 
         RefreshTalentVisuals();
+    }
+    
+    private void OnLevelLoaded(int value)
+    {
+        _prevValue = value;
     }
     
     private void RefreshTalentVisuals()
@@ -139,6 +149,7 @@ public class TalentSystem : NetworkBehaviour
     {
         _points = value;
         _prevValue = _lvl != null ? _lvl.Value : _prevValue;
+        _pointsLoaded = true;
     }
 
    /* public void SetActive(int row, int id, bool value)

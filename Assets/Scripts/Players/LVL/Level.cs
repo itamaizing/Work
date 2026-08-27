@@ -23,6 +23,7 @@ public class Level : NetworkBehaviour
     public event Action<int> EXPAdded;
     public event Action<int> LVLUped;
     public event Action<int> EXPForNextLVLChanged;
+    public event Action<int> LevelLoaded;
 
     private void Start()
     {
@@ -83,7 +84,7 @@ public class Level : NetworkBehaviour
         _experience = experience;
         _experienceForNextLVL = experienceForNextLVL;
 
-        LVLUped?.Invoke(_value);
+        LevelLoaded?.Invoke(_value);
         EXPAdded?.Invoke(_experience);
         EXPForNextLVLChanged?.Invoke(_experienceForNextLVL);
     }
@@ -91,6 +92,12 @@ public class Level : NetworkBehaviour
     private void HandleHeroSet()
     {
         if (hero == null || hero.LVL != this) return;
+        
+        if (isClient || isServer)
+        {
+            hero.TalentManager?.Initialize(this);
+            return;
+        }
 
         ApplyLoadedLevelLocal(
             LevelCharacterManager.Instance.GetCurrentLevel(),

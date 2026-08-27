@@ -38,7 +38,9 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     public void Show(Character hero, bool isMenu = true)
     {
-        if (_hero == hero) return;
+        if (_hero == hero) { RefreshFromSource(); return; }
+        if (_hero != null && !isMenu) _hero.AttributeSystem.AttributesReloaded -= RefreshFromSource;
+
         _hero = hero;
         if (isMenu)
         {
@@ -53,6 +55,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         else
         {
             _attributeSystem = _hero.AttributeSystem;
+            _attributeSystem.AttributesReloaded += RefreshFromSource;
         }
         ResetPanel();
 
@@ -72,6 +75,13 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
         UpdateAttributesPoints();
 
+    }
+    
+    private void RefreshFromSource()
+    {
+        foreach (var item in _attributes)
+            item.SyncModifiers();
+        UpdateAttributesPoints();
     }
 
     [ContextMenu("Run Custom Debug Function")]
@@ -97,6 +107,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     private void OnDisable()
     {
         LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
+        if (_attributeSystem != null) _attributeSystem.AttributesReloaded -= RefreshFromSource;
         foreach (var attribute in _attributes)
         {
             //attribute.OnValueChange -= UpdateAttributesPoints;

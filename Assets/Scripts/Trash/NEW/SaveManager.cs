@@ -166,10 +166,4 @@ public class SaveManager : MonoBehaviour
         Initialize();
         return _repository != null;
     }
-    
-    public void LoadHeroProgressForMatch(HeroComponent hero, int userId, int saveGroup, Action onComplete)
-    {
-        if (!EnsureRepository()) { onComplete?.Invoke(); return; }
-        _repository.LoadForMatch(hero, userId, saveGroup, onComplete);
-    }
 }

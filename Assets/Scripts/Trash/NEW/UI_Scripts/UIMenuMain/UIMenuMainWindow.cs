@@ -34,6 +34,9 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void UI_StartClient()
     {
+        var snapshot = HeroProgressSnapshotBuilder.Build(_currentHero, _attributesPanel);
+        MPNetworkManager.Instance.PendingHeroProgressSnapshot = snapshot;
+
         ServerManager.Instance.StartClient();
     }
 

@@ -32,7 +32,9 @@ public class MPNetworkManager : NetworkManager
     public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }
     public int CurrentGameRulesIndex { get => _currentGameRulesIndex; set => _currentGameRulesIndex = value; }
     public GameMode CurrentGameMode { get; set; }
-
+    
+    public HeroProgressSnapshot PendingHeroProgressSnapshot { get; set; }
+    
     public event Action ConnectClosed;
     public event Action NewConnected;
 

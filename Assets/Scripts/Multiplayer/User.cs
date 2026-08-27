@@ -33,7 +33,9 @@ public class User : NetworkBehaviour
                 _id = MPNetworkManager.Instance.UserID;
                 InitializeManagers();
 
-                AddPlayer(ServerManager.Instance.CurrentHeroIndex, SaveManager.Instance.CurrentSaveGroup);
+                AddPlayer(ServerManager.Instance.CurrentHeroIndex,
+                    SaveManager.Instance.CurrentSaveGroup,
+                    MPNetworkManager.Instance.PendingHeroProgressSnapshot);
             }
             else if (Instance != null && Instance != this)
             {
@@ -44,17 +46,20 @@ public class User : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    private void AddPlayer(int characterIndex, int saveGroup)
+    private void AddPlayer(int characterIndex, int saveGroup, HeroProgressSnapshot snapshot)
     {
         GameObject player = Instantiate(MPNetworkManager.Instance.HeroList[characterIndex].gameObject);
         NetworkServer.Spawn(player, connectionToClient);
 
         var hero = player.GetComponent<HeroComponent>();
-        SaveManager.Instance.LoadHeroProgressForMatch(hero, _id, saveGroup, onComplete: () =>
-        {
-            MPNetworkManager.Instance.AddPlayer(player);
-            RpcAddPlayer(player);
-        });
+        hero.Initialize();
+
+        HeroProgressSnapshotApplier.ApplyLevel(hero, snapshot);
+        HeroProgressSnapshotApplier.ApplyTalentsAndAttributes(hero, snapshot);
+        hero.RpcApplyTalentsAndAttributes(snapshot);
+
+        MPNetworkManager.Instance.AddPlayer(player);
+        RpcAddPlayer(player);
     }
 
     [ClientRpc]

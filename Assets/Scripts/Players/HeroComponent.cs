@@ -10,18 +10,15 @@ public class HeroComponent : Character
 
     public override void Initialize()
     {
-		base.Initialize();
+        base.Initialize();
         TalentManager.Initialize(LVL);
+    }
 
-       /* if (TeamsPanel.Instance == null) return;
-        if (NetworkSettings.TeamIndex == 1)
-        {
-            TeamsPanel.Instance.AddInFirstTeam(this);
-        }
-        else
-        {
-            TeamsPanel.Instance.AddInSecondTeam(this);
-        }*/
+    [ClientRpc]
+    public void RpcApplyTalentsAndAttributes(HeroProgressSnapshot snapshot)
+    {
+        Initialize();
+        HeroProgressSnapshotApplier.ApplyTalentsAndAttributes(this, snapshot);
     }
 
     public void DestroySelf()

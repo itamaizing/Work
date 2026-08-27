@@ -39,6 +39,10 @@ public class AttributeSystem : NetworkBehaviour
     public event Action<int> OnPointsChanged;
 
     public bool CanAddPoint => _points > 0;
+    
+    public event Action AttributesReloaded;
+
+    public void RaiseAttributesReloaded() => AttributesReloaded?.Invoke();
 
     public void Init(CharacterData data)
     {
