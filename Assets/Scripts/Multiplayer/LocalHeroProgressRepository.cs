@@ -118,4 +118,41 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
         float volume = _saveData.LoadFloat($"{userKey}_BottleVolume", 0f);
         onLoaded?.Invoke(bottles, volume);
     }
+    
+    public void SaveTalentPage(HeroComponent hero, int saveGroup, TalentSnapshotEntry[] talents,
+        AttributeSnapshotEntry[] attributes, Action onSaved, Action onFailed)
+    {
+        string heroKey = hero.Data.Name;
+
+        foreach (var group in hero.TalentManager.TalentsGroups)
+        foreach (var row in group.TalentRows)
+        foreach (var talent in row.Talents)
+        {
+            _saveData.SaveInt($"{heroKey}_Group{saveGroup}_{group.Name}_{talent.Data.Name}", 0);
+        }
+
+        foreach (var entry in talents ?? Array.Empty<TalentSnapshotEntry>())
+        {
+            var group = hero.TalentManager.TalentsGroups.FirstOrDefault(g => g.ID == entry.group);
+            if (group == null) continue;
+
+            _saveData.SaveInt($"{heroKey}_Group{saveGroup}_{group.Name}_{entry.name}", entry.lvl);
+        }
+
+        _saveData.SaveInt($"{heroKey}_TalentPointsCount", hero.TalentManager.Points);
+        
+        foreach (var attribute in hero.AttributeSystem.Attributes.Values)
+        {
+            int points = (attributes ?? Array.Empty<AttributeSnapshotEntry>())
+                .FirstOrDefault(a => a.name == attribute.Name).points;
+
+            var modifiers = Enumerable.Range(0, points)
+                .Select(_ => new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint"))
+                .ToList();
+
+            _saveSystem.Save($"{heroKey}_Group{saveGroup}_{attribute.Name}_Points", modifiers);
+        }
+
+        onSaved?.Invoke();
+    }
 }

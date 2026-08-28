@@ -365,4 +365,51 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                 onFailed?.Invoke();
             });
     }
+    
+    [Serializable]
+    private class SetTalentDataRequest
+    {
+        public int id;
+        public string heroName;
+        public TalentSnapshotEntry[] talents;
+        public AttributeSnapshotEntry[] attributes;
+    }
+
+    [Serializable]
+    private class SetTalentDataResponse
+    {
+        public bool success;
+        public string error;
+    }
+    
+    public void SaveTalentPage(HeroComponent hero, int saveGroup, TalentSnapshotEntry[] talents,
+        AttributeSnapshotEntry[] attributes, Action onSaved, Action onFailed)
+    {
+        var payload = new SetTalentDataRequest
+        {
+            id = MPNetworkManager.Instance.UserID,
+            heroName = hero.Data.Name,
+            talents = talents ?? Array.Empty<TalentSnapshotEntry>(),
+            attributes = attributes ?? Array.Empty<AttributeSnapshotEntry>()
+        };
+        string json = JsonConvert.SerializeObject(payload);
+
+        NetworkHTTP.Instance.PostSetTalentData(json,
+            success: resp =>
+            {
+                var result = JsonConvert.DeserializeObject<SetTalentDataResponse>(resp);
+                if (result == null || !result.success)
+                {
+                    Debug.LogWarning("Расстановка не сохранена: " + resp);
+                    onFailed?.Invoke();
+                    return;
+                }
+                onSaved?.Invoke();
+            },
+            error: err =>
+            {
+                Debug.LogWarning("Ошибка сохранения расстановки: " + err);
+                onFailed?.Invoke();
+            });
+    }
 }

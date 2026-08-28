@@ -148,6 +148,13 @@ public class SaveManager : MonoBehaviour
         Initialize();
         _repository.LoadAbilityLayout(heroName, _currentSaveGroup, onLoaded, onFailed);
     }
+    
+    public void SaveTalentPage(HeroComponent hero, TalentSnapshotEntry[] talents,
+        AttributeSnapshotEntry[] attributes, Action onSaved = null, Action onFailed = null)
+    {
+        if (!EnsureRepository()) { onFailed?.Invoke(); return; }
+        _repository.SaveTalentPage(hero, _currentSaveGroup, talents, attributes, onSaved, onFailed);
+    }
 
     public void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed)
     {

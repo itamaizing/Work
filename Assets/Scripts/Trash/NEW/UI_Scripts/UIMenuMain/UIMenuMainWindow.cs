@@ -34,10 +34,35 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void UI_StartClient()
     {
-        var snapshot = HeroProgressSnapshotBuilder.Build(_currentHero, _attributesPanel);
-        MPNetworkManager.Instance.PendingHeroProgressSnapshot = snapshot;
+        MatchRequirementsService.Current.CheckRequirements(canStart =>
+        {
+            if (!canStart)
+            {
+                Debug.LogWarning("[UIMenuMainWindow] Запуск поиска матча отклонён системой проверки требований");
+                return;
+            }
 
-        ServerManager.Instance.StartClient();
+            var snapshot = HeroProgressSnapshotBuilder.Build(_currentHero, _attributesPanel);
+            MPNetworkManager.Instance.PendingHeroProgressSnapshot = snapshot;
+
+            ServerManager.Instance.StartClient();
+        });
+    }
+    
+    public void UI_SaveLayout()
+    {
+        if (_currentHero == null) return;
+
+        var snapshot = HeroProgressSnapshotBuilder.Build(_currentHero, _attributesPanel);
+
+        if (!HeroProgressValidationService.Current.Validate(_currentHero, snapshot, out string error))
+        {
+            Debug.LogWarning($"[UIMenuMainWindow] Страница прокачки не прошла валидацию: {error}");
+            return;
+        }
+
+        _skillPanel.UI_SaveAbilityLayout();
+        SaveManager.Instance.SaveTalentPage(_currentHero, snapshot.talents, snapshot.attributes);
     }
 
     void Show()
