@@ -30,7 +30,10 @@ public class URLLibrary
     private const string _requestFriendship = "AddRequestFriendship.php";
     private const string _removeFriendshipRequest = "RemoveFriendRequst.php";
     private const string _removeFriend = "RemoveFriend.php";
-
+    private const string _getUserInfo = "GetUserInfo.php";
+    private const string _saveMatchHistory = "SaveMatchHistory.php";
+    private const string _getMatchHistory = "GetMatchHistory.php";
+    
     private readonly List<string> _heroName = new()
     {
         "testhero",
@@ -68,4 +71,7 @@ public class URLLibrary
     public static string SetAttributePoint { get { return GameFolder + _setHeroAttributePoint; } }
     public static string GetAbilityPanel { get { return GameFolder + _getAbilityPanel; } }
     public static string SetAbilityPanel { get { return GameFolder + _setAbilityPanel; } }
+    public static string GetUserInfo { get { return GameFolder + _getUserInfo; } }
+    public static string SaveMatchHistory { get { return GameFolder + _saveMatchHistory; } }
+    public static string GetMatchHistory { get { return GameFolder + _getMatchHistory; } }
 }

@@ -412,4 +412,40 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
                 onFailed?.Invoke();
             });
     }
+    
+    public void LoadTalentPage(HeroComponent hero, int saveGroup,
+        Action<TalentSnapshotEntry[], AttributeSnapshotEntry[]> onLoaded, Action onFailed = null)
+    {
+        var data = new Dictionary<string, string>
+        {
+            { "id", MPNetworkManager.Instance.UserID.ToString() },
+            { "heroName", hero.Data.Name }
+        };
+
+        NetworkHTTP.Instance.PostGetTalentData(data,
+            success: json =>
+            {
+                var serverData = JsonConvert.DeserializeObject<TalentAttributeResponse>(json);
+                if (serverData == null || !serverData.success)
+                {
+                    onFailed?.Invoke();
+                    return;
+                }
+
+                var talents = serverData.talents?
+                    .Select(t => new TalentSnapshotEntry { group = t.group, row = t.row, name = t.name, lvl = t.lvl })
+                    .ToArray() ?? Array.Empty<TalentSnapshotEntry>();
+
+                var attributes = serverData.attributes?
+                    .Select(a => new AttributeSnapshotEntry { name = a.name, points = a.points })
+                    .ToArray() ?? Array.Empty<AttributeSnapshotEntry>();
+
+                onLoaded?.Invoke(talents, attributes);
+            },
+            error: err =>
+            {
+                Debug.LogWarning($"[ServerHeroProgressRepository] Сервер недоступен (страница прокачки): {err}");
+                onFailed?.Invoke();
+            });
+    }
 }

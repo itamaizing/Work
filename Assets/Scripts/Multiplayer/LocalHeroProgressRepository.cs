@@ -155,4 +155,38 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
 
         onSaved?.Invoke();
     }
+    
+    public void LoadTalentPage(HeroComponent hero, int saveGroup,
+        Action<TalentSnapshotEntry[], AttributeSnapshotEntry[]> onLoaded, Action onFailed = null)
+    {
+        string heroKey = hero.Data.Name;
+        var talents = new List<TalentSnapshotEntry>();
+
+        foreach (var group in hero.TalentManager.TalentsGroups)
+        foreach (var row in group.TalentRows)
+        foreach (var talent in row.Talents)
+        {
+            int lvl = _saveData.LoadInt($"{heroKey}_Group{saveGroup}_{group.Name}_{talent.Data.Name}", 0);
+            if (lvl <= 0) continue;
+
+            talents.Add(new TalentSnapshotEntry
+            {
+                group = group.ID,
+                row = talent.Data.Row,
+                name = talent.Data.Name,
+                lvl = lvl
+            });
+        }
+
+        var attributes = new List<AttributeSnapshotEntry>();
+        foreach (var attribute in hero.AttributeSystem.Attributes.Values)
+        {
+            List<AttributeModifier> modifiers = null;
+            _saveSystem.Load<List<AttributeModifier>>($"{heroKey}_Group{saveGroup}_{attribute.Name}_Points", loaded => modifiers = loaded);
+
+            attributes.Add(new AttributeSnapshotEntry { name = attribute.Name, points = modifiers?.Count ?? 0 });
+        }
+
+        onLoaded?.Invoke(talents.ToArray(), attributes.ToArray());
+    }
 }

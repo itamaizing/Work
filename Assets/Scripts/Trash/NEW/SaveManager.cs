@@ -53,6 +53,7 @@ public class SaveManager : MonoBehaviour
     private readonly SaveSystem _saveSystem = new SaveSystem();
 
     private IHeroProgressRepository _repository;
+    private IUserInfoRepository _userInfoRepository;
 
     private void Awake()
     {
@@ -71,11 +72,19 @@ public class SaveManager : MonoBehaviour
     
     public void Initialize()
     {
-        if (_repository != null) return;
+        if (_repository == null)
+        {
+            _repository = UseServerPersistence
+                ? new ServerHeroProgressRepository()
+                : new LocalHeroProgressRepository(_saveData, _saveSystem);
+        }
 
-        _repository = UseServerPersistence
-            ? new ServerHeroProgressRepository()
-            : new LocalHeroProgressRepository(_saveData, _saveSystem);
+        if (_userInfoRepository == null)
+        {
+            _userInfoRepository = UseServerPersistence
+                ? new ServerUserInfoRepository()
+                : new LocalUserInfoRepository(_saveData);
+        }
     }
 
     public void SetHero(HeroComponent hero)
@@ -93,6 +102,19 @@ public class SaveManager : MonoBehaviour
     {
         if (!EnsureRepository()) { onComplete?.Invoke(); return; }
         _repository.Load(_character, attributesPanel, _currentSaveGroup, isStillCurrent, onComplete);
+    }
+    
+    public void LoadUserInfo(string userKey, Action<UserInfoData> onLoaded, Action onFailed = null)
+    {
+        Initialize();
+        _userInfoRepository.LoadUserInfo(userKey, onLoaded, onFailed);
+    }
+    
+    public void LoadTalentPage(HeroComponent hero,
+        Action<TalentSnapshotEntry[], AttributeSnapshotEntry[]> onLoaded, Action onFailed = null)
+    {
+        if (!EnsureRepository()) { onFailed?.Invoke(); return; }
+        _repository.LoadTalentPage(hero, _currentSaveGroup, onLoaded, onFailed);
     }
 
     public void SaveTalent(int idGroup, int row, string idTalent, bool isActive, int lvl)

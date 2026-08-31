@@ -22,6 +22,12 @@ public class User : NetworkBehaviour
                 onFailed: null);
         }
     }
+    
+    [Command]
+    private void CmdSetServerID(int id)
+    {
+        SetID(id);
+    }
 
     public override void OnStartClient()
     {
@@ -31,6 +37,7 @@ public class User : NetworkBehaviour
             {
                 Instance = this;
                 _id = MPNetworkManager.Instance.UserID;
+                CmdSetServerID(_id);
                 InitializeManagers();
 
                 AddPlayer(ServerManager.Instance.CurrentHeroIndex,
@@ -282,6 +289,32 @@ public class LevelCharacterManager
         SaveManager.Instance.SaveHeroLevel(_currentLevel, _currentExperience, skillPoints, attributePoints);
 
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
+    }
+    
+    public void SetLevel(int level, int experience = 0)
+    {
+        if (_character == null) return;
+
+        _currentLevel = Mathf.Clamp(level, 1, _maxLevel);
+        _currentExperience = experience;
+        _experienceForNextLevel = CalculateExperienceForNextLevel();
+
+        if (_currentLevel >= _maxLevel)
+        {
+            _currentLevel = _maxLevel;
+            _currentExperience = _maxExperienceAtMaxLevel;
+            _experienceForNextLevel = _maxExperienceAtMaxLevel;
+        }
+
+        OnLevelChanged?.Invoke(_currentLevel);
+        OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
+
+        int skillPoints = _currentLevel - _character.TalentManager.ActiveTalents.Count;
+        int attributePoints = _currentLevel - _character.AttributeSystem.GetSpentPoints();
+
+        SaveManager.Instance.SaveHeroLevel(_currentLevel, _currentExperience, skillPoints, attributePoints);
+
+        _character.LVL?.ApplyLoadedLevelLocal(_currentLevel, _currentExperience, _experienceForNextLevel);
     }
 
     public void ResetAllLevelData()

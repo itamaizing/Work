@@ -25,4 +25,7 @@ public interface IHeroProgressRepository
     
     void SaveTalentPage(HeroComponent hero, int saveGroup, TalentSnapshotEntry[] talents,
         AttributeSnapshotEntry[] attributes, Action onSaved, Action onFailed);
+    
+    void LoadTalentPage(HeroComponent hero, int saveGroup,
+        Action<TalentSnapshotEntry[], AttributeSnapshotEntry[]> onLoaded, Action onFailed = null);
 }

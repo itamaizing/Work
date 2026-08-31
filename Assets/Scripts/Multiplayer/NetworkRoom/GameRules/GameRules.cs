@@ -112,8 +112,38 @@ public abstract class GameRules : NetworkBehaviour
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
         SubscribeToTowerDeath();
+        
+        SaveMatchStart();
 
         StartCoroutine(FindServerGameManager());
+    }
+    
+    [Server]
+    private void SaveMatchStart()
+    {
+        var participants = new List<MatchParticipantEntry>();
+
+        foreach (var player in _players)
+        {
+            if (player == null) continue;
+
+            var user = player.connectionToClient?.identity?.GetComponent<User>();
+            if (user == null || user.Id <= 0)
+            {
+                Debug.LogWarning($"[GameRules] Не удалось определить корректный userId для {player.name} (id={user?.Id.ToString() ?? "null"}) — пропускаем в истории матча");
+                continue;
+            }
+
+            participants.Add(new MatchParticipantEntry
+            {
+                userId = user.Id,
+                heroName = (player as HeroComponent)?.Data.Name
+            });
+        }
+
+        if (participants.Count == 0) return;
+
+        MatchHistoryRepository.SaveMatch(MPNetworkManager.Instance.CurrentGameMode, participants);
     }
 
     public override void OnStartClient()

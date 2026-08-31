@@ -123,7 +123,20 @@ public class NetworkHTTP : MonoBehaviour
     {
         Post(URLLibrary.SetAbilityPanel, data, success, error);
     }
+    
+    public void PostGetUserInfo(Dictionary<string, string> data, Action<string> success, Action<string> error = null)
+    {
+        Post(URLLibrary.GetUserInfo, data, success, error);
+    }
 
+    public void PostSaveMatchHistory(string json, Action<string> success, Action<string> error = null)
+        => _postCoroutine = StartCoroutine(PostJsonJob(URLLibrary.SaveMatchHistory, json, success, error));
+
+    public void PostGetMatchHistory(Dictionary<string, string> data, Action<string> success, Action<string> error = null)
+    {
+        Post(URLLibrary.GetMatchHistory, data, success, error);
+    }
+    
     private IEnumerator PostJob(string uri, Dictionary<string, string> data, Action<string> success, Action<string> error = null)
     {
         using (UnityWebRequest www = UnityWebRequest.Post(uri, data))
