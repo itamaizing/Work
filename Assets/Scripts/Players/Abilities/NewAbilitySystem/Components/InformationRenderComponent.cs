@@ -142,6 +142,21 @@ public class InformationRenderComponent : BaseSkillComponent
 
     public void HideSmartIndicator()
     {
+        if (_character != null && _character.Abilities != null)
+        {
+            var preparingSkill = _character.Abilities.CurrentCastingSkill;
+            if (preparingSkill != null && preparingSkill != _skill)
+            {
+                _hasCachedValues = false;
+                return;
+            }
+        }
+        
+        if (!_skill.IsPreparing && _hasCachedValues == false)
+        {
+            return;
+        }
+        
         _skill.SkillRender.ResetCursor();
         _skill.SkillRender.StopDrawRadius();
         _skill.SkillRender.StopDrawArea();

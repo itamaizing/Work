@@ -42,6 +42,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private float _currentRollRange = 0f;
 
     private const float EnergyChunkValue = 5f;
+    private const float EnergyCostPerMeter = EnergyChunkValue;
     private const float DynamicRendererJobTime = 0.2f;
     private const float TargetSearchRadius = 0.5f;
     private const float RayCastDistance = 1000f;
@@ -52,6 +53,8 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private Coroutine _slideCoroutine;
     
     private bool _aimedAtEnemy;
+
+    private Character _aimedTarget;
 
     protected override bool IsCanCast
     {
@@ -125,6 +128,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
             _mousePos = targetInfo.Points[0];
 
         _aimedAtEnemy = targetInfo != null && targetInfo.GetTargets().Count > 0;
+        _aimedTarget = _aimedAtEnemy ? (Character)targetInfo.GetTargets()[0] : null;
     }
 
     protected override IEnumerator CastJob()
@@ -154,25 +158,17 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
             yield return new WaitForSeconds(time);
         }
     }
-
-    private float GetJumpRange()
+    
+    private float GetEnergyAffordableRange()
     {
         if (_energy == null)
             _energy = (Energy)_hero.Resources[ResourceType.Energy];
 
-        float range = _baseRange;
-        float costStep = EnergyChunkValue;
-        for (int i = 0; i < 2; i++)
-        {
-            if (_energy.CurrentValue >= costStep)
-            {
-                range += 1f;
-                costStep += EnergyChunkValue;
-            }
-        }
-
-        return range;
+        float affordableExtra = _energy.CurrentValue / EnergyCostPerMeter;
+        return Mathf.Min(_maxRange, _baseRange + affordableExtra);
     }
+
+    private float GetJumpRange() => GetEnergyAffordableRange();
 
     private float GetFinalJumpRange()
     {
@@ -184,7 +180,9 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
     private void StartSlide()
     {
-        OnSeriesDamaged?.Invoke(gameObject, this);
+        _hero.Abilities.SetAbilitiesDisactive(true);
+
+        OnSeriesDamaged?.Invoke(_aimedTarget != null ? _aimedTarget.gameObject : null, this);
 
         Vector3 startPos = _hero.transform.position;
         Vector3 lookDir = (_mousePos - startPos);
@@ -193,29 +191,19 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         else lookDir.Normalize();
 
         bool seriesMode = _isSeriesCompletedThisCast;
-        float maxRange = _maxRange * (seriesMode ? _seriesRangeMultiplier : 1f);
-        float distToClick = Vector3.Distance(startPos, _mousePos);
-        float finalRange;
-        int extraCells;
 
-        if (distToClick <= _baseRange)
-        {
-            finalRange = _baseRange;
-            extraCells = 0;
-        }
-        else if (distToClick < maxRange)
-        {
-            finalRange = distToClick;
-            extraCells = Mathf.CeilToInt(finalRange) - (int)_baseRange;
-        }
-        else
-        {
-            finalRange = maxRange;
-            extraCells = 2;
-        }
+        float nonSeriesMaxRange = GetEnergyAffordableRange();
+        float maxRange = seriesMode
+            ? nonSeriesMaxRange * _seriesRangeMultiplier
+            : nonSeriesMaxRange;
+
+        float distToClick = Vector3.Distance(startPos, _mousePos);
+        float finalRange = Mathf.Clamp(distToClick, _baseRange, maxRange);
+
+        float chargeableRange = Mathf.Min(finalRange, nonSeriesMaxRange);
 
         _currentRollRange = finalRange;
-        _additionalCost = extraCells * EnergyChunkValue;
+        _additionalCost = Mathf.Max(0f, chargeableRange - _baseRange) * EnergyCostPerMeter;
 
         _energy?.CmdUse(_additionalCost);
         _hero.Move.SetCanMove(false);
@@ -328,6 +316,8 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         if (rb != null) rb.linearVelocity = Vector3.zero;
         _hero.Move.SetCanMove(true);
 
+        _hero.Abilities.SetAbilitiesDisactive(false);
+        
         foreach (var cap in _capturedTargets)
             if (cap != null)
                 CmdFreezeTarget(cap, false);
@@ -480,14 +470,50 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
     private void OnEnable()
     {
+        OnSkillCanceled += HandleSkillCanceled;
+
         if (Hero != null && Hero.Health != null)
             Hero.Health.OnBeforeDamage += HandleFrozenEvade;
     }
 
     private void OnDisable()
     {
+        OnSkillCanceled -= HandleSkillCanceled;
+
         if (Hero != null && Hero.Health != null)
             Hero.Health.OnBeforeDamage -= HandleFrozenEvade;
+    }
+    
+    private void HandleSkillCanceled()
+    {
+        if (_slideCoroutine != null)
+        {
+            StopCoroutine(_slideCoroutine);
+            _slideCoroutine = null;
+        }
+
+        foreach (var cap in _capturedTargets)
+        {
+            if (cap != null)
+                CmdFreezeTarget(cap, false);
+        }
+        _capturedTargets.Clear();
+        _processedTargets.Clear();
+
+        if (_hero != null)
+        {
+            if (_hero.Rigidbody != null) 
+                _hero.Rigidbody.linearVelocity = Vector3.zero;
+    
+            _hero.Move.SetCanMove(true);
+            _hero.Move.StopLookAt();
+            _hero.Abilities.SetAbilitiesDisactive(false);
+        }
+
+        _isPlayCastAnim = false;
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
+        AnimCastEnded();
     }
 
     private void HandleFrozenEvade(ref Damage damage, Skill skill)
@@ -533,7 +559,9 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     }
 
     public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
-        => _isSeriesPotentialFinal = isPotentialFinal;
+    {
+        _isSeriesPotentialFinal = isPotentialFinal;
+    }
 
     #endregion
 }

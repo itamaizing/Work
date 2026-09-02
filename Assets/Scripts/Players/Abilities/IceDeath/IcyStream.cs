@@ -246,16 +246,27 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 
     private void ApplyTick(int tickNumber, Vector3 originPosition, Vector3 direction)
     {
-        Vector3 start = originPosition;
+        float radius = _streamWidth * 0.5f;
+
+        Vector3 start = originPosition + direction * radius;
         Vector3 end = originPosition + direction * _streamLength;
 
-        Collider[] hits = Physics.OverlapCapsule(start, end, _streamWidth * 0.5f, Targeting.Layer);
+        if (Vector3.Distance(originPosition, end) < radius)
+            end = start;
+
+        Collider[] hits = Physics.OverlapCapsule(start, end, radius, Targeting.Layer);
 
         foreach (var col in hits)
         {
             if ((Targeting.Layer.value & (1 << col.gameObject.layer)) == 0) continue;
             if (!col.TryGetComponent<Character>(out var target)) continue;
             if (target.IsDead) continue;
+
+            Vector3 dirToTarget = (target.transform.position - originPosition).normalized;
+            dirToTarget.y = 0;
+
+            if (Vector3.Dot(direction, dirToTarget) <= 0) 
+                continue;
 
             Damage damage = new Damage
             {

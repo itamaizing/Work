@@ -15,6 +15,8 @@ public class ComboSeriesSystem : Skill
     private float _speedBonusPerHit = 0.3f;
         
     private float _currentSpeedMultiplier = 1f;
+    
+    private AttributeModifier _speedBonusModifier;
  
     private Energy _energy;
     private RuneComponent _rune;
@@ -401,12 +403,17 @@ public class ComboSeriesSystem : Skill
 
     private void ApplyCurrentSpeedBoost()
     {
+        if (_hero == null || _hero.Abilities == null) return;
+
+        _speedBonusModifier = new AttributeModifier(_currentSpeedMultiplier, ModifierType.Multiplier, this);
+
         foreach (var skill in _hero.Abilities.Abilities)
         {
             if (skill is IComboSeriesParticipatingSkill)
             {
-                skill.Buff.AttackSpeed.IncreasePercentage(_currentSpeedMultiplier);
-                skill.Buff.CastSpeed.IncreasePercentage(_currentSpeedMultiplier);
+                var castSpeedAttr = skill.Attributes[SkillAttributeName.CastSpeed];
+                if (!castSpeedAttr.Modifiers.Contains(_speedBonusModifier))
+                    castSpeedAttr.AddModifier(_speedBonusModifier);
             }
         }
     }
@@ -425,15 +432,19 @@ public class ComboSeriesSystem : Skill
 
     private void ResetSpeedBoost()
     {
+        if (_hero == null || _hero.Abilities == null || _speedBonusModifier == null) return;
+
         foreach (var skill in _hero.Abilities.Abilities)
         {
             if (skill is IComboSeriesParticipatingSkill)
             {
-                skill.Buff.AttackSpeed.Reset();
-                skill.Buff.CastSpeed.Reset();
+                skill.Attributes[SkillAttributeName.CastSpeed].RemoveModifier(_speedBonusModifier);
             }
         }
+
+        _speedBonusModifier = null;
     }
+
     
     private void AddPattern(List<AbilityForm> sequence, string name = "")
     {

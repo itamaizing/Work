@@ -8936,7 +8936,6 @@ MonoBehaviour:
   _icyStream: {fileID: 8854865153303019716}
   _blockOfIce: {fileID: 1852313743646574494}
   _circularFrosting: {fileID: 2727420570257355857}
-  _icyStreamShadow: {fileID: 0}
   _playerLinks: {fileID: 4374618947117916461}
   audioClip: {fileID: 8300000, guid: 424858f5206c73b4186512fa60be6047, type: 3}
 --- !u!114 &4310610476984543593
