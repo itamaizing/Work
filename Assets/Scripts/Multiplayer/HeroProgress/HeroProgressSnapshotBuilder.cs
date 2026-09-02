@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 [Serializable]
 public struct TalentSnapshotEntry
@@ -44,7 +45,7 @@ public static class HeroProgressSnapshotBuilder
                 group = group.ID,
                 row = talent.Data.Row,
                 name = talent.Data.Name,
-                lvl = talent.Data.Level
+                lvl = Mathf.Max(1, talent.Data.Level)
             });
         }
 

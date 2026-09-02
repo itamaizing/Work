@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class UIMenuMainWindow : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
     [SerializeField] private UIMenuMainPlayerInfoPanel _infoPanel;
+    [SerializeField] private Button _saveLayoutButton;
 
     private HeroComponent _currentHero;
     public HeroComponent CurrentHero => _currentHero;
@@ -24,12 +26,14 @@ public class UIMenuMainWindow : MonoBehaviour
     {
         _charactersPanel.OnHeroChanged += SetHero;
         _savesPanel.OnSelect += SetHeroSaveIndex;
+        SaveManager.Instance.PendingStateChanged += OnSavePendingStateChanged;
     }
 
     private void OnDisable()
     {
         _charactersPanel.OnHeroChanged -= SetHero;
         _savesPanel.OnSelect -= SetHeroSaveIndex;
+        SaveManager.Instance.PendingStateChanged -= OnSavePendingStateChanged;
     }
 
     public void UI_StartClient()
@@ -49,9 +53,21 @@ public class UIMenuMainWindow : MonoBehaviour
         });
     }
     
+    private void OnSavePendingStateChanged(bool isBusy)
+    {
+        if (_saveLayoutButton != null)
+            _saveLayoutButton.interactable = !isBusy;
+    }
+
     public void UI_SaveLayout()
     {
         if (_currentHero == null) return;
+
+        if (SaveManager.Instance.HasPendingRequests)
+        {
+            Debug.LogWarning("[UIMenuMainWindow] Есть незавершённые изменения талантов/атрибутов — сохранение отклонено");
+            return;
+        }
 
         var snapshot = HeroProgressSnapshotBuilder.Build(_currentHero, _attributesPanel);
 

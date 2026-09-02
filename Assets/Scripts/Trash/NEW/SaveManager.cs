@@ -54,6 +54,15 @@ public class SaveManager : MonoBehaviour
 
     private IHeroProgressRepository _repository;
     private IUserInfoRepository _userInfoRepository;
+    
+    private int _pendingRequestsCount;
+    public bool HasPendingRequests => _pendingRequestsCount > 0;
+    public event Action<bool> PendingStateChanged;
+    
+    private readonly Dictionary<string, bool> _talentRequestInFlight = new();
+    private readonly Dictionary<string, (bool isActive, int lvl)> _talentPendingState = new();
+    
+    private static string TalentKey(int idGroup, int row, string idTalent) => $"{idGroup}_{row}_{idTalent}";
 
     private void Awake()
     {
@@ -116,6 +125,18 @@ public class SaveManager : MonoBehaviour
         if (!EnsureRepository()) { onFailed?.Invoke(); return; }
         _repository.LoadTalentPage(hero, _currentSaveGroup, onLoaded, onFailed);
     }
+    
+    private void IncrementPending()
+    {
+        _pendingRequestsCount++;
+        PendingStateChanged?.Invoke(HasPendingRequests);
+    }
+
+    private void DecrementPending()
+    {
+        _pendingRequestsCount = Mathf.Max(0, _pendingRequestsCount - 1);
+        PendingStateChanged?.Invoke(HasPendingRequests);
+    }
 
     public void SaveTalent(int idGroup, int row, string idTalent, bool isActive, int lvl)
     {
@@ -126,30 +147,68 @@ public class SaveManager : MonoBehaviour
         if (group == null || talent == null) return;
         if (isActive && !_character.TalentManager.CanOpenTalent) return;
 
-        bool prevOpen = talent.Data.IsOpen;
-        int prevLvl = talent.Data.Level;
-
         talent.Data.SetOpen(isActive);
         talent.Data.SetLevel(lvl);
         _character.TalentManager.SetActive(idGroup, row, idTalent, isActive);
 
+        string key = TalentKey(idGroup, row, idTalent);
+
+        if (_talentRequestInFlight.TryGetValue(key, out bool inFlight) && inFlight)
+        {
+            _talentPendingState[key] = (isActive, lvl);
+            return;
+        }
+
+        SendTalentRequest(idGroup, row, idTalent, isActive, lvl, key);
+    }
+    
+    private void SendTalentRequest(int idGroup, int row, string idTalent, bool isActive, int lvl, string key)
+    {
+        var group = _character.TalentManager.TalentsGroups.FirstOrDefault(g => g.ID == idGroup);
+        var talent = group?.TalentRows[row].Talents?.FirstOrDefault(t => t.Data.Name == idTalent);
+        if (group == null || talent == null) return;
+
+        bool prevOpen = talent.Data.IsOpen;
+        int prevLvl = talent.Data.Level;
+
+        _talentRequestInFlight[key] = true;
+        IncrementPending();
+
         _repository.SaveTalent(_character, idGroup, row, idTalent, isActive, lvl, _currentSaveGroup,
-            onFreeTalentPointsChanged: pts => _character.TalentManager.SetPoints(pts),
+            onFreeTalentPointsChanged: pts =>
+            {
+                _character.TalentManager.SetPoints(pts);
+                OnTalentRequestFinished(idGroup, row, idTalent, key);
+            },
             onFailed: () =>
             {
                 talent.Data.SetOpen(prevOpen);
                 talent.Data.SetLevel(prevLvl);
                 _character.TalentManager.SetActive(idGroup, row, idTalent, prevOpen);
+                OnTalentRequestFinished(idGroup, row, idTalent, key);
             });
+    }
+
+    private void OnTalentRequestFinished(int idGroup, int row, string idTalent, string key)
+    {
+        _talentRequestInFlight[key] = false;
+
+        if (_talentPendingState.TryGetValue(key, out var pending))
+        {
+            _talentPendingState.Remove(key);
+            SendTalentRequest(idGroup, row, idTalent, pending.isActive, pending.lvl, key);
+        }
+        DecrementPending();
     }
 
     public void SaveAttributePoint(Attribute attribute, int delta)
     {
         if (!EnsureRepository()) return;
 
+        IncrementPending();
         _repository.SaveAttributePoint(_character, attribute.Name, delta, _currentSaveGroup,
-            onFreeAttributePointsChanged: pts => {},
-            onFailed: () => {});
+            onFreeAttributePointsChanged: pts => DecrementPending(),
+            onFailed: () => DecrementPending());
     }
 
     public void SaveHeroLevel(int level, int experience, int skillPoints, int attributePoints)
@@ -175,7 +234,28 @@ public class SaveManager : MonoBehaviour
         AttributeSnapshotEntry[] attributes, Action onSaved = null, Action onFailed = null)
     {
         if (!EnsureRepository()) { onFailed?.Invoke(); return; }
-        _repository.SaveTalentPage(hero, _currentSaveGroup, talents, attributes, onSaved, onFailed);
+
+        if (HasPendingRequests)
+        {
+            void WaitAndSave(bool hasPending)
+            {
+                if (!hasPending)
+                {
+                    PendingStateChanged -= WaitAndSave;
+                    DoSave();
+                }
+            }
+            PendingStateChanged += WaitAndSave;
+            return;
+        }
+
+        DoSave();
+
+        void DoSave()
+        {
+            Debug.LogError($"Count talents: {talents.Length}");
+            _repository.SaveTalentPage(hero, _currentSaveGroup, talents, attributes, onSaved, onFailed);
+        }
     }
 
     public void SaveBottles(string userKey, int bottles, float bottleVolume, Action<int> onSaved, Action onFailed)

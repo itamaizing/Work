@@ -59,9 +59,15 @@ public class NetworkHTTP : MonoBehaviour
         yield return request.SendWebRequest();
 
         if (request.result != UnityWebRequest.Result.Success)
+        {
             error?.Invoke(request.error);
+            Debug.LogError($"{request.error}");
+        }
         else
+        {
             success?.Invoke(request.downloadHandler.text);
+            Debug.LogError($"{request.downloadHandler.text}");
+        }
     }
 
     /// <summary>
