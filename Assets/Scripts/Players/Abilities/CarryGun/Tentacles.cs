@@ -558,7 +558,13 @@ public class Tentacles : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _spawnPoint = targetInfo.Points[0];
+        if (targetInfo != null && targetInfo.Points.Count != 0)
+        {
+            _spawnPoint = targetInfo.Points[0];
+            Targeting.ClearTarget();
+            return;
+        }
+
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
     

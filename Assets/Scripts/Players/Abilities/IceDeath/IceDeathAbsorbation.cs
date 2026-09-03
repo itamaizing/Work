@@ -20,6 +20,7 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     private Energy _energy;
     private Health _health;
 
+    private Coroutine _castCoroutine;
     
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     protected override int AnimTriggerCast => 0;
@@ -46,6 +47,41 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
         _rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
         _energy = (Energy)Hero.Resources[ResourceType.Energy];
         _health = (Health)Hero.Resources[ResourceType.Health];
+    }
+    
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+    
+    protected override void ClearData()
+    {
+        base.ClearData();
+        HandleSkillCanceled();
+    }
+    
+    private void HandleSkillCanceled()
+    {
+        if (_castCoroutine != null)
+        {
+            StopCoroutine(_castCoroutine);
+            _castCoroutine = null;
+        }
+
+        if (_hero != null && _hero.Animator != null)
+        {
+            _hero.Animator.speed = AnimStandartSpeed;
+        }
+
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
+        _hero.Move.StopLookAt();
+        AnimCastEnded();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -96,20 +132,24 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     protected override IEnumerator CastJob()
     {
         Character target = Targeting.GetTarget()?.Character;
-        
+    
         if (target == null || target == Hero)
         {
-            yield return StartCoroutine(CastOnSelf());
+            _castCoroutine = StartCoroutine(CastOnSelf());
+            yield return _castCoroutine;
         }
         else if (target is MinionComponent && target.Abilities.GetSkill<DeadStrike>() != null)
         {
-            yield return StartCoroutine(CastOnCorpse(target));
+            _castCoroutine = StartCoroutine(CastOnCorpse(target));
+            yield return _castCoroutine;
         }
         else
         {
-            yield return StartCoroutine(CastOnEnemy(target));
+            _castCoroutine = StartCoroutine(CastOnEnemy(target));
+            yield return _castCoroutine;
         }
 
+        _castCoroutine = null;
         Targeting.ClearTarget();
     }
 

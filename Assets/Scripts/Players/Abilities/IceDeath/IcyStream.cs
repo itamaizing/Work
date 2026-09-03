@@ -30,7 +30,12 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     private float _freeWindowDuration = 0.6f;
     private Coroutine _streamCoroutine;
     private Coroutine _shadowStreamCoroutine;
-    private GameObject _activeEffect;
+
+    private GameObject _mainStreamEffect;
+
+    private readonly Dictionary<int, GameObject> _shadowEffects = new();
+    private readonly List<Coroutine> _shadowStreamCoroutines = new();
+    private int _nextShadowEffectId;
 
     private bool _isStreaming;
     private int _currentTick;
@@ -76,7 +81,7 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         }
 
         _isTicking = false;
-        
+
         if (_isStreaming)
         {
             OnSeriesDamaged?.Invoke(null, this);
@@ -182,14 +187,15 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     [ClientRpc]
     public void TriggerShadowStream(Vector3 originPos, Quaternion rotation, int startTick, int maxTicks)
     {
-        if (_shadowStreamCoroutine != null)
-            StopCoroutine(_shadowStreamCoroutine);
+        int effectId = _nextShadowEffectId++;
 
-        _shadowStreamCoroutine = StartCoroutine(ShadowStreamRoutine(originPos, rotation, startTick, maxTicks));
-        CmdSpawnShadowStreamEffect(originPos, rotation);
+        Coroutine routine = StartCoroutine(ShadowStreamRoutine(originPos, rotation, startTick, maxTicks, effectId));
+        _shadowStreamCoroutines.Add(routine);
+
+        CmdSpawnShadowStreamEffect(effectId, originPos, rotation);
     }
 
-    private IEnumerator ShadowStreamRoutine(Vector3 originPos, Quaternion rotation, int startTick, int maxTicks)
+    private IEnumerator ShadowStreamRoutine(Vector3 originPos, Quaternion rotation, int startTick, int maxTicks, int effectId)
     {
         int start = Mathf.Max(1, startTick);
         int total = Mathf.Max(start, maxTicks);
@@ -203,21 +209,29 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
             ApplyTick(tick, originPos, forward);
         }
 
-        CmdDestroyIcyStreamEffect();
-        _shadowStreamCoroutine = null;
+        CmdDestroyShadowEffect(effectId);
     }
 
     [Command]
-    private void CmdSpawnShadowStreamEffect(Vector3 position, Quaternion rotation)
+    private void CmdSpawnShadowStreamEffect(int effectId, Vector3 position, Quaternion rotation)
     {
         if (_icyStreamPrefab == null) return;
 
         GameObject fx = Instantiate(_icyStreamPrefab, position, rotation);
-
         NetworkServer.Spawn(fx, connectionToClient);
-        _activeEffect = fx;
+        _shadowEffects[effectId] = fx;
 
         RpcSetupShadowStreamEffect(fx, position, rotation);
+    }
+    
+    [Command]
+    private void CmdDestroyShadowEffect(int effectId)
+    {
+        if (_shadowEffects.TryGetValue(effectId, out var fx) && fx != null)
+        {
+            NetworkServer.Destroy(fx);
+        }
+        _shadowEffects.Remove(effectId);
     }
     
     [ClientRpc]
@@ -314,21 +328,18 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         GameObject fx = Instantiate(
             _icyStreamPrefab,
             transform.position,
-            Quaternion.identity);
-
-        fx.transform.SetParent(transform);
-        fx.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            transform.rotation * Quaternion.Euler(90f, 0f, 0f));
 
         NetworkServer.Spawn(fx, connectionToClient);
 
-        _activeEffect = fx;
-        
+        _mainStreamEffect = fx;
+
         if (isFinalHit)
         {
             var ps = fx.GetComponentInChildren<ParticleSystem>();
             var main = ps.main;
             main.startSize = main.startSize.constant * 2;
-            
+
             SetParticleSizeOnClients(fx);
         }
 
@@ -372,17 +383,17 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     [Command]
     private void CmdRotateEffects(Quaternion rotation)
     {
-        if (_activeEffect != null)
-            _activeEffect.transform.rotation = rotation;
+        if (_mainStreamEffect != null)
+            _mainStreamEffect.transform.rotation = rotation;
     }
 
     [Command]
     private void CmdDestroyIcyStreamEffect()
     {
-        if (_activeEffect != null)
+        if (_mainStreamEffect != null)
         {
-            NetworkServer.Destroy(_activeEffect);
-            _activeEffect = null;
+            NetworkServer.Destroy(_mainStreamEffect);
+            _mainStreamEffect = null;
         }
     }
 

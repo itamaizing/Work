@@ -377,28 +377,22 @@ public class ComboSeriesSystem : Skill
 
     private void UpdateSpeedBoost()
     {
-        ResetSpeedBoost();
-
         if (_currentHitCount < 2)
         {
-            _currentSpeedMultiplier = 1f;
+            CmdResetSpeedBoost();
+            return;
         }
-        else if (_isSpeedIncreased)
-        {
-            _currentSpeedMultiplier = IncreasedSpeedMultiplier;
+        
+        float bonus = _speedBonusPerHit * (_currentHitCount - 1);
 
-            if (_currentHitCount > 2)
-            {
-                _currentSpeedMultiplier += _speedBonusPerHit * (_currentHitCount - 2);
-            }
-        }
-        else
+        if (_isSpeedIncreased)
         {
-            _currentSpeedMultiplier = BaseSpeedMultiplier + 
-                                      _speedBonusPerHit * (_currentHitCount - 2);
+            bonus += (IncreasedSpeedMultiplier - 1f);
         }
 
-        ApplyCurrentSpeedBoost();
+        _currentSpeedMultiplier = 1f + bonus;
+
+        CmdApplySpeedBoost(_currentSpeedMultiplier);
     }
 
     private void ApplyCurrentSpeedBoost()
@@ -418,6 +412,24 @@ public class ComboSeriesSystem : Skill
         }
     }
 
+    [Command]
+    private void CmdApplySpeedBoost(float multiplier)
+    {
+        if (_hero == null) return;
+
+        var castSpeedAttr = _hero.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (_speedBonusModifier == null)
+        {
+            _speedBonusModifier = new AttributeModifier(multiplier, ModifierType.Multiplier, this);
+            castSpeedAttr.AddModifier(_speedBonusModifier);
+        }
+        else
+        {
+            _speedBonusModifier.Value = multiplier;
+        }
+    }
+
     private void ResetSeries()
     {
         _currentTarget = null;
@@ -427,7 +439,7 @@ public class ComboSeriesSystem : Skill
         _totalRuneSpentThisSeries = 0f;
         _currentSpeedMultiplier = 1f;
         _isInSeries = false;
-        ResetSpeedBoost();
+        CmdResetSpeedBoost();
     }
 
     private void ResetSpeedBoost()
@@ -445,6 +457,16 @@ public class ComboSeriesSystem : Skill
         _speedBonusModifier = null;
     }
 
+    [Command]
+    private void CmdResetSpeedBoost()
+    {
+        if (_hero == null || _speedBonusModifier == null) return;
+
+        var castSpeedAttr = _hero.AttributeSystem[CharacterAttributeName.CastSpeed];
+        castSpeedAttr.RemoveModifier(_speedBonusModifier);
+        _speedBonusModifier = null;
+        _currentSpeedMultiplier = 1f;
+    }
     
     private void AddPattern(List<AbilityForm> sequence, string name = "")
     {

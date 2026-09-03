@@ -46,6 +46,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private const float DynamicRendererJobTime = 0.2f;
     private const float TargetSearchRadius = 0.5f;
     private const float RayCastDistance = 1000f;
+    private const float FrostingDurationPerMeter = 0.7f;
 
     private readonly HashSet<Character> _processedTargets = new();
     private readonly List<Character> _capturedTargets = new();
@@ -182,7 +183,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     {
         _hero.Abilities.SetAbilitiesDisactive(true);
 
-        OnSeriesDamaged?.Invoke(_aimedTarget != null ? _aimedTarget.gameObject : null, this);
+        OnSeriesDamaged?.Invoke(null, this);
 
         Vector3 startPos = _hero.transform.position;
         Vector3 lookDir = (_mousePos - startPos);
@@ -324,6 +325,11 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
         _capturedTargets.Clear();
         _processedTargets.Clear();
+        
+        if (_isDamageAddFrosting)
+        {
+            _frozenDuration = totalRange * FrostingDurationPerMeter;
+        }
 
         CmdNotifySlideEnded();
         _slideCoroutine = null;
@@ -455,8 +461,10 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
     private void AddFrostingToPhysical(GameObject target, Skill skill)
     {
-        if (target == null) return;
+        if (!_isDamageAddFrosting || _frozenDuration <= 0f || target == null) return;
+
         CmdAddFrostingToPhysical(target, _frozenDuration);
+
         _frozenDuration = 0f;
     }
 
@@ -464,8 +472,11 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private void CmdAddFrostingToPhysical(GameObject target, float duration)
     {
         if (duration <= 0 || target == null) return;
-        target.GetComponent<Character>()?.CharacterState
-            .AddState(States.Frosting, duration, 0f, Schools.Water, _hero.gameObject, "IceRolling");
+
+        if (target.TryGetComponent(out Character targetCharacter))
+        {
+            targetCharacter.CharacterState.AddState(States.Frosting, duration, 0f, Schools.Water, _hero.gameObject, "IceRolling");
+        }
     }
 
     private void OnEnable()

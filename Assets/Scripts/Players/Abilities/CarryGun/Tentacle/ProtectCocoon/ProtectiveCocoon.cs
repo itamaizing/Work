@@ -2,12 +2,14 @@ using Mirror;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 public class ProtectiveCocoon : NetworkBehaviour
 {
-    [SerializeField] private float _lifetime = 20f;
-    [SerializeField] private float _regenBuffDuration = 20f;
-    private const float RegenMultiplier = 2f;
+    [SerializeField] private float _lifetime = 6f;
+    [SerializeField] private float _regenBuffDuration = 6f;
+
+    [SerializeField] private float _regenBuffMultiplier = 20f;
 
     private Character _hero;
     private Skill _skill;
@@ -18,7 +20,7 @@ public class ProtectiveCocoon : NetworkBehaviour
     private Coroutine _lifeCoroutine;
     private Coroutine _regenBuffCoroutine;
 
-    private float _originalRegenValue;
+    private readonly AttributeModifier _regenModifier = new AttributeModifier(0f, ModifierType.Multiplier);
 
     private bool _isProtectiveCooconSpawnAttack;
 
@@ -99,28 +101,19 @@ public class ProtectiveCocoon : NetworkBehaviour
     private void ApplyRegenBuff()
     {
         if (_hero == null) return;
+        if (!_hero.Resources.TryGetValue(ResourceType.Health, out var health)) return;
 
-        foreach (var resource in _hero.Resources.Values)
-        {
-            if (resource.RegenerationValue > 0)
-            {
-                _originalRegenValue = resource.RegenerationValue;
-                resource.RegenerationValue *= RegenMultiplier;
-            }
-        }
+        _regenModifier.Source = this;
+        _regenModifier.Value = _regenBuffMultiplier;
+        health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
     }
 
     private void RemoveRegenBuff()
     {
         if (_hero == null) return;
+        if (!_hero.Resources.TryGetValue(ResourceType.Health, out var health)) return;
 
-        foreach (var resource in _hero.Resources.Values)
-        {
-            if (resource.RegenerationValue > 0)
-            {
-                resource.RegenerationValue = _originalRegenValue;
-            }
-        }
+        health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
     }
 
     private IEnumerator RegenBuffTimer()

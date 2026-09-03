@@ -11,11 +11,11 @@ public class HardenedFlesh : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    private float _buffPercent = 5;
+    private const float BuffPercentPerStack = 0.05f;
     private int _currentStacks = 0;
     private const int _maxStacks = 5;
 
-    private float _originalDefPhysDamage;
+    private AttributeModifier _resistanceModifier;
     
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -24,43 +24,66 @@ public class HardenedFlesh : AbstractCharacterState
         abilities = character.Character.Abilities;
         base.personWhoMadeBuff = personWhoMadeBuff;
 
-        if (_currentStacks == 0) _originalDefPhysDamage = health.DefPhysDamage;
-
         duration = durationToExit;
+        _currentStacks = 1;
 
-        health.DefPhysDamage = _originalDefPhysDamage + _originalDefPhysDamage * _buffPercent;
-
-        Debug.Log("Def " + health.DefPhysDamage);
+        ApplyOrUpdateModifier();
     }
+
 
     public override void ExitState()
     {
-        health.DefPhysDamage = _originalDefPhysDamage;
+        RemoveModifier();
         characterState.RemoveState(this);
     }
 
+
     public override bool Stack(float time)
     {
+        duration = time;
+
         if (_currentStacks < _maxStacks)
         {
-            duration = time;
             _currentStacks++;
-			health.DefPhysDamage = health.DefPhysDamage + _buffPercent;
-
-			Debug.Log("Def " + health.DefPhysDamage);
-			return false;
+            ApplyOrUpdateModifier();
         }
+
         return false;
     }
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-
         if (duration <= 0)
         {
             ExitState();
             return;
         }
+    }
+    
+    private void ApplyOrUpdateModifier()
+    {
+        if (characterState?.Character == null) return;
+
+        var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        float totalBonus = _currentStacks * BuffPercentPerStack;
+
+        if (_resistanceModifier == null)
+        {
+            _resistanceModifier = new AttributeModifier(totalBonus, ModifierType.Percent, this);
+            resistanceAttr.AddModifier(_resistanceModifier);
+        }
+        else
+        {
+            _resistanceModifier.Value = totalBonus;
+        }
+    }
+    
+    private void RemoveModifier()
+    {
+        if (characterState?.Character == null || _resistanceModifier == null) return;
+
+        var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        resistanceAttr.RemoveModifier(_resistanceModifier);
+        _resistanceModifier = null;
     }
 }

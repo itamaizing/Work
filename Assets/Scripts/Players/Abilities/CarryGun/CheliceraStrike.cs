@@ -173,8 +173,8 @@ public class CheliceraStrike : Skill
             _totalChanceApplyBleeding = _chanceApplyBleeding;
             _totalchanceCritDamage = _chanceCritDamageEvolutionTwo;
 
-            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(targetCharacter)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
-            if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
+            if (_isChanceApplyBleedingIncrease && CheckStateForCrit(targetCharacter)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
             if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, CriticalDamageMultiplierDefault);
 
@@ -188,7 +188,7 @@ public class CheliceraStrike : Skill
 
             _totalchanceCritDamage = _chanceCritDamageEvolutionFour;
 
-            if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
             if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
         }
@@ -219,7 +219,7 @@ public class CheliceraStrike : Skill
         return criticalDamage * multiplierCrit;
     }
 
-    private bool CheckStateForBleeding(Character character)
+    private bool CheckStateForCrit(Character character)
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
         return character != null && blockingStates.Any(state => character.CharacterState.CheckForState(state));
