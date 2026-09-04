@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HardenedFlesh : AbstractCharacterState
+public class HardenedFlesh : RefreshingState
 {
     private List<StatusEffect> _effects = new() { StatusEffect.Destruction };
 
@@ -11,8 +11,7 @@ public class HardenedFlesh : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    private const float BuffPercentPerStack = 0.05f;
-    private int _currentStacks = 0;
+    private const float BuffPerStack = 5f;
     private const int _maxStacks = 5;
 
     private AttributeModifier _resistanceModifier;
@@ -23,41 +22,37 @@ public class HardenedFlesh : AbstractCharacterState
         health = character.Character.Health;
         abilities = character.Character.Abilities;
         base.personWhoMadeBuff = personWhoMadeBuff;
-
+        
+        currentStacksCount = 1;
+        MaxStacksCount = _maxStacks;
         duration = durationToExit;
-        _currentStacks = 1;
 
         ApplyOrUpdateModifier();
     }
-
+    
 
     public override void ExitState()
     {
+        base.ExitState();
         RemoveModifier();
-        characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        currentStacksCount = 0;
     }
 
 
     public override bool Stack(float time)
     {
-        duration = time;
-
-        if (_currentStacks < _maxStacks)
+        if (currentStacksCount < _maxStacks)
         {
-            _currentStacks++;
+            currentStacksCount++;
             ApplyOrUpdateModifier();
         }
 
-        return false;
+        return true;
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
-        {
-            ExitState();
-            return;
-        }
     }
     
     private void ApplyOrUpdateModifier()
@@ -65,17 +60,22 @@ public class HardenedFlesh : AbstractCharacterState
         if (characterState?.Character == null) return;
 
         var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
-        float totalBonus = _currentStacks * BuffPercentPerStack;
+        float totalBonus = currentStacksCount * BuffPerStack;
 
         if (_resistanceModifier == null)
         {
-            _resistanceModifier = new AttributeModifier(totalBonus, ModifierType.Percent, this);
+            _resistanceModifier = new AttributeModifier(totalBonus, ModifierType.Flat, this);
             resistanceAttr.AddModifier(_resistanceModifier);
         }
         else
         {
             _resistanceModifier.Value = totalBonus;
         }
+    }
+    
+    public override void ReduceStack()
+    {
+        ExitState();
     }
     
     private void RemoveModifier()
@@ -85,5 +85,23 @@ public class HardenedFlesh : AbstractCharacterState
         var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
         resistanceAttr.RemoveModifier(_resistanceModifier);
         _resistanceModifier = null;
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        if (currentStacksCount == 0)
+        {
+            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
+        else
+        {
+            duration = durationToExit;
+            Stack(durationToExit);
+        }
+
+        return this;
     }
 }

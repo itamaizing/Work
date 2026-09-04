@@ -562,7 +562,6 @@ public class Tentacles : Skill
         {
             _spawnPoint = targetInfo.Points[0];
             Targeting.ClearTarget();
-            return;
         }
 
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);

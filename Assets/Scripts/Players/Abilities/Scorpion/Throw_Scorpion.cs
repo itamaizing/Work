@@ -20,13 +20,21 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
     public event Action<GameObject, Skill> OnDamaged;
 
     protected override bool IsCanCast => Targeting.GetTarget() != null &&
-        Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
+                                         Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
+                                         CheckResourcesOnSkill();
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Throw");
 
-    public void AnimThrowStart() => AnimStartCastCoroutine();
-    public void AnimThrowEnd() => AnimCastEnded();
+    public void AnimThrowStart()
+    {
+        StartCoroutine(CastJob());
+    }
+
+    public void AnimThrowEnd()
+    {
+        //AnimCastEnded();
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -47,25 +55,42 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
         info.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(info);
     }
+    
+    protected override bool CheckResourcesOnSkill()
+    {
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null) return false;
+
+        CharacterState targetState = target.CharacterState;
+        bool hasControlDebuff = targetState.CheckForState(States.Stun) || 
+                                targetState.CheckForState(States.DisappointmentState);
+
+        float energyCost = hasControlDebuff ? _reducedEnergyCost : _normalEnergyCost;
+        var energy = Hero.Resources[ResourceType.Energy];
+
+        return energy != null && energy.CurrentValue >= energyCost;
+    }
 
     protected override IEnumerator CastJob()
     {
         var target = Targeting.GetTarget()?.Character;
         if (target == null) yield break;
-        
+
         CmdBlockTarget(target.gameObject,false);
         CharacterState targetState = target.CharacterState;
 
         bool hasControlDebuff = targetState.CheckForState(States.Stun) || 
-                               targetState.CheckForState(States.DisappointmentState);
-
+                                targetState.CheckForState(States.DisappointmentState);
+        
         float energyCost = hasControlDebuff ? _reducedEnergyCost : _normalEnergyCost;
         
         Cost.TryPaySingle(energyCost, ResourceType.Energy);
-        
-        yield return new WaitForSeconds(_animationDuration * 0.5f);
+
+        yield return new WaitForSeconds(_animationDuration / 2);
 
         CmdExecuteThrow(target.gameObject);
+
+        yield return null;
     }
 
     [Command]
@@ -94,12 +119,12 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
         OnDamaged?.Invoke(targetObj, this);
         var target = targetObj.GetComponent<Character>();
         if (target == null) return;
-
+        
         Vector3 throwDirection = (_hero.transform.position - target.transform.position).normalized;
         Vector3 finalPosition = _hero.transform.position + throwDirection * (_baseThrowDistance + _currentBonusDistance);
         
         Vector3 liftPosition = target.transform.position + Vector3.up * _liftHeight;
-        target.Move?.TargetRpcDoLiftAndThrow(liftPosition, finalPosition, 1);
+        target.Move?.RpcDoLiftAndThrow(liftPosition, finalPosition, 1);
 
         Damage damage = new Damage
         {
@@ -134,8 +159,16 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
 
     protected override void ClearData()
     {
-        Targeting.ClearTarget();
-        Targeting.ClearTempTarget();
+        var currentTarget = Targeting.GetTarget()?.Character;
+        if (currentTarget != null)
+        {
+            CmdBlockTarget(currentTarget.gameObject,true);
+        }
+        if (_hero != null && _hero.Move != null)
+        {
+            _hero.Move.StopLookAt();
+        }
+        base.ClearData();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

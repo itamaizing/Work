@@ -31,12 +31,12 @@ namespace Gangdollarff.EarthElemental
 
         private const float HealthMaxPercent = 0.10f;
         private const float HealthRegenPercent = 0.002f;
+        private const float TickInterval = 1f;
         
         private readonly AttributeModifier _maxHealthModifier =
             new AttributeModifier(HealthMaxPercent, ModifierType.Percent);
         
-        private readonly AttributeModifier _healthRegenModifier =
-            new AttributeModifier(HealthRegenPercent, ModifierType.Flat);
+        private Coroutine _regenCoroutine;
 
         public override States State => States.EarthsHealth;
         public override StateType Type => StateType.Magic;
@@ -47,11 +47,12 @@ namespace Gangdollarff.EarthElemental
             Character personWhoMadeBuff, string skillName)
         {
             this.characterState = characterState;
+            health = characterState.Character?.Health;
 
             _maxHealthModifier.Source = this;
-            _healthRegenModifier.Source = this;
 
             ApplyBuffs();
+            StartRegenRoutine();
         }
 
         private void ApplyBuffs()
@@ -61,10 +62,6 @@ namespace Gangdollarff.EarthElemental
             if (health != null)
             {
                 health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
-                
-                _healthRegenModifier.Value = HealthRegenPercent * health.MaxValue;
-                
-                health.AddModifier(ResourceAttributeName.Regen, _healthRegenModifier);
             }
         }
 
@@ -74,17 +71,56 @@ namespace Gangdollarff.EarthElemental
 
             if (health != null)
             {
-                health.RemoveModifierBySource(ResourceAttributeName.MaxValue,this);
-                health.RemoveModifierBySource(ResourceAttributeName.Regen,this);
+                health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
+            }
+        }
+        
+        private void StartRegenRoutine()
+        {
+            if (characterState?.Character == null) return;
+            
+            if (characterState.Character.isServer || characterState.Character.isServerOnly)
+            {
+                _regenCoroutine = characterState.StartCoroutine(RegenRoutine());
+            }
+        }
+
+        private void StopRegenRoutine()
+        {
+            if (_regenCoroutine != null && characterState != null)
+            {
+                characterState.StopCoroutine(_regenCoroutine);
+                _regenCoroutine = null;
+            }
+        }
+
+        private IEnumerator RegenRoutine()
+        {
+            var waitForInterval = new WaitForSeconds(TickInterval);
+
+            while (true)
+            {
+                yield return waitForInterval;
+
+                if (health != null)
+                {
+                    float regenAmount = health.MaxValue * HealthRegenPercent;
+                    if (regenAmount > 0)
+                    {
+                        health.Add(regenAmount);
+                    }
+                }
             }
         }
 
         public override void ExitState()
         {
             currentStacksCount = 0;
+            StopRegenRoutine();
             RemoveBuffs();
             base.ExitState();
         }
+
 
         public override bool Stack(float time) => false;
 

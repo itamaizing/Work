@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Impatica : Skill
@@ -46,25 +47,67 @@ public class Impatica : Skill
     private bool _isExtendDamageAbsorption = false;
 
     public void ExtendDamageAbsorption(bool value) => _isExtendDamageAbsorption = value;
+    
+
+    private bool _secondChargeActive;
+    private double? _pendingSecondChargeEndTime;
 
     public void SecondCharge(bool value)
     {
+        if (_secondChargeActive == value) return;
+        _secondChargeActive = value;
+
         if (value)
         {
             Charges.EnableChargers(true, 2, Cooldown.BaseCooldownTime);
+
+            double slot1End = NetworkTime.time;
+
             if (Cooldown.IsActive)
-                Charges.StartRecharge(Cooldown.RemainingTime);
+            {
+                float remaining1 = Cooldown.RemainingTime;
+                slot1End = NetworkTime.time + remaining1;
+
+                Charges.StartRecharge(remaining1);
+                Cooldown.ForceEnd();
+            }
+
+            if (_pendingSecondChargeEndTime.HasValue)
+            {
+                double duration2 = _pendingSecondChargeEndTime.Value - slot1End;
+
+                if (duration2 > 0)
+                    Charges.StartRecharge((float)duration2);
+
+                _pendingSecondChargeEndTime = null;
+            }
         }
         else
         {
-            //из-за пинга на сервере пишет 2 - Count, а на клиенте уже 0 - count
-            if (Charges.RemainingCharges <= 0 && RechargeTimers.Count > 0)
-                Cooldown.StartCustom((float)(RechargeTimers[^1] - NetworkTime.time));
+            if (RechargeTimers.Count > 0)
+            {
+                double firstEnd = RechargeTimers[0];
+
+                _pendingSecondChargeEndTime = RechargeTimers.Count > 1
+                    ? RechargeTimers[RechargeTimers.Count - 1]
+                    : null;
+
+                for (int i = RechargeTimers.Count - 1; i >= 0; i--)
+                    Charges.RestoreCharge(i);
+
+                double remainingFirst = firstEnd - NetworkTime.time;
+                if (remainingFirst > 0)
+                    Cooldown.StartCustom((float)remainingFirst);
+            }
+            else
+            {
+                _pendingSecondChargeEndTime = null;
+            }
 
             Charges.EnableChargers(false, 0, Cooldown.BaseCooldownTime);
         }
     }
-    
+
     protected override void UseCooldownOrCharges()
     {
         if (Charges.UsesCharges) Charges.TryUse();

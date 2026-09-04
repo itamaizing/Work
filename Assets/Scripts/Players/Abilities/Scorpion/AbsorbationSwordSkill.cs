@@ -77,6 +77,8 @@ public class AbsorbationSwordSkill : Skill
     
     private void HandleSkillCanceled()
     {
+        _hero.Move.StopLookAt();
+        UseCooldownOrCharges();
         EndAbsorb();
     }
 

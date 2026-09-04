@@ -81,9 +81,9 @@ public class CoolingDamaged : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
 
-    private const float PhysResistPercent = 0.10f;
+    private const float PhysResistFlat = 10f;
 
-    private readonly AttributeModifier _physResistModifier = new AttributeModifier(PhysResistPercent, ModifierType.Percent);
+    private readonly AttributeModifier _physResistModifier = new AttributeModifier(PhysResistFlat, ModifierType.Flat);
 
     public override States State => States.CoolingDamaged;
     public override StateType Type => StateType.Magic;
