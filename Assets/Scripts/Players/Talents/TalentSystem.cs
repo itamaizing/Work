@@ -157,17 +157,19 @@ public class TalentSystem : NetworkBehaviour
         _talents[row].TalentsData[id].SetActive(value);
     }*/
 
-	public void SetActive(int group, int row ,int id, bool value)
-	{
-        _talents[group].TalentRows[row].Talents[id].SetActive(value);
-        if (value) _points--;
+   public void SetActive(int group, int row, string name, bool value, int lvl)
+   {
+       var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
 
-        else
-        {
-            int maxPoints = GetMaxTalentPoints();
-            if (_points < maxPoints) _points++;
-        }
-    }
+       var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
+       talent.SetActive(value, lvl);
+       if (value) _points--;
+       else
+       {
+           int maxPoints = GetMaxTalentPoints();
+           if (_points < maxPoints) _points++;
+       }
+   }
 
     public int GetMaxTalentPoints()
     {

@@ -149,7 +149,7 @@ public class SaveManager : MonoBehaviour
 
         talent.Data.SetOpen(isActive);
         talent.Data.SetLevel(lvl);
-        _character.TalentManager.SetActive(idGroup, row, idTalent, isActive);
+        _character.TalentManager.SetActive(idGroup, row, idTalent, isActive, lvl);
 
         string key = TalentKey(idGroup, row, idTalent);
 

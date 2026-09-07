@@ -7323,71 +7323,71 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[2]'
       value: 
-      objectReference: {fileID: 3068634069238352843}
+      objectReference: {fileID: 5084671336121015661}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[3]'
       value: 
-      objectReference: {fileID: 5084671336121015661}
+      objectReference: {fileID: 2036370849879020904}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[4]'
       value: 
-      objectReference: {fileID: 2036370849879020904}
+      objectReference: {fileID: 8918194537379249446}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[5]'
       value: 
-      objectReference: {fileID: 8918194537379249446}
+      objectReference: {fileID: 4310610476984543593}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[6]'
       value: 
-      objectReference: {fileID: 4310610476984543593}
+      objectReference: {fileID: 5605713643324713456}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[7]'
       value: 
-      objectReference: {fileID: 5605713643324713456}
+      objectReference: {fileID: 1352912860454630216}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[8]'
       value: 
-      objectReference: {fileID: 1352912860454630216}
+      objectReference: {fileID: 3138758512476647846}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[9]'
       value: 
-      objectReference: {fileID: 1852313743646574494}
+      objectReference: {fileID: 8854865153303019716}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[10]'
       value: 
-      objectReference: {fileID: 3138758512476647846}
+      objectReference: {fileID: 2727420570257355857}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[11]'
       value: 
-      objectReference: {fileID: 8854865153303019716}
+      objectReference: {fileID: 3296930317622393649}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[12]'
       value: 
-      objectReference: {fileID: 2727420570257355857}
+      objectReference: {fileID: 5945422429078664588}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[13]'
       value: 
-      objectReference: {fileID: 3296930317622393649}
+      objectReference: {fileID: 2935799894972768155}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[14]'
       value: 
-      objectReference: {fileID: 5945422429078664588}
+      objectReference: {fileID: 5679546152039556976}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[15]'
       value: 
-      objectReference: {fileID: 2935799894972768155}
+      objectReference: {fileID: 2844793441572165725}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[16]'
       value: 
-      objectReference: {fileID: 5679546152039556976}
+      objectReference: {fileID: 5339826369234288012}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[17]'
       value: 
-      objectReference: {fileID: 2844793441572165725}
+      objectReference: {fileID: 3068634069238352843}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[18]'
       value: 
-      objectReference: {fileID: 5339826369234288012}
+      objectReference: {fileID: 1852313743646574494}
     - target: {fileID: 5230403314913317377, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -0.021900177
@@ -8717,8 +8717,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -8817,8 +8817,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: e43281df2f36f8847a019f5d98c83495, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -8921,8 +8921,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: f0fbbbbe7ed419f45a1c3c375281ecf1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -10038,8 +10038,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: fb727d49123a93745895540fbb1f0f06, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -10419,8 +10419,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: a3fc0e786bad06c41b2fe42699397bbb, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:

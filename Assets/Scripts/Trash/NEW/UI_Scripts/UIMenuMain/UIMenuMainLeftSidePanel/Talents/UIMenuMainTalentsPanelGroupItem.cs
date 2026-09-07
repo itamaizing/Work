@@ -118,45 +118,29 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         {
             if (_talent.Level < _talent.MaxLvl)
             {
-                _lvlText.text = (_talent.Level + 1).ToString();
                 Selected?.Invoke(_talent, true, _talent.Level + 1);
-                _lvlText.gameObject.SetActive(true);
             }
-           /* else
-            {
-                
-                if (!_talent.CanClose())
-                {
-                    Debug.Log("CANT CLOSE TALENT", this);
-                    return;
-                }
-                Selected?.Invoke(_talent, !_talent.IsOpen, 0);
-                _lvlText.text = "0";
-                _lvlText.gameObject.SetActive(false);
-            }*/
         }
         else
         {
             if (_talent.condition.CanOpen)
             {
                 Selected?.Invoke(_talent, true, 1);
-                _lvlText.text = "1";
-                _lvlText.gameObject.SetActive(true);
             }
         }
-        activeState.isActive = _talent.IsOpen;
+
+        RefreshVisuals();
     }
 
     private void OnRightClick()
     {
-        if(_talent.Level >= 2)
+        if (_talent.Level >= 2)
         {
-            _lvlText.text = (_talent.Level - 1).ToString();
             Selected?.Invoke(_talent, true, _talent.Level - 1);
-            _lvlText.gameObject.SetActive(true);
-
+            RefreshVisuals();
             return;
         }
+
         if (!_talent.CanClose())
         {
             Debug.Log("CANT CLOSE TALENT", this);
@@ -164,10 +148,15 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         }
 
         Selected?.Invoke(_talent, false, 0);
-        _lvlText.text = "0";
-        _lvlText.gameObject.SetActive(false);
+        RefreshVisuals();
+    }
 
+    private void RefreshVisuals()
+    {
         activeState.isActive = _talent.IsOpen;
+        _lvlText.text = _talent.Level.ToString();
+        _lvlText.gameObject.SetActive(_talent.IsOpen);
+        _frameImage.sprite = _talent.IsOpen ? _iconState.On : _iconState.Off;
     }
 
     public void OnPointerClick(PointerEventData eventData)

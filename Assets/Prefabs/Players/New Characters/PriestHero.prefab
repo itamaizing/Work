@@ -7123,8 +7123,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -7196,10 +7196,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -7305,10 +7304,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _buffDuration: 18
   _healAmount: 6
   _damageAmount: 6
@@ -7427,10 +7425,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _healAmount: 35
   _lightRange: 4
   lightInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
@@ -7455,8 +7452,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 29f4a097d1fbabf49924792a7b9935d5, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -7540,10 +7537,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   healPerTick: 6
   lightRange: 4
   lightDuration: 12
@@ -7661,10 +7657,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   lightShieldDuration: 18
   tiredSoulDuration: 12
   absorbAmount: 40
@@ -7769,10 +7764,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _switchableSkills:
   - {fileID: 744928704386096395}
   - {fileID: 2650038749754245899}
@@ -7883,10 +7877,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _buffDuration: 2
 --- !u!114 &3096350181652607353
 MonoBehaviour:
@@ -7988,10 +7981,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _speed: 0.0015
   _cooldownReduceValue: 5
   _defaultRadius: 4
@@ -8013,8 +8005,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 1234a0457cd7d68489fcc887f4e41225, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -8086,10 +8078,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 0}
   _playerLinks: {fileID: 0}
   _ghostSkill: {fileID: 0}
@@ -8117,8 +8108,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 841bdc7bd09965940af4259c7b728b56, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -8190,10 +8181,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   playerCharacter: {fileID: 4534754468497973439}
 --- !u!114 &744928704386096395
 MonoBehaviour:
@@ -8210,8 +8200,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: a01ecc5cf4d4ac04ba96007c73bc07cb, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
@@ -8289,10 +8279,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   buffDuration: 18
   effectPrefabLight: {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
   lightInfo: {fileID: 11400000, guid: a01ecc5cf4d4ac04ba96007c73bc07cb, type: 2}
@@ -8390,10 +8379,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &2384888892488266055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8494,10 +8482,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _lightVFX: {fileID: 3298260292842138349}
   _aoeRadius: 1.5
   _beamUpOffset: 8
@@ -8613,10 +8600,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _effectObject: {fileID: 3561390324075153465}
   _expandDuration: 0.3
   _maxRadius: 2
@@ -8725,10 +8711,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _pillarVFX: {fileID: 8732622908068340559}
   _pillarDuration: 6
   _pillarUpOffset: 2
@@ -8840,10 +8825,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _radianceVFX: {fileID: 1748700213592164348}
   _aoeRadius: 2
   _tickInterval: 1
@@ -8952,10 +8936,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _shadowPrefab: {fileID: 6941272477236383263, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
   _aoeRadius: 1.5
   _shadowSpeedMultiplier: 0.5
@@ -9060,10 +9043,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _fearEffect: {fileID: 7584423103798657176}
   _aoeRadius: 1.5
   _fearDuration: 6
@@ -9161,10 +9143,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _duration: 4
 --- !u!114 &3445813803428500223
 MonoBehaviour:
@@ -9266,10 +9247,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _manaCost: 20
 --- !u!114 &813685758969075211
 MonoBehaviour:
@@ -9286,7 +9266,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
+  _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 1c068b3a1e4a26b44ab80bf62b2d16d8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
@@ -9359,10 +9339,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _shadowPrefab: {fileID: 6941272477236383263, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
   _shadowSpeedMultiplier: 0.5
   _darkDamageThreshold: 50
@@ -9454,10 +9433,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &6819494317702169821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9546,10 +9524,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _shadowSkill: {fileID: 813685758969075211}
 --- !u!114 &1383847730869930601
 MonoBehaviour:
@@ -9566,7 +9543,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
+  _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 8f49e3a5072b55644b6a95aceeb934e8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
@@ -9639,10 +9616,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _buffDuration: 6
 --- !u!114 &1891792751888252515
 MonoBehaviour:
@@ -9744,10 +9720,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!4 &1110070738435946966 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

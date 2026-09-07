@@ -4319,14 +4319,23 @@ MonoBehaviour:
         2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B, \u0437\u0430 \u043A\u0430\u0436\u0434\u043E\u0435
         \u043E\u0447\u043A\u043E\u043C \u043A\u043E\u043C\u0431\u043E \u043F\u0440\u043E\u0434\u043B\u044F\u0435\u0442\u0441\u044F
         \u043D\u0430 1 \u0441\u0435\u043A."
-    IsOpen: 1
     Description: "\u041A\u043B\u0438\u043D\u043E\u043A \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 683eb45158c64204bbe4144adf9d6d1e, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508098
   character: {fileID: 5458554383432203635}
   skill: {fileID: 5612755856390318882}
   chainBlade_Scorpion: {fileID: 220446193611464409}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508098
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5838140318630053426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4352,15 +4361,24 @@ MonoBehaviour:
         4 \u0440\u0430\u0437\u0430, \u0437\u0430 \u043A\u0430\u0436\u0434\u043E\u0435
         \u043E\u0447\u043A\u043E \u043A\u043E\u043C\u0431\u043E \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
         1 \u0441\u0442\u0430\u043A \u043A\u0440\u043E\u0432\u043E\u0442\u0435\u0447\u0435\u043D\u0438\u044F.\n"
-    IsOpen: 1
     Description: "\u0420\u0430\u0441\u0441\u0435\u043A\u0430\u044E\u0449\u0438\u0439
       \u043A\u043B\u0438\u043D\u043E\u043A"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: a2163d57b946a2f4ab785012906160eb, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508099
   character: {fileID: 5458554383432203635}
   skill: {fileID: 5612755856390318882}
   cleavingBlade_Scorpion: {fileID: 1485408660127300276}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508099
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &646569489505946675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4384,14 +4402,23 @@ MonoBehaviour:
       \u0440\u0430\u0441\u0441\u0435\u043A\u0430\u044E\u0449\u0438\u0439 \u043A\u043B\u0438\u043D\u043E\u043A
       - \u043A\u0440\u043E\u0432\u043E\u0442\u0435\u0447\u0435\u043D\u0438\u0435."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0423\u0434\u0430\u0440\u044B \u043F\u043E \u0441\u0442\u043E\u044F\u0449\u0435\u0439
       \u0446\u0435\u043B\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5781ca622a1137147bbd71dc9656f388, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508100
   character: {fileID: 5458554383432203635}
   scorpionPassive: {fileID: 1595654106541851295}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508100
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1156251021579265288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4407,12 +4434,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508101
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508101
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6075198806209693070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4428,12 +4464,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508102
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508102
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3379282054853344686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4449,12 +4494,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508103
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508103
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6694511863884638036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4488,15 +4542,24 @@ MonoBehaviour:
         \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
         \u043D\u0430 10%, \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
         \u0434\u043E 3 \u0440\u0430\u0437."
-    IsOpen: 1
     Description: " \u0423\u0434\u0430\u0440 \u0441 \u043D\u043E\u0433\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 9204ae068284fba43b442c92c1ac501a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508104
   character: {fileID: 5458554383432203635}
   skill: {fileID: 5612755856390318882}
   kick_Scorpion: {fileID: 8920276347339243132}
   newPunch_Scorpion: {fileID: 6732054044553877427}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508104
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8667011970084610253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4534,15 +4597,24 @@ MonoBehaviour:
       \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u0438\u0440\u0443\u044E\u0449\u0435\u0433\u043E
       \u044D\u0444\u0444\u0435\u043A\u0442\u0430 \u0441 \u041D\u0438\u043D\u0434\u0437\u044F."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0421\u0435\u0440\u0438\u044F \u043A\u043E\u043C\u0431\u043E"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508105
   character: {fileID: 5458554383432203635}
   consume: {fileID: 8732005787551451527}
   passiveCombo_Scorpion: {fileID: 5883639770937801120}
   manager: {fileID: 5612755856390318882}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508105
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7893984956880296540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4569,13 +4641,22 @@ MonoBehaviour:
         \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
         \u043D\u0430 10% \u043D\u0430 13 \u0441\u0435\u043A. \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
         \u0434\u043E 3 \u0440\u0430\u0437.\n"
-    IsOpen: 1
     Description: "\u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0437\u043E\u0433\u0440\u0435\u0432"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 4366069059bee114e863ce68e5db1180, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508106
   character: {fileID: 5458554383432203635}
   newPunch: {fileID: 6732054044553877427}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508106
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4787141543461614230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4603,14 +4684,23 @@ MonoBehaviour:
       1\u044B\u0439 \u0443\u0434\u0430\u0440 20%, 2\u043E\u0439 \u2013 40% , 3\u0438\u0439
       \u2013 40%, 4\u044B\u0439 \u2013 80%.) "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041A\u0430\u0436\u0434\u044B\u0439  \xAB\u0443\u0434\u0430\u0440
       \u0441 \u043D\u043E\u0433\u0438\xBB"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3433c8b4fd74dc24a8391c933260b5ee, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508107
   character: {fileID: 5458554383432203635}
   kick_Scorpion: {fileID: 8920276347339243132}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508107
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6235391431062527375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4626,12 +4716,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508108
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508108
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7752491051264352687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4647,12 +4746,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508109
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508109
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &310719922032413749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4678,14 +4786,23 @@ MonoBehaviour:
       \u043A\u043B\u0435\u0442\u043A\u0443 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438,
       \u043F\u043B\u044E\u0441 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438."
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 402c0e5b87e26974dae912f67806ac0d, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508110
   character: {fileID: 5458554383432203635}
   skill: {fileID: 5612755856390318882}
   teleportation_Scorpion: {fileID: 3741212121368607163}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508110
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1414940694262201790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4725,14 +4842,23 @@ MonoBehaviour:
         \u043A\u043E\u043B\u0434\u0430\u0443\u043D\u0430 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
         \u043D\u0430 10% \u043D\u0430 6 \u0441\u0435\u043A; \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
         3 \u0440\u0430\u0437\u0430."
-    IsOpen: 1
     Description: "\u0414\u044B\u0445\u0430\u043D\u0438\u0435 \u043E\u0433\u043D\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: bdab9e283b8a84e49a7a02e778851d43, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508111
   character: {fileID: 5458554383432203635}
   skill: {fileID: 5612755856390318882}
   fireBreath_Scorpion: {fileID: 6267367289068038631}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508111
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7510401949783811934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4752,13 +4878,22 @@ MonoBehaviour:
       \u0442\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u0438 \u043D\u0435
       \u0437\u0430\u0442\u0440\u0430\u0442\u0438\u0442 \u044D\u043D\u0435\u0440\u0433\u0438\u0438."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0418\u043C\u043F\u0443\u043B\u044C\u0441 \u043C\u0430\u0442\u0435\u0440\u0438\u0438 "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3352296dd54fa7747b820e9b4f45699a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508112
   character: {fileID: 5458554383432203635}
   scorpionPassive: {fileID: 1595654106541851295}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508112
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1579969653887513289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4774,12 +4909,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508113
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508113
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5560537017145461016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4795,12 +4939,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508114
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508114
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4592574728981757350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4816,12 +4969,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508115
   character: {fileID: 5458554383432203635}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508115
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -4954,7 +5116,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -4971,6 +5133,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 5
     _faction: 4
     _unitType: -1
@@ -5014,6 +5177,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
   scorpionPassive: {fileID: 1595654106541851295}
@@ -5041,10 +5213,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 6
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 2
-    resourceCost: 6
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -5060,6 +5236,7 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 5
     _faction: 4
     _unitType: -1
@@ -5103,6 +5280,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
   _scorpionPassive: {fileID: 1595654106541851295}
@@ -5131,10 +5317,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 20
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 2
-    resourceCost: 20
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -5150,6 +5340,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 5
     _faction: 4
     _unitType: -1
@@ -5193,6 +5384,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _comboCounter: {fileID: 5883639770937801120}
   _scorpionPassive: {fileID: 1595654106541851295}
   _minDamage: 18
@@ -5219,7 +5419,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -5236,6 +5436,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -5250,13 +5451,21 @@ MonoBehaviour:
     _castDuration: 1.5
     _tickInterval: 0.15
     _baseCostPerTick:
-    - resourceType: 2
-      resourceCost: 1
+    - nameToShow: 0 Health - Mandatory mod desc
+      type: 0
+      value: 0
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _castDuration: 1.5
   _manaCostRate: 0.15
   _manaCostPerTick:
-  - resourceType: 2
-    resourceCost: 1
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -5283,6 +5492,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _conePrefab: {fileID: 6453211931130663927, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _prefab: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _duration: 3
@@ -5313,10 +5531,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 2
-    resourceCost: 20
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -5332,6 +5554,7 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 6
     _unitType: 0
@@ -5375,6 +5598,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 5458554383432203635}
   _drawCircleSelf: {fileID: 1402913355469849604}
   _baseManaCost: 2
@@ -5407,7 +5639,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -5424,6 +5656,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -5467,6 +5700,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &5883639770937801120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5513,10 +5755,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 2
-    resourceCost: 4
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
   _cooldownComponent:
@@ -5532,6 +5778,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
@@ -5575,6 +5822,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _minDamage: 3
   _maxDamage: 5
   _arrowYOffset: 1.5
@@ -5597,13 +5853,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 12005c696a23b0f4e8a35e58cb94742c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -5620,6 +5876,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -5663,6 +5920,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

@@ -19951,10 +19951,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -20055,10 +20054,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   skillRenderer: {fileID: 2807589928063243029}
   groundLayer:
     serializedVersion: 2
@@ -20169,10 +20167,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -20286,10 +20283,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
   _audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
@@ -20391,10 +20387,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &826193211731534654
@@ -20491,10 +20486,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   skillRenderer: {fileID: 2807589928063243029}
   tripleShotTalentActive: 0
   groundLayer:
@@ -20605,10 +20599,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
   _health: {fileID: 2320460443592093226}
@@ -20716,10 +20709,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   extendedRadius: 2
   baseRadius: 3
   teleportManaUse: 6
@@ -20824,10 +20816,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
 --- !u!114 &3491896792666520145
@@ -20924,10 +20915,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
@@ -21019,10 +21009,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
@@ -21050,8 +21039,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: e616953e4fb63fe4ba9860ceec006bdf, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -21129,10 +21118,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   extendedRadius: 8
   _moveDuration: 0.5
   _arrowEffectLifetime: 2
@@ -21245,10 +21233,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
@@ -21344,10 +21331,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _fireAura: {fileID: 8163329122190285983, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
   _arrowFireProjectile: {fileID: 2545325199570042187, guid: 25ced05e8e27cec46bee956e4622103e, type: 3}
   _fireData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
@@ -21486,10 +21472,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _subjugationMindPrefab: {fileID: 7744228389031826322, guid: 9b8d8a2206325ef4787d2a10b24b74a5, type: 3}
   _breakDistance: 6
 --- !u!114 &5245378433989923716
@@ -21586,10 +21571,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   playerLinks: {fileID: 4534754468497973439}
   drawCircle: {fileID: 6586971803846960611}
   duration: 6
@@ -21687,10 +21671,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &1094805825435644166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21785,10 +21768,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &127445238161157264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21883,10 +21865,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &1457342243689941384
@@ -21977,10 +21958,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 30
   _baseDamage: 10
@@ -22156,15 +22136,24 @@ MonoBehaviour:
       \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0441\u0442\u0440\u0435\u043B\u044C\u0431\u044B
       + 1.5 \u043A\u043B\u0435\u0442\u043A\u0438"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 1"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508218
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
   visionComponent: {fileID: 5614925148377618008}
   skillManager: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508218
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4689355994358733388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22205,16 +22194,25 @@ MonoBehaviour:
       \u0438 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C
       \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F.\_"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0420\u0430\u0437\u0432\u0435\u0434\u044B\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439
       \u043E\u0433\u043E\u043D\u044C"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3daccdca469e8c7408109fb56b87cf0b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508219
   character: {fileID: 4534754468497973439}
   reconnaissanceFire: {fileID: 2750012758126725032}
   terrifyingElfAura: {fileID: 6686568037796463366}
   ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508219
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3199921141022633158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22240,13 +22238,22 @@ MonoBehaviour:
         \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
         \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
         \u043D\u0430 \u0445\u043E\u0434\u0443\r"
-    IsOpen: 1
     Description: "\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u043E\u0435 \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u043E "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 523655bbfbe8b0b42869f25f34886283, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508220
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508220
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8301483179927327488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22270,14 +22277,23 @@ MonoBehaviour:
       \u043A\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
       \u04452.4."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0421\u0442\u0440\u0435\u043B\u0430 \u0432 \u043D\u0435\u0431\u043E"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: e66d853c62ebcdd47a77a4812ea72e51, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508221
   character: {fileID: 4534754468497973439}
   shotIntoSky: {fileID: 6009180366675701932}
   ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508221
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8408601315978840956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22312,14 +22328,23 @@ MonoBehaviour:
         \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
         \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
         \u043D\u0430 \u0445\u043E\u0434\u0443."
-    IsOpen: 0
     Description: "\u0411\u0435\u0437\u043C\u0430\u043D\u043D\u0438\u0446\u0430 "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 9abaa859cdccc5c41b6c730b64ae3810, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508222
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
   growTree: {fileID: 2248569995468415066}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508222
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &885336317892172373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22354,14 +22379,23 @@ MonoBehaviour:
       \u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 20% \u0448\u0430\u043D\u0441
       \u043A\u0440\u0438\u0442\u0430 \u04453.2."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u0430\u044F \u043C\u043E\u0442\u043E\u0440\u0438\u043A\u0430
       \u0440\u0443\u043A"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 720f4733233d2764a92a5c68516b9174, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508223
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508223
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2808444879270764260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22382,14 +22416,23 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 \u044D\u0442\u0443 \u043B\u043E\u0432\u0443\u0448\u043A\u0443
       \u043E\u0431\u0435\u0437\u0434\u0432\u0438\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044F.  "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041B\u043E\u0432\u0443\u0448\u043A\u0430"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: a6a9679e6250d2047bee4d3cc80daa3b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508224
   character: {fileID: 4534754468497973439}
   groundTrap: {fileID: 8199207747846444516}
   _ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508224
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5446808929981299714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22408,13 +22451,22 @@ MonoBehaviour:
       \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C
       \u0432 \u0442\u0440\u0438 \u0440\u0430\u0437\u0430 \u0431\u043E\u043B\u044C\u0448\u0435"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 8"
+    ConditionDescription: 
     Icon: {fileID: 297072782305185871, guid: 65c4fda3b61e57c4dac99ccf9b94b0ea, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508225
   character: {fileID: 4534754468497973439}
   shotIntoSky: {fileID: 6009180366675701932}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508225
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1046202040625647134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22445,13 +22497,22 @@ MonoBehaviour:
       \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C
       \u043F\u0430\u0434\u0430\u0435\u0442 \u043D\u0430 4%. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 9"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 9abaa859cdccc5c41b6c730b64ae3810, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508226
   character: {fileID: 4534754468497973439}
   reconnaissanceFire: {fileID: 2750012758126725032}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508226
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5570433275319391096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22478,13 +22539,22 @@ MonoBehaviour:
       \u043A\u0440\u0438\u0442\u0430 \u0432\u044B\u0441\u0442\u0440\u0435\u043B\u0430
       \u0432 \u043D\u0435\u0431\u043E "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 10"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 0a99c0317cf1ef64a8da662122e28d3c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508227
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508227
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7590989661635297986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22509,16 +22579,25 @@ MonoBehaviour:
       \u043F\u0440\u0438 \u044D\u0442\u043E\u043C \u043D\u0435 \u043F\u0440\u043E\u043F\u0430\u0434\u0451\u0442
       \u043F\u0440\u0435\u0434\u044B\u0434\u0443\u0449\u0438\u0439. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 11"
+    ConditionDescription: 
     Icon: {fileID: -8969886084936398640, guid: 2f301f717db84194fabcacc40a2a30d4, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508228
   character: {fileID: 4534754468497973439}
   reconnaissanceFire: {fileID: 2750012758126725032}
   _shotIntoSky: {fileID: 6009180366675701932}
   _shotsIntoSky: {fileID: 826193211731534654}
   _groundTrap: {fileID: 8199207747846444516}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508228
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3454667140215066753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22540,13 +22619,22 @@ MonoBehaviour:
       \u043A\u0434 \u0432\u0441\u0435\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
       \u043D\u0430 1 \u0441\u0435\u043A\u0443\u043D\u0434\u0443"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 13"
+    ConditionDescription: 
     Icon: {fileID: 7921329199819001122, guid: 3cbac3fa2becec548999bf50a432e257, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508229
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508229
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4487867154051678385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22565,14 +22653,23 @@ MonoBehaviour:
       \u043E\u0433\u043E\u043D\u044C \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F
       65 \u0435\u0434\u0438\u043D\u0438\u0446 \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u0438 "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0445\u043E\u0442\u043D\u0438\u043A 14"
+    ConditionDescription: 
     Icon: {fileID: -1864223702, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508230
   character: {fileID: 4534754468497973439}
   groundTrap: {fileID: 8199207747846444516}
   reconnaissanceFire: {fileID: 2750012758126725032}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508230
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8900499401904388835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22597,14 +22694,23 @@ MonoBehaviour:
       \u043F\u043E 1 \u0435\u0434\u0438\u043D\u0438\u0446\u044B \u043D\u0430 \u043A\u0430\u0436\u0434\u0443\u044E
       0,5 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438."
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 28ac766020ba79d41b1e77139a03a2e1, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508231
   character: {fileID: 4534754468497973439}
   sleep: {fileID: 127445238161157264}
   _ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508231
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3623982303959407510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22646,14 +22752,23 @@ MonoBehaviour:
       \u043E\u0442 \u043E\u0433\u043D\u044F \u0438 \u0432 2 \u0440\u0430\u0437\u0430
       \u043C\u0435\u043D\u044C\u0448\u0435 \u043E\u0442 \u0432\u043E\u0434\u044B"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0412\u0437\u0440\u0430\u0441\u0442\u0438\u0442\u044C\_ \u0434\u0435\u0440\u0435\u0432\u043E"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: acaa7ef11a26369409287052b9d07c29, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508232
   character: {fileID: 4534754468497973439}
   growTree: {fileID: 2248569995468415066}
   _ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508232
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &142349868139373380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22684,13 +22799,22 @@ MonoBehaviour:
         2 \u0440\u0430\u0437, \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
         8 \u0441\u0435\u043A\u0443\u043D\u0434, \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
         \u0431\u0430\u0444"
-    IsOpen: 1
     Description: "\u0421\u043F\u043E\u043A\u043E\u0439\u0441\u0442\u0432\u0438\u0435 "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5f3cf76348a150a4fac45482942b1000, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508233
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508233
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4364652774099563755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22730,15 +22854,24 @@ MonoBehaviour:
         \u043D\u0430 1 \u0441\u0435\u043A,  \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
         9 \u0441\u0435\u043A, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
         \u0434\u0435\u0431\u0430\u0444"
-    IsOpen: 1
     Description: "\u041D\u0435\u0431\u0435\u0441\u043D\u044B\u0435 \u0441\u0442\u0440\u0435\u043B\u044B "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 37d01a335d366b14287089f50a66b109, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508234
   character: {fileID: 4534754468497973439}
   shotsIntoSky: {fileID: 826193211731534654}
   growTree: {fileID: 2248569995468415066}
   _ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508234
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &336816487493961371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22759,14 +22892,23 @@ MonoBehaviour:
       3% \u043E\u0442 \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430
       \u043C\u0430\u043D\u043D\u044B. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 5"
+    ConditionDescription: 
     Icon: {fileID: -1411327041, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508235
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
   sleep: {fileID: 127445238161157264}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508235
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2114024499052472920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22800,13 +22942,22 @@ MonoBehaviour:
       \u043D\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 \u0432\u043F\u043B\u043E\u0442\u044C
       \u0434\u043E 60 \u0441\u0435\u043A\u0443\u043D\u0434."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 6"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 551bdec94f2400443ab8d65b6cf2a81c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508236
   character: {fileID: 4534754468497973439}
   growTree: {fileID: 2248569995468415066}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508236
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8747300072688510514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22833,14 +22984,23 @@ MonoBehaviour:
         \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438,
         \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
         \u0443\u0440\u043E\u043D\u0430."
-    IsOpen: 1
     Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 7"
+    ConditionDescription: 
     Icon: {fileID: -1557883857, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508237
   character: {fileID: 4534754468497973439}
   pullingHealth: {fileID: 679409545534796012}
   ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508237
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3423959342573903484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22868,14 +23028,23 @@ MonoBehaviour:
         \u043A\u0430\u0436\u0434\u0443\u044E \u0446\u0435\u043B\u044C \u0431\u0443\u0434\u0435\u0442
         \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u0430 \u043F\u043E\u043B\u043D\u0430\u044F
         \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043C\u0430\u043D\u043D\u044B."
-    IsOpen: 0
     Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 8"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 28ac766020ba79d41b1e77139a03a2e1, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508238
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
   pulling: {fileID: 679409545534796012}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508238
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1410310116505230793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22897,13 +23066,22 @@ MonoBehaviour:
       \u043D\u0430 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u0438
       \u0442\u0435\u0440\u0440\u0430\u0444\u0430\u0439\u043D "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 9"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: b353fa898144457499378c290cae6892, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508239
   character: {fileID: 4534754468497973439}
   _terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508239
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &657254414698332244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22939,14 +23117,23 @@ MonoBehaviour:
       30 \u0441\u0435\u043A\u0443\u043D\u0434, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
       \u044D\u0444\u0444\u0435\u043A\u0442."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0410\u0441\u0442\u0440\u0430\u043B"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: df1704c08728db5419f00cb8138a2ef7, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508240
   character: {fileID: 4534754468497973439}
   shotAstral: {fileID: 3491896792666520145}
   ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508240
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8381494149071375204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22962,14 +23149,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 11"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ca462af3d19f7ac46b2767cf7c1d951c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508241
   character: {fileID: 4534754468497973439}
   shotIntoSky: {fileID: 6009180366675701932}
   shotsIntoSky: {fileID: 826193211731534654}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508241
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2865850095079545532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22985,14 +23181,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u0443\u043B\u044C\u0442\u0438\u043C\u0430\u0433\u0438\u044F "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: d3e6b040a00655545a641c803d557e0f, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508242
   character: {fileID: 4534754468497973439}
   abilities: {fileID: 4092227064955680494}
   multiMagicSpell: {fileID: 1094805825435644166}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508242
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1756814340970267858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23008,15 +23213,24 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508243
   character: {fileID: 4534754468497973439}
   shotIntoSky: {fileID: 6009180366675701932}
   shotsIntoSky: {fileID: 826193211731534654}
   pullingHealth: {fileID: 679409545534796012}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508243
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4990467896875758726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23065,14 +23279,23 @@ MonoBehaviour:
         \u044D\u0444\u0444\u0435\u043A\u0442 \u0441\u0442\u0440\u0430\u0445 - \u0436\u0435\u0440\u0442\u0432\u0430
         \u0442\u0435\u0440\u044F\u0435\u0442 \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044C
         \u0438 \u0443\u0431\u0435\u0433\u0430\u0435\u0442 \u043F\u0440\u043E\u0447\u044C"
-    IsOpen: 1
     Description: "\u0412\u044B\u0441\u0442\u0440\u0435\u043B \u0442\u044C\u043C\u043E\u0439"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 938620e654f6d2d47a71a99689361b9c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508244
   character: {fileID: 4534754468497973439}
   shotDarkness: {fileID: 3150488009405324217}
   ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508244
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7787873027379221544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23093,16 +23316,25 @@ MonoBehaviour:
       \u0437\u0430\u0431\u0438\u0440\u0430\u0435\u0442 \u0436\u0438\u0437\u043D\u0438
       \u0438 \u043F\u0435\u0440\u0435\u0434\u0430\u0451\u0442 \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D\_"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435
       \u0436\u0438\u0437\u043D\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 193371c19b9788944b31bf44c9e0c270, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508245
   character: {fileID: 4534754468497973439}
   pullingHealth: {fileID: 679409545534796012}
   silence: {fileID: 4161291845396503115}
   ability: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508245
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3161208881145151031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23133,14 +23365,23 @@ MonoBehaviour:
       \u041F\u0440\u0438\u0437\u0440\u0430\u043A\u0430 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
       \u0432 2 \u0440\u0430\u0437\u0430."
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041F\u0440\u0438\u0437\u0440\u0430\u043A"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: d6d8c4724ba4c894a92eef1b6d27a08f, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508246
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508246
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5176031341533269077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23174,14 +23415,23 @@ MonoBehaviour:
       \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435  \u043D\u0430
       50%\_ "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u043E\u0434\u0430\u0442\u043B\u0438\u0432\u043E\u0441\u0442\u044C"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: f4b2e41acb5f3134794a23a6b21cb775, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508247
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
   skillManager: {fileID: 4092227064955680494}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508247
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7675527355086524810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23204,14 +23454,23 @@ MonoBehaviour:
       \u0438 \u0431\u0435\u0437 \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u0430
       \u0440\u0430\u0437\u043C\u0435\u0441\u0442\u0438\u0442\u044C \u041F\u0440\u0438\u0437\u0440\u0430\u043A\u0430.  "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u0440\u0430\u043A 5"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: e3060f30537df69499130dddb9c90843, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508248
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
   silence: {fileID: 4161291845396503115}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508248
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3154349677268371443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23243,16 +23502,25 @@ MonoBehaviour:
       \u0434\u0430\u0451\u0442 +3 \u043A\u043B\u0435\u0442\u043A\u0438 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438
       \u043F\u043E\u0442\u043E\u043A\u0443."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0442\u0432\u0435\u0442 \u043D\u0430 \u043F\u043E\u0434\u043B\u043E\u0441\u0442\u044C"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 1dbf779255a5a4e43a5c2914a64be01f, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508249
   character: {fileID: 4534754468497973439}
   suppression: {fileID: 6063604074090390129}
   ability: {fileID: 4092227064955680494}
   reconnaissanceFire: {fileID: 2750012758126725032}
   ghost: {fileID: 1718052129104348959}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508249
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &183809737086991779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23292,15 +23560,24 @@ MonoBehaviour:
       1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430 \xAB\u0412\u043D\u0443\u0442\u0440\u0435\u043D\u043D\u0435\u0439
       \u0442\u044C\u043C\u044B\xBB"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041C\u0440\u0430\u043A 7"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 0781d116f11adaa42980c0fc45bc6912, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508250
   character: {fileID: 4534754468497973439}
   subjugationMind: {fileID: 6728227519922462803}
   ability: {fileID: 4092227064955680494}
   retributiveReckoning: {fileID: 1612167112411553268}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508250
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6150019603701913108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23328,13 +23605,22 @@ MonoBehaviour:
       \u0438 \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u044F \u0432\u0435\u0442\u043A\u0438
       \u043C\u0440\u0430\u043A. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u0440\u0430\u043A 8"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 023bfa63b10b75b4d92ae6e8b7ddaa34, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508251
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508251
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6329989501365168688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23356,13 +23642,22 @@ MonoBehaviour:
       1 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u0431\u0443\u0434\u0435\u0442
       \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u0440\u0430\u043A 9"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 15aae0ddb3e0d704fb9c58091ac1a553, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508252
   character: {fileID: 4534754468497973439}
   _retributiveReckoning: {fileID: 1612167112411553268}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508252
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7436968993412666211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23387,13 +23682,22 @@ MonoBehaviour:
       \u043D\u0430 \u0446\u0435\u043B\u0438 \u0441 \u0442\u0430\u043A\u0438\u043C
       \u0436\u0435 \u0434\u0435\u0431\u0430\u0444\u043E\u043C"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0420\u0430\u0437\u043D\u0435\u0441\u0435\u043D\u0438\u044F \u0431\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: f409fa50ae9f2e249b56d48431b78dc4, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508253
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508253
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3779556819024571266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23416,14 +23720,23 @@ MonoBehaviour:
       \u043E\u0442 \u0440\u0430\u0437\u043C\u0435\u0440\u0430 \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E
       \u0443\u0440\u043E\u043D\u0430.  "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435 \u041F\u043E\u0434\u0430\u0432\u043B\u0435\u043D\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 1351023415, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508254
   character: {fileID: 4534754468497973439}
   suppression: {fileID: 6063604074090390129}
   terrifying: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508254
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &9098254726142606622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23444,13 +23757,22 @@ MonoBehaviour:
       \u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u0438 \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D
       \u0438 \u0414\u0435\u0440\u0435\u0432\u044C\u0435\u0432. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0412\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C \u0441\u0435\u0441\u0442\u0451\u0440"
+    ConditionDescription: 
     Icon: {fileID: 1020443226, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508255
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508255
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5244608271400456856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23466,13 +23788,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938343508537508256
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
   pullingHealth: {fileID: 679409545534796012}
   silence: {fileID: 4161291845396503115}
-  terrifyingElfAura: {fileID: 6686568037796463366}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938343508537508256
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
