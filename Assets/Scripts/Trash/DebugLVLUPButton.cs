@@ -1,3 +1,5 @@
+using System.Linq;
+using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +18,14 @@ public class DebugLVLUPButton : MonoBehaviour
 
     private void AddLevel()
     {
-        //if (User.Instance == null) return;
-        if (_selectManager.SelectedControllableUnits.Count == 0) return;
-        var selectedHero = _selectManager.SelectedControllableUnits[0];
+        if (NetworkClient.connection == null || NetworkClient.connection.identity == null) return;
 
-        if (selectedHero == null || selectedHero.LVL == null) return;
+        var controller = NetworkClient.connection.identity.GetComponent<NetworkComponent>();
+        if (controller == null) return;
 
-        LevelCharacterManager.Instance.AddExperience(LevelCharacterManager.Instance.GetExperienceForNextLevel());
-        selectedHero.SelectComponent.ForceSelect();
+        var hero = controller.controllableUnits.OfType<HeroComponent>().FirstOrDefault();
+        if (hero == null || hero.LVL == null) return;
+
+        hero.LVL.CMDAddEXP(100);
     }
 }
