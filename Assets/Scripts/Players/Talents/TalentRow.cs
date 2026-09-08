@@ -4,13 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public struct TalentRow
+public class TalentRow
 {
-    public List<Talent> Talents;
-
+    public List<Talent> Talents = new();
     public bool isOpen;
 
-    //public List<Talent> Talents => _talents;
-    //public bool isOpen => _isOpen;
-
+    [SerializeReference, SubclassSelector]
+    public List<RowOpenCondition> OpenConditions = new();
 }

@@ -21,17 +21,21 @@ public abstract class Talent : MonoBehaviour
 		Init();
 	}*/
 
-    public void Init()
-    {
+	public void Init(TalentSystem owner, int groupId, int rowIndex)
+	{
 		_data.Init();
-        _data.Name = GetType().Name;
-        if (OpenCondition == null)
-        {
-            OpenCondition = new EmptyCondition();
-        }
-        _data.condition = OpenCondition;
-        _data.ConditionDescription = OpenCondition.ConditionDescription();
-    }
+		_data.Name = GetType().Name;
+		_data.Group = groupId;
+		_data.Row = rowIndex;
+
+		if (OpenCondition == null) OpenCondition = new EmptyCondition();
+		_data.condition = OpenCondition;
+
+		if (OpenCondition is IScopedCondition scoped)
+			scoped.SetOwner(owner, groupId);
+
+		_data.ConditionDescription = OpenCondition.ConditionDescription();
+	}
 
     public abstract void Enter();
 
@@ -40,17 +44,17 @@ public abstract class Talent : MonoBehaviour
 	public void SetActive(bool isActive, int lvl = 0)
 	{
 		_data.SetOpen(isActive);
-		_data.SetLevel(lvl);
-		if (isActive && OpenCondition.CanOpen)
-		{
-			Enter();
-		}
-		else
-		{
-			Exit();
-		}
+		_data.SetLevel(isActive ? lvl : 0);
+		if (isActive) Enter(); else Exit();
 	}
 
+	public bool TrySetActive(bool isActive, int lvl = 0)
+	{
+		if (isActive && !OpenCondition.CanOpen) return false;
+		SetActive(isActive, lvl);
+		return true;
+	}
+	
 	/*public bool CanClose()
 	{
 		if(_dependentTalents.Count <= 0) return true;
@@ -64,8 +68,6 @@ public abstract class Talent : MonoBehaviour
 
 	public void AddDependendTalent(TalentData data)
 	{
-		//_dependentTalents.Add(data);
-		if(data != null)
-			_data.AddDependentTalent(data);
-    }
+		if (data != null) _data.AddDependentTalent(data);
+	}
 }

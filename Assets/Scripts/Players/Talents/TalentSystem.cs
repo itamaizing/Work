@@ -54,10 +54,30 @@ public class TalentSystem : NetworkBehaviour
 
     private void Awake()
     {
-        GetComponentsInChildren<Talent>(true, _allTalents);
-
-        foreach (var item in _allTalents)
-            item.Init();
+        _allTalents = new List<Talent>();
+        foreach (var group in _talents)
+        {
+            for (int rowIndex = 0; rowIndex < group.TalentRows.Count; rowIndex++)
+            {
+                foreach (var talent in group.TalentRows[rowIndex].Talents)
+                {
+                    talent.Init(this, group.ID, rowIndex);
+                    _allTalents.Add(talent);
+                }
+            }
+        }
+    }
+    
+    public int GetGroupOpenTalentsCount(int groupId) => _talents.FirstOrDefault(g => g.ID == groupId)?.GetOpenTalentsCount() ?? 0;
+    public int GetGroupSpentPoints(int groupId) => _talents.FirstOrDefault(g => g.ID == groupId)?.GetSpentPoints() ?? 0;
+    
+    public Talent FindTalentByName(string name)
+    {
+        foreach (var group in _talents)
+        foreach (var row in group.TalentRows)
+        foreach (var talent in row.Talents)
+            if (talent.Data.Name == name) return talent;
+        return null;
     }
 
     private void OnDisable()
@@ -157,18 +177,67 @@ public class TalentSystem : NetworkBehaviour
         _talents[row].TalentsData[id].SetActive(value);
     }*/
 
-   public void SetActive(int group, int row, string name, bool value, int lvl)
+   public bool SetActive(int group, int row, string name, bool value, int lvl)
    {
        var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
+       if (talentGroup == null) return false;
+
+       if (value && !talentGroup.CanOpenRow(this, row)) return false;
 
        var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
-       talent.SetActive(value, lvl);
+       if (talent == null) return false;
+
+       if (!talent.TrySetActive(value, lvl)) return false;
+
        if (value) _points--;
        else
        {
            int maxPoints = GetMaxTalentPoints();
            if (_points < maxPoints) _points++;
        }
+
+       if (!value)
+           _points += CascadeCloseInvalidated();
+
+       return true;
+   }
+   
+   private int CascadeCloseInvalidated()
+   {
+       int refundedPoints = 0;
+       bool changed;
+
+       do
+       {
+           changed = false;
+
+           foreach (var group in _talents)
+           {
+               for (int rowIndex = 0; rowIndex < group.TalentRows.Count; rowIndex++)
+               {
+                   var row = group.TalentRows[rowIndex];
+                   
+                   bool rowStillOpen = group.CanOpenRow(this, rowIndex);
+
+                   foreach (var talent in row.Talents)
+                   {
+                       if (!talent.Data.IsOpen) continue;
+
+                       bool rowOk = rowStillOpen;
+                       bool talentOk = talent.OpenCondition.CanOpen;
+
+                       if (!rowOk || !talentOk)
+                       {
+                           refundedPoints += talent.Data.Level;
+                           talent.SetActive(false, 0);
+                           changed = true;
+                       }
+                   }
+               }
+           }
+       } while (changed);
+
+       return refundedPoints;
    }
 
     public int GetMaxTalentPoints()

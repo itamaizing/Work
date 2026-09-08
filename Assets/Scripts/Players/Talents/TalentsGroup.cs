@@ -110,4 +110,53 @@ public class TalentsGroup
 			  talent.Exit();
 		  }
 	  }*/
+	
+	public int GetOpenTalentsCount()
+	{
+		int count = 0;
+		foreach (var row in _talentRows)
+		foreach (var talent in row.Talents)
+			if (talent.Data.IsOpen) count++;
+		return count;
+	}
+
+	public int GetSpentPoints()
+	{
+		int sum = 0;
+		foreach (var row in _talentRows)
+		foreach (var talent in row.Talents)
+			if (talent.Data.IsOpen) sum += talent.Data.Level;
+		return sum;
+	}
+
+	public int GetSpentPointsInRow(int rowIndex)
+	{
+		if (rowIndex < 0 || rowIndex >= _talentRows.Count) return 0;
+		int sum = 0;
+		foreach (var talent in _talentRows[rowIndex].Talents)
+			if (talent.Data.IsOpen) sum += talent.Data.Level;
+		return sum;
+	}
+
+	public bool CanOpenRow(TalentSystem system, int rowIndex)
+	{
+		if (rowIndex < 0 || rowIndex >= _talentRows.Count) return true;
+		var conditions = _talentRows[rowIndex].OpenConditions;
+		if (conditions == null || conditions.Count == 0) return true;
+
+		foreach (var condition in conditions)
+		{
+			if (condition != null && !condition.CanOpen(system, this, rowIndex))
+				return false;
+		}
+		return true;
+	}
+
+	public string GetRowConditionDescription(int rowIndex)
+	{
+		if (rowIndex < 0 || rowIndex >= _talentRows.Count) return "";
+		var conditions = _talentRows[rowIndex].OpenConditions;
+		if (conditions == null || conditions.Count == 0) return "";
+		return string.Join("\n", conditions.Where(c => c != null).Select(c => c.ConditionDescription()));
+	}
 }

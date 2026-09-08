@@ -24,6 +24,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
+    private TalentSystem _talentSystem;
     private Color _oldColor, _newColor;
     private TextMeshProUGUI _text;
 
@@ -32,10 +33,11 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     public event Action<TalentData> PointerExitedOnTalentIcon;
 
 
-    public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
+    public void SetPanel(TalentsGroup talentsGroup, TalentSystem talentSystem, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
     {
         _isGameUI = isGameUI;
-        
+
+        _talentSystem = talentSystem;
         _attributesPanel = attributesPanel;
         _talentsGroup = talentsGroup;
         _title.Localize(talentsGroup.Name);
@@ -49,46 +51,39 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
         UpdateActiveTalentsCount();
 
-        //foreach (var row in talentsGroup.TalentRows)
         for (int i = 0; i < talentsGroup.TalentRows.Count; i++)
         {
             var row = Instantiate(_rowContainer, _itemsParent);
             _rows.Add(row);
+
             foreach (var item in talentsGroup.TalentRows[i].Talents)
             {
                 var talent = Instantiate(_talentPrefab, row.Rect);
 
                 talent.Owner = this;
                 talent.Fill(item.Data, i, isInteractable);
-                item.Data.Row = i;
 
-                if(isInteractable)
+                if (isInteractable)
                     talent.Selected += OnTalentSelected;
 
                 talent.PointerEntered += OnPointerEnteredOnTalentIcon;
                 talent.PointerExited += OnPointerExitedOnTalentIcon;
 
-				row.AddTalent(talent);
-				_talents.Add(talent);
+                row.AddTalent(talent);
+                _talents.Add(talent);
             }
-        }
-        if (_rows != null)
-            if (_rows.Count > 0)
-            _rows[0].SetRowActive(true);
 
-        for(int i = 0; i < _rows.Count - 1; i++)
-        {
-            foreach(var talent in _rows[i].Talents)
-            {
-                if(talent.Talent.IsOpen)
-                {
-                    _rows[i + 1].ActivateRow();
-                }
-                talent.Selected += _rows[i + 1].ActivateRow;
-            }
+            row.SetConditionDescription(talentsGroup.GetRowConditionDescription(i));
         }
 
+        RefreshRowsLocked();
         ChangeParentCellHeight();
+    }
+    
+    private void RefreshRowsLocked()
+    {
+        for (int i = 0; i < _rows.Count; i++)
+            _rows[i].SetRowActive(_talentsGroup.CanOpenRow(_talentSystem, i));
     }
     
     private void OnDisable()
@@ -108,12 +103,22 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
 		_talentsCount.ChangeKey(activeTalentsCount);
     }
+    
+    private void RefreshTalentsVisual()
+    {
+        foreach (var talentItem in _talents)
+        {
+            talentItem.TryRefreshVisual(); 
+        }
+    }
 
     void OnTalentSelected(TalentData talent, bool isOpen, int lvl)
     {
         SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Row, talent.Name, isOpen, lvl);
         UpdateActiveTalentsCount();
         _attributesPanel.UpdateAttributesPoints();
+        RefreshTalentsVisual();
+        RefreshRowsLocked();
         OnTalentChanged?.Invoke();
     }
 
