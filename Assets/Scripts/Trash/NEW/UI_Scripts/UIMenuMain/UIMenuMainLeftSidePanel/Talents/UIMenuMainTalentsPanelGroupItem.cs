@@ -159,6 +159,8 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         _frameImage.sprite = _talent.IsOpen ? _iconState.On : _iconState.Off;
     }
 
+    public void TryRefreshVisual() => RefreshVisuals();
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)

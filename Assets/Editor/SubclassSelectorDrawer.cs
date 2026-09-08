@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System;
 using System.Linq;
+using System.Reflection;
 
 [CustomPropertyDrawer(typeof(SubclassSelectorAttribute))]
 public class SubclassSelectorDrawer : PropertyDrawer
@@ -35,11 +36,24 @@ public class SubclassSelectorDrawer : PropertyDrawer
     void ShowMenu(SerializedProperty property)
     {
         var menu = new GenericMenu();
-        var baseType = fieldInfo.FieldType;
+        var baseType = GetDeclaredType(property);
+
+        if (baseType == null)
+        {
+            Debug.LogWarning($"[SubclassSelectorDrawer] Не удалось определить тип для {property.propertyPath}");
+            return;
+        }
 
         var types = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(a => a.GetTypes())
-            .Where(t => baseType.IsAssignableFrom(t) && !t.IsAbstract);
+            .SelectMany(SafeGetTypes)
+            .Where(t => baseType.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface);
+
+        menu.AddItem(new GUIContent("None"), property.managedReferenceValue == null, () =>
+        {
+            property.serializedObject.Update();
+            property.managedReferenceValue = null;
+            property.serializedObject.ApplyModifiedProperties();
+        });
 
         foreach (var type in types)
         {
@@ -52,6 +66,29 @@ public class SubclassSelectorDrawer : PropertyDrawer
         }
 
         menu.ShowAsContext();
+    }
+    
+    static Type GetDeclaredType(SerializedProperty property)
+    {
+        string typeName = property.managedReferenceFieldTypename;
+        if (string.IsNullOrEmpty(typeName)) return null;
+
+        int splitIndex = typeName.IndexOf(' ');
+        if (splitIndex < 0) return null;
+
+        string assemblyName = typeName.Substring(0, splitIndex);
+        string className = typeName.Substring(splitIndex + 1);
+
+        var assembly = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => a.GetName().Name == assemblyName);
+
+        return assembly?.GetType(className);
+    }
+
+    static Type[] SafeGetTypes(Assembly assembly)
+    {
+        try { return assembly.GetTypes(); }
+        catch (ReflectionTypeLoadException e) { return e.Types.Where(t => t != null).ToArray(); }
     }
 
     string GetTypeName(SerializedProperty property)

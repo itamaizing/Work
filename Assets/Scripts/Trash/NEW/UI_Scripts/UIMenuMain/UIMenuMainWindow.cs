@@ -18,6 +18,7 @@ public class UIMenuMainWindow : MonoBehaviour
 
     private void Start()
     {
+        SaveManager.Instance.SetAttributesPanel(_attributesPanel);
         Show();
         _abilitiesPanel.gameObject.SetActive(false);
     }
@@ -108,7 +109,6 @@ public class UIMenuMainWindow : MonoBehaviour
     public void SetHero(HeroComponent hero)
     {
         _currentHero = hero;
-
         SaveManager.Instance.SetHero(_currentHero);
         ServerManager.Instance.SetPlayer(_currentHero);
 

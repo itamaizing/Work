@@ -51,6 +51,7 @@ public class SaveManager : MonoBehaviour
     private int _currentSaveGroup = 0;
     private ISaveData _saveData;
     private readonly SaveSystem _saveSystem = new SaveSystem();
+    private UIMenuMainAttributesPanel _attributesPanel;
 
     private IHeroProgressRepository _repository;
     private IUserInfoRepository _userInfoRepository;
@@ -94,6 +95,11 @@ public class SaveManager : MonoBehaviour
                 ? new ServerUserInfoRepository()
                 : new LocalUserInfoRepository(_saveData);
         }
+    }
+    
+    public void SetAttributesPanel(UIMenuMainAttributesPanel panel)
+    {
+        _attributesPanel = panel;
     }
 
     public void SetHero(HeroComponent hero)
@@ -147,21 +153,43 @@ public class SaveManager : MonoBehaviour
         if (group == null || talent == null) return;
         if (isActive && !_character.TalentManager.CanOpenTalent) return;
 
-        talent.Data.SetOpen(isActive);
-        talent.Data.SetLevel(lvl);
-        _character.TalentManager.SetActive(idGroup, row, idTalent, isActive, lvl);
+        var beforeSnapshot = HeroProgressSnapshotBuilder.Build(_character, _attributesPanel);
+        var beforeNames = beforeSnapshot.talents.Select(t => t.name).ToHashSet();
 
-        string key = TalentKey(idGroup, row, idTalent);
+        if (!_character.TalentManager.SetActive(idGroup, row, idTalent, isActive, lvl)) return;
 
-        if (_talentRequestInFlight.TryGetValue(key, out bool inFlight) && inFlight)
+        var afterSnapshot = HeroProgressSnapshotBuilder.Build(_character, _attributesPanel);
+        var afterNames = afterSnapshot.talents.Select(t => t.name).ToHashSet();
+
+        var expectedRemoved = isActive ? new HashSet<string>() : new HashSet<string> { idTalent };
+        var expectedAdded = isActive ? new HashSet<string> { idTalent } : new HashSet<string>();
+
+        bool onlyExpectedChanged =
+            beforeNames.Except(afterNames).Equals(expectedRemoved) &&
+            afterNames.Except(beforeNames).Equals(expectedAdded);
+
+        if (!onlyExpectedChanged)
         {
-            _talentPendingState[key] = (isActive, lvl);
-            return;
+            SaveTalentPage(_character, afterSnapshot.talents, afterSnapshot.attributes,
+                onSaved: null,
+                onFailed: () => Debug.LogWarning(
+                    $"[SaveManager] Каскадное изменение талантов (спровоцировано {idTalent}) не сохранено на сервере — " +
+                    "клиент и БД разошлись, требуется повторное сохранение."));
         }
 
-        SendTalentRequest(idGroup, row, idTalent, isActive, lvl, key);
+        bool prevOpen = talent.Data.IsOpen;
+        int prevLvl = talent.Data.Level;
+
+        _repository.SaveTalent(_character, idGroup, row, idTalent, isActive, lvl, _currentSaveGroup,
+            onFreeTalentPointsChanged: pts => _character.TalentManager.SetPoints(pts),
+            onFailed: () =>
+            {
+                talent.Data.SetOpen(prevOpen);
+                talent.Data.SetLevel(prevLvl);
+                _character.TalentManager.SetActive(idGroup, row, idTalent, prevOpen, prevLvl);
+            });
     }
-    
+
     private void SendTalentRequest(int idGroup, int row, string idTalent, bool isActive, int lvl, string key)
     {
         var group = _character.TalentManager.TalentsGroups.FirstOrDefault(g => g.ID == idGroup);
