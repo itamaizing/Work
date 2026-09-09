@@ -78,7 +78,6 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         }
 
         RefreshRowsLocked();
-        ChangeParentCellHeight();
     }
     
     public void RefreshRowsLocked()
@@ -192,14 +191,6 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
         return rows;
     }
-
-    private void ChangeParentCellHeight()
-    {
-        GridLayoutGroup grid = _itemsParent.GetComponent<GridLayoutGroup>();
-        Vector2 gridSize = grid.cellSize;
-        int rows = Mathf.CeilToInt((float)GetItemsInRowCount() / _itemsPerRow);
-        grid.cellSize = new Vector2(gridSize.x, _initialParentCellHeight * rows);
-    }
     
 	public void Show()
     {
@@ -212,7 +203,6 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         {
             OnShowPanelGroup?.Invoke();
         }
-        ChangeParentCellHeight();
     }
     
     public void Hide()
