@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class Talent : MonoBehaviour
@@ -15,6 +16,11 @@ public abstract class Talent : MonoBehaviour
     public Character character;
 
 	public TalentData Data => _data;
+	
+	private TalentSystem _owner;
+	private int _groupId;
+	private int _rowIndex;
+	
 	/*
 	private void OnValidate()
 	{
@@ -23,6 +29,10 @@ public abstract class Talent : MonoBehaviour
 
 	public void Init(TalentSystem owner, int groupId, int rowIndex)
 	{
+		_owner = owner;
+		_groupId = groupId;
+		_rowIndex = rowIndex;
+
 		_data.Init();
 		_data.Name = GetType().Name;
 		_data.Group = groupId;
@@ -53,6 +63,23 @@ public abstract class Talent : MonoBehaviour
 		if (isActive && !OpenCondition.CanOpen) return false;
 		SetActive(isActive, lvl);
 		return true;
+	}
+	
+	public bool IsRowLocked()
+	{
+		var group = _owner?.TalentsGroups.FirstOrDefault(g => g.ID == _groupId);
+		return group != null && !group.CanOpenRow(_owner, _rowIndex);
+	}
+	
+	public string GetRowConditionDescriptionIfLocked()
+	{
+		if (_owner == null) return string.Empty;
+
+		var group = _owner.TalentsGroups.FirstOrDefault(g => g.ID == _groupId);
+		if (group == null) return string.Empty;
+		if (group.CanOpenRow(_owner, _rowIndex)) return string.Empty;
+
+		return group.GetRowConditionDescription(_rowIndex);
 	}
 	
 	/*public bool CanClose()

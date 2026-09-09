@@ -29,8 +29,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     private TextMeshProUGUI _text;
 
     public event UnityAction OnTalentChanged;
-    public event Action<TalentData> PointerEnteredOnTalentIcon;
+    public event Action<TalentData, string> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
+    public event UnityAction OnAnyTalentChanged;
 
 
     public void SetPanel(TalentsGroup talentsGroup, TalentSystem talentSystem, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
@@ -61,7 +62,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
                 var talent = Instantiate(_talentPrefab, row.Rect);
 
                 talent.Owner = this;
-                talent.Fill(item.Data, i, isInteractable);
+                talent.Fill(item, i, isInteractable);
 
                 if (isInteractable)
                     talent.Selected += OnTalentSelected;
@@ -80,14 +81,21 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         ChangeParentCellHeight();
     }
     
-    private void RefreshRowsLocked()
+    public void RefreshRowsLocked()
     {
-        for (int i = 0; i < _rows.Count; i++)
-            _rows[i].SetRowActive(_talentsGroup.CanOpenRow(_talentSystem, i));
+        foreach (var talentIcon in _talents)
+            talentIcon.RefreshLockState();
     }
     
+    private void OnEnable()
+    {
+        SaveManager.Instance.TalentStateSettled += RefreshAllIconsVisual;
+    }
+
     private void OnDisable()
     {
+        SaveManager.Instance.TalentStateSettled -= RefreshAllIconsVisual;
+
         foreach (var talent in _talents)
         {
             talent.Selected -= OnTalentSelected;
@@ -104,6 +112,15 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 		_talentsCount.ChangeKey(activeTalentsCount);
     }
     
+    private void RefreshAllIconsVisual()
+    {
+        foreach (var talentIcon in _talents)
+            talentIcon.TryRefreshVisual();
+
+        RefreshRowsLocked();
+        UpdateActiveTalentsCount();
+    }
+
     private void RefreshTalentsVisual()
     {
         foreach (var talentItem in _talents)
@@ -120,6 +137,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         RefreshTalentsVisual();
         RefreshRowsLocked();
         OnTalentChanged?.Invoke();
+        OnAnyTalentChanged?.Invoke();
     }
 
 	private int GetActiveTalents()
@@ -207,9 +225,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         Destroy(gameObject);
     }
 
-    private void OnPointerEnteredOnTalentIcon(TalentData talent)
+    private void OnPointerEnteredOnTalentIcon(TalentData talent, string rowCondition)
     {
-        PointerEnteredOnTalentIcon?.Invoke(talent);
+        PointerEnteredOnTalentIcon?.Invoke(talent, rowCondition);
     }
 
     private void OnPointerExitedOnTalentIcon(TalentData talent)

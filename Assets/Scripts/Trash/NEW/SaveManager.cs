@@ -59,6 +59,7 @@ public class SaveManager : MonoBehaviour
     private int _pendingRequestsCount;
     public bool HasPendingRequests => _pendingRequestsCount > 0;
     public event Action<bool> PendingStateChanged;
+    public event Action TalentStateSettled;
     
     private readonly Dictionary<string, bool> _talentRequestInFlight = new();
     private readonly Dictionary<string, (bool isActive, int lvl)> _talentPendingState = new();
@@ -165,8 +166,8 @@ public class SaveManager : MonoBehaviour
         var expectedAdded = isActive ? new HashSet<string> { idTalent } : new HashSet<string>();
 
         bool onlyExpectedChanged =
-            beforeNames.Except(afterNames).Equals(expectedRemoved) &&
-            afterNames.Except(beforeNames).Equals(expectedAdded);
+            beforeNames.Except(afterNames).ToHashSet().SetEquals(expectedRemoved) &&
+            afterNames.Except(beforeNames).ToHashSet().SetEquals(expectedAdded);
 
         if (!onlyExpectedChanged)
         {
@@ -175,6 +176,7 @@ public class SaveManager : MonoBehaviour
                 onFailed: () => Debug.LogWarning(
                     $"[SaveManager] Каскадное изменение талантов (спровоцировано {idTalent}) не сохранено на сервере — " +
                     "клиент и БД разошлись, требуется повторное сохранение."));
+            return;
         }
 
         bool prevOpen = talent.Data.IsOpen;
@@ -220,13 +222,14 @@ public class SaveManager : MonoBehaviour
     private void OnTalentRequestFinished(int idGroup, int row, string idTalent, string key)
     {
         _talentRequestInFlight[key] = false;
+        DecrementPending();
 
         if (_talentPendingState.TryGetValue(key, out var pending))
         {
             _talentPendingState.Remove(key);
             SendTalentRequest(idGroup, row, idTalent, pending.isActive, pending.lvl, key);
         }
-        DecrementPending();
+        TalentStateSettled?.Invoke();
     }
 
     public void SaveAttributePoint(Attribute attribute, int delta)

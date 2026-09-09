@@ -32,6 +32,7 @@ public class TalentData
 			_name = value;
 		}
 	}
+
 	public void SetLevel(int value)
     {
         _level = value;
