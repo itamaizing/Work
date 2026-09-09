@@ -19,7 +19,6 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
         ResetPanel();
-
         _talentSystem = talentSystem;
 
         if (!_isMainMenu)
@@ -39,6 +38,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             panel.PointerEnteredOnTalentIcon += ShowTalentInfo;
             panel.PointerExitedOnTalentIcon += HideTalentInfo;
             panel.OnTalentChanged += UpdateTalentPointsText;
+            panel.OnAnyTalentChanged += RefreshAllGroups;
 
             ItemsPool.Add(panel);
         }
@@ -54,6 +54,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.PointerEnteredOnTalentIcon -= ShowTalentInfo;
             item.PointerExitedOnTalentIcon -= HideTalentInfo;
             item.OnTalentChanged -= UpdateTalentPointsText;
+            item.OnAnyTalentChanged -= RefreshAllGroups;
         }
 
         if (!_isMainMenu)
@@ -71,6 +72,12 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         if (!isActiveAndEnabled) return;
 
         UpdateTalentPointsText();
+    }
+    
+    private void RefreshAllGroups()
+    {
+        foreach (var group in ItemsPool)
+            group.RefreshRowsLocked();
     }
 
     private void UpdateTalentPointsText()
@@ -126,9 +133,9 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         }
     }
 
-    private void ShowTalentInfo(TalentData data)
+    private void ShowTalentInfo(TalentData data, string rowCondition)
     {
-        _talentInfoPanel.Show(data);
+        _talentInfoPanel.Show(data, rowCondition);
     }
 
     private void HideTalentInfo(TalentData data)

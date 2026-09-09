@@ -10,7 +10,7 @@ public class TalentInfoPanel : MonoBehaviour
 
     private List<TalentInfoCell> _cells = new();
 
-    public void Show(TalentData data)
+    public void Show(TalentData data, string rowConditionDescription = "")
     {
         gameObject.SetActive(true);
         _name.text = data.Description;
@@ -23,8 +23,14 @@ public class TalentInfoPanel : MonoBehaviour
         //Condition TEXT
         var conditionCell = Instantiate(_cellPref, transform);
         _cells.Add(conditionCell);
+        
+        string fullCondition = string.IsNullOrEmpty(rowConditionDescription)
+            ? data.ConditionDescription
+            : string.IsNullOrEmpty(data.ConditionDescription)
+                ? rowConditionDescription
+                : $"{data.ConditionDescription}\n{rowConditionDescription}";
 
-        conditionCell.TextDescription.text = data.ConditionDescription;
+        conditionCell.TextDescription.text = fullCondition;
         conditionCell.ShowDividingLine();
 
         //Condition TEXT

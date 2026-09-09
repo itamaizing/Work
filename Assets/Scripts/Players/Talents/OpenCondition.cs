@@ -22,6 +22,7 @@ public abstract class OpenCondition
 public class SpecificTalentOpenCondition : OpenCondition, IScopedCondition
 {
     [SerializeField] private List<string> _talentsNeededToOpen;
+    public IReadOnlyList<string> TalentsNeededToOpen => _talentsNeededToOpen;
 
     private TalentSystem _owner;
     public void SetOwner(TalentSystem owner, int groupId) => _owner = owner;
