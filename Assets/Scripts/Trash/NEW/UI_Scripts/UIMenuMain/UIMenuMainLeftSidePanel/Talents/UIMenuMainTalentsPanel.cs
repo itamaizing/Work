@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -25,14 +26,15 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         {
             if (_talentSystem.Level != null) _talentSystem.Level.LVLUped += OnLevelUp;
         }
-
         else LevelCharacterManager.Instance.OnLevelChanged += OnLevelUp;
+
+        SaveManager.Instance.TalentStateSettled -= UpdateTalentPointsText;
+        SaveManager.Instance.TalentStateSettled += UpdateTalentPointsText;
 
         foreach (var data in _talentSystem.TalentsGroups)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
-
-            panel.SetPanel(data,_talentSystem, _attributesPanel, isGameUI, isInteractable);
+            panel.SetPanel(data, _talentSystem, _attributesPanel, isGameUI, isInteractable);
 
             panel.OnShowPanelGroup += HidePanels;
             panel.PointerEnteredOnTalentIcon += ShowTalentInfo;
@@ -46,6 +48,11 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         UpdateTalentPointsText();
     }
 
+    private void OnEnable()
+    {
+        SaveManager.Instance.TalentStateSettled += UpdateTalentPointsText;
+    }
+
     private void OnDisable()
     {
         foreach (var item in ItemsPool)
@@ -57,6 +64,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.OnAnyTalentChanged -= RefreshAllGroups;
         }
 
+        SaveManager.Instance.TalentStateSettled -= UpdateTalentPointsText;
+        
         if (!_isMainMenu)
         {
             if(_talentSystem != null)

@@ -12045,7 +12045,7 @@ MonoBehaviour:
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 178797411953542018
+    rid: 1938343565215400045
   character: {fileID: 4374618947117916461}
   energy: {fileID: 2935799894972768155}
   runes: {fileID: 5679546152039556976}
@@ -12053,9 +12053,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 178797411953542018
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
+    - rid: 1938343565215400045
+      type: {class: SpecificTalentOpenCondition, ns: , asm: Assembly-CSharp}
+      data:
+        _talentsNeededToOpen:
+        - DeathTalent_3
 --- !u!114 &1090044804548443068
 MonoBehaviour:
   m_ObjectHideFlags: 0

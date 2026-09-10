@@ -74,12 +74,24 @@ public abstract class Talent : MonoBehaviour
 	public string GetRowConditionDescriptionIfLocked()
 	{
 		if (_owner == null) return string.Empty;
-
 		var group = _owner.TalentsGroups.FirstOrDefault(g => g.ID == _groupId);
 		if (group == null) return string.Empty;
 		if (group.CanOpenRow(_owner, _rowIndex)) return string.Empty;
-
 		return group.GetRowConditionDescription(_rowIndex);
+	}
+	
+	public string GetLockDescription()
+	{
+		var parts = new List<string>();
+
+		if (!OpenCondition.CanOpen && !string.IsNullOrEmpty(Data.ConditionDescription))
+			parts.Add(Data.ConditionDescription);
+
+		string rowDescription = GetRowConditionDescriptionIfLocked();
+		if (!string.IsNullOrEmpty(rowDescription))
+			parts.Add(rowDescription);
+
+		return string.Join("\n", parts);
 	}
 	
 	/*public bool CanClose()
