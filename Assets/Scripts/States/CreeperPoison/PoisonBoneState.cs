@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonBoneState : RefreshingState
+public class PoisonBoneStateStacking : RefreshingStateStacking
 {
     public bool turnOff = false;
 
@@ -25,7 +25,7 @@ public class PoisonBoneState : RefreshingState
     private Character _player;
 
     public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => duration; }
+    public float StacksDuration { get =>RemainingDuration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override States State => States.PoisonBone;
@@ -33,23 +33,11 @@ public class PoisonBoneState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    
+
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
-    }
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
         _player = personWhoMadeBuff;
 
         _baseDuration = durationToExit;
@@ -144,7 +132,7 @@ public class PoisonBoneState : RefreshingState
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             UpdatePoisonBoneStackAtSkills();
             return true;
         }
@@ -158,7 +146,7 @@ public class PoisonBoneState : RefreshingState
     private void AddStacks()
     {
         currentStacksCount++;
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
     }
 
     [Server]
@@ -180,7 +168,7 @@ public class PoisonBoneState : RefreshingState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
         _endDamage = 0;
         _baseDamage = 1f;
         _timeBetweenAttack = _startTimeBetweenAttack;

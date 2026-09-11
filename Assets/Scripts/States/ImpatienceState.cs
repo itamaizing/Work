@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImpatienceState : RefreshingState
+public class ImpatienceStateStacking : RefreshingStateStacking
 {
     private float _durationRemaining;
 
@@ -23,11 +23,11 @@ public class ImpatienceState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
@@ -49,22 +49,7 @@ public class ImpatienceState : RefreshingState
         }
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            currentStacksCount = 1;
-        }
-        else
-            Stack(durationToExit);
-
-        return this;
-    }
+    
 
     public override void UpdateState()
     {
@@ -73,7 +58,7 @@ public class ImpatienceState : RefreshingState
     
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
         return false;
     }
 
@@ -158,7 +143,7 @@ public class ImpatienceState : RefreshingState
 
                         foreach (var character in ActiveCharacters)
                         {
-                            var state = character.CharacterState.GetState(States.Impatience) as ImpatienceState;
+                            var state = character.CharacterState.GetState(States.Impatience) as ImpatienceStateStacking;
                             if (state != null)
                                 state.ExtendDuration(bonusTime);
                         }
@@ -171,11 +156,11 @@ public class ImpatienceState : RefreshingState
 
         List<Character> recipients = new List<Character>(ActiveCharacters);
 
-        if (personWhoMadeBuff != null &&
-            !personWhoMadeBuff.IsDead &&
-            !recipients.Contains(personWhoMadeBuff))
+        if (sourceCaster != null &&
+            !sourceCaster.IsDead &&
+            !recipients.Contains(sourceCaster))
         {
-            recipients.Add(personWhoMadeBuff);
+            recipients.Add(sourceCaster);
         }
 
         if (recipients.Count <= 1)

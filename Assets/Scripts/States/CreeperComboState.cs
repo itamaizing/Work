@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreeperComboState : RefreshingState
+public class CreeperComboStateStacking : RefreshingStateStacking
 {
     public override States State => States.CreeperCombo;
     public override StateType Type => StateType.Magic;
@@ -9,13 +9,13 @@ public class CreeperComboState : RefreshingState
 
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public CreeperComboState()
+    public CreeperComboStateStacking()
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
         currentStacksCount = 0;
     }
 
-    public override void EnterState(
+    public override void Apply(
         CharacterState character,
         float durationToExit,
         float damageToExit,
@@ -23,8 +23,8 @@ public class CreeperComboState : RefreshingState
         string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
-        duration = durationToExit;
+        
+        RemainingDuration = durationToExit;
     }
 
     public override void UpdateState()
@@ -33,14 +33,14 @@ public class CreeperComboState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
         return true;
     }
 
     public void ResetStacks()
     {
         currentStacksCount = 0;
-        duration = -1f;
+        RemainingDuration = -1f;
     }
 
     public override void ExitState()

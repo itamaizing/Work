@@ -15,11 +15,11 @@ public class RestorativeAttacksState : AbstractCharacterState
     private readonly List<Skill> _lastHits = new();
     private Resource _energy;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _lastHits.Clear();
 
         character.Character.TryGetResource(ResourceType.Energy, out _energy);

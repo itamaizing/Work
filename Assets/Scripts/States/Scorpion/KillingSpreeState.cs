@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KillingSpreeState : RefreshingState
+public class KillingSpreeStateStacking : RefreshingStateStacking
 {
     public override DiminishingReturnGroup DrGroup => DiminishingReturnGroup.None;
     public override States State => States.KillingSpree;
@@ -15,17 +15,17 @@ public class KillingSpreeState : RefreshingState
     
     private Character _lastTarget;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        this.damageToExit = damageToExit == 0 ? 1000 : damageToExit;
+        parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1000 : damageToExit;
         if (characterState.isServer)
             SubscribeToPhysicalSkills();
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
@@ -93,27 +93,9 @@ public class KillingSpreeState : RefreshingState
 
     public override bool Stack(float time)
     {
-        characterState.StateIcons.RemoveItemByState(States.KillingSpree);
+        
         return true;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            Stack(duration);
-        }
-
-        currentStacksCount = 1;
-
-        return this;
-    }
+    
 }

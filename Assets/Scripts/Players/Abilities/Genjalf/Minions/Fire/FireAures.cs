@@ -28,7 +28,7 @@ public class Burn : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         _enemyLayer = LayerMask.GetMask("Enemy");
@@ -79,7 +79,7 @@ public class Burn : AbstractCharacterState
     }
 }
 
-public class Burning : RefreshingState
+public class Burning : RefreshingStateStacking
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     protected float _damage = 1;
@@ -99,9 +99,9 @@ public class Burning : RefreshingState
 
     public override float RemainingDuration => _baseDuration;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = 5;
+        SetMaxStacks(5);
         _baseDuration = durationToExit;
         _stackTimer = durationToExit;
 
@@ -117,11 +117,6 @@ public class Burning : RefreshingState
     {
         _stackTimer = _baseDuration;
         return true;
-    }
-
-    public override void GloabalUpdate()
-    {
-        UpdateState();
     }
 
     public override void UpdateState()

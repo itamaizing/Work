@@ -98,8 +98,8 @@ public class CreeperCombo : NetworkBehaviour
 
         RestartResetTimer();
 
-        CreeperComboState comboState = GetCreeperComboState();
-        int currentStacks = comboState != null ? comboState.CurrentStacksCount : 0;
+        CreeperComboStateStacking comboStateStacking = GetCreeperComboState();
+        int currentStacks = comboStateStacking != null ? comboStateStacking.CurrentStacksCount : 0;
 
         if (currentStacks < _hitsForSneakySpitActivation) return;
 
@@ -187,10 +187,10 @@ public class CreeperCombo : NetworkBehaviour
         _currentSneakySpitTarget = null;
     }
 
-    private CreeperComboState GetCreeperComboState()
+    private CreeperComboStateStacking GetCreeperComboState()
     {
         if (_player == null || _player.CharacterState == null) return null;
-        return _player.CharacterState.GetState(States.CreeperCombo) as CreeperComboState;
+        return _player.CharacterState.GetState(States.CreeperCombo) as CreeperComboStateStacking;
     }
 
     private void RestartResetTimer()
@@ -220,11 +220,11 @@ public class CreeperCombo : NetworkBehaviour
 
         if (_player != null && _player.CharacterState != null)
         {
-            CreeperComboState comboState = GetCreeperComboState();
+            CreeperComboStateStacking comboStateStacking = GetCreeperComboState();
 
-            if (comboState != null)
+            if (comboStateStacking != null)
             {
-                comboState.ResetStacks();
+                comboStateStacking.ResetStacks();
                 _player.CharacterState.RemoveState(States.CreeperCombo);
             }
         }

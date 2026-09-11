@@ -15,13 +15,12 @@ public class MergeDarkState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
     
-    public override void EnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = characterStateComp;
         _character     = characterStateComp.Character;
         _skillManager  = _character.Abilities;
         _duration      = durationToExit;
-        MaxStacksCount = 1;
 
         _character.Health.SetEvadeAll(_evadeBonus);
         _character.Health.SetEvadeMagic(_character.Health.ResistMagDamage + _magResBonus);
@@ -55,8 +54,6 @@ public class MergeDarkState : AbstractCharacterState
 
         characterState.RemoveState(this);
     }
-
-    public override bool Stack(float time) => false;
 
     private bool IsInstantSkill(Skill skill)
     {

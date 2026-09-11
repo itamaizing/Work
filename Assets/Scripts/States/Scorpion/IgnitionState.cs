@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
-public class IgnitionState : RefreshingState
+public class IgnitionStateStacking : RefreshingStateStacking
 {
     private float _tickTimer = 0f;
     private int _currentTick = 0;
@@ -17,14 +17,13 @@ public class IgnitionState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Others };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         _currentTick = 0;
         _tickTimer = 0f;
         MaxTicks = Mathf.Max(1, Mathf.CeilToInt(durationToExit / TickInterval));
-        duration = durationToExit;
-        _schoolState = Schools.Fire;
+        RemainingDuration = durationToExit;
     }
 
     public override void UpdateState()
@@ -59,7 +58,7 @@ public class IgnitionState : RefreshingState
 
         float chance = BaseScorchedChance * _currentTick;
         if (Random.Range(0f, 100f) <= chance)
-            characterState.AddState(States.ScorchedSoul, 6f, 0f, personWhoMadeBuff.gameObject, nameof(IgnitionState));
+            characterState.AddState(States.ScorchedSoul, 6f, 0f, sourceCaster.gameObject, nameof(IgnitionStateStacking));
     }
 
     public override void ExitState()
@@ -91,15 +90,5 @@ public class IgnitionState : RefreshingState
         return 0f;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit,
-        float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        _currentTick = 0;
-        _tickTimer = 0f;
-        MaxTicks = Mathf.Max(1, Mathf.CeilToInt(durationToExit / TickInterval));
-        duration = durationToExit;
-        _damageBonus = ExtractNumber(skillName);
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        return this;
-    }
+    
 }

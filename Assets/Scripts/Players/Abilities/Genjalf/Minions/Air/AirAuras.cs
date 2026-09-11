@@ -10,7 +10,7 @@ namespace Gangdollarff.AirElemental
 
     }
 
-    public class Discharge : RefreshingState
+    public class Discharge : RefreshingStateStacking
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
         private float _timeAfterLastEffect = 0;
@@ -33,9 +33,9 @@ namespace Gangdollarff.AirElemental
 
         public override Schools Schools => Schools.Air;
 
-        public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+        public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
-            MaxStacksCount = 1;
+            SetMaxStacks(1);
             _moveSpeedModifier.Source = this;
 
             ApplySlow();
@@ -96,7 +96,7 @@ namespace Gangdollarff.AirElemental
         }
     }
 
-    public class RisingWind : AuraState
+    /*public class RisingWind : AuraState
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
         private float _procent = 1.10f;
@@ -127,6 +127,6 @@ namespace Gangdollarff.AirElemental
         {
 
         }
-    }
+    }*/
 }
 

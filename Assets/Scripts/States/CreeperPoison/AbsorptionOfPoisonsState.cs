@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionOfPoisonsState : AbstractCharacterState
+public class AbsorptionOfPoisonsState : RefreshingStateStacking
 {
     private Character _player;
 
@@ -20,7 +20,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _attributeModifiers = new AttributeModifier(0, ModifierType.Flat);
         characterState = character;
@@ -42,17 +42,6 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
         {
             ExitState();
         }
-    }
-
-    public override bool Stack(float time)
-    {
-        currentStacksCount++;
-
-        _duration = _baseDuration;
-
-        IncreaseHealth();
-
-        return true;
     }
 
     public override void ExitState()

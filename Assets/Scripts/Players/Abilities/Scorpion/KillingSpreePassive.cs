@@ -25,7 +25,7 @@ public class KillingSpreePassive : Skill
     [Command]
     private void CmdAddKillingSpree()
     {
-        _hero.CharacterState.AddState(States.KillingSpree, _duration, 0, Schools.Physical, _hero.gameObject, nameof(KillingSpreeState));
+        _hero.CharacterState.AddState(States.KillingSpree, _duration, 0, Schools.Physical, _hero.gameObject, nameof(KillingSpreeStateStacking));
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

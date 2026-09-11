@@ -18,7 +18,7 @@ public class PsionicGenerationState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override System.Collections.Generic.List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character,
+    public override void Apply(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -26,7 +26,7 @@ public class PsionicGenerationState : AbstractCharacterState
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
@@ -46,12 +46,6 @@ public class PsionicGenerationState : AbstractCharacterState
             _tickTimer = 0f;
             if (_psionicEnergy != null) _psionicEnergy.AddPsiAndRestartDecay(PsiPerTick);
         }
-    }
-
-    public override bool Stack(float time)
-    {
-        _durationRemaining = time;
-        return false;
     }
 
     public override void ExitState()

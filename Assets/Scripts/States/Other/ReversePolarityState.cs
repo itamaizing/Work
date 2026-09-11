@@ -12,7 +12,7 @@ public class ReversePolarityState : AbstractCharacterState
     private const float _damagePercent = 0.01f;
     private float _tickTimer = 0f;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _tickTimer = 0f;
     }
@@ -36,10 +36,5 @@ public class ReversePolarityState : AbstractCharacterState
         };
 
         characterState.Character.TryTakeDamage(ref damage, skill);
-    }
-
-    public override bool Stack(float time)
-    {
-        return false;
     }
 }

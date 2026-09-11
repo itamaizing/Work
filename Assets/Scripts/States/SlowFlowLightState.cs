@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlowFlowLightState : RefreshingState
+public class SlowFlowLightStateStacking : RefreshingStateStacking
 {
 	private float _speedDebuf = -0.6f;
 	private AttributeModifier _modif = new AttributeModifier(0f, ModifierType.Percent);
@@ -13,12 +13,12 @@ public class SlowFlowLightState : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
 		characterState = character;
-		MaxStacksCount = 1;
+		SetMaxStacks(1);
 
 		characterState.Character.Move.AddModifier(_modif);
 		characterState.Character.Abilities.Abilities.ForEach(s =>
@@ -40,7 +40,7 @@ public class SlowFlowLightState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
         return false;
     }
 }

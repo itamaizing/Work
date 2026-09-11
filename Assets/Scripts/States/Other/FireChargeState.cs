@@ -13,24 +13,24 @@ public class FireChargeState : AbstractCharacterState
     private float _bladeDamagePercent;
     private float _bladeScorchedChance;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
         abilities = character.Character.Abilities;
-        this.personWhoMadeBuff = personWhoMadeBuff;
-        duration = durationToExit;
+        this.sourceCaster = personWhoMadeBuff;
+        RemainingDuration = durationToExit;
 
-        if (this.damageToExit == 0)
+        if (this.DamageToExit == 0)
         {
-            this.damageToExit = 10000;
+            parameters[StateParameter.DamageToExit] = 10000;
         }
         else
         {
-            this.damageToExit = damageToExit;
+            parameters[StateParameter.DamageToExit] = damageToExit;
         }
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _punchKickDamagePercent = 1f;
         _punchKickScorchedChance = 50f;
@@ -52,14 +52,7 @@ public class FireChargeState : AbstractCharacterState
         ExitState();
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-        
-        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        return this;
-    }
+    
 
     public override void UpdateState() { }
 

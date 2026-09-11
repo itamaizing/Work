@@ -11,12 +11,11 @@ public class ShackleState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         this.characterState = characterState;
         _character     = characterState.Character;
         _duration      = durationToExit;
-        MaxStacksCount = 1;
 
         _character.Move.SetCanMove(false);
     }
@@ -33,6 +32,4 @@ public class ShackleState : AbstractCharacterState
         _character.Move.SetCanMove(true);
         characterState.RemoveState(this);
     }
-
-    public override bool Stack(float time) => false;
 }

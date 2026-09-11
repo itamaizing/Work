@@ -530,7 +530,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private void HandleFrozenEvade(ref Damage damage, Skill skill)
     {
         if (!_isAttackWithFrosenAddEvade || skill?.Hero == null) return;
-        var frozen = skill.Hero.CharacterState.GetState(States.Frozen) as FrozenState;
+        var frozen = skill.Hero.CharacterState.GetState(States.Frozen) as FrozenStateStacking;
         if (frozen == null) return;
         float evadeChance = frozen.CurrentAttackSlowPercent * 40f;
         if (UnityEngine.Random.Range(0f, 100f) <= evadeChance)

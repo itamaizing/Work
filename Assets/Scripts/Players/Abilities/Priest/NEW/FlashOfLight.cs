@@ -242,7 +242,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         var characterState = target.GetComponent<CharacterState>();
         if (characterState == null) return 0f;
 
-        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyStateStacking;
         if (spiritEnergyState == null) return 0f;
 
         return spiritEnergyState.GetHealBonus();

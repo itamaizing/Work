@@ -45,10 +45,10 @@ public class MagicWater : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState characterState, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         this.characterState = characterState;
 
         _maxManaModifier.Source = this;
@@ -119,12 +119,10 @@ public class MagicWater : AbstractCharacterState
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
         StopRegenRoutine();
         RemoveBuffs();
         base.ExitState();
     }
-    public override bool Stack(float time) => false;
 
     public override void UpdateState()
     {

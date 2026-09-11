@@ -86,10 +86,10 @@ public class ConsumeCombo_Scorpion : Skill
         {
             foreach (var target in GetTargetWithCombo())
             {
-                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboStateStacking;
                 if (state == null) return;
 
-                state.MaxStacksCount = state.InitialStackCount;
+                state.SetMaxStacks(state.InitialStackCount);
                 if(state.CurrentStacksCount > state.InitialStackCount)
                     state.ReduceStack();
                 
@@ -101,10 +101,10 @@ public class ConsumeCombo_Scorpion : Skill
         {
             foreach (var target in GetTargetWithCombo())
             {
-                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboStateStacking;
                 if (state == null) return;
 
-                state.MaxStacksCount = _newMaxStackCount;
+                state.SetMaxStacks(_newMaxStackCount);
                 
                 if(isClient)
                     CmdIncreaseStackOnTargets(target);
@@ -115,19 +115,19 @@ public class ConsumeCombo_Scorpion : Skill
     [Command]
     private void CmdIncreaseStackOnTargets(GameObject target)
     {
-        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboStateStacking;
         if (state == null) return;
         
-        state.MaxStacksCount = _newMaxStackCount; 
+        state.SetMaxStacks(_newMaxStackCount); 
     }
 
     [Command]
     private void CmdDecreaseStacksOnTargets(GameObject target)
     {
-        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboStateStacking;
         if (state == null) return;
         
-        state.MaxStacksCount = state.InitialStackCount;
+        state.SetMaxStacks(state.InitialStackCount);
         if(state.CurrentStacksCount > state.InitialStackCount)
             state.ReduceStack();
     }
@@ -142,7 +142,7 @@ public class ConsumeCombo_Scorpion : Skill
         var stateManager = targetCharacter.CharacterState;
         if (stateManager == null) return;
 
-        var comboState = stateManager.GetState(States.ComboState) as ComboState;
+        var comboState = stateManager.GetState(States.ComboState) as ComboStateStacking;
         if (comboState == null || comboState.CurrentStacksCount <= 0)
         {
             if (!_comboTargetsQueue.Contains(targetCharacter))
@@ -212,7 +212,7 @@ public class ConsumeCombo_Scorpion : Skill
         
         foreach (var target in targetsInRadius)
         {
-            var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+            var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboStateStacking;
             if (state == null || state.CurrentStacksCount <= 0) continue;
             if (isConsumeCombo_ScorpionPhysicStateClear && isDisplePhysState)
             {
@@ -244,7 +244,7 @@ public class ConsumeCombo_Scorpion : Skill
     [ClientRpc]
     private void RpcReduceStack(GameObject target)
     {
-        target.GetComponent<CharacterState>()?.GetState(States.ComboState)?.ReduceStack();
+        (target.GetComponent<CharacterState>()?.GetState(States.ComboState) as StateStacking)?.ReduceStack();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

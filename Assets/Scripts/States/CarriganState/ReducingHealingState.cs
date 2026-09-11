@@ -23,9 +23,9 @@ public class ReducingHealingState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
     
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("ReducingHealingState / EnterState");
+        Debug.Log("ReducingHealingState / Apply");
         _baseDuration = durationToExit;
 
         _delayBeforeChecking = _startDelayBeforeChecking;
@@ -39,11 +39,6 @@ public class ReducingHealingState : AbstractCharacterState
     public override void ExitState()
     {
 
-    }
-
-    public override bool Stack(float time)
-    {
-        return false;
     }
 
     private void UdpatingDictionaries()

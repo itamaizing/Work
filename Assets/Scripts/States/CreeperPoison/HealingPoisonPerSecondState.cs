@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonPerSecondState : AbstractCharacterState
+public class HealingPoisonPerSecondState : RefreshingStateStacking
 {    
     /* For PoisonBall Ability */
 
@@ -25,9 +25,9 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStack;
+        SetMaxStacks(_maxStack);
 
         characterState = character;
 
@@ -64,11 +64,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     public override void ExitState()
     {
         characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        return false;
     }
 
     [Server]

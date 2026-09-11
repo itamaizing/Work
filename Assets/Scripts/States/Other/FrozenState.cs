@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class FrozenState : RefreshingState
+public class FrozenStateStacking : RefreshingStateStacking
 {
     private GameObject _frozenEffectInstance;
     private AudioSource _audioSource;
@@ -38,16 +38,16 @@ public class FrozenState : RefreshingState
     
     public float CurrentAttackSlowPercent => CastSlowPerStack * currentStacksCount;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = MaxStacks;
+        SetMaxStacks(MaxStacks);
         currentStacksCount = 1;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         _baseDuration = durationToExit;
-        this.damageToExit = damageToExit == 0 ? 1 : damageToExit;
+        parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1 : damageToExit;
         if (_ninjaResources.IsDeepFrosting)
         {
-            this.damageToExit = _deepFrostDurability;
+            parameters[StateParameter.DamageToExit] = _deepFrostDurability;
         }
         _damageCount = 0f;
         _audioSource = character.GetComponent<AudioSource>();
@@ -119,7 +119,7 @@ public class FrozenState : RefreshingState
     {
         if(damage.DamageKey != "Additional")
             _damageCount += damage.Value;
-        if (_damageCount > damageToExit)
+        if (_damageCount > DamageToExit)
         {
             if (characterState == null || characterState.gameObject == null) return;
             ExitState();
@@ -128,7 +128,7 @@ public class FrozenState : RefreshingState
 
     public override void UpdateState()
     {
-        bool timeExpired = duration < 0;
+        bool timeExpired = RemainingDuration < 0;
 
         if (timeExpired)
         {
@@ -167,7 +167,7 @@ public class FrozenState : RefreshingState
         
         if (_ninjaResources.IsDeepFrosting)
         {
-            damageToExit = _deepFrostDurability;
+            parameters[StateParameter.DamageToExit] = _deepFrostDurability;
         }
 
         ApplyEffects();
@@ -176,7 +176,7 @@ public class FrozenState : RefreshingState
 
     private void RestartFrozen()
     {
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
     }
 
     private void ApplyEffects()
@@ -239,31 +239,5 @@ public class FrozenState : RefreshingState
         _appliedCastSlow = 0f;
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, 
-        float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        if(!_ninjaResources)
-            if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
-
-        
-        if (currentStacksCount == 0)
-        {
-            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            float previousDuration = duration;
-
-            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-            duration = Mathf.Max(previousDuration, durationToExit);
-
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
 }

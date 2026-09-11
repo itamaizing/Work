@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plague : RefreshingState
+public class Plague : RefreshingStateStacking
 {
     private float _tickTimer = 3f;
 
@@ -21,7 +21,7 @@ public class Plague : RefreshingState
     
     private Resource _healthResource;
 
-    public override void EnterState(CharacterState character,
+    public override void Apply(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -29,7 +29,7 @@ public class Plague : RefreshingState
     {
         _damageSum = 0;
         characterState = character;
-        duration = DurationTime;
+        RemainingDuration = DurationTime;
         _tickTimer = TickInterval;
         
         _healthResource = character.Character.TryGetResource(ResourceType.Health);
@@ -81,12 +81,12 @@ public class Plague : RefreshingState
 
         if (currentStacksCount <= 0)
         {
-            characterState.StateIcons.RemoveItemByState(State);
+            
             ExitState();
         }
         else
         {
-            characterState.StateIcons.ActivateIco(State, duration, -1, true, MaxStacksCount);
+
         }
     }
     
@@ -102,19 +102,5 @@ public class Plague : RefreshingState
         _damageSum = 0;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (currentStacksCount == 0)
-        {
-            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
 }

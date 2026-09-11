@@ -14,12 +14,11 @@ public class DarkFormState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = characterStateComp;
         _character     = characterStateComp.Character;
         _skillManager  = _character.Abilities;
-        MaxStacksCount = 1;
 
         _speedModifier.Value = _speedBonus;
         _character.Move.AddModifier(_speedModifier);
@@ -39,8 +38,6 @@ public class DarkFormState : AbstractCharacterState
 
         characterState.RemoveState(this);
     }
-
-    public override bool Stack(float time) => false;
 
     private void SetShadowSkillActive(bool value)
     {

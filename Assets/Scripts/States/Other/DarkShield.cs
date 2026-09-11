@@ -17,7 +17,7 @@ public class DarkShield : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;
@@ -75,12 +75,6 @@ public class DarkShield : AbstractCharacterState
 
         _healthComponent.CmdTryTakeDamage(damageToTake, null);
         _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake, null, isServerRequest: true);
-    }
-
-    public override bool Stack(float time)
-    {
-        _duration = time;
-        return true;
     }
 
     public override void UpdateState()

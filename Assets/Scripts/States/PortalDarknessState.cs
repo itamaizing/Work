@@ -2,7 +2,7 @@
 using UnityEngine;
 using Mirror;
 
-public class PortalDarknessState : RefreshingState
+public class PortalDarknessStateStacking : RefreshingStateStacking
 {
     public override States State => States.PortalDarkness;
     public override StateType Type => StateType.Magic;
@@ -27,7 +27,7 @@ public class PortalDarknessState : RefreshingState
     private Character _caster;
     private MoveComponent _moveComponent;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _caster = personWhoMadeBuff;

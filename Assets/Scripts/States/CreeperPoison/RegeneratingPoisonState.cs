@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegeneratingPoisonState : AbstractCharacterState
+public class RegeneratingPoisonState : StateStacking
 {
     /* For SpitPoison Ability */
 
@@ -26,9 +26,9 @@ public class RegeneratingPoisonState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
 
         _playerWithTalent = personWhoMadeBuff;
 
@@ -62,12 +62,12 @@ public class RegeneratingPoisonState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
     }
@@ -92,6 +92,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
         currentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
     }
 }

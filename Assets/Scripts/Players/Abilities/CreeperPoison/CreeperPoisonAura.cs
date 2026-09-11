@@ -194,12 +194,12 @@ public class CreeperPoisonAura : NetworkBehaviour
 
         if (stacks == _lastEnergyStacks) return;
 
-        var state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningState;
+        var state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningStateStacking;
 
         if (state == null && stacks > 0)
         {
             _owner.CharacterState.CmdAddState(States.FeelingPoisoning, 999f, 0f, gameObject, "PleasurePoisoning");
-            state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningState;
+            state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningStateStacking;
         }
 
         if (state == null) return;
@@ -296,9 +296,9 @@ public class CreeperPoisonAura : NetworkBehaviour
         int stacks = 0;
 
         if (state.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState) stacks += bindingPoisonState.CurrentStacks;
-        if (state.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState) stacks += poisonBoneState.CurrentStacks;
+        if (state.GetState(States.PoisonBone) is PoisonBoneStateStacking poisonBoneState) stacks += poisonBoneState.CurrentStacks;
         if (state.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState) stacks += empathicPoisonsState.CurrentStacks;
-        if (state.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState) stacks += witheringPoisonState.CurrentStacksCount;
+        if (state.GetState(States.WitheringPoison) is WitheringPoisonStateStacking witheringPoisonState) stacks += witheringPoisonState.CurrentStacksCount;
 
         return stacks;
     }

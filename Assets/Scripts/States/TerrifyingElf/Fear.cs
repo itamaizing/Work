@@ -18,13 +18,12 @@ public class Fear : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _source = personWhoMadeBuff;
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        MaxStacksCount = 1;
 
         MoveComponent moveComponent = characterState.Character.Move;
         _skillManager = characterState.Character.Abilities;
@@ -91,17 +90,6 @@ public class Fear : AbstractCharacterState
         }
         _disabledSkills.Clear();
         characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        return false;
-    }
-
-    private void InitializeFirstStack()
-    {
-        _duration = _baseDuration;
-        currentStacksCount++;
     }
 
     private IEnumerator MoveAwayCoroutine(MoveComponent moveComp)

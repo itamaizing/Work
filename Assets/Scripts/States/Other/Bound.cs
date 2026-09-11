@@ -27,7 +27,7 @@ public class Bound : AbstractCharacterState
 		_spawnedTrap = trap;
 	}
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		_stateClosing = false;
@@ -96,16 +96,6 @@ public class Bound : AbstractCharacterState
 		}
 
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) skill.Disactive = false;
-	}
-
-	public override bool Stack(float time)
-	{
-		if (_baseDuration > time) return false;
-		else
-		{
-			_duration = time;
-			return true;
-		}
 	}
 }
 

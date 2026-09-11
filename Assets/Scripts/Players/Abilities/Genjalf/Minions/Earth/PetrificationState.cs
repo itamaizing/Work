@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class PetrificationState : StackableState
+public class PetrificationStateStacking : StateStacking
 {
 	private float _duration;
 	private float _curSpeedDebuf = 0f;
@@ -13,7 +13,7 @@ public class PetrificationState : StackableState
 	private float _baseMagicResist;
 	private float _basePhysicsResist;
 	
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit,
 		Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;

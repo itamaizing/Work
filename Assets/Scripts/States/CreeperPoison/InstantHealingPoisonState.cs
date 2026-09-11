@@ -25,10 +25,8 @@ public class InstantHealingPoisonState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
-
         characterState = character;
 
         _baseDuration = durationToExit;
@@ -42,11 +40,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
     public override void ExitState()
     {
         characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        return false;
     }
 
     [Server]

@@ -18673,6 +18673,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.4198217
       objectReference: {fileID: 0}
+    - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _UICanvas
+      value: 
+      objectReference: {fileID: 7298947153422104823}
     - target: {fileID: 2608630404563515502, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.030096402
@@ -22884,6 +22888,11 @@ MonoBehaviour:
 --- !u!4 &5925890254959264656 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2519476906010346640, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8127316380187346688}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &7298947153422104823 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 1549544950739599351, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 8127316380187346688}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8598571295142243307 stripped

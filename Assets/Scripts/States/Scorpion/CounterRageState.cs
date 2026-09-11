@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class CounterRageState : RefreshingState
+public class CounterRageStateStacking : RefreshingStateStacking
 {
     public float CurrentBonus = 0f;
     private Resource _energyResource;
@@ -14,11 +14,11 @@ public class CounterRageState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _energyResource = character.Character.TryGetResource(ResourceType.Energy);
         if (_energyResource == null) return;
@@ -34,13 +34,13 @@ public class CounterRageState : RefreshingState
         if (CurrentBonus > 0f)
             _energyResource.AddMax(CurrentBonus, keepPercent: true);
 
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         currentStacksCount = 1;
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
@@ -78,23 +78,9 @@ public class CounterRageState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = 3;
+        RemainingDuration = 3;
         return true;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, 
-        float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (currentStacksCount == 0)
-        {
-            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            AddBonus(damageToExit);
-            Stack(durationToExit);
-        }
-        return this;
-    }
+    
 }

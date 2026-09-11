@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShadowTree : AbstractCharacterState
+public class ShadowTree : RefreshingStateStacking
 {
     public override States State => States.ShadowTree;
     public override StateType Type => StateType.Physical;
@@ -21,7 +21,7 @@ public class ShadowTree : AbstractCharacterState
 
     public ShadowTree()
     {
-        MaxStacksCount = 60;
+        SetMaxStacks(60);
     }
 
     public void SwitchToFinite()
@@ -35,15 +35,15 @@ public class ShadowTree : AbstractCharacterState
     {
         _infinite = true;
         _timer = 0f;
-        duration = 9999;
+        RemainingDuration = 9999;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
-        personWhoMadeBuff = caster;
+        sourceCaster = caster;
         _infinite = true;
-        duration = 9999;
+        RemainingDuration = 9999;
         currentStacksCount = 0;
         Stack(0);
     }
@@ -61,7 +61,7 @@ public class ShadowTree : AbstractCharacterState
             {
                 currentStacksCount--;
                 characterState.Character.Health.AddMax(-BonusPerStack);
-                characterState.StateIcons.RemoveIconCount();
+                
             }
             
             _remaining -= 1f;

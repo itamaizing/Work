@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightningEvadeState : RefreshingState
+public class LightningEvadeStateStacking : RefreshingStateStacking
 {
     private float _evadePerStack = 10f; 
 
@@ -18,9 +18,9 @@ public class LightningEvadeState : RefreshingState
         StatusEffect.Strengthening
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = 4;
+        SetMaxStacks(4);
 
         _evadePhysicalModifier.Source = this;
         _evadeMagicalModifier.Source = this;
@@ -32,7 +32,7 @@ public class LightningEvadeState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
         if (currentStacksCount >= MaxStacksCount)
             return false;
@@ -87,17 +87,5 @@ public class LightningEvadeState : RefreshingState
 
     public override void UpdateState() { }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
-    }
+    
 }

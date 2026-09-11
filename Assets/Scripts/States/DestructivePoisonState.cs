@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructivePoisonState : RefreshingState
+public class DestructivePoisonStateStacking : RefreshingStateStacking
 {
     private Character _target;
     private Health _health;
@@ -20,19 +20,19 @@ public class DestructivePoisonState : RefreshingState
     public override List<StatusEffect> Effects => _effects;
     public override Schools Schools => Schools.Earth;
 
-    public DestructivePoisonState()
+    public DestructivePoisonStateStacking()
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
         _target = character.Character;
         _health = _target.Health;
 
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _tickTimer = TickInterval;
     }
@@ -57,7 +57,7 @@ public class DestructivePoisonState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
         if (currentStacksCount >= MaxStacksCount)
             return false;

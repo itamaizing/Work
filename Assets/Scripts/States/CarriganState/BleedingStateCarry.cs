@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingStateCarry : RefreshingState
+public class BleedingStateStackingCarry : RefreshingStateStacking
 {
     private float _baseDamage;
     private float _percentDamage;
@@ -23,40 +23,28 @@ public class BleedingStateCarry : RefreshingState
         health = character.Character.Health;
         abilities = character.Character.Abilities;
 
-        this.damageToExit = 1000;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        parameters[StateParameter.DamageToExit] = 1000;
+        this.sourceCaster = personWhoMadeBuff;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
+    
 
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(durationToExit);
-
-        return this;
-    }
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _timeBetweenAttack = _startTimeBetweenAttack;
         
         _percentDamage = damageToExit;
-        duration = Mathf.Min(durationToExit, MaxDuration);
+        RemainingDuration = Mathf.Min(durationToExit, MaxDuration);
 
         _timeBetweenAttack = _startTimeBetweenAttack;
 
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         currentStacksCount = 1;
     }
 
     public override bool Stack(float time)
     {
-        duration = Mathf.Min(duration + time, MaxDuration);
+        RemainingDuration = Mathf.Min(RemainingDuration + time, MaxDuration);
 
         return true;
     }

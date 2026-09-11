@@ -270,7 +270,7 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     {
         if(targetObj == null) return;
         var target = targetObj.GetComponent<Character>();
-        target.CharacterState.GetState(state).ReduceStack();
+        (target.CharacterState.GetState(state) as StateStacking)?.ReduceStack();
     }
 
     [Command]

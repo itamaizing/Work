@@ -19,7 +19,7 @@ public class TestStateAura : MonoBehaviour
     }
 }
 
-public class TestAuraState : AuraState
+/*public class TestAuraState : AuraState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move };
 
@@ -45,4 +45,4 @@ public class TestAuraState : AuraState
     {
         Debug.Log("Stay");
     }
-}
+}*/

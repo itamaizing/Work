@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VampirismBuffState : RefreshingState
+public class VampirismBuffStateStacking : RefreshingStateStacking
 {
     private const float ManaRestorePercent   = 0.20f;
     private float _accumulatedDamageForRune = 0f;
@@ -15,10 +15,10 @@ public class VampirismBuffState : RefreshingState
 
     private NinjaResources _ninjaResources;
 
-    public override void EnterState(CharacterState character, float durationToExit,
+    public override void Apply(CharacterState character, float durationToExit,
         float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         
         if(_ninjaResources == null)
             if (characterState.Character.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;

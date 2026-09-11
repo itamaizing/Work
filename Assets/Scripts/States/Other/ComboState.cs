@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComboState : RefreshingState
+public class ComboStateStacking : RefreshingStateStacking
 {
     private float _durationRemaining;
     private string _skillName;
@@ -15,21 +15,21 @@ public class ComboState : RefreshingState
 
     public override List<StatusEffect> Effects => new List<StatusEffect>() { StatusEffect.Strengthening };
 
-    public ComboState()
+    public ComboStateStacking()
     {
         currentStacksCount = 0;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _durationRemaining = durationToExit;
         _skillName = skillName;
         if (skillName == "ComboIncreaseStacks")
         {
-            MaxStacksCount += 1;
+            SetMaxStacks(MaxStacksCount + 1);
         }
         currentStacksCount = 1;
     }
@@ -56,12 +56,12 @@ public class ComboState : RefreshingState
 
         if (currentStacksCount <= 0)
         {
-            characterState.StateIcons.RemoveItemByState(State);
+            
             ExitState();
         }
         else
         {
-            characterState.StateIcons.ActivateIco(State, float.PositiveInfinity, -1, true, MaxStacksCount);
+
         }
     }
 
@@ -76,17 +76,5 @@ public class ComboState : RefreshingState
         return true;
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
-    }
+    
 }

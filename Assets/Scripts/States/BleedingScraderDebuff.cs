@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingScraderDebuff : RefreshingState
+public class BleedingScraderDebuff : RefreshingStateStacking
 {
     private Character _target;
 
@@ -19,11 +19,11 @@ public class BleedingScraderDebuff : RefreshingState
 
     public BleedingScraderDebuff()
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
         _damage = damageToExit;
@@ -73,13 +73,13 @@ public class BleedingScraderDebuff : RefreshingState
 
     public override void ReduceStack()
     {
-        if (duration < 0)
+        if (RemainingDuration < 0)
         {
             if (currentStacksCount > 0)
             {
                 currentStacksCount--;
                 _baseDamage -= _damage;
-                duration = _baseDuration;
+                RemainingDuration = _baseDuration;
             }
 
             else ExitState();

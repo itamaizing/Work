@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwarmSpeedState : RefreshingState
+public class SwarmSpeedStateStacking : RefreshingStateStacking
 {
     private const float BaseBonus = 0.30f;
     private const float PerUnitBonus = 0.05f;
@@ -13,7 +13,7 @@ public class SwarmSpeedState : RefreshingState
     public override StateType Type => StateType.Aura;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         float occupiedCapacity = damageToExit;
         

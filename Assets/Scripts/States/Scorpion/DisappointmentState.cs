@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisappointmentState : RefreshingState
+public class DisappointmentStateStacking : RefreshingStateStacking
 {
     private float _baseDuration;
     private Animator _animator;
@@ -17,10 +17,10 @@ public class DisappointmentState : RefreshingState
     private bool _isBleedingUpgrade = false;
     private bool _isAdditionalTime = false;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState.Character.Health.DamageTaken -= OnDamaged;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         characterState.Character.Health.DamageTaken += OnDamaged;
 
         characterState.Character.Move.SetCanMove(false);
@@ -35,13 +35,13 @@ public class DisappointmentState : RefreshingState
             }
         }
 
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         currentStacksCount = 1;
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
@@ -70,10 +70,10 @@ public class DisappointmentState : RefreshingState
         if (characterState != null)
         {
             DiminishingReturnsTracker tracker;
-            if (personWhoMadeBuff == null)
+            if (sourceCaster == null)
                 tracker = characterState.Character.GetComponent<DiminishingReturnsTracker>();
             else
-                tracker = personWhoMadeBuff.GetComponent<DiminishingReturnsTracker>();
+                tracker = sourceCaster.GetComponent<DiminishingReturnsTracker>();
             tracker?.OnEffectEnded(DrGroup);
         }
         
@@ -83,22 +83,11 @@ public class DisappointmentState : RefreshingState
 
     public override bool Stack(float time)
     {
-        if (_isAdditionalTime) duration = time;
+        if (_isAdditionalTime) RemainingDuration = time;
         else
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         return true;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        _isBleedingUpgrade = skillName.Contains("bleedingUpgrade");
-        _isAdditionalTime = skillName.Contains("bonus");
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        
-        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        return this;
-    }
+    
 }

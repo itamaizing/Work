@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Calmness : RefreshingState
+public class Calmness : RefreshingStateStacking
 {
     private const float _manaRegenPercent = 0.005f;
     private const int _baseMaxStacks = 2;
@@ -19,13 +19,13 @@ public class Calmness : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
         health = character.Character.Health;
         manaResource = character.Character.Resource;
-        base.personWhoMadeBuff = personWhoMadeBuff;
-        MaxStacksCount = _baseMaxStacks;
+        
+        SetMaxStacks(_baseMaxStacks);
         
         if (!character.isServer)
         {
@@ -41,7 +41,7 @@ public class Calmness : RefreshingState
 
     public override void ReduceStack()
     {
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         currentStacksCount--;
         RecalcRegenAmount(0, 0);
         if (currentStacksCount == 0)
@@ -55,20 +55,20 @@ public class Calmness : RefreshingState
         currentStacksCount = 0;
         manaResource.MaxValueChanged -= RecalcRegenAmount;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
-        characterState.StateIcons.RemoveItemByState(State);
+        
         characterState.RemoveState(this);
     }
 
     public override bool Stack(float newDuration)
     {
-        duration = Mathf.Max(duration, newDuration);
+        RemainingDuration = Mathf.Max(RemainingDuration, newDuration);
         return true;
     }
 
     public void UpdateTreesCount(int newTreesCount)
     {
         _lastTreesCount = newTreesCount;
-        MaxStacksCount = _baseMaxStacks + _lastTreesCount;
+        SetMaxStacks(_baseMaxStacks + _lastTreesCount);
 
         if (currentStacksCount > MaxStacksCount) currentStacksCount = MaxStacksCount;
     }
@@ -85,7 +85,7 @@ public class Calmness : RefreshingState
     {
         var wait = new WaitForSeconds(1f);
 
-        while (duration > 0)
+        while (RemainingDuration > 0)
         {
             yield return wait;
 
@@ -99,23 +99,6 @@ public class Calmness : RefreshingState
         }
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-        
-        if(currentStacksCount < _baseMaxStacks)
-            currentStacksCount++;
-        
-        RecalcRegenAmount(0, 0);
-
-        return this;
-    }
+    
 
 }

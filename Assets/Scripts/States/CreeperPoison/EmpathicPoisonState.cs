@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
+public class EmpathicPoisonsState : RefreshingStateStacking, IDamageable
 {
-    private PoisonCloudState _poisonCloud;
+    private PoisonCloudStateStacking _poisonCloud;
     private Character _player;
     private DamageType _damageType;
     private Resource _playerResource;
@@ -36,7 +36,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
 
     public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => duration; }
+    public float StacksDuration { get =>RemainingDuration; }
 
     public event Action<Damage, Skill> DamageTaken;
     public override States State => States.EmpathicPoisons;
@@ -48,9 +48,9 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
 
         _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
 
@@ -61,7 +61,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         _evadeRangePhysicalDamage = _player.Health.EvadeRangeDamage;
 
         _player.Health.Shields.Add(this);
-        _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
+        _poisonCloud = (PoisonCloudStateStacking)_player.CharacterState.GetState(States.PoisonCloud);
         //_radiusCloud = _poisonCloud.RadiusCloud;
 
         _baseDuration = durationToExit;
@@ -168,12 +168,12 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
     }
@@ -205,7 +205,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
 
         _baseEvasionValue = 0.03f;
         _increasedEvasionValue = 0;

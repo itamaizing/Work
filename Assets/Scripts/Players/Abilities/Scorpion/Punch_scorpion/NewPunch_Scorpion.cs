@@ -268,9 +268,9 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         {
             var state = _hero.CharacterState;
             if(!_isWarmingUpHealingIncrease)
-                state.AddState(States.WarmingUpState, warmingUpDuration, 0, Schools.Physical, _hero.gameObject, nameof(WarmingUpState));
+                state.AddState(States.WarmingUpState, warmingUpDuration, 0, Schools.Physical, _hero.gameObject, nameof(WarmingUpStateStacking));
             else
-                state.AddState(States.WarmingUpState, warmingUpDuration, 0, Schools.Physical, _hero.gameObject, nameof(WarmingUpState)+"HealingIncrease");
+                state.AddState(States.WarmingUpState, warmingUpDuration, 0, Schools.Physical, _hero.gameObject, nameof(WarmingUpStateStacking)+"HealingIncrease");
                 
             _hitsInRow = 0;
         }

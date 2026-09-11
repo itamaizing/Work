@@ -15,7 +15,7 @@ public class ImmortalityState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _player = characterState.Character;
@@ -56,9 +56,4 @@ public class ImmortalityState : AbstractCharacterState
     }
 
     private bool NegateAllDamage(Damage damage, Skill skill) => true;
-
-    public override bool Stack(float time)
-    {
-        return false;
-    }
 }

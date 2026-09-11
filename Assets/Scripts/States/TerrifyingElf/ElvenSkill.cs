@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ElvenSkill : RefreshingState
+public class ElvenSkill : RefreshingStateStacking
 {
     private MoveComponent _move;
     private GameObject _elvenSkillEffect;
@@ -20,10 +20,10 @@ public class ElvenSkill : RefreshingState
 
     public ElvenSkill()
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         AddStack();
         _move = character.GetComponent<MoveComponent>();
@@ -59,7 +59,7 @@ public class ElvenSkill : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
         AddStack();
         if (abilities != null)
         {
@@ -103,10 +103,10 @@ public class ElvenSkill : RefreshingState
     public void ReduceStackExternal(bool isExternal = false)
     {
         currentStacksCount--;
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         if (isExternal)
         {
-            characterState.StateIcons.ActivateIco(States.ElvenSkill,duration,-1,true,MaxStacksCount);
+
         }
         
         if (currentStacksCount > 0)
@@ -163,23 +163,7 @@ public class ElvenSkill : RefreshingState
     {
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-        _baseDuration = durationToExit;
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            Stack(duration);
-        }
-
-        return this;
-    }
+    
 
     private void OnPhysCastStarted()
     {

@@ -194,7 +194,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         //OnDamaged?.Invoke(target, this);
         _serverExposureTicks[target] = _serverExposureTicks.GetValueOrDefault(target, 0) + 1;
 
-        var ignition = target.GetComponent<CharacterState>()?.GetState(States.Ignition) as IgnitionState;
+        var ignition = target.GetComponent<CharacterState>()?.GetState(States.Ignition) as IgnitionStateStacking;
         if (ignition != null && _isIncreasedDamageExposure)
             ignition.UpdateFireBreathBonus(_serverExposureTicks[target] * 0.20f);
     }

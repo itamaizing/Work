@@ -43,7 +43,7 @@ namespace Gangdollarff.EarthElemental
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
 
-        public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit,
+        public override void Apply(CharacterState characterState, float durationToExit, float damageToExit,
             Character personWhoMadeBuff, string skillName)
         {
             this.characterState = characterState;
@@ -115,14 +115,10 @@ namespace Gangdollarff.EarthElemental
 
         public override void ExitState()
         {
-            currentStacksCount = 0;
             StopRegenRoutine();
             RemoveBuffs();
             base.ExitState();
         }
-
-
-        public override bool Stack(float time) => false;
 
         public override void UpdateState()
         {

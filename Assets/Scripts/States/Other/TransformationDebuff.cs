@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class TransformationDebuff : StackableState
+public class TransformationDebuff : StateStacking
 {
 	private float _duration;
 	private float _damageOnStart;
@@ -14,7 +14,7 @@ public class TransformationDebuff : StackableState
 	public override List<StatusEffect> Effects { get; }
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		//CanStack = true;

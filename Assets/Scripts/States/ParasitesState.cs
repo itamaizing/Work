@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class ParasitesState : RefreshingState
+public class ParasitesStateStacking : RefreshingStateStacking
 {
     private const float TickInterval = 3f;
     private const float PercentDamage = 0.002f;
@@ -16,18 +16,18 @@ public class ParasitesState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
-    public ParasitesState()
+    public ParasitesStateStacking()
     {
-        MaxStacksCount = 2;
+        SetMaxStacks(2);
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         currentStacksCount = 1;
 
         _tickTimer = TickInterval;
@@ -58,7 +58,7 @@ public class ParasitesState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
         if (currentStacksCount >= MaxStacksCount) return false;
         currentStacksCount++;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisciplineAuraState : RefreshingState
+public class DisciplineAuraStateStacking : RefreshingStateStacking
 {
     public override States State      => States.DisciplineAura;
     public override StateType Type { get; }
@@ -21,13 +21,12 @@ public class DisciplineAuraState : RefreshingState
     private Character  _priest;
     private float      _checkTimer;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState     = character;
         _priest            = personWhoMadeBuff;
-        duration           = _auraDuration;
-        MaxStacksCount     = _maxStacks;
+        RemainingDuration           = _auraDuration;
         currentStacksCount = 0;
         _checkTimer        = 0f;
 
@@ -74,7 +73,7 @@ public class DisciplineAuraState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration          = _auraDuration;
+        RemainingDuration          = _auraDuration;
         RemainingDuration = _auraDuration;
         
         if (currentStacksCount < MaxStacksCount)
@@ -97,7 +96,7 @@ public class DisciplineAuraState : RefreshingState
         _modifiers.Clear();
         _charactersInRadius.Clear();
         currentStacksCount = 0;
-        duration           = 0f;
+        RemainingDuration           = 0f;
 
         characterState?.RemoveState(this);
         characterState = null;

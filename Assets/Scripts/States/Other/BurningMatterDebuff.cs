@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BurningMatterDebuff : RefreshingState
+public class BurningMatterDebuff : RefreshingStateStacking
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     protected float _damagePerMetr = 3;
@@ -20,33 +20,33 @@ public class BurningMatterDebuff : RefreshingState
 
     public override float RemainingDuration => _baseDuration;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        if (this.damageToExit == 0)
+        if (DamageToExit == 0)
         {
-            this.damageToExit = 10000;
+            parameters[StateParameter.DamageToExit] = 10000;
         }
         else
         {
-            this.damageToExit = damageToExit;
+            parameters[StateParameter.DamageToExit] = damageToExit;
         }
         
         characterState = character;
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         _baseDuration = durationToExit;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         _lastPosition   = characterState.Character.transform.position;
     }
 
     public override bool Stack(float time)
     {
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         return true;
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }

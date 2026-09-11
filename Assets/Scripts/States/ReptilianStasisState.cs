@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReptilianStasisState : StackableState
+public class ReptilianStasisStateStacking : StateStacking
 {
     private Character _owner;
 
@@ -14,12 +14,12 @@ public class ReptilianStasisState : StackableState
         StatusEffect.Stunning,
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _owner = character.GetComponent<Character>();
         if (_owner == null) return;
 
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
 
         ApplyStasis();
     }
@@ -68,7 +68,7 @@ public class ReptilianStasisState : StackableState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
         return false;
     }
 

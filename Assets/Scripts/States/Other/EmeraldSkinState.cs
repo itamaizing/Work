@@ -20,7 +20,7 @@ public class EmeraldSkinState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _buffDuration = durationToExit;
@@ -85,18 +85,12 @@ public class EmeraldSkinState : AbstractCharacterState
         characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
-    {
-        _buffDuration += time;
-        return true;
-    }
-
     private void AddTimeByFlash()
     {
         Debug.Log("Add time by flash - " + _flashBuffDuration);
         _buffDuration += _flashBuffDuration;
 
-        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+
     }
 
     private void AddTimeByShield()
@@ -104,7 +98,7 @@ public class EmeraldSkinState : AbstractCharacterState
         Debug.Log("Add time by shield - " + _shieldBuffDuration);
         _buffDuration += _shieldBuffDuration;
 
-        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+
     }
     
     private void AddTimeByLightMagic()
@@ -112,7 +106,7 @@ public class EmeraldSkinState : AbstractCharacterState
         Debug.Log("Add time by light - " + _lightMagicBuffDuration);
         _buffDuration += _lightMagicBuffDuration;
 
-        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+
     }
 
     private void ApplyBuff()

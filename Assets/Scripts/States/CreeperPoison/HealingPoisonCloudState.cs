@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonCloudState : AbstractCharacterState
+public class HealingPoisonCloudState : RefreshingStateStacking
 {
 
     private int _maxStacks = 5;
@@ -29,11 +29,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
 
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
         
         if (characterState != null)
         {
@@ -75,7 +75,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
 
@@ -90,11 +90,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
 
         if (_explosion != null)
@@ -164,7 +164,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
         _endHeal = 0;
         _increasedHeal = 0;
         _baseHeal = 0.005f;

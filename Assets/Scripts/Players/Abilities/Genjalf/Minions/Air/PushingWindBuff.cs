@@ -19,7 +19,7 @@ public class PushingWindBuff : AbstractCharacterState
 		State = stateType;
 	}
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 
@@ -45,9 +45,4 @@ public class PushingWindBuff : AbstractCharacterState
 		characterState.RemoveState(this);
 
     }
-
-	public override bool Stack(float time)
-	{
-		return false;
-	}
 }

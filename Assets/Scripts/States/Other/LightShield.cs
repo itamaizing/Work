@@ -22,13 +22,13 @@ public class LightShield : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;
         _damageAbsorbed = 0;
         _maxAbsorption = maxDamageAbsorbed;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
 
         if (characterState.StateEffects.LightShield != null)
         {
@@ -64,20 +64,6 @@ public class LightShield : AbstractCharacterState, IDamageable
             _lightShield.SetActive(false);
     }
 
-    public override bool Stack(float time)
-    {
-        _duration = time;
-        _damageAbsorbed = 0;
-
-        if (characterState.TryGetComponent<Health>(out var health))
-        {
-            health.AddShieldValues(_maxAbsorption);
-            health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
-        }
-
-        return false;
-    }
-
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         if (_damageAbsorbed >= _maxAbsorption)
@@ -100,13 +86,13 @@ public class LightShield : AbstractCharacterState, IDamageable
         
         if (damageToAbsorb > 0)
         {
-            var pShield = personWhoMadeBuff?.Abilities?.GetSkill<PriestShield>();
+            var pShield = sourceCaster?.Abilities?.GetSkill<PriestShield>();
             pShield?.LightShieldManaRestoreBooster?.OnShieldAbsorbedDamage(characterState.Character, damageToAbsorb);
         }
 
         if (damageToAbsorb > 0)
         {
-            var pShield = personWhoMadeBuff?.Abilities?.GetSkill<PriestShield>();
+            var pShield = sourceCaster?.Abilities?.GetSkill<PriestShield>();
             if (pShield != null)
             {
                 pShield.TryApplyTalents(characterState.Character, 

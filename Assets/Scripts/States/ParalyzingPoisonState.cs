@@ -15,7 +15,7 @@ public class ParalyzingPoisonState : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 
 		if (character.TryGetComponent<Character>(out var ability))

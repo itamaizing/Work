@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OtherForceState : RefreshingState
+public class OtherForceStateStacking : RefreshingStateStacking
 {
     private float _currentBonus = 0f;
 
@@ -17,11 +17,11 @@ public class OtherForceState : RefreshingState
 
     private float _baseDuration;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _healthResource = character.Character.TryGetResource(ResourceType.Health);
 
@@ -37,13 +37,13 @@ public class OtherForceState : RefreshingState
             _healthResource.AddMax(_currentBonus, keepPercent: true);
         }
 
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         currentStacksCount = 1;
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
@@ -73,28 +73,11 @@ public class OtherForceState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         return true;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        float bonus = ParseHealthBonus(skillName);
-
-        if (currentStacksCount == 0)
-        {
-            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            AddBonus(bonus);
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
     
     private void AddBonus(float value)
     {

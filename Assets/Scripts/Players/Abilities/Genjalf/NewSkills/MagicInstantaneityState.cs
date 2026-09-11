@@ -3,7 +3,7 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class MagicInstantaneityState : StackableState
+public class MagicInstantaneityStateStacking : StateStacking
 {
     private List<StatusEffect> _effects = new();
     private List<Skill> _buffedSkills = new();
@@ -19,12 +19,12 @@ public class MagicInstantaneityState : StackableState
 
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         //CanStack = true;
         _time = durationToExit;
         _character = character.Character;
-        MaxStacksCount = 5;
+        SetMaxStacks(5);
         currentStacksCount = 1;
 
         var skillsWithDelay = _character.Abilities.Abilities

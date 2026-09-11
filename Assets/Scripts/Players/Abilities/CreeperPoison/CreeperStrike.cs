@@ -59,9 +59,9 @@ public class CreeperStrike : Skill
     private float _baseAttackSpeed;
     private float _currentAttackSpeedBonus;
 
-    private PoisonBoneState _poisonBoneState;
+    private PoisonBoneStateStacking _poisonBoneStateStacking;
     private EmpathicPoisonsState _empathicPoisonState;
-    private WitheringPoisonState _witheringPoisonState;
+    private WitheringPoisonStateStacking _witheringPoisonStateStacking;
     private BindingPoisonState _bindingPoisonState;
 
     protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
@@ -434,14 +434,14 @@ public class CreeperStrike : Skill
                 if (_bindingPoisonState != null)
                     _currentStacksPoison += _bindingPoisonState.CurrentStacks;
 
-                if (_poisonBoneState != null)
-                    _currentStacksPoison += _poisonBoneState.CurrentStacks;
+                if (_poisonBoneStateStacking != null)
+                    _currentStacksPoison += _poisonBoneStateStacking.CurrentStacks;
 
                 if (_empathicPoisonState != null)
                     _currentStacksPoison += _empathicPoisonState.CurrentStacks;
 
-                if (_witheringPoisonState != null)
-                    _currentStacksPoison += _witheringPoisonState.CurrentStacksCount;
+                if (_witheringPoisonStateStacking != null)
+                    _currentStacksPoison += _witheringPoisonStateStacking.CurrentStacksCount;
             }
 
             _currentAllStacks = _currentStacksPoison;
@@ -455,9 +455,9 @@ public class CreeperStrike : Skill
     private void CachePoisonStates(CharacterState state)
     {
         _bindingPoisonState = state.GetState(States.BindingPoison) as BindingPoisonState;
-        _poisonBoneState = state.GetState(States.PoisonBone) as PoisonBoneState;
+        _poisonBoneStateStacking = state.GetState(States.PoisonBone) as PoisonBoneStateStacking;
         _empathicPoisonState = state.GetState(States.EmpathicPoisons) as EmpathicPoisonsState;
-        _witheringPoisonState = state.GetState(States.WitheringPoison) as WitheringPoisonState;
+        _witheringPoisonStateStacking = state.GetState(States.WitheringPoison) as WitheringPoisonStateStacking;
     }
 
     private void HandleAttackSpeed()

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HardenedFlesh : RefreshingState
+public class HardenedFlesh : RefreshingStateStacking
 {
     private List<StatusEffect> _effects = new() { StatusEffect.Destruction };
 
@@ -16,16 +16,16 @@ public class HardenedFlesh : RefreshingState
 
     private AttributeModifier _resistanceModifier;
     
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
         abilities = character.Character.Abilities;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         
         currentStacksCount = 1;
-        MaxStacksCount = _maxStacks;
-        duration = durationToExit;
+        SetMaxStacks(_maxStacks);
+        RemainingDuration = durationToExit;
 
         ApplyOrUpdateModifier();
     }
@@ -35,7 +35,7 @@ public class HardenedFlesh : RefreshingState
     {
         base.ExitState();
         RemoveModifier();
-        characterState.StateIcons.RemoveItemByState(State);
+        
         currentStacksCount = 0;
     }
 
@@ -87,21 +87,5 @@ public class HardenedFlesh : RefreshingState
         _resistanceModifier = null;
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        if (currentStacksCount == 0)
-        {
-            BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            duration = durationToExit;
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
 }

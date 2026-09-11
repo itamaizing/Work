@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CorrodedArmorState : AbstractCharacterState
+public class CorrodedArmorState : RefreshingStateStacking
 {
     private const float ReductionPerStack = 2f;
     private float _durationRemaining;
@@ -17,11 +17,11 @@ public class CorrodedArmorState : AbstractCharacterState
 
     public CorrodedArmorState()
     {
-        MaxStacksCount = 5;
+        SetMaxStacks(5);
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character,
+    public override void Apply(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -29,7 +29,7 @@ public class CorrodedArmorState : AbstractCharacterState
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
@@ -76,7 +76,7 @@ public class CorrodedArmorState : AbstractCharacterState
         currentStacksCount = 1;
         _appliedReduction = 0f;
 
-        characterState.StateIcons.RemoveItemByState(State);
+        
         characterState.RemoveState(this);
     }
 }

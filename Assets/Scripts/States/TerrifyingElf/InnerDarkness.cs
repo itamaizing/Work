@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InnerDarkness : RefreshingState
+public class InnerDarkness : RefreshingStateStacking
 {
     private const float TimeDecreasePerStack = 2f;
     private float _durationRemaining;
@@ -17,13 +17,13 @@ public class InnerDarkness : RefreshingState
 
     public InnerDarkness()
     {
-        MaxStacksCount = 6;
+        SetMaxStacks(6);
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _durationRemaining = durationToExit;
         var terrifyingElfAura = personWhoMadeBuff.GetComponent<TerrifyingElfAura>();
 
@@ -90,25 +90,8 @@ public class InnerDarkness : RefreshingState
         Debug.Log("обновление при максимальном стаке");
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            currentStacksCount = 1;
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
 
     [Command] private void CmdStateFear() => ClientRpcStateFear();
-    [ClientRpc] private void ClientRpcStateFear() { characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, personWhoMadeBuff.gameObject, null); }
+    [ClientRpc] private void ClientRpcStateFear() { characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, sourceCaster.gameObject, null); }
 }

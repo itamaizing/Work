@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ScorchedSoul : RefreshingState
+public class ScorchedSoul : RefreshingStateStacking
 {
     private SkillManager abilities;
     
@@ -15,7 +15,7 @@ public class ScorchedSoul : RefreshingState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         
@@ -28,7 +28,7 @@ public class ScorchedSoul : RefreshingState
         
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
         currentStacksCount = 1;
     }
 
@@ -70,23 +70,11 @@ public class ScorchedSoul : RefreshingState
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-        
-        return this;
-    }
+    
 }

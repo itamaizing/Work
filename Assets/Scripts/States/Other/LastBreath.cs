@@ -13,7 +13,7 @@ public class LastBreath : AbstractCharacterState
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif.Value = 1.2f;
 		_modif.Type = ModifierType.Multiplier;
@@ -51,10 +51,5 @@ public class LastBreath : AbstractCharacterState
 			abilities.Abilities[i].Buff.AttackSpeed.ReductionPercentage(1.4f);
 		}
 		health.RegenerationValue /= 4;
-	}
-
-	public override bool Stack(float time)
-	{
-		return true;
 	}
 }

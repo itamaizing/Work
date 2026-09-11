@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AstralState : RefreshingState
+public class AstralStateStacking : RefreshingStateStacking
 {
     private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;
@@ -29,7 +29,7 @@ public class AstralState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         currentStacksCount = 1;
         
@@ -168,25 +168,9 @@ public class AstralState : RefreshingState
     
     public override bool Stack(float time)
     {
-        duration = BaseDurationValue;
+        RemainingDuration = MaxDuration;
         return false;
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            Stack(duration);
-        }
-
-        return this;
-    }
+    
 }

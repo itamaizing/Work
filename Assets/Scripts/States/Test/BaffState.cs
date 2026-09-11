@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaffState : AbstractCharacterState
+public class BaffState : RefreshingStateStacking
 {
     private float _durationRemaining;
     private string _skillName;
@@ -16,14 +16,14 @@ public class BaffState : AbstractCharacterState
 
     public BaffState()
     {
-        MaxStacksCount = 20;
+        SetMaxStacks(20);
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _durationRemaining = durationToExit;
         _skillName = skillName;
     }

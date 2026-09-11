@@ -16,9 +16,7 @@ public class WeakeningSilence : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Poison };
 
-    public WeakeningSilence() => MaxStacksCount = 6;
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         health = character.Character.Health;
         _damagePerTick = damageToExit;
@@ -43,17 +41,6 @@ public class WeakeningSilence : AbstractCharacterState
 
     public override void UpdateState()
     {
-    }
-
-    public override bool Stack(float addDuration)
-    {
-        if (currentStacksCount >= MaxStacksCount) return false;
-
-        currentStacksCount++;
-        _currentDamage += _damagePerTick;
-        base.duration = Mathf.Max(base.duration, addDuration);
-
-        return true;
     }
 
     private IEnumerator PeriodicDamageRoutine()

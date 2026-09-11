@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knockdown : RefreshingState
+public class Knockdown : RefreshingStateStacking
 {
     private float _baseDuration;
     private float _duration;
@@ -12,7 +12,7 @@ public class Knockdown : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Strengthening };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
@@ -28,7 +28,7 @@ public class Knockdown : RefreshingState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
         currentStacksCount = 1;
 
         ApplyDebuff();
@@ -83,15 +83,5 @@ public class Knockdown : RefreshingState
         }
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
-    }
+    
 }

@@ -19,9 +19,9 @@ public class OwnElement : Talent
     private float _increasedAttackSpeed;
     private float _maxMinimumAttackSpeed = 0.1f;
 
-    private PoisonBoneState _poisonBoneState;
+    private PoisonBoneStateStacking _poisonBoneStateStacking;
     private EmpathicPoisonsState _empathicPoisonState;
-    private WitheringPoisonState _witheringPoisonState;
+    private WitheringPoisonStateStacking _witheringPoisonStateStacking;
     private BindingPoisonState _bindingPoisonState;
 
     private Coroutine _searchingDebuffOnEnemeies;
@@ -80,17 +80,17 @@ public class OwnElement : Talent
                         {
                             _currentStacksPoison += _bindingPoisonState.CurrentStacks;
                         }
-                        if (_poisonBoneState != null)
+                        if (_poisonBoneStateStacking != null)
                         {
-                            _currentStacksPoison += _poisonBoneState.CurrentStacks;
+                            _currentStacksPoison += _poisonBoneStateStacking.CurrentStacks;
                         }
                         if (_empathicPoisonState != null)
                         {
                             _currentStacksPoison += _empathicPoisonState.CurrentStacks; ;
                         }
-                        if (_witheringPoisonState != null)
+                        if (_witheringPoisonStateStacking != null)
                         {
-                            _currentStacksPoison += _witheringPoisonState.CurrentStacksCount;
+                            _currentStacksPoison += _witheringPoisonStateStacking.CurrentStacksCount;
                         }
 
                     }
@@ -147,11 +147,11 @@ public class OwnElement : Talent
     {
         _bindingPoisonState = (BindingPoisonState)targetWithDebuff.GetState(States.BindingPoison);
         Debug.Log("OwnElement / AdvertisementStates / _bindingPoisonState = " + _bindingPoisonState);
-        _poisonBoneState = (PoisonBoneState)targetWithDebuff.GetState(States.PoisonBone);
-        Debug.Log("OwnElement / AdvertisementStates / _poisonBoneState = " + _poisonBoneState);
+        _poisonBoneStateStacking = (PoisonBoneStateStacking)targetWithDebuff.GetState(States.PoisonBone);
+        Debug.Log("OwnElement / AdvertisementStates / _poisonBoneState = " + _poisonBoneStateStacking);
         _empathicPoisonState = (EmpathicPoisonsState)targetWithDebuff.GetState(States.EmpathicPoisons);
         Debug.Log("OwnElement / AdvertisementStates / _empathicPoisonState = " + _empathicPoisonState);
-        _witheringPoisonState = (WitheringPoisonState)targetWithDebuff.GetState(States.WitheringPoison);
-        Debug.Log("OwnElement / AdvertisementStates / _witheringPoisonState = " + _witheringPoisonState);
+        _witheringPoisonStateStacking = (WitheringPoisonStateStacking)targetWithDebuff.GetState(States.WitheringPoison);
+        Debug.Log("OwnElement / AdvertisementStates / _witheringPoisonState = " + _witheringPoisonStateStacking);
     }
 }

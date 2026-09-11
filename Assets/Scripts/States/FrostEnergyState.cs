@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrostEnergyState : RefreshingState
+public class FrostEnergyStateStacking : RefreshingStateStacking
 {
     public override States State => States.FrostEnergy;
     public override StateType Type => StateType.Magic;
@@ -15,7 +15,7 @@ public class FrostEnergyState : RefreshingState
 
     public override Schools Schools => Schools.Water;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
     }

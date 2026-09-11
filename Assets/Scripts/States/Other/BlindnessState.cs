@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class BlindnessState : RefreshingState
+public class BlindnessStateStacking : RefreshingStateStacking
 {
     public bool turnOff = false;
 
@@ -21,13 +21,13 @@ public class BlindnessState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
         _duration = durationToExit;
         _baseDuration = durationToExit;
         characterState = character;
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         currentStacksCount = 1;
 
         if (characterState.isOwned) ApplyEffectToLocalCamera();

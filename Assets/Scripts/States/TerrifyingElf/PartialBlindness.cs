@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartialBlindness : RefreshingState
+public class PartialBlindness : RefreshingStateStacking
 {
     private float _baseDuration;
     
@@ -28,33 +28,14 @@ public class PartialBlindness : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
+    
 
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
-        else
-        {
-            Stack(duration);
-
-            if (currentStacksCount < MaxStacksCount)
-                currentStacksCount++;
-        }
-
-        return this;
-    }
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
 
-        MaxStacksCount = MaxStacks;
+        SetMaxStacks(MaxStacks);
         currentStacksCount = 1;
 
         _isDoubleMissChance = skillName == PartialBlindnessTalentSkillName;
@@ -90,7 +71,7 @@ public class PartialBlindness : RefreshingState
         if (skill.Info.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != characterState.Character) return;
 
-        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - duration) * EffectivenessDecayPerSecond);
+        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - RemainingDuration) * EffectivenessDecayPerSecond);
 
         float missChancePerStack = _isDoubleMissChance
             ? BaseMissChancePerStack * DoubleMissChanceMultiplier

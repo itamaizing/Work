@@ -183,7 +183,7 @@ public class Restoration : Skill,IPolaritySwitchable
         var characterState = target?.GetComponent<CharacterState>();
         if (characterState == null) return 0f;
 
-        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyStateStacking;
         return spiritEnergyState != null ? spiritEnergyState.GetHealBonus() : 0f;
     }
 

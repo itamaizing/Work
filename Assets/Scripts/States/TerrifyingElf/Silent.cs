@@ -14,23 +14,23 @@ public class Silent : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering Silent State");
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _baseDuration = durationToExit;
 
-        duration = _baseDuration; 
+        RemainingDuration = _baseDuration; 
 
-        Debug.Log($"duration: {duration}");
+        Debug.Log($"duration: {RemainingDuration}");
 
         BlockMagicAbilities();
     }
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
@@ -39,7 +39,7 @@ public class Silent : AbstractCharacterState
     public override void ExitState()
     {
         Debug.Log("Exiting Silent State");
-        characterState.StateIcons.RemoveItemByState(State);
+        
         characterState.RemoveState(this);
 
         UnblockMagicAbilities();

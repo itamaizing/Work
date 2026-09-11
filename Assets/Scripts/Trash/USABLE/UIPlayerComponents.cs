@@ -12,6 +12,7 @@ public class UIPlayerComponents : MonoBehaviour
     [SerializeField] private SkillRenderer skillRenderer;
 
     [SerializeField] private DamageTracker _damageTracker;
+    [SerializeField] private Canvas _UICanvas;
 
     public Transform DamageSpawn;
     public Transform RegenSpawn;
@@ -35,6 +36,7 @@ public class UIPlayerComponents : MonoBehaviour
     private void Awake()
     {
         _damageTracker = _character.DamageTracker;
+        _UICanvas.worldCamera = Camera.main;
     }
 
     private void OnEnable()

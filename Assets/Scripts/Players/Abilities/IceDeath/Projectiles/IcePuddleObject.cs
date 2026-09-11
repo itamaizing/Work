@@ -155,7 +155,7 @@ public class IcePuddleObject : Projectiles
             yield return _waitShort;
             if (enemy == null || enemy.CharacterState == null) continue;
 
-            var stateFrosting = enemy.CharacterState.GetState(States.Frosting) as FrostingState;
+            var stateFrosting = enemy.CharacterState.GetState(States.Frosting) as FrostingStateStacking;
             
             bool hasFrosting = enemy.CharacterState.CheckForState(States.Frosting);
 
@@ -244,7 +244,7 @@ public class IcePuddleObject : Projectiles
             {
                 if(enemy.CharacterState.CheckForState(States.Frosting))
                 {
-                    var state = enemy.CharacterState.GetState(States.Frosting) as FrostingState;
+                    var state = enemy.CharacterState.GetState(States.Frosting) as FrostingStateStacking;
                     if(state.SkillName.Contains("Puddle"))
                         enemy.CharacterState.RemoveState(States.Frosting);
                 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cooling : RefreshingState
+public class Cooling : RefreshingStateStacking
 {
 	public bool turnOff = false;
 	private float _damageOnStart;
@@ -19,12 +19,12 @@ public class Cooling : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
 		characterState = character;
-		MaxStacksCount = 6;
+		SetMaxStacks(6);
 		_damageToExit = damageToExit == 0 ? 10000 : damageToExit;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
 
@@ -38,7 +38,7 @@ public class Cooling : RefreshingState
 		{
 			ExitState();
 		}
-		if(duration <= 0) ExitState();
+		if(RemainingDuration <= 0) ExitState();
 	}
 
 	public override void ExitState()
@@ -54,7 +54,7 @@ public class Cooling : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 		if(currentStacksCount < MaxStacksCount)
 		{
             characterState.Character.Move.RemoveModifier(_modif);
@@ -65,29 +65,5 @@ public class Cooling : RefreshingState
 		return true;
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-	    if (!CanEnterState(character)) return null;
-
-	    BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-	    if(!_ninjaResources)
-			if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
-	    
-	    if (currentStacksCount == 0)
-		    EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-	    else
-		    Stack(duration);
-
-	    if (skillName != "Minion")
-	    {
-		    if (currentStacksCount == MaxStacksCount && _ninjaResources.IsRepeatedFrost)
-		    {
-			    if (!characterState.CheckForState(States.Frosting))
-				    _ninjaResources.AddRepeatedFrosting(characterState.gameObject);
-		    }
-	    }
-
-	    return this;
-    }
+    
 }

@@ -19,9 +19,9 @@ public class AbsorptionOfPoisons : Skill
 
     private bool _isWorking = false;
 
-    private PoisonBoneState _poisonBone;
+    private PoisonBoneStateStacking _poisonBone;
     private EmpathicPoisonsState _empathicPoison;
-    private WitheringPoisonState _witheringPoison;
+    private WitheringPoisonStateStacking _witheringPoison;
     private BindingPoisonState _bindingPoison;
 
     private Coroutine _remainingTimeCoroutine;
@@ -120,7 +120,7 @@ public class AbsorptionOfPoisons : Skill
                 {
                     var stateWithMinDuration = GetStateWithMinDuration(poisonDurations);
 
-                    if (stateWithMinDuration is PoisonBoneState poisonBoneState)
+                    if (stateWithMinDuration is PoisonBoneStateStacking poisonBoneState)
                     {
                         poisonBoneState.CurrentStacks--;
                     }
@@ -128,7 +128,7 @@ public class AbsorptionOfPoisons : Skill
                     {
                         empathicPoisonsState.CurrentStacks--;
                     }
-                    else if (stateWithMinDuration is WitheringPoisonState witheringPoisonState)
+                    else if (stateWithMinDuration is WitheringPoisonStateStacking witheringPoisonState)
                     {
                         witheringPoisonState.ReduceStack();
                     }
@@ -162,9 +162,9 @@ public class AbsorptionOfPoisons : Skill
 
     private void AdvertisementStates(CharacterState targetWithDebuff)
     {
-        _poisonBone = (PoisonBoneState)targetWithDebuff.GetState(States.PoisonBone);
+        _poisonBone = (PoisonBoneStateStacking)targetWithDebuff.GetState(States.PoisonBone);
         _empathicPoison = (EmpathicPoisonsState)targetWithDebuff.GetState(States.EmpathicPoisons);
-        _witheringPoison = (WitheringPoisonState)targetWithDebuff.GetState(States.WitheringPoison);
+        _witheringPoison = (WitheringPoisonStateStacking)targetWithDebuff.GetState(States.WitheringPoison);
         _bindingPoison = (BindingPoisonState)targetWithDebuff.GetState(States.BindingPoison);
     }
 }

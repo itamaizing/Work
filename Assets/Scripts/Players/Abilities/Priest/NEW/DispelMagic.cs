@@ -103,9 +103,9 @@ public class DispelMagic : Skill
         if (!targetGO.TryGetComponent<CharacterState>(out var characterState)) return;
         
         var stateInstance = characterState.GetState(state);
-        if (stateInstance?.PersonWhoMadeBuff == null) return;
+        if (stateInstance?.SourceCaster == null) return;
 
-        stateInstance.PersonWhoMadeBuff.CharacterState.OnOwnStateDispelled(state, 1);
+        stateInstance.SourceCaster.CharacterState.OnOwnStateDispelled(state, 1);
     }
 
     [ClientRpc]
@@ -116,7 +116,7 @@ public class DispelMagic : Skill
         var stateInstance = characterState.GetState(state);
         if (stateInstance == null) return;
 
-        stateInstance.ReduceStack();
-        characterState.StateIcons.RemoveIconCount();
+        (stateInstance as StateStacking)?.ReduceStack();
+        
     }
 }

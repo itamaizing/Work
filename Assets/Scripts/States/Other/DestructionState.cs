@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DestructionState : RefreshingState
+public class DestructionStateStacking : RefreshingStateStacking
 {
     private const float _tickInterval = 4f;
     private const float _damagePerTickBase = 6f;
@@ -20,26 +20,24 @@ public class DestructionState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public DestructionState(States stateType)
+    public DestructionStateStacking(States stateType)
     {
         State = stateType;
     }
 
-    public DestructionState() { }
+    public DestructionStateStacking() { }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
-        this.damageToExit = damageToExit;
 
         _baseDuration = durationToExit;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         _timer = _tickInterval;
         _isActive = true;
 
-        MaxStacksCount = IsStackingMode ? 2 : 1;
+        SetMaxStacks(IsStackingMode ? 2 : 1);
         currentStacksCount = 1;
 
         ApplyDamageTick();
@@ -81,15 +79,15 @@ public class DestructionState : RefreshingState
             School = Schools.Dark
         };
 
-        if (personWhoMadeBuff != null && personWhoMadeBuff.isOwned)
-            personWhoMadeBuff.Abilities.GetSkill<Restoration>().CmdApplyDamage(damage,characterState.gameObject);
+        if (sourceCaster != null && sourceCaster.isOwned)
+            sourceCaster.Abilities.GetSkill<Restoration>().CmdApplyDamage(damage,characterState.gameObject);
 
-        if (damageToExit == -1f)
+        if (DamageToExit == float.MaxValue)
         {
             float chance = Random.Range(0f, 100f);
             if (chance <= 15f)
             {
-                characterState.AddState(States.SpiritHealth, 18f, 0, characterState.gameObject, nameof(SpiritHealthState));
+                characterState.AddState(States.SpiritHealth, 18f, 0, characterState.gameObject, nameof(SpiritHealthStateStacking));
             }
         }
     }
@@ -98,7 +96,7 @@ public class DestructionState : RefreshingState
     {
         if (!IsStackingMode)
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             RemainingDuration = _baseDuration;
             return true;
         }
@@ -106,7 +104,7 @@ public class DestructionState : RefreshingState
         if (currentStacksCount < MaxStacksCount)
             currentStacksCount++;
 
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         RemainingDuration = _baseDuration;
 
         return true;
@@ -115,7 +113,7 @@ public class DestructionState : RefreshingState
     public override void ExitState()
     {
         _isActive = false;
-        duration = 0f;
+        RemainingDuration = 0f;
         _timer = 0f;
         currentStacksCount = 0;
         characterState?.RemoveState(this);
@@ -124,23 +122,5 @@ public class DestructionState : RefreshingState
 
     private bool IsStackingMode => State == States.DestructionStacking;
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            currentStacksCount = 1;
-        }
-        else
-        {
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
 }

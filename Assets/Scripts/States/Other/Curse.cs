@@ -12,7 +12,7 @@ public class Curse : AbstractCharacterState
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		_durationToExit = durationToExit;
@@ -32,14 +32,5 @@ public class Curse : AbstractCharacterState
 	public override void ExitState()
 	{
 		characterState.RemoveState(this);
-	}
-
-	public override bool Stack(float time)
-	{
-		/*if (characterState.personWhoShoted != null)
-		{
-			_personWhoShooted = characterState.personWhoShoted;
-		}*/
-		return true;
 	}
 }

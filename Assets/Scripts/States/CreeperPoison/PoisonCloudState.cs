@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonCloudState : RefreshingState
+public class PoisonCloudStateStacking : RefreshingStateStacking
 {
     private PoisonBall _poisonBall;
     private Character _caster;
@@ -28,31 +28,13 @@ public class PoisonCloudState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
+    
 
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            MaxStacksCount = _maxStacks;
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            currentStacksCount = 1;
-        }
-        else
-        {
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _enemyLayer = LayerMask.GetMask("Enemy");
 
@@ -60,7 +42,7 @@ public class PoisonCloudState : RefreshingState
         _poisonBall = _caster != null ? _caster.GetComponent<PoisonBall>() : null;
 
         _baseDuration = durationToExit;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _timeToNextTick = _tickRate;
         _poisonBoneTimer = 0f;
@@ -87,7 +69,7 @@ public class PoisonCloudState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
 
         if (currentStacksCount < MaxStacksCount)
         {
@@ -150,6 +132,6 @@ public class PoisonCloudState : RefreshingState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
     }
 }

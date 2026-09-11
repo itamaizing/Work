@@ -15,7 +15,7 @@ public class Stupefaction : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 
@@ -48,19 +48,6 @@ public class Stupefaction : AbstractCharacterState
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 		turnOff = false;
-	}
-
-	public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			duration = time;
-			return true;
-		}
 	}
 
 	private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;

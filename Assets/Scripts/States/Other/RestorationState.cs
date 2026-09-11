@@ -1,173 +1,117 @@
-﻿using Mirror;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using Mirror;
 
-public class RestorationState : RefreshingState
+public class RestorationStateStacking : RefreshingStateStacking, ITickableState
 {
     private const float _tickInterval = 3f;
     private const float _healPerTickBase = 6f;
 
     private Character _targetCharacter;
-    
-    private float _baseDuration;
-    private float _timer;
-    private bool _isActive;
-    private bool _healBoostActive;
-    private float _bonusHeal;
 
-    private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Restoration };
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Restoration };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State { get; }
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public RestorationState(States stateType)
-    {
-        State = stateType;
-    }
+    public float TickInterval => _tickInterval;
 
-    public RestorationState()
-    {
-    }
+    public RestorationStateStacking(States stateType) => State = stateType;
+    public RestorationStateStacking() { }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
-    {
-        characterState = character;
-        _baseDuration = durationToExit;
-        duration = durationToExit;
-        _timer = _tickInterval;
-        _isActive = true;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+    private bool IsStackingMode => State == States.RestorationStacking;
 
-        MaxStacksCount = IsStackingMode ? 2 : 1;
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName)
+    {
+        SetMaxStacks(IsStackingMode ? 2 : 1);
+        SetMaxStacks(IsStackingMode ? 2 : 1);
         currentStacksCount = 1;
 
-        var restoration = personWhoMadeBuff.Abilities.GetSkill<Restoration>();
-        restoration.RestorationHealBooster.Reset();
+        sourceCaster?.Abilities?.GetSkill<Restoration>()?.RestorationHealBooster.Reset();
 
-        _targetCharacter = character.Character;
-        _targetCharacter.Health.HealTakedServer += OnTargetHealTaken;
-        
-        ApplyHealTick();
-    }
-
-    public override void UpdateState()
-    {
-        if (!_isActive) return;
-
-        _timer -= Time.deltaTime;
-
-        if (_timer <= 0f)
+        if (_targetCharacter == null)
         {
-            ApplyHealTick();
-            _timer = _tickInterval;
+            _targetCharacter = character.Character;
+            _targetCharacter.Health.HealTakedServer += OnTargetHealTaken;
         }
+
+        Tick();
     }
+
+    public override void UpdateState() { }
+
+    public void Tick() => ApplyHealTick();
 
     private void ApplyHealTick()
     {
         float baseHeal = _healPerTickBase * currentStacksCount;
         float healValue = baseHeal + GetSpiritEnergyBonus(characterState.Character);
-        
-        var spark = personWhoMadeBuff?.Abilities?.GetSkill<SparkOfLight>();
+
+        var spark = sourceCaster?.Abilities?.GetSkill<SparkOfLight>();
         spark?.OverhealManaBooster.OnAnyHealTaken(characterState.Character, healValue, spark);
 
-        var restoration = personWhoMadeBuff?.Abilities?.GetSkill<Restoration>();
+        var restoration = sourceCaster?.Abilities?.GetSkill<Restoration>();
         restoration?.RestorationManaBooster.OnRestorationTick(healValue, characterState.Character);
-        float bonus = restoration.RestorationHealBooster.BonusHeal;
-        healValue += bonus;
+        healValue += restoration?.RestorationHealBooster.BonusHeal ?? 0f;
 
         CmdHeal(healValue);
     }
 
-    private float GetSpiritEnergyBonus(Character character)
-    {
-        var state = character?.CharacterState?.GetState(States.SpiritEnergy) as SpiritEnergyState;
-        return state != null ? state.GetHealBonus() : 0f;
-    }
+    private float GetSpiritEnergyBonus(Character character) =>
+        (character?.CharacterState?.GetState(States.SpiritEnergy) as SpiritEnergyStateStacking)?.GetHealBonus() ?? 0f;
 
     public override bool Stack(float time)
     {
-        if (!IsStackingMode)
-            return base.Stack(time);
-        
-        if (currentStacksCount < MaxStacksCount)
+        if (IsStackingMode && currentStacksCount < MaxStacksCount)
             currentStacksCount++;
 
-        duration = _baseDuration;
-        RemainingDuration = _baseDuration;
+        RemainingDuration = time;
+        UpdateDisplayText();
 
         return true;
     }
 
+    public override void ReduceStack()
+    {
+        if (currentStacksCount <= 1)
+        {
+            ExitState();
+            return;
+        }
+
+        currentStacksCount--;
+        RemainingDuration = MaxDuration;
+        UpdateDisplayText();
+    }
+
     public override void ExitState()
     {
-        _isActive = false;
-        duration = 0f;
-        _timer = 0f;
-        currentStacksCount = 0;
-        
         if (_targetCharacter != null)
         {
             _targetCharacter.Health.HealTakedServer -= OnTargetHealTaken;
             _targetCharacter = null;
         }
-        
-        characterState?.RemoveState(this);
-        characterState = null;
-    }
 
-    private bool IsStackingMode => State == States.RestorationStacking;
+        characterState.RemoveState(this);
+    }
 
     [Server]
-    private void CmdHeal(float healValue)
-    {
-        ClientRpcHeal(healValue);
-    }
+    private void CmdHeal(float healValue) => ClientRpcHeal(healValue);
 
     [ClientRpc]
     private void ClientRpcHeal(float healValue)
     {
-        Heal heal = new()
-        {
-            Value = healValue,
-            DamageableSkill = null
-        };
-
-        health.Heal(ref heal, nameof(RestorationState), null);
+        Heal heal = new() { Value = healValue, DamageableSkill = null };
+        health.Heal(ref heal, nameof(RestorationStateStacking), null);
     }
-    
+
     private void OnTargetHealTaken(float healValue, Skill sourceSkill, string sourceName)
     {
         if (sourceSkill == null || healValue <= 0f) return;
-        if (sourceSkill.Hero != personWhoMadeBuff) return;
+        if (sourceSkill.Hero != sourceCaster) return;
 
-        var restorationSkill = personWhoMadeBuff?.Abilities?.GetSkill<Restoration>();
-        if (restorationSkill == null) return;
-        
-        restorationSkill.RestorationHealBooster.OnHealReceived(healValue);
-    }
-
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            currentStacksCount = 1;
-        }
-        else
-        {
-            Stack(durationToExit);
-        }
-
-        return this;
+        sourceCaster?.Abilities?.GetSkill<Restoration>()?.RestorationHealBooster.OnHealReceived(healValue);
     }
 }

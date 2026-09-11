@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwiftAttacksState : RefreshingState
+public class SwiftAttacksStateStacking : RefreshingStateStacking
 {
     private int _attacksLeft = 3;
     private const float SpeedBonusPercent = 1.0f;
@@ -15,11 +15,11 @@ public class SwiftAttacksState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         _attacksLeft = 3;
 
         _castSpeedModifier.Source = this;
@@ -39,7 +39,7 @@ public class SwiftAttacksState : RefreshingState
             }
         }
 
-        MaxStacksCount = 1;
+        SetMaxStacks(1);
         currentStacksCount = 1;
     }
 
@@ -81,7 +81,7 @@ public class SwiftAttacksState : RefreshingState
 
     public override void UpdateState()
     {
-        if (duration <= 0)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }

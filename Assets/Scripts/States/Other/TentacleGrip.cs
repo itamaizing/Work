@@ -15,7 +15,7 @@ public class TentacleGrip : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -39,17 +39,6 @@ public class TentacleGrip : AbstractCharacterState
 	{
 		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
-	}
-
-	public override bool Stack(float time)
-	{
-		if (_baseDuration > time) return false;
-
-		else
-		{
-			duration = time;
-			return true;
-		}
 	}
 }
 

@@ -80,7 +80,7 @@ public class ComboPointTransferSkill : Skill
 
         //if(Vector3.Distance(fromCharacter.gameObject.transform.position, transform.position) <= AreaInfo.Radius) return;
         
-        var comboState = fromCharacter.GetState(States.ComboState) as ComboState;
+        var comboState = fromCharacter.GetState(States.ComboState) as ComboStateStacking;
 
         if (comboState != null && comboState.CurrentStacksCount > 0)
         {

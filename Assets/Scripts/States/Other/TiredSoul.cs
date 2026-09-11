@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TiredSoul : AbstractCharacterState
+public class TiredSoul : StateStacking
 {
     private float _baseDuration;
 
@@ -10,20 +10,20 @@ public class TiredSoul : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
         currentStacksCount++;
-        MaxStacksCount = 2;
+        SetMaxStacks(2);
     }
 
     public override void UpdateState()
     { 
-        if (duration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
+        if (RemainingDuration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
         {
             currentStacksCount--;
-            duration = _baseDuration * currentStacksCount;
+            RemainingDuration = _baseDuration * currentStacksCount;
 
             if (currentStacksCount == 0)
             {
@@ -45,8 +45,8 @@ public class TiredSoul : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            duration += time;
-            duration = Mathf.Min(duration, _baseDuration * currentStacksCount);
+            RemainingDuration += time;
+            RemainingDuration = Mathf.Min(RemainingDuration, _baseDuration * currentStacksCount);
         }
         return true;
     }

@@ -27,7 +27,7 @@ public class Sleep : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _source = personWhoMadeBuff;
@@ -100,16 +100,16 @@ public class Sleep : AbstractCharacterState
     {
         ExitState();
     }
-
-    public override void GloabalUpdate()
+    
+    public override void UpdateState()
     {
-        if(duration >= 0 && duration != -1)
+        if(RemainingDuration >= 0 && RemainingDuration != -1)
         {
-            duration -= Time.deltaTime;
+            RemainingDuration -= Time.deltaTime;
 
             if (_giveInnerDarkness)
             {
-                int currentSecond = Mathf.CeilToInt(duration);
+                int currentSecond = Mathf.CeilToInt(RemainingDuration);
                 
                 if (currentSecond < _lastTickedSecond)
                 {
@@ -118,15 +118,11 @@ public class Sleep : AbstractCharacterState
                 }
             }
 
-            if(duration <= 0)
+            if(RemainingDuration <= 0)
             {
                 ExitState();
             }
         }
-    }
-    
-    public override void UpdateState()
-    {
     }
 
     public override void ExitState()
@@ -149,7 +145,7 @@ public class Sleep : AbstractCharacterState
         characterState.Character.Health.DamageTaken -= OnAnyDamage;
 
         _disabledSkills.Clear();
-        characterState.StateIcons.RemoveItemByState(State);
+        
         characterState.RemoveState(this);
 
         var networkSettings = characterState.Character.NetworkSettings;
@@ -161,30 +157,12 @@ public class Sleep : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
-    {
-        duration = _baseDuration;
-        return false;
-    }
-
     private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 
     [Command] private void CmdStateInnerDarkness() => ClientRpcStateInnerDarkness();
     [ClientRpc] private void ClientRpcStateInnerDarkness() { characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        
-        UnSubscribeOnDamage();
-        SubscribeOnDamage();
-
-        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        return this;
-    }
+    
     
 
     //private bool ShouldApplyInnerDarkness()

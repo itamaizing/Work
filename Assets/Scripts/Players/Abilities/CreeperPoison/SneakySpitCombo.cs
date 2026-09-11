@@ -25,7 +25,7 @@ public class SneakySpitCombo : Skill
         if (target == null || target.CharacterState == null)
             return 0;
 
-        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+        var state = target.CharacterState.GetState(States.ComboState) as ComboStateStacking;
         return state?.CurrentStacksCount ?? 0;
     });
 
@@ -108,7 +108,7 @@ public class SneakySpitCombo : Skill
         _currentComboTarget = targetCharacter;
 
         var stateManager = targetCharacter.CharacterState;
-        var comboState = stateManager.GetState(States.ComboState) as ComboState;
+        var comboState = stateManager.GetState(States.ComboState) as ComboStateStacking;
 
         if (comboState == null || comboState.CurrentStacksCount <= 0)
         {
@@ -191,7 +191,7 @@ public class SneakySpitCombo : Skill
         if (target == null || target.CharacterState == null)
             return 0;
 
-        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+        var state = target.CharacterState.GetState(States.ComboState) as ComboStateStacking;
 
         if (state == null)
             return 0;
@@ -230,7 +230,7 @@ public class SneakySpitCombo : Skill
                 continue;
             }
 
-            var state = lastTarget.CharacterState.GetState(States.ComboState) as ComboState;
+            var state = lastTarget.CharacterState.GetState(States.ComboState) as ComboStateStacking;
 
             if (state == null)
             {
@@ -289,7 +289,7 @@ public class SneakySpitCombo : Skill
             if (target == null || target.CharacterState == null)
                 continue;
 
-            var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+            var state = target.CharacterState.GetState(States.ComboState) as ComboStateStacking;
 
             if (state != null)
                 target.CharacterState.RemoveState(state);

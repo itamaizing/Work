@@ -15,7 +15,7 @@ public class SelfHarmState : AbstractCharacterState
 
     private Health _healthComponent;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {        
         _healthComponent = characterState.GetComponent<Health>();
 
@@ -59,11 +59,6 @@ public class SelfHarmState : AbstractCharacterState
         characterState.RemoveState(this);
         
         Debug.Log("SelfHarm exit");
-    }
-
-    public override bool Stack(float time)
-    {
-        return false;
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)

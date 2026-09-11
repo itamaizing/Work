@@ -92,9 +92,9 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         {
             if (state.Type != StateType.Magic) continue;
             if (state.BaffDebaff != wanted) continue;
-            if (state.BaseDurationValue < 0f) continue;
+            if (state.MaxDuration < 0f) continue;
 
-            targetState.AddState(state.State,state.BaseDurationValue,0,state.PersonWhoMadeBuff.gameObject,name);
+            targetState.AddState(state.State,state.MaxDuration,0,state.SourceCaster.gameObject,name);
         }
     }
 

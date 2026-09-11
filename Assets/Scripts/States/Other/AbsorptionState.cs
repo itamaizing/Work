@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionState : AbstractCharacterState, IDamageable
+public class AbsorptionState : RefreshingStateStacking, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -18,7 +18,7 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
@@ -50,7 +50,7 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        Debug.Log($"Урон по стостоянию: {_damageAbsorbed}");
+        Debug.Log($"пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {_damageAbsorbed}");
         float damageToAbsorb = Mathf.Min(characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;

@@ -28,19 +28,19 @@ public class SuppressionState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
                                     Character caster, string skillName)
     {
         characterState = character;
-        personWhoMadeBuff = caster;
+        sourceCaster = caster;
 
-        if (personWhoMadeBuff != null)
+        if (sourceCaster != null)
         {
-            _suppression = personWhoMadeBuff.GetComponent<Suppression>();
+            _suppression = sourceCaster.GetComponent<Suppression>();
         }
 
         _baseDuration = durationToExit;
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
 
         _distBuffer = 0f;
         _isMoving = false;
@@ -62,7 +62,7 @@ public class SuppressionState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (duration <= 0f)
+        if (RemainingDuration <= 0f)
         {
             ExitState();
             return;
@@ -78,16 +78,10 @@ public class SuppressionState : AbstractCharacterState
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
 
-        characterState.StateIcons.RemoveItemByState(State);
+        
         characterState.RemoveState(this);
 
         if (health != null) health.DamageTaken -= OnDamageTaken;
-    }
-
-    public override bool Stack(float time)
-    {
-        duration = _baseDuration;
-        return true;
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)

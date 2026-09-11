@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IrradiationState : AbstractCharacterState
+public class IrradiationState : RefreshingStateStacking
 {
     private float _baseDuration;
     private float _durationIncrease = 1;
@@ -14,16 +14,16 @@ public class IrradiationState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
 
         Debug.Log("Entering Irradiation State");
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _baseDuration = durationToExit;
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
 
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
 
         characterState.OnStateAdded += OnNewStateAdded;
 
@@ -33,8 +33,8 @@ public class IrradiationState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0) ExitState();
+        RemainingDuration -= Time.deltaTime;
+        if (RemainingDuration <= 0) ExitState();
     }
 
     public override void ExitState()
@@ -49,16 +49,16 @@ public class IrradiationState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             ApplyMagicDefenseReduction();
 
-            Debug.Log($"Stacking Irradiation. Current stacks: {currentStacksCount}, New duration: {duration}s");
+            Debug.Log($"Stacking Irradiation. Current stacks: {currentStacksCount}, New duration: {RemainingDuration}s");
             return true;
         }
         else
         {
-            duration = _baseDuration;
-            Debug.Log($"Max stacks reached. Refreshing Irradiation duration: {duration}s");
+            RemainingDuration = _baseDuration;
+            Debug.Log($"Max stacks reached. Refreshing Irradiation duration: {RemainingDuration}s");
             return false;
         }
     }
@@ -88,7 +88,7 @@ public class IrradiationState : AbstractCharacterState
     private void ExtendState(AbstractCharacterState state)
     {
         //state.duration += _durationIncrease;
-        state.RemainingDuration += _durationIncrease;
-        characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
+        //state.RemainingDuration += _durationIncrease;
+
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MultiMagic : RefreshingState
+public class MultiMagic : RefreshingStateStacking
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
@@ -19,7 +19,7 @@ public class MultiMagic : RefreshingState
     
     private readonly Dictionary<Skill, Action> _castSuccessHandlers = new();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         BaseInit(character, durationToExit, damageToExit, caster, skillName);
         _skills = caster.GetComponent<SkillManager>();

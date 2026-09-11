@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingSlime : RefreshingState
+public class HealingSlime : RefreshingStateStacking
 {
     public override States State => States.HealingSlime;
     public override StateType Type => StateType.Magic;
@@ -25,7 +25,7 @@ public class HealingSlime : RefreshingState
 
     public HealingSlime()
     {
-        MaxStacksCount = 9;
+        SetMaxStacks(9);
     }
 
     public void SwitchToFinite()
@@ -39,10 +39,10 @@ public class HealingSlime : RefreshingState
     {
         _infinite = true;
         _timer = 0f;
-        duration = 999f;
+        RemainingDuration = 999f;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         currentStacksCount = 1;
         characterState = character;
@@ -74,7 +74,7 @@ public class HealingSlime : RefreshingState
             {
                 currentStacksCount--;
 
-                characterState.StateIcons.RemoveIconCount();
+                
             }
 
             UpdateAttributeValues(currentStacksCount);
@@ -120,17 +120,5 @@ public class HealingSlime : RefreshingState
         characterState.RemoveState(this);
     }
     
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
-    }
+    
 }

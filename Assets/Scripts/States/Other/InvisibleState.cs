@@ -13,7 +13,7 @@ public class InvisibleState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 	//	Debug.Log("Entering Invisible State");
 		//effects.Add(StatusEffect.Others);
@@ -43,19 +43,6 @@ public class InvisibleState : AbstractCharacterState
 		{
 			//characterState.Health.SetInvincible(false);
 			characterState.invinsible = false;
-		}
-	}
-
-	public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			_duration = time;
-			return true;
 		}
 	}
 }

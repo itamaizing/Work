@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class SpiritEnergyState : RefreshingState
+public class SpiritEnergyStateStacking : RefreshingStateStacking
 {
     private const float DamageManaRestorePercent = 0.05f;
     private const int _baseMaxStacks = 3;
@@ -20,14 +20,14 @@ public class SpiritEnergyState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         currentStacksCount = 1;
-        MaxStacksCount = _baseMaxStacks;
+        SetMaxStacks(_baseMaxStacks);
 
         _healthComponent = characterState.Character.Health;
         _manaResource = characterState.Character.TryGetResource(ResourceType.Mana);
@@ -51,11 +51,11 @@ public class SpiritEnergyState : RefreshingState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
 
         RecalcRegenAmount();
@@ -71,7 +71,7 @@ public class SpiritEnergyState : RefreshingState
             _spiritEnergyStateEffectInstance.SetActive(false);
 
         currentStacksCount = 0;
-        duration = 0f;
+        RemainingDuration = 0f;
         _baseDuration = 0f;
         _regenAmount = 0f;
         _healthComponent = null;

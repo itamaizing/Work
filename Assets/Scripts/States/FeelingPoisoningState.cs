@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FeelingPoisoningState : RefreshingState
+public class FeelingPoisoningStateStacking : RefreshingStateStacking
 {
     private const int MaxStacks = 6;
     private const float RegenPercentPerStack = 0.1f;
@@ -18,9 +18,9 @@ public class FeelingPoisoningState : RefreshingState
         StatusEffect.Strengthening
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = MaxStacks;
+        SetMaxStacks(MaxStacks);
         ApplyRegenBonus();
     }
 
@@ -31,7 +31,7 @@ public class FeelingPoisoningState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
         if (currentStacksCount < MaxStacksCount)
         {

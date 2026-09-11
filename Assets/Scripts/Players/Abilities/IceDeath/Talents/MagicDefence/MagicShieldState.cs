@@ -17,11 +17,11 @@ public class MagicShieldState : AbstractCharacterState
     private static readonly List<StatusEffect> _effects = new();
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit,
+    public override void Apply(CharacterState character, float durationToExit,
         float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         _durability = damageToExit;
         _isEnemyMode = skillName.Contains("_enemy");
         _isZoneMode = skillName.Contains("_zone");
@@ -79,12 +79,6 @@ public class MagicShieldState : AbstractCharacterState
         _durability = 0f;
         ExitState();
         return overflow;
-    }
-    
-    public override bool Stack(float time)
-    {
-        duration = time;
-        return true;
     }
 
     public override void UpdateState()

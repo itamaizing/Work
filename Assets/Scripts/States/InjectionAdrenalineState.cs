@@ -22,12 +22,12 @@ public class InjectionAdrenalineState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
 
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _animator = character.GetComponent<Animator>();
         _moveCreature = character.GetComponent<MoveCreature>();

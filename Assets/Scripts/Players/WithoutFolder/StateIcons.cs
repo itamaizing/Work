@@ -6,239 +6,124 @@ using UnityEngine.UI;
 
 public class StateIcons : MonoBehaviour
 {
-
     [SerializeField] private GameObject _spawnPos;
     [SerializeField] private StateIcoItem _template;
-    
-    [Header("Data")]
     [SerializeField] private StateIcoDatabase _icoDatabase;
-
-    [Header("Border colors")]
     [SerializeField] private Color _baffColor = new(0.23f, 0.9f, 0.23f);
     [SerializeField] private Color _debaffColor = new(0.9f, 0.15f, 0.15f);
     [SerializeField] private Color _neutralColor = Color.gray;
 
     private Dictionary<States, StateIcoData> _icoDataDictionary;
     private CharacterState characterState;
-    private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
-    private bool _added = false;
+
+    private readonly List<StateIcoItem> _activeIcons = new();
+    private readonly Dictionary<AbstractCharacterState, StateIcoItem> _iconByState = new();
 
     private void Awake()
     {
         characterState = GetComponentInParent<CharacterState>();
-
         _icoDatabase = Resources.Load<StateIcoDatabase>("StateIcoDatabase_Generated");
 
         _icoDataDictionary = new();
-        foreach (var data in _icoDatabase.Entries) if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
+        foreach (var data in _icoDatabase.Entries)
+            if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
     }
 
-    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1)
+    public void RegisterState(AbstractCharacterState state)
     {
-        foreach (var ico in _activeEffects)
+        if (state.IsHidden || _iconByState.ContainsKey(state)) return;
+
+        var ico = Instantiate(_template, _spawnPos.transform);
+        ico.StateInstance = state;
+        ico.State = state.State;
+
+        if (_icoDataDictionary.TryGetValue(state.State, out var data))
         {
-            if (ico.State == state)
-            {
-                ico.FadeFront.DOKill();
+            if (data.Icon != null) ico.Icon.sprite = data.Icon;
+            ico.border.color = data.BorderColor == Color.white ? GetBorderColor(state.State) : data.BorderColor;
 
-                StartProgress(ico, timeToDecrease);
-
-                if (canStack) ico.count = Mathf.Min(ico.count + stack, maxStackValue);
-
-                ico.maxStack = maxStackValue;
-
-                RefreshText(ico);
-
-                MoveIcoToEnd(_activeEffects.IndexOf(ico));
-                return;
-            }
-        }
-
-
-        var newIco = Instantiate(_template, _spawnPos.transform);
-        newIco.State = state;
-        newIco.count = stack;
-        newIco.maxStack = maxStackValue;
-
-
-        if (_icoDataDictionary.TryGetValue(state, out var data))
-        {
-            if (data.Icon != null) newIco.Icon.sprite = data.Icon;
-            newIco.border.color = data.BorderColor == Color.white ? GetBorderColor(state) : data.BorderColor;
+            ico.ResolvedTooltipName = string.IsNullOrEmpty(data.TooltipName) ? state.TooltipName : data.TooltipName;
+            ico.ResolvedTooltipDescription = string.IsNullOrEmpty(data.TooltipDescription) ? state.TooltipDescription : data.TooltipDescription;
         }
         else
         {
-            newIco.border.color = GetFallbackColor(state);
+            ico.border.color = GetFallbackColor(state.State);
+            ico.ResolvedTooltipName = state.TooltipName;
+            ico.ResolvedTooltipDescription = state.TooltipDescription;
         }
 
-        newIco.Text.color = GetTextColor(state);
-        StartProgress(newIco, timeToDecrease);
-        RefreshText(newIco);
+        ico.Text.color = GetTextColor(state.State);
 
+        _activeIcons.Add(ico);
+        _iconByState.Add(state, ico);
+        ico.transform.SetAsLastSibling();
 
-        _activeEffects.Add(newIco);
-        MoveIcoToEnd(_activeEffects.Count - 1);
+        state.OnDurationChanged += HandleDurationChanged;
+        state.OnTextChanged += HandleTextChanged;
+
+        HandleDurationChanged(state, state.RemainingDuration, state.MaxDuration);
+        HandleTextChanged(state, state.DisplayText);
     }
 
-    private Color GetBorderColor(States state)
+    public void UnregisterState(AbstractCharacterState state)
     {
-        if (characterState == null) return _neutralColor;
+        state.OnDurationChanged -= HandleDurationChanged;
+        state.OnTextChanged -= HandleTextChanged;
 
-        if (characterState.enumToState.TryGetValue(state, out var stateObj))
-        {
-            return stateObj.BaffDebaff switch
-            {
-                BaffDebaff.Baff => _baffColor,
-                BaffDebaff.Debaff => _debaffColor,
-                _ => _neutralColor
-            };
-        }
-        return _neutralColor;
-    }
+        if (!_iconByState.TryGetValue(state, out var ico)) return;
 
-    private void StartProgress(StateIcoItem ico, float duration)
-    {
-        if (duration != -1f)
-        {
-            ico.currentDuration = duration;
-            ico.FadeFront.DOKill();
-            ico.FadeFront.fillAmount = 0f;
+        _iconByState.Remove(state);
+        _activeIcons.Remove(ico);
 
-            ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
-        }
-        else if(duration == -1f)
+        if (ico != null)
         {
-            ico.FadeFront.fillAmount = 0f;
-        }
-    }
-
-    private void RemoveOrRestart(StateIcoItem ico)
-    {
-        if (--ico.count > 0)
-        {
-            RefreshText(ico);
-            StartProgress(ico, ico.currentDuration);
-        }
-        else
-        {
-            _activeEffects.Remove(ico);
+            StateTooltip.Instance?.Hide();
             Destroy(ico.gameObject);
         }
     }
 
-    private void RefreshText(StateIcoItem ico)
+    private void HandleDurationChanged(AbstractCharacterState state, float current, float max)
     {
-        ico.Text.text = ico.count > 1 ? ico.count.ToString() : "";
-        ico.Text.gameObject.SetActive(ico.count > 1);
+        if (!_iconByState.TryGetValue(state, out var ico)) return;
+
+        ico.FadeFront.fillAmount = max > 0f ? Mathf.Clamp01(1f - current / max) : 0f;
     }
 
-    private Color GetTextColor(States state)
+    private void HandleTextChanged(AbstractCharacterState state, string text)
     {
-        if (characterState == null) return _neutralColor;
+        if (!_iconByState.TryGetValue(state, out var ico)) return;
 
-        if (characterState.enumToState.TryGetValue(state, out var stateObj))
-        {
-            return stateObj.BaffDebaff switch
-            {
-                BaffDebaff.Baff => _baffColor,
-                BaffDebaff.Debaff => _debaffColor,
-                _ => _neutralColor
-            };
-        }
-        return _neutralColor;
+        ico.Text.text = text;
+        ico.Text.gameObject.SetActive(!string.IsNullOrEmpty(text));
     }
-    private Color GetFallbackColor(States state)
-    {
-        if (characterState == null || !characterState.enumToState.TryGetValue(state, out var stateObj)) return _neutralColor;
 
+    private Color GetBorderColor(States state) => GetStateColor(state);
+    private Color GetTextColor(States state) => GetStateColor(state);
+    private Color GetFallbackColor(States state) => GetStateColor(state);
+
+    private Color GetStateColor(States state)
+    {
+        if (characterState == null || !characterState.enumToState.TryGetValue(state, out var stateObj))
+            return _neutralColor;
 
         return stateObj.BaffDebaff switch
         {
             BaffDebaff.Baff => _baffColor,
-            BaffDebaff.Debaff => _debaffColor, _ => _neutralColor
+            BaffDebaff.Debaff => _debaffColor,
+            _ => _neutralColor
         };
-    }
-
-    //removing item before it ends
-    public void RemoveItemByState(States state)
-    {
-        for (int i = _activeEffects.Count - 1; i >= 0; i--)
-        {
-            if (_activeEffects[i].State == state)
-            {
-                Destroy(_activeEffects[i].gameObject);
-                _activeEffects.RemoveAt(i);
-                break;
-            }
-        }
-    }
-
-    public void RemoveIconCount()
-    {
-        for (int i = _activeEffects.Count - 1; i >= 0; i--)
-        {
-            if (_activeEffects[i].count > 0)
-            {
-                _activeEffects[i].count -= 1;
-                _activeEffects[i].Text.text = _activeEffects[i].count.ToString();
-                break;
-            }
-        }
-    }
-
-    public void DeactivateIcon()
-    {
-        for (int i = _activeEffects.Count - 1; i >= 0; i--)
-        {
-            _activeEffects[i].FadeFront.fillAmount = 0;
-            Destroy(_activeEffects[i].gameObject);
-            _activeEffects.RemoveAt(i);
-            break;
-        }
-    }
-
-    private void MoveIcoToEnd(int index)
-    {
-        if (index < 0 || index >= _activeEffects.Count) return;
-        var ico = _activeEffects[index];
-        _activeEffects.RemoveAt(index);
-        _activeEffects.Add(ico);
-        ico.transform.SetAsLastSibling();
     }
 
     public void DeactivateAll()
     {
-        foreach (var ico in _activeEffects)
+        foreach (var state in new List<AbstractCharacterState>(_iconByState.Keys))
         {
-            Destroy(ico.gameObject);
+            state.OnDurationChanged -= HandleDurationChanged;
+            state.OnTextChanged -= HandleTextChanged;
         }
-        _activeEffects.Clear();
+
+        foreach (var ico in _activeIcons) if (ico != null) Destroy(ico.gameObject);
+        _activeIcons.Clear();
+        _iconByState.Clear();
     }
 }
-/*
-    public void RemoveIconCount()
-    {
-        for (int i = _activeEffects.Count - 1; i >= 0; i--)
-        {
-            if (_activeEffects[i].count > 0)
-            {
-                _activeEffects[i].count -= 1;
-                _activeEffects[i].Text.text = _activeEffects[i].count.ToString();
-                break;
-            }
-        }
-    }
-
-    public void DeactivateIcon()
-    {
-        for (int i = _activeEffects.Count - 1; i >= 0; i--)
-        {
-            _activeEffects[i].FadeFront.fillAmount = 0;
-            Destroy(_activeEffects[i].gameObject);
-            _activeEffects.RemoveAt(i);
-            break;
-        }
-    }
-
-   
-}*/

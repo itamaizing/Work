@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilitySchoolDebuff : RefreshingState
+public class AbilitySchoolDebuff : RefreshingStateStacking
 {
 	public bool turnOff = false;
 	private float _baseDuration;
@@ -16,7 +16,7 @@ public class AbilitySchoolDebuff : RefreshingState
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		
@@ -36,32 +36,10 @@ public class AbilitySchoolDebuff : RefreshingState
 
 	public override bool Stack(float time)
 	{
-		duration = time;
+		RemainingDuration = time;
 		return true;
 	}
-	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
-		Character personWhoMadeBuff, string skillName)
-	{
-		if (!CanEnterState(character)) return null;
-
-		MaxStacksCount = 1;
-		
-		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-		TryCancel(character);
-
-		if (currentStacksCount == 0)
-		{
-			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-			currentStacksCount = 1;
-		}
-		else
-		{
-			Stack(durationToExit);
-		}
-
-		return this;
-	}
+	
 	
 	private void TryCancel(CharacterState character)
 	{

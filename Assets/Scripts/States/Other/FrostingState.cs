@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FrostingState : RefreshingState
+public class FrostingStateStacking : RefreshingStateStacking
 {
 	public bool turnOff = false;
 
@@ -26,19 +26,19 @@ public class FrostingState : RefreshingState
 
 	public string SkillName = "";
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		currentStacksCount = 1;
 		_damageCount = 0;
 
-		this.damageToExit = damageToExit == 0 ? 1 : damageToExit;
+		parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1 : damageToExit;
 
 		if (_ninjaResources.IsDeepFrosting)
 		{
-			this.damageToExit = _deepFrostDurability;
+			parameters[StateParameter.DamageToExit] = _deepFrostDurability;
 		}
 		
-		duration = durationToExit;
+		RemainingDuration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
 
@@ -87,7 +87,7 @@ public class FrostingState : RefreshingState
 	private void OnDamaged(Damage damage, Skill ability)
 	{
 		_damageCount += damage.Value;
-		if(_damageCount > damageToExit)
+		if(_damageCount > DamageToExit)
 			ExitState();
 	}
 
@@ -114,7 +114,7 @@ public class FrostingState : RefreshingState
 
 	public override bool Stack(float time)
 	{
-		duration = Mathf.Max(duration, time);
+		RemainingDuration = Mathf.Max(RemainingDuration, time);
 
 		if (_ninjaResources != null && _ninjaResources.IsRepeatedFrost)
 		{
@@ -126,26 +126,5 @@ public class FrostingState : RefreshingState
 		return true;
 	}
 
-	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		if (!CanEnterState(character)) return null;
-
-		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-		SkillName = skillName;
-		
-		if(!_ninjaResources)
-			if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
-
-		UnSubscribeOnDamage();
-		SubscribeOnDamage();
-		
-		if (currentStacksCount == 0)
-		{
-			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-		}
-		else
-			Stack(durationToExit);
-
-		return this;
-	}
+	
 }

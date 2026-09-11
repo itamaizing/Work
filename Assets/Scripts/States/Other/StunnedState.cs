@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StunnedState : RefreshingState
+public class StunnedStateStacking : RefreshingStateStacking
 {
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
@@ -14,11 +14,11 @@ public class StunnedState : RefreshingState
 	private float _maxDuration = 4f;
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		MaxStacksCount = 1;
+		SetMaxStacks(1);
 		currentStacksCount = 1;
-		duration = Mathf.Min(durationToExit, _maxDuration);
+		RemainingDuration = Mathf.Min(durationToExit, _maxDuration);
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -32,31 +32,19 @@ public class StunnedState : RefreshingState
 
 	public override void UpdateState()
 	{
-		if (duration <= 0)
+		if (RemainingDuration <= 0)
 		{
 			ExitState();
 		}
 	}
 	
-	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		if (!CanEnterState(character)) return null;
-
-		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-		if (currentStacksCount == 0)
-			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-		else
-			Stack(duration);
-
-		return this;
-	}
+	
 
 	public override bool Stack(float newDuration)
 	{
-		if (newDuration > duration)
+		if (newDuration > RemainingDuration)
 		{
-			duration = newDuration - duration;
+			RemainingDuration = newDuration -RemainingDuration;
 		}
 		return true;
 	}

@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeatedGlandsState : AbstractCharacterState
+public class HeatedGlandsState : RefreshingStateStacking
 {
     private int _maxStacks = 7;
 
@@ -20,11 +20,11 @@ public class HeatedGlandsState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("HeatedGlands / EnterState");
+        Debug.Log("HeatedGlands / Apply");
 
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
 
         _playerMana = personWhoMadeBuff.TryGetResource(ResourceType.Mana);
 
@@ -46,7 +46,7 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override void ExitState()
     {
-        personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
+        sourceCaster.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
         
         _allManaRegenIncrease = 0;
 
@@ -61,7 +61,7 @@ public class HeatedGlandsState : AbstractCharacterState
         {
             currentStacksCount++;
 
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
 
             IncreasingManaRegeneration();
 
@@ -69,7 +69,7 @@ public class HeatedGlandsState : AbstractCharacterState
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
 
             return true;
         }
@@ -82,7 +82,7 @@ public class HeatedGlandsState : AbstractCharacterState
         Debug.Log("HeatedGlands / IncreasingManaRegen / _allManaRegenIncrease = " + _allManaRegenIncrease);
         float increasingManaRegen = _baseManaRegen * _allManaRegenIncrease;
         Debug.Log("HeatedGlands / IncreasingManaRegen / increasingManaRegen = " + increasingManaRegen);
-        personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue = increasingManaRegen;
-        Debug.Log("HeatedGlands / IncreasingManaRegen / player current ManaRegen = " + personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue);
+        sourceCaster.TryGetResource(ResourceType.Mana).RegenerationValue = increasingManaRegen;
+        Debug.Log("HeatedGlands / IncreasingManaRegen / player current ManaRegen = " + sourceCaster.TryGetResource(ResourceType.Mana).RegenerationValue);
     }
 }

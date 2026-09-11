@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LowVoltage : AbstractCharacterState
+public class LowVoltage : RefreshingStateStacking
 {
     private const float ReductionPerStack = 0.15f;
     private const int MaxStack = 6;
@@ -17,13 +17,13 @@ public class LowVoltage : AbstractCharacterState
     public LowVoltage()
     {
         currentStacksCount = 1;
-        MaxStacksCount = MaxStack;
+        SetMaxStacks(MaxStack);
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
 
         _duration = durationToExit;
         _remainingDuration = _duration;
@@ -56,7 +56,7 @@ public class LowVoltage : AbstractCharacterState
 
         characterState.OnStateAdded -= OnNewStateAdded;
 
-        characterState.StateIcons.RemoveItemByState(State);
+        
 
         characterState.RemoveState(this);
     }

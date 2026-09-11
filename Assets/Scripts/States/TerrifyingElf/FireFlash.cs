@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireFlash : AbstractCharacterState
+public class FireFlash : RefreshingStateStacking
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
@@ -20,7 +20,7 @@ public class FireFlash : AbstractCharacterState
     public override float RemainingDuration => _infinite ? 9999 : _remaining;
     public int Chance { get => _сhance; }
 
-    public FireFlash() => MaxStacksCount = 3;
+    public FireFlash() => SetMaxStacks(3);
 
     public void SwitchToFinite()
     {
@@ -33,13 +33,13 @@ public class FireFlash : AbstractCharacterState
     {
         _infinite = true;
         _timer = 0f;
-        duration = 9999;
+        RemainingDuration = 9999;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
         _timer = 0f;
         currentStacksCount = 1;
     }
@@ -57,7 +57,7 @@ public class FireFlash : AbstractCharacterState
             if (currentStacksCount > 0)
             {
                 currentStacksCount--;
-                characterState.StateIcons.RemoveIconCount();
+                
             }
 
             _remaining--;
@@ -72,7 +72,7 @@ public class FireFlash : AbstractCharacterState
         if (currentStacksCount >= MaxStacksCount) return false;
         currentStacksCount++;
         if (!_infinite) SwitchToInfinite();
-        characterState?.StateIcons?.ActivateIco(State, RemainingDuration, 1, true, MaxStacksCount);
+
         return true;
     }
 }

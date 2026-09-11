@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class DebaffState : AbstractCharacterState
+public class DebaffState : StateStacking
 {
     private float _durationRemaining;
     private string _skillName;
@@ -17,14 +17,14 @@ public class DebaffState : AbstractCharacterState
 
     public DebaffState()
     {
-        MaxStacksCount = 20;
+        SetMaxStacks(20);
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _durationRemaining = durationToExit;
         _skillName = skillName;
     }

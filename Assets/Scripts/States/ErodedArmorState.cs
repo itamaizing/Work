@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ErodedArmorState : RefreshingState
+public class ErodedArmorStateStacking : RefreshingStateStacking
 {
     private const float ReductionPerStackPercent = -0.05f;
 
@@ -16,9 +16,9 @@ public class ErodedArmorState : RefreshingState
         StatusEffect.Ability
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
 
         _armorModifier.Source = this;
 
@@ -29,7 +29,7 @@ public class ErodedArmorState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
         if (currentStacksCount >= MaxStacksCount)
         {
@@ -90,17 +90,5 @@ public class ErodedArmorState : RefreshingState
 
     public override void UpdateState() { }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
-    }
+    
 }

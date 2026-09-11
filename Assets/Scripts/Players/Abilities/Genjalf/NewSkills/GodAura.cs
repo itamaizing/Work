@@ -36,7 +36,7 @@ public class GodAura : AuraStateHandler
     }
 }
 
-public class GodAuraBuff : RefreshingState
+public class GodAuraBuff : RefreshingStateStacking
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     private Character _character;
@@ -52,7 +52,7 @@ public class GodAuraBuff : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
     }
@@ -72,49 +72,13 @@ public class GodAuraBuff : RefreshingState
         return true;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit,
-        float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            _character = character.Character;
-            MaxStacksCount = 3;
-            _baseDuration = durationToExit;
-            _stackTimer = durationToExit;
-            currentStacksCount = 1;
-
-            RemoveModifierFromAllSkills(_modifier);
-            _modifier.Value = _modifierPerStack;
-            ApplyModifierToAllSkills(_modifier);
-        }
-        else if (currentStacksCount < MaxStacksCount)
-        {
-            if (durationToExit > 0)
-            {
-                currentStacksCount++;
-                _baseDuration = durationToExit;
-                _stackTimer = durationToExit;
-                UpdateModifier(currentStacksCount);
-            }
-        }
-
-        return this;
-    }
+    
 
     private void UpdateModifier(int stacks)
     {
         RemoveModifierFromAllSkills(_modifier);
         _modifier.Value = _modifierPerStack * stacks;
         ApplyModifierToAllSkills(_modifier);
-    }
-
-    public override void GloabalUpdate()
-    {
-        UpdateState();
     }
 
     public override void UpdateState()
@@ -136,7 +100,7 @@ public class GodAuraBuff : RefreshingState
             _stackTimer = currentStacksCount == 1 ? -1f : _baseDuration;
             if (_stackTimer == -1f)
             {
-                characterState.StateIcons?.ActivateIco(State, _stackTimer, 0, true);    
+    
             }
             UpdateModifier(currentStacksCount);
         }
