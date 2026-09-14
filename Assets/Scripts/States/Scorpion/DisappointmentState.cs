@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisappointmentStateStacking : RefreshingStateStacking
+public class DisappointmentStateStacking : StateStackingRefreshing
 {
     private float _baseDuration;
     private Animator _animator;

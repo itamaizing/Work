@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarkFormState : AbstractCharacterState
+public class DarkFormState : StateBasic
 {
     private Character _character;
     private SkillManager _skillManager;

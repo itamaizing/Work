@@ -21,7 +21,7 @@ public class PowerOfEarthAura : AuraStateHandler
     }
 }
 
-public class PowerOfEarth : AbstractCharacterState
+public class PowerOfEarth : StateBasic
 {
     private Character _character;
     

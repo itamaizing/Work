@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knockdown : RefreshingStateStacking
+public class Knockdown : StateStackingRefreshing
 {
     private float _baseDuration;
     private float _duration;

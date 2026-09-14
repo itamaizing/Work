@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MultiMagic : RefreshingStateStacking
+public class MultiMagic : StateStackingRefreshing
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 

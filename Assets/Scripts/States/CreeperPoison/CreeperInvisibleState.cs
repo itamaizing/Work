@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class CreeperInvisibleState : AbstractCharacterState
+public class CreeperInvisibleState : StateBasic
 {
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;

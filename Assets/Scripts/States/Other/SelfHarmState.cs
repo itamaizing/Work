@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SelfHarmState : AbstractCharacterState
+public class SelfHarmState : StateBasic
 {
     private const float CastTimeReductionMultiplier = 0.5f;
     private const float StackIncreasePerHit = 50f;

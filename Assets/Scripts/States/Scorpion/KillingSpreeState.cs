@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KillingSpreeStateStacking : RefreshingStateStacking
+public class KillingSpreeStateStacking : StateStackingRefreshing
 {
     public override DiminishingReturnGroup DrGroup => DiminishingReturnGroup.None;
     public override States State => States.KillingSpree;

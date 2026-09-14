@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class GodLightState : AbstractCharacterState
+public class GodLightState : StateBasic
 {
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.GodLight;

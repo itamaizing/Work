@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireChargeState : AbstractCharacterState
+public class FireChargeState : StateBasic
 {
     public override States State => States.FireCharge;
     public override StateType Type => StateType.Magic;

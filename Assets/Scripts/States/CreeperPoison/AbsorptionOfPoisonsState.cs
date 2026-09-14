@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionOfPoisonsState : RefreshingStateStacking
+public class AbsorptionOfPoisonsState : StateStackingRefreshing
 {
     private Character _player;
 

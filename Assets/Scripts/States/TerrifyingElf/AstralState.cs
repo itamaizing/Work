@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AstralStateStacking : RefreshingStateStacking
+public class AstralStateStacking : StateStackingRefreshing
 {
     private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;

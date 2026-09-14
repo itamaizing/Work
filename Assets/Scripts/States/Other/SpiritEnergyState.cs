@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class SpiritEnergyStateStacking : RefreshingStateStacking
+public class SpiritEnergyStateStacking : StateStackingRefreshing
 {
     private const float DamageManaRestorePercent = 0.05f;
     private const int _baseMaxStacks = 3;

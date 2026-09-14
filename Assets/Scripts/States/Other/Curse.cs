@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Curse : AbstractCharacterState
+public class Curse : StateBasic
 {
 	private Character _personWhoShooted;
 	private float _durationToExit = 0;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class LightShield : AbstractCharacterState, IDamageable
+public class LightShield : StateBasic, IDamageable
 {
     private BladeMailPriestTalent _bladeMailPriestTalent;
     private GameObject _lightShield;

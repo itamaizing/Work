@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InnerDarkness : RefreshingStateStacking
+public class InnerDarkness : StateStackingRefreshing
 {
     private const float TimeDecreasePerStack = 2f;
     private float _durationRemaining;

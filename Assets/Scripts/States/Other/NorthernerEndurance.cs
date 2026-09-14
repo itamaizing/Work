@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class NorthernerEndurance : AbstractCharacterState
+public class NorthernerEndurance : StateBasic
 {
 	private float _damageToExit;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireFlash : RefreshingStateStacking
+public class FireFlash : StateStackingRefreshing
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 

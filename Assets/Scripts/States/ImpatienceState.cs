@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImpatienceStateStacking : RefreshingStateStacking
+public class ImpatienceStateStacking : StateStackingRefreshing
 {
     private float _durationRemaining;
 

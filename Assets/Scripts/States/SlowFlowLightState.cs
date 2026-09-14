@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlowFlowLightStateStacking : RefreshingStateStacking
+public class SlowFlowLightStateStacking : StateStackingRefreshing
 {
 	private float _speedDebuf = -0.6f;
 	private AttributeModifier _modif = new AttributeModifier(0f, ModifierType.Percent);

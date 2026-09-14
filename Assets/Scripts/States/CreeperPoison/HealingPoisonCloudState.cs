@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonCloudState : RefreshingStateStacking
+public class HealingPoisonCloudState : StateStackingRefreshing
 {
 
     private int _maxStacks = 5;

@@ -380,7 +380,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	private void DeleteStates()
     {
-		var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
+		var statesCopy = new List<StateBasic>(characterState.CurrentStates);
 		foreach (var state in statesCopy)
 		{
 			characterState.RemoveState(state.State);

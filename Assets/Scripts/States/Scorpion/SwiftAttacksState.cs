@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwiftAttacksStateStacking : RefreshingStateStacking
+public class SwiftAttacksStateStacking : StateStackingRefreshing
 {
     private int _attacksLeft = 3;
     private const float SpeedBonusPercent = 1.0f;

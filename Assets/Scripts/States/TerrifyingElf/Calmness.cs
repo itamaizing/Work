@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Calmness : RefreshingStateStacking
+public class Calmness : StateStackingRefreshing
 {
     private const float _manaRegenPercent = 0.005f;
     private const int _baseMaxStacks = 2;

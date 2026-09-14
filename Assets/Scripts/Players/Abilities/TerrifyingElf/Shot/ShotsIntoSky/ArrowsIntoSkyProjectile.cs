@@ -86,7 +86,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
 
         bool isAlly = IsAlly(target);
         BaffDebaff wanted = isAlly ? BaffDebaff.Baff : BaffDebaff.Debaff;
-        var statesCopy = new List<AbstractCharacterState>(targetState.CurrentStates);
+        var statesCopy = new List<StateBasic>(targetState.CurrentStates);
 
         foreach (var state in statesCopy)
         {

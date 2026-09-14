@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class PsionicGenerationState : AbstractCharacterState
+public class PsionicGenerationState : StateBasic
 {
     private const float PsiPerTick = 10f;
     private const float TickInterval = 1f;

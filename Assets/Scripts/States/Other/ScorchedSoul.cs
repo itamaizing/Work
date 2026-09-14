@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ScorchedSoul : RefreshingStateStacking
+public class ScorchedSoul : StateStackingRefreshing
 {
     private SkillManager abilities;
     

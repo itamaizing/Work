@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class PushingWindBuff : AbstractCharacterState
+public class PushingWindBuff : StateBasic
 {
 	private float _duration;
 

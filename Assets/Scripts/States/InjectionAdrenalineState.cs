@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InjectionAdrenalineState : AbstractCharacterState
+public class InjectionAdrenalineState : StateBasic
 {
     private float _damageTickTimer;
 

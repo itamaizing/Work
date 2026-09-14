@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonPerSecondState : RefreshingStateStacking
+public class HealingPoisonPerSecondState : StateStackingRefreshing
 {    
     /* For PoisonBall Ability */
 

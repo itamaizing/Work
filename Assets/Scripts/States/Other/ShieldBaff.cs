@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShieldBaff : RefreshingStateStacking, IDamageable
+public class ShieldBaff : StateStackingRefreshing, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;

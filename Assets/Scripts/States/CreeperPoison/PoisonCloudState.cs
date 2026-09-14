@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonCloudStateStacking : RefreshingStateStacking
+public class PoisonCloudStateStacking : StateStackingRefreshing
 {
     private PoisonBall _poisonBall;
     private Character _caster;

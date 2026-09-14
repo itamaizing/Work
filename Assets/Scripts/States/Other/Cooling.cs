@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cooling : RefreshingStateStacking
+public class Cooling : StateStackingRefreshing
 {
 	public bool turnOff = false;
 	private float _damageOnStart;

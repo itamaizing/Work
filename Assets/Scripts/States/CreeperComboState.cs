@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreeperComboStateStacking : RefreshingStateStacking
+public class CreeperComboStateStacking : StateStackingRefreshing
 {
     public override States State => States.CreeperCombo;
     public override StateType Type => StateType.Magic;

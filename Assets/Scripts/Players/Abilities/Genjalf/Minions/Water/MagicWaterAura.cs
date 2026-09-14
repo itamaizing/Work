@@ -26,7 +26,7 @@ public class MagicWaterAura : AuraStateHandler
     }
 }
 
-public class MagicWater : AbstractCharacterState
+public class MagicWater : StateBasic
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
 

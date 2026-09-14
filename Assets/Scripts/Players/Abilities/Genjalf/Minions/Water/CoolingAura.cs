@@ -77,7 +77,7 @@ public class CoolingAura : AuraStateHandler
     }
 }
 
-public class CoolingDamaged : AbstractCharacterState
+public class CoolingDamaged : StateBasic
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
 

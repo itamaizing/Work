@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartialBlindness : RefreshingStateStacking
+public class PartialBlindness : StateStackingRefreshing
 {
     private float _baseDuration;
     

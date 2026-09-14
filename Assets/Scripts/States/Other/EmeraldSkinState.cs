@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class EmeraldSkinState : AbstractCharacterState
+public class EmeraldSkinState : StateBasic
 {
     private float _buffDuration = 2f;
     private float _defenseIncrease = 0.9f;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComboStateStacking : RefreshingStateStacking
+public class ComboStateStacking : StateStackingRefreshing
 {
     private float _durationRemaining;
     private string _skillName;

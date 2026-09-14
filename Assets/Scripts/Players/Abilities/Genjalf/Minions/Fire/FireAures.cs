@@ -14,7 +14,7 @@ public class FireAures : MonoBehaviour
     }
 }
 
-public class Burn : AbstractCharacterState
+public class Burn : StateBasic
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
     
@@ -79,7 +79,7 @@ public class Burn : AbstractCharacterState
     }
 }
 
-public class Burning : RefreshingStateStacking
+public class Burning : StateStackingRefreshing
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     protected float _damage = 1;

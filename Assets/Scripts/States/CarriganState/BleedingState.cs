@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingStateStacking : RefreshingStateStacking
+public class BleedingStateStacking : StateStackingRefreshing
 {
     private float _baseDamage;
     private float _percentDamage;

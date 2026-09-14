@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwarmSpeedStateStacking : RefreshingStateStacking
+public class SwarmSpeedStateStacking : StateStackingRefreshing
 {
     private const float BaseBonus = 0.30f;
     private const float PerUnitBonus = 0.05f;

@@ -50,7 +50,7 @@ public class CocoonSpawn : Skill
 
             if (character.TryGetComponent<MinimapMarker>(out var minimap)) minimap.IsActive = false;
 
-            var states = new List<AbstractCharacterState>(character.CharacterState.CurrentStates);
+            var states = new List<StateBasic>(character.CharacterState.CurrentStates);
             foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 

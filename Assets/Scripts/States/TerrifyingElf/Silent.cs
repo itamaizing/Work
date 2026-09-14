@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Silent : AbstractCharacterState
+public class Silent : StateBasic
 {
     private float _baseDuration;
     private Silence _silence;

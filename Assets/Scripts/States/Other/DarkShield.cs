@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarkShield : AbstractCharacterState
+public class DarkShield : StateBasic
 {
     private float _damageDebuffDelay = 0.2f;
     private float _maxDamagePerTick;

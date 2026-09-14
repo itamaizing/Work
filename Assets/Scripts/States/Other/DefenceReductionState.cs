@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefenceReductionState : AbstractCharacterState
+public class DefenceReductionState : StateBasic
 {
     private float _healthBuffActiveTime = 2f;
     private float _healthBoostPercentage = 0.25f;

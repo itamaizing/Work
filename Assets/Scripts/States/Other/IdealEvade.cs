@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdealEvade : AbstractCharacterState
+public class IdealEvade : StateBasic
 {
     private float _baseDuration;
     private float _duration;

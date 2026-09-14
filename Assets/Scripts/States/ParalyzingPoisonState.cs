@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParalyzingPoisonState : AbstractCharacterState
+public class ParalyzingPoisonState : StateBasic
 {
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;

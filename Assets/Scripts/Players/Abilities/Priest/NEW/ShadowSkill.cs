@@ -43,7 +43,7 @@ public class ShadowSkill : Skill
         Hero.CharacterState.OnStateRemoved += OnCharacterStateChanged;
     }
     
-    private void OnCharacterStateChanged(AbstractCharacterState state)
+    private void OnCharacterStateChanged(StateBasic state)
     {
         if (state.State == States.DarkFormState)
         {

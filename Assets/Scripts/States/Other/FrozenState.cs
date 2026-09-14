@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class FrozenStateStacking : RefreshingStateStacking
+public class FrozenStateStacking : StateStackingRefreshing
 {
     private GameObject _frozenEffectInstance;
     private AudioSource _audioSource;

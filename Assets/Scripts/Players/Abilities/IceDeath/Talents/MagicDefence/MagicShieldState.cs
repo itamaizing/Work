@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicShieldState : AbstractCharacterState
+public class MagicShieldState : StateBasic
 {
     private float _durability;
     private bool _isEnemyMode;

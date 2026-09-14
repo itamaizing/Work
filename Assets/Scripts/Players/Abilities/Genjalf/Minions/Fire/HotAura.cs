@@ -24,7 +24,7 @@ public class HotBloodAura : AuraStateHandler
     }
 }
 
-public class HotAuraBuff : AbstractCharacterState
+public class HotAuraBuff : StateBasic
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     

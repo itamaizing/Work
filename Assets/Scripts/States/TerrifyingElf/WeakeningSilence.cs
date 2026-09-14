@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeakeningSilence : AbstractCharacterState
+public class WeakeningSilence : StateBasic
 {
     private float _damagePerTick;
     private float _currentDamage;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FocusingOnReflexesStateStacking : RefreshingStateStacking
+public class FocusingOnReflexesStateStacking : StateStackingRefreshing
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Evade };
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicalExcitement : RefreshingStateStacking
+public class MagicalExcitement : StateStackingRefreshing
 {
     private float _duration;
 

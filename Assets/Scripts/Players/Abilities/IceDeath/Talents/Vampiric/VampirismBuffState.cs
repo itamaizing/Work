@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VampirismBuffStateStacking : RefreshingStateStacking
+public class VampirismBuffStateStacking : StateStackingRefreshing
 {
     private const float ManaRestorePercent   = 0.20f;
     private float _accumulatedDamageForRune = 0f;

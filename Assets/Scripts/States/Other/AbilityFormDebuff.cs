@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityFormDebuff : AbstractCharacterState
+public class AbilityFormDebuff : StateBasic
 {
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;

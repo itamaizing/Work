@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ErodedArmorStateStacking : RefreshingStateStacking
+public class ErodedArmorStateStacking : StateStackingRefreshing
 {
     private const float ReductionPerStackPercent = -0.05f;
 

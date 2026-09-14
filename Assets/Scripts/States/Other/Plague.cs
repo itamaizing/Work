@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plague : RefreshingStateStacking
+public class Plague : StateStackingRefreshing
 {
     private float _tickTimer = 3f;
 

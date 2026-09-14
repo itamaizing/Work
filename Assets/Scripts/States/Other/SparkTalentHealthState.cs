@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SparkTalentHealthState : AbstractCharacterState
+public class SparkTalentHealthState : StateBasic
 {
     private Skill _skill;
     private float _healthBuffActiveTime = 2f;

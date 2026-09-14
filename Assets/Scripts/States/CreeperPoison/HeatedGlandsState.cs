@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeatedGlandsState : RefreshingStateStacking
+public class HeatedGlandsState : StateStackingRefreshing
 {
     private int _maxStacks = 7;
 

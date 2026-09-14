@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImmaterialityState : AbstractCharacterState
+public class ImmaterialityState : StateBasic
 {
     private int _defualtPlayerLayer;
     private int _newPlayerLayer;

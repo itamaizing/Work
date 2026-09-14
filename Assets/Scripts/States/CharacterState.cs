@@ -38,7 +38,7 @@ public enum StateParameter
 	ExtraDuration,
 }
 
-public abstract class AbstractCharacterState
+public abstract class StateBasic
 {
     protected CharacterState characterState;
     protected SkillManager abilities;
@@ -63,8 +63,7 @@ public abstract class AbstractCharacterState
 
     public virtual bool IsUnique => true;
     public virtual bool CanExceedMaxDuration => false;
-    public virtual AbstractCharacterState Clone() => null;
-    public virtual int CurrentStacksCount => 0;
+    public virtual int CurrentStacksCount { get => 1; protected set { } }
     public virtual int MaxStacksCount => 1;
     public double StartTime { get; private set; }
     
@@ -82,28 +81,32 @@ public abstract class AbstractCharacterState
     private float _tickTimer;
     private bool _hasApplied;
 
-    public event System.Action<AbstractCharacterState, float, float> OnDurationChanged;
-    public event System.Action<AbstractCharacterState, string> OnTextChanged;
+    public event System.Action<StateBasic, float, float> OnDurationChanged;
+    public event System.Action<StateBasic, string> OnTextChanged;
 
     public virtual float RemainingDuration
     {
-        get => _duration;
-        protected set { _duration = value; OnDurationChanged?.Invoke(this, _duration, MaxDuration); }
+	    get => _duration;
+	    protected set
+	    {
+		    _duration = CanExceedMaxDuration ? value : Mathf.Min(value, MaxDuration);
+
+		    if (_duration > MaxDuration) MaxDuration = _duration;
+
+		    OnDurationChanged?.Invoke(this, _duration, MaxDuration);
+	    }
     }
 
     public virtual float MaxDuration
     {
-        get => _maxDuration;
-        protected set => _maxDuration = value;
+	    get => _maxDuration;
+	    protected set => _maxDuration = value;
     }
     
-    public void SetDuration(float value)
-    {
-	    RemainingDuration = CanExceedMaxDuration ? value : Mathf.Min(value, MaxDuration);
-    }
+    public void SetDuration(float value) => RemainingDuration = value;
     
     public void IncreaseDuration(float delta) => SetDuration(RemainingDuration + delta);
-
+    
     public string DisplayText
     {
         get => _displayText;
@@ -111,23 +114,31 @@ public abstract class AbstractCharacterState
     }
 
     public virtual bool TryApply(CharacterState character, float durationToExit, float damageToExit,
-        Character sourceCaster, string skillName)
+	    Character sourceCaster, string skillName)
     {
-        if (!CanEnterState(character)) return false;
+	    if (!CanEnterState(character)) return false;
 
-        BaseInit(character, durationToExit, damageToExit, sourceCaster, skillName);
+	    BaseInit(character, durationToExit, damageToExit, sourceCaster, skillName);
 
-        if (!_hasApplied)
-        {
-            _hasApplied = true;
-            Apply(character, durationToExit, damageToExit, sourceCaster, skillName);
-        }
-        else
-        {
-            Reapply(character, durationToExit, damageToExit, sourceCaster, skillName);
-        }
+	    if (StartTime == 0) StartTime = NetworkTime.time;
 
-        return true;
+	    RemainingDuration = durationToExit;
+	    if (MaxDuration <= 0f) MaxDuration = durationToExit;
+
+	    if (damageToExit > 0f) parameters[StateParameter.DamageToExit] = damageToExit;
+	    if (this is ITickableState tickable && _tickTimer <= 0f) _tickTimer = tickable.TickInterval;
+
+	    if (!_hasApplied)
+	    {
+		    _hasApplied = true;
+		    Apply(character, durationToExit, damageToExit, sourceCaster, skillName);
+	    }
+	    else
+	    {
+		    Reapply(character, durationToExit, damageToExit, sourceCaster, skillName);
+	    }
+
+	    return true;
     }
     
     public abstract void Apply(CharacterState character, float durationToExit, float damageToExit,
@@ -174,14 +185,6 @@ public abstract class AbstractCharacterState
 	    health = character.Character.Health;
 	    abilities = character.Character.Abilities;
 	    this.sourceCaster = sourceCaster;
-
-	    if (StartTime == 0) StartTime = NetworkTime.time;
-
-	    RemainingDuration = durationToExit;
-	    if (MaxDuration <= 0f) MaxDuration = durationToExit;
-
-	    if (damageToExit > 0f) parameters[StateParameter.DamageToExit] = damageToExit;
-	    if (this is ITickableState tickable && _tickTimer <= 0f) _tickTimer = tickable.TickInterval;
     }
     
     public virtual bool TryDispel(DispelType incomingDispel)
@@ -194,10 +197,14 @@ public abstract class AbstractCharacterState
     }
 }
 
-public abstract class StateStacking : AbstractCharacterState
+public abstract class StateStacking : StateBasic
 {
 	protected int currentStacksCount = 0;
-	public override int CurrentStacksCount => currentStacksCount;
+	public override int CurrentStacksCount
+	{
+		get => currentStacksCount;
+		protected set { currentStacksCount = value; UpdateDisplayText(); }
+	}
 
 	private int _maxStacksCount = 1;
 	public override int MaxStacksCount => _maxStacksCount;
@@ -211,8 +218,7 @@ public abstract class StateStacking : AbstractCharacterState
 
 		if (applied && wasFirstApply)
 		{
-			currentStacksCount = 1;
-			UpdateDisplayText();
+			CurrentStacksCount = 1;
 		}
 
 		return applied;
@@ -223,6 +229,9 @@ public abstract class StateStacking : AbstractCharacterState
 
 	public virtual bool Stack(float time)
 	{
+		if (currentStacksCount < MaxStacksCount)
+			CurrentStacksCount = currentStacksCount + 1;
+
 		RemainingDuration = MaxDuration;
 		return true;
 	}
@@ -235,8 +244,8 @@ public abstract class StateStacking : AbstractCharacterState
 			return;
 		}
 
-		currentStacksCount--;
-		UpdateDisplayText();
+		CurrentStacksCount = currentStacksCount - 1;
+		RemainingDuration = MaxDuration;
 	}
 
 	protected virtual void UpdateDisplayText() => DisplayText = currentStacksCount.ToString();
@@ -255,20 +264,14 @@ public abstract class StateStacking : AbstractCharacterState
 	}
 }
 
-public abstract class RefreshingStateStacking : StateStacking
+public abstract class StateStackingRefreshing : StateStacking
 {
 	public virtual float StackLingerTime => 0.2f;
 
 	public override void ReduceStack()
 	{
-		if (currentStacksCount <= 1)
-		{
-			ExitState();
-			return;
-		}
-
-		currentStacksCount--;
-		UpdateDisplayText();
+		if (currentStacksCount <= 1) { ExitState(); return; }
+		CurrentStacksCount = currentStacksCount - 1;
 		RemainingDuration = StackLingerTime;
 	}
 }
@@ -285,7 +288,7 @@ public class StackInfo
 	}
 }
 
-public abstract class StackingIndependentState : StateStacking
+public abstract class StateStackingIndependent : StateStacking
 {
 	protected readonly List<StackInfo> stacks = new();
 
@@ -340,7 +343,7 @@ public abstract class StackingIndependentState : StateStacking
 	}
 }
 
-public abstract class AuraState : AbstractCharacterState
+public abstract class AuraState : StateBasic
 {
 	protected Character _self;
     private Transform _auraCentre;
@@ -419,7 +422,7 @@ public abstract class AuraState : AbstractCharacterState
 }
 
 
-public abstract class HealStates : AbstractCharacterState
+public abstract class HealStates : StateBasic
 {
 	public float HealingValue { get; set; }
 }
@@ -427,7 +430,7 @@ public abstract class HealStates : AbstractCharacterState
 public class CharacterState : NetworkBehaviour
 {
     private Character _hero;
-    private List<AbstractCharacterState> _currentStates = new List<AbstractCharacterState>();
+    private List<StateBasic> _currentStates = new List<StateBasic>();
     [SerializeField] private StateIcons _stateIcons;
     [SerializeField] private StateEffects _stateEffects;
 
@@ -447,14 +450,14 @@ public class CharacterState : NetworkBehaviour
 
     public StateEffects StateEffects => _stateEffects;
     public StateIcons StateIcons => _stateIcons;
-    public List<AbstractCharacterState> CurrentStates => _currentStates;
+    public List<StateBasic> CurrentStates => _currentStates;
     public Character Character => _hero;
-    public event System.Action<AbstractCharacterState> OnStateAdded;
+    public event System.Action<StateBasic> OnStateAdded;
     public event Action<States, int> OnStateDispelled;
-    public event Action<AbstractCharacterState> OnStateRemoved;
+    public event Action<StateBasic> OnStateRemoved;
 
 
-	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
+	public Dictionary<States, StateBasic> enumToState = new Dictionary<States, StateBasic>()
 	{
 		#region UpdatedStates
 		[States.Frozen] = new FrozenStateStacking(),
@@ -627,7 +630,7 @@ public class CharacterState : NetworkBehaviour
 
 	public void Dispel(StateType type)
 	{
-		foreach (AbstractCharacterState state in _currentStates)
+		foreach (StateBasic state in _currentStates)
 		{
 			if (state.Type == type)
 			{
@@ -638,7 +641,7 @@ public class CharacterState : NetworkBehaviour
 	
 	public bool Check(StatusEffect effect)
 	{
-		foreach (AbstractCharacterState state in _currentStates)
+		foreach (StateBasic state in _currentStates)
 		{
 			if (state.Effects.Contains(effect))
 			{
@@ -650,7 +653,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool CheckForState(States state)
 	{
-		foreach (AbstractCharacterState s in _currentStates)
+		foreach (StateBasic s in _currentStates)
 		{
 			if (s.State == state) return true;
 		}
@@ -659,7 +662,7 @@ public class CharacterState : NetworkBehaviour
 
 	public int CheckStateStacks(States state)
 	{
-		foreach (AbstractCharacterState s in _currentStates)
+		foreach (StateBasic s in _currentStates)
 		{
 			if (s.State == state) return s.CurrentStacksCount;
 		}
@@ -668,7 +671,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool CheckStateType(StateType type)
 	{
-		foreach (AbstractCharacterState state in _currentStates)
+		foreach (StateBasic state in _currentStates)
 		{
 			if (state.Type == type) return true;
 		}
@@ -682,9 +685,9 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
-    public AbstractCharacterState GetState(States state)
+    public StateBasic GetState(States state)
     {
-        foreach (AbstractCharacterState s in _currentStates)
+        foreach (StateBasic s in _currentStates)
         {
             if (s.State == state) return s;
         }
@@ -730,7 +733,7 @@ public class CharacterState : NetworkBehaviour
         ClientRemoveState(state);
     }
 
-    public void RemoveState(AbstractCharacterState newState)
+    public void RemoveState(StateBasic newState)
     {
         if (!_currentStates.Contains(newState)) return;
 
@@ -745,7 +748,7 @@ public class CharacterState : NetworkBehaviour
     {
         if (_currentStates.Count <= 0) return;
 
-        var statesCopy = new List<AbstractCharacterState>(_currentStates);
+        var statesCopy = new List<StateBasic>(_currentStates);
 
         foreach (var state in statesCopy)
         {
@@ -773,45 +776,50 @@ public class CharacterState : NetworkBehaviour
     }
 
     public void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-        GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+	    GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
     {
-        if (invinsible) return;
+	    if (invinsible) return;
 
-        AbstractCharacterState template = enumToState[state];
+	    StateBasic template = enumToState[state];
 
-        if (_suppressStateEffectsBuff && template.BaffDebaff == BaffDebaff.Baff) return;
-        if (_suppressStateDebuffEffects && template.BaffDebaff == BaffDebaff.Debaff) return;
+	    if (_suppressStateEffectsBuff && template.BaffDebaff == BaffDebaff.Baff) return;
+	    if (_suppressStateDebuffEffects && template.BaffDebaff == BaffDebaff.Debaff) return;
 
-        duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
-        if (duration <= 0f && duration != -1) return;
+	    duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
+	    if (duration <= 0f && duration != -1) return;
 
-        personWhoShooted.TryGetComponent<Character>(out var sourceCaster);
-        
-        if (!template.IsUnique)
-        {
-            var clone = template.Clone();
-            if (clone == null)
-            {
-                Debug.LogError($"State {state} has IsUnique=false but Clone() returns null");
-                return;
-            }
-            CreateAndAddState(clone, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
-            return;
-        }
+	    personWhoShooted.TryGetComponent<Character>(out var sourceCaster);
 
-        for (int i = 0; i < _currentStates.Count; i++)
-        {
-            if (_currentStates[i].State != state) continue;
+	    if (!template.IsUnique)
+	    {
+		    StateBasic instance;
+		    try
+		    {
+			    instance = (StateBasic)Activator.CreateInstance(template.GetType());
+		    }
+		    catch (MissingMethodException)
+		    {
+			    Debug.LogError($"State {state} ({template.GetType().Name}) has IsUnique=false but no parameterless constructor for Activator.CreateInstance");
+			    return;
+		    }
 
-            _currentStates[i].TryApply(this, duration, damageToExit, sourceCaster, skillName);
-            MoveStateToEnd(i);
-            return;
-        }
+		    CreateAndAddState(instance, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
+		    return;
+	    }
 
-        CreateAndAddState(template, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
+	    for (int i = 0; i < _currentStates.Count; i++)
+	    {
+		    if (_currentStates[i].State != state) continue;
+
+		    _currentStates[i].TryApply(this, duration, damageToExit, sourceCaster, skillName);
+		    MoveStateToEnd(i);
+		    return;
+	    }
+
+	    CreateAndAddState(template, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
     }
 
-    private void CreateAndAddState(AbstractCharacterState stateInstance, Character sourceCaster, float duration,
+    private void CreateAndAddState(StateBasic stateInstance, Character sourceCaster, float duration,
         float damageToExit, string skillName, bool isCanDodgeMagState, bool checkDodge, StateType type)
     {
         if (checkDodge && !isCanDodgeMagState && type == StateType.Magic)
@@ -851,11 +859,11 @@ public class CharacterState : NetworkBehaviour
     {
         if (_currentStates.Count == 0) return;
 
-        List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+        List<StateBasic> statesToRemove = new List<StateBasic>();
 
         for (int i = _currentStates.Count - 1; i >= 0; i--)
         {
-            AbstractCharacterState state = _currentStates[i];
+            StateBasic state = _currentStates[i];
 
             if (state.Type == type &&
                 ((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
@@ -881,11 +889,11 @@ public class CharacterState : NetworkBehaviour
         howMuchDispelled = 0;
         if (_currentStates.Count == 0) return;
 
-        List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+        List<StateBasic> statesToRemove = new List<StateBasic>();
 
         for (int i = _currentStates.Count - 1; i >= 0; i--)
         {
-            AbstractCharacterState state = _currentStates[i];
+            StateBasic state = _currentStates[i];
 
             if (state.Type == type &&
                 ((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
@@ -913,11 +921,11 @@ public class CharacterState : NetworkBehaviour
     {
         if (_currentStates.Count == 0 || maxStatesToDispel <= 0) return;
 
-        List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+        List<StateBasic> statesToRemove = new List<StateBasic>();
 
         for (int i = _currentStates.Count - 1; i >= 0 && statesToRemove.Count < maxStatesToDispel; i--)
         {
-            AbstractCharacterState state = _currentStates[i];
+            StateBasic state = _currentStates[i];
 
             if (state.Type == type &&
                 ((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
@@ -936,7 +944,7 @@ public class CharacterState : NetworkBehaviour
         dispelled = 0;
         if (_currentStates.Count == 0) return;
 
-        AbstractCharacterState stateToDispel = _currentStates.LastOrDefault(c => c.Type == type && buffDebaff == c.BaffDebaff);
+        StateBasic stateToDispel = _currentStates.LastOrDefault(c => c.Type == type && buffDebaff == c.BaffDebaff);
         if (stateToDispel == null) return;
 
         if (stateToDispel.SourceCaster != null)
@@ -957,7 +965,7 @@ public class CharacterState : NetworkBehaviour
         dispelled = toRemove;
     }
     
-    private void ReduceStackAndSync(AbstractCharacterState state)
+    private void ReduceStackAndSync(StateBasic state)
     {
         if (state is StateStacking stacking)
         {
@@ -1024,7 +1032,7 @@ public class CharacterState : NetworkBehaviour
     [Server]
     public void ServerClearAllStates()
     {
-        var statesCopy = new List<AbstractCharacterState>(_currentStates);
+        var statesCopy = new List<StateBasic>(_currentStates);
 
         foreach (var state in statesCopy) state.ExitState();
         _currentStates.Clear();

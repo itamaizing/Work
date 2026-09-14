@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WarmingUpStateStacking : RefreshingStateStacking
+public class WarmingUpStateStacking : StateStackingRefreshing
 {
 	private const float BonusPerStack = 0.1f;
 	private const float RegenBonusPercent = 1.0f;

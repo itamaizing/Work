@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ElvenReflexesState : AbstractCharacterState
+public class ElvenReflexesState : StateBasic
 {
     private const float EvasionBonus = 80;
     private const float TickInterval = 1f;

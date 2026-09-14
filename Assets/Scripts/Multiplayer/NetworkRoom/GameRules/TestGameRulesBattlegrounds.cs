@@ -229,7 +229,7 @@ public class TestGameRulesBattlegrounds : GameRules
         var characterState = playerSettings.CharacterState;
         if (characterState != null)
         {
-            var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
+            var statesCopy = new List<StateBasic>(characterState.CurrentStates);
             foreach (var state in statesCopy)
             {
                 characterState.RemoveState(state.State);

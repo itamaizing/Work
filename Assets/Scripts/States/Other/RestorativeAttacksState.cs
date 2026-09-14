@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RestorativeAttacksState : AbstractCharacterState
+public class RestorativeAttacksState : StateBasic
 {
     public override States State => States.RestorativeAttacks;
     public override StateType Type => StateType.Physical;

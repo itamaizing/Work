@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WitheringPoisonStateStacking : RefreshingStateStacking
+public class WitheringPoisonStateStacking : StateStackingRefreshing
 {
     private const int MaxPoisonStacks = 2;
     private const float TickInterval = 2f;

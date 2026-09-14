@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShadowTree : RefreshingStateStacking
+public class ShadowTree : StateStackingRefreshing
 {
     public override States State => States.ShadowTree;
     public override StateType Type => StateType.Physical;

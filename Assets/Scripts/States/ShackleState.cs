@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShackleState : AbstractCharacterState
+public class ShackleState : StateBasic
 {
     private float _duration;
     private Character _character;

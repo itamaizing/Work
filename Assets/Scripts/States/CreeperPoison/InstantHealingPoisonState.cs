@@ -1,7 +1,7 @@
 using Mirror;
 using System.Collections.Generic;
 
-public class InstantHealingPoisonState : AbstractCharacterState
+public class InstantHealingPoisonState : StateBasic
 {
     /* For PoisonBall Ability */
 

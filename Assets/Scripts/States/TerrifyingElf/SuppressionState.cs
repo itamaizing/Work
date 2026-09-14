@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SuppressionState : AbstractCharacterState
+public class SuppressionState : StateBasic
 {
     private const int MaxStacks = 1;
 

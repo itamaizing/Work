@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DischargePsiState : AbstractCharacterState
+public class DischargePsiState : StateBasic
 {
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DischargePsi;

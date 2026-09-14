@@ -97,7 +97,7 @@ public class AbsorptionOfPoisons : Skill
             {
                 AdvertisementStates(targetWithDebuffs.CharacterState);
 
-                Dictionary<AbstractCharacterState, float> poisonDurations = new();
+                Dictionary<StateBasic, float> poisonDurations = new();
 
                 if (_poisonBone != null && _poisonBone.CurrentStacks > 0)
                 {
@@ -142,9 +142,9 @@ public class AbsorptionOfPoisons : Skill
             }
          }
     }
-    private AbstractCharacterState GetStateWithMinDuration(Dictionary<AbstractCharacterState, float> poisonDurations)
+    private StateBasic GetStateWithMinDuration(Dictionary<StateBasic, float> poisonDurations)
     {
-        AbstractCharacterState stateWithMinDuration = null;
+        StateBasic stateWithMinDuration = null;
         float minDuration = float.MaxValue;
 
         foreach(var minValue in poisonDurations) 

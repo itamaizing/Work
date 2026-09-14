@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CorrodedArmorState : RefreshingStateStacking
+public class CorrodedArmorState : StateStackingRefreshing
 {
     private const float ReductionPerStack = 2f;
     private float _durationRemaining;

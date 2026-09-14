@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IrradiationState : RefreshingStateStacking
+public class IrradiationState : StateStackingRefreshing
 {
     private float _baseDuration;
     private float _durationIncrease = 1;
@@ -75,7 +75,7 @@ public class IrradiationState : RefreshingStateStacking
         _totalAppliedReduction = 0f;
     }
 
-    private void OnNewStateAdded(AbstractCharacterState newState)
+    private void OnNewStateAdded(StateBasic newState)
     {
         if (newState != this && newState.Type == StateType.Magic && newState.BaffDebaff == BaffDebaff.Debaff) ExtendState(newState);
     }
@@ -85,7 +85,7 @@ public class IrradiationState : RefreshingStateStacking
         foreach (var state in characterState.CurrentStates) if (state != this && state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) ExtendState(state);
     }
 
-    private void ExtendState(AbstractCharacterState state)
+    private void ExtendState(StateBasic state)
     {
         //state.duration += _durationIncrease;
         //state.RemainingDuration += _durationIncrease;

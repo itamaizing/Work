@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ImmortalityState : AbstractCharacterState
+public class ImmortalityState : StateBasic
 {
     private float _duration;
     private Character _player;

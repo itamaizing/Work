@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionState : RefreshingStateStacking, IDamageable
+public class AbsorptionState : StateStackingRefreshing, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;

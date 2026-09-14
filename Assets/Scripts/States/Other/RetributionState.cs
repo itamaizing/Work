@@ -3,7 +3,7 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class RetributionStateStacking : RefreshingStateStacking
+public class RetributionStateStacking : StateStackingRefreshing
 {
     private Character _hero;
     private List<Skill> _baseLightSkills = new();

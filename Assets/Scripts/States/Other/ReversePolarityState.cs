@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReversePolarityState : AbstractCharacterState
+public class ReversePolarityState : StateBasic
 {
     public override States State => States.ReversePolarity;
     public override StateType Type => StateType.Immaterial;

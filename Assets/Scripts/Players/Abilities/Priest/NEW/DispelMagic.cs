@@ -73,7 +73,7 @@ public class DispelMagic : Skill
         
         BaffDebaff typeToRemove = isAlly ? BaffDebaff.Debaff : BaffDebaff.Baff;
         
-        AbstractCharacterState stateToDispel = null;
+        StateBasic stateToDispel = null;
         foreach (var state in characterState.CurrentStates)
         {
             if (state.Type == StateType.Magic && state.BaffDebaff == typeToRemove)

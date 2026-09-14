@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingDebuff : AbstractCharacterState
+public class BleedingDebuff : StateBasic
 {
     private float _duration;
     private float _baseDuration;

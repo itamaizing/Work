@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Stupefaction : AbstractCharacterState
+public class Stupefaction : StateBasic
 {
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;

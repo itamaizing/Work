@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrueSight : AbstractCharacterState
+public class TrueSight : StateBasic
 {
     public override States State => States.TrueSightState;
     public override StateType Type => StateType.Magic;

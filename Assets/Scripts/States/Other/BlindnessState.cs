@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class BlindnessStateStacking : RefreshingStateStacking
+public class BlindnessStateStacking : StateStackingRefreshing
 {
     public bool turnOff = false;
 

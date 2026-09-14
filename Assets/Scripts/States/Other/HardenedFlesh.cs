@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HardenedFlesh : RefreshingStateStacking
+public class HardenedFlesh : StateStackingRefreshing
 {
     private List<StatusEffect> _effects = new() { StatusEffect.Destruction };
 

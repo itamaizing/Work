@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BindingPoisonState : RefreshingStateStacking
+public class BindingPoisonState : StateStackingRefreshing
 {
     private SkillManager _skillManager;
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class CounterRageStateStacking : RefreshingStateStacking
+public class CounterRageStateStacking : StateStackingRefreshing
 {
     public float CurrentBonus = 0f;
     private Resource _energyResource;

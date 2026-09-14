@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReducingHealingState : AbstractCharacterState
+public class ReducingHealingState : StateBasic
 {
-    private AbstractCharacterState _state;
+    private StateBasic _state;
 
     private float _baseReductionHealingValues;
     private float _baseDuration;
@@ -11,8 +11,8 @@ public class ReducingHealingState : AbstractCharacterState
     private float _startDelayBeforeChecking = 0.5f;
     private float _delayBeforeChecking;
 
-    private Dictionary<AbstractCharacterState, float> _newHealingStatesValues = new();
-    private Dictionary<AbstractCharacterState, float> _oldHealingStatesValues = new();
+    private Dictionary<StateBasic, float> _newHealingStatesValues = new();
+    private Dictionary<StateBasic, float> _oldHealingStatesValues = new();
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.ReducingEfficiency };
 
@@ -49,13 +49,13 @@ public class ReducingHealingState : AbstractCharacterState
     {
     }
 
-    private List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
+    private List<StateBasic> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
     {
-        List<AbstractCharacterState> currentStates = new();
+        List<StateBasic> currentStates = new();
 
         if (characterState.Check(effect) && characterState.CheckStateType(type))
         {
-            foreach (AbstractCharacterState state in characterState.CurrentStates)
+            foreach (StateBasic state in characterState.CurrentStates)
             {
                 if (state.Effects.Contains(effect) && state.Type == type)
                 {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DestructionStateStacking : RefreshingStateStacking
+public class DestructionStateStacking : StateStackingRefreshing
 {
     private const float _tickInterval = 4f;
     private const float _damagePerTickBase = 6f;

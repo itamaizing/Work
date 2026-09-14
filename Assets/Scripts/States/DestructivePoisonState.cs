@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructivePoisonStateStacking : RefreshingStateStacking
+public class DestructivePoisonStateStacking : StateStackingRefreshing
 {
     private Character _target;
     private Health _health;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MergeDarkState : AbstractCharacterState
+public class MergeDarkState : StateBasic
 {
     private float _duration;
     private Character _character;

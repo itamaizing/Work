@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LowVoltage : RefreshingStateStacking
+public class LowVoltage : StateStackingRefreshing
 {
     private const float ReductionPerStack = 0.15f;
     private const int MaxStack = 6;
@@ -79,7 +79,7 @@ public class LowVoltage : RefreshingStateStacking
 
     private void ApplyDebuffToActiveMagicBuffs()
     {
-        List<AbstractCharacterState> currentStates = characterState.CurrentStates;
+        List<StateBasic> currentStates = characterState.CurrentStates;
 
         foreach (var state in currentStates)
         {
@@ -91,7 +91,7 @@ public class LowVoltage : RefreshingStateStacking
         }
     }
 
-    private void OnNewStateAdded(AbstractCharacterState newState)
+    private void OnNewStateAdded(StateBasic newState)
     {
         if (newState.Type != StateType.Magic || newState.BaffDebaff != BaffDebaff.Baff)
             return;
@@ -100,7 +100,7 @@ public class LowVoltage : RefreshingStateStacking
         ReduceStateDuration(newState, totalReduction);
     }
 
-    private void ReduceStateDuration(AbstractCharacterState state, float reductionPercent)
+    private void ReduceStateDuration(StateBasic state, float reductionPercent)
     {
         var stateExitDurationField = state.GetType().GetField("_durationToExit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 

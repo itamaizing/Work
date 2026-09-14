@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FeelingPoisoningStateStacking : RefreshingStateStacking
+public class FeelingPoisoningStateStacking : StateStackingRefreshing
 {
     private const int MaxStacks = 6;
     private const float RegenPercentPerStack = 0.1f;

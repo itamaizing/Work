@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrostEnergyStateStacking : RefreshingStateStacking
+public class FrostEnergyStateStacking : StateStackingRefreshing
 {
     public override States State => States.FrostEnergy;
     public override StateType Type => StateType.Magic;

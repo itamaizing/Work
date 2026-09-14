@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BurningMatterDebuff : RefreshingStateStacking
+public class BurningMatterDebuff : StateStackingRefreshing
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     protected float _damagePerMetr = 3;

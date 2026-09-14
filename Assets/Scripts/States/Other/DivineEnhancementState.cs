@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifier
+public class DivineEnhancementState : StateBasic, IDamageGivenModifier
 {
     private float _duration;
     private float _manaCostModifierValue = 2f;

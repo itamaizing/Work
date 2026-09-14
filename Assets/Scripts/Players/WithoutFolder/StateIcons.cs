@@ -17,7 +17,7 @@ public class StateIcons : MonoBehaviour
     private CharacterState characterState;
 
     private readonly List<StateIcoItem> _activeIcons = new();
-    private readonly Dictionary<AbstractCharacterState, StateIcoItem> _iconByState = new();
+    private readonly Dictionary<StateBasic, StateIcoItem> _iconByState = new();
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class StateIcons : MonoBehaviour
             if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
     }
 
-    public void RegisterState(AbstractCharacterState state)
+    public void RegisterState(StateBasic state)
     {
         if (state.IsHidden || _iconByState.ContainsKey(state)) return;
 
@@ -65,7 +65,7 @@ public class StateIcons : MonoBehaviour
         HandleTextChanged(state, state.DisplayText);
     }
 
-    public void UnregisterState(AbstractCharacterState state)
+    public void UnregisterState(StateBasic state)
     {
         state.OnDurationChanged -= HandleDurationChanged;
         state.OnTextChanged -= HandleTextChanged;
@@ -82,14 +82,14 @@ public class StateIcons : MonoBehaviour
         }
     }
 
-    private void HandleDurationChanged(AbstractCharacterState state, float current, float max)
+    private void HandleDurationChanged(StateBasic state, float current, float max)
     {
         if (!_iconByState.TryGetValue(state, out var ico)) return;
 
         ico.FadeFront.fillAmount = max > 0f ? Mathf.Clamp01(1f - current / max) : 0f;
     }
 
-    private void HandleTextChanged(AbstractCharacterState state, string text)
+    private void HandleTextChanged(StateBasic state, string text)
     {
         if (!_iconByState.TryGetValue(state, out var ico)) return;
 
@@ -116,7 +116,7 @@ public class StateIcons : MonoBehaviour
 
     public void DeactivateAll()
     {
-        foreach (var state in new List<AbstractCharacterState>(_iconByState.Keys))
+        foreach (var state in new List<StateBasic>(_iconByState.Keys))
         {
             state.OnDurationChanged -= HandleDurationChanged;
             state.OnTextChanged -= HandleTextChanged;

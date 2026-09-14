@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Desiccuration : AbstractCharacterState
+public class Desiccuration : StateBasic
 {
 	public bool turnOff = false;
 	private float _baseDuration;

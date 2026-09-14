@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mirror;
 
-public class RestorationStateStacking : RefreshingStateStacking, ITickableState
+public class RestorationStateStacking : StateStackingRefreshing, ITickableState
 {
     private const float _tickInterval = 3f;
     private const float _healPerTickBase = 6f;

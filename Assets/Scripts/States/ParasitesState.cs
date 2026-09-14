@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class ParasitesStateStacking : RefreshingStateStacking
+public class ParasitesStateStacking : StateStackingRefreshing
 {
     private const float TickInterval = 3f;
     private const float PercentDamage = 0.002f;

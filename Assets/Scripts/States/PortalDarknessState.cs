@@ -2,7 +2,7 @@
 using UnityEngine;
 using Mirror;
 
-public class PortalDarknessStateStacking : RefreshingStateStacking
+public class PortalDarknessStateStacking : StateStackingRefreshing
 {
     public override States State => States.PortalDarkness;
     public override StateType Type => StateType.Magic;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InAirState : AbstractCharacterState
+public class InAirState : StateBasic
 {
     public bool turnOff = false;
 

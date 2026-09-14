@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvisibleState : AbstractCharacterState
+public class InvisibleState : StateBasic
 {
 	public bool turnOff = false;
 	private float _baseDuration;

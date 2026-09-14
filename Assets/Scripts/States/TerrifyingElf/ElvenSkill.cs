@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ElvenSkill : RefreshingStateStacking
+public class ElvenSkill : StateStackingRefreshing
 {
     private MoveComponent _move;
     private GameObject _elvenSkillEffect;

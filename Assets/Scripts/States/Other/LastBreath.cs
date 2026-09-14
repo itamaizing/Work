@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LastBreath : AbstractCharacterState
+public class LastBreath : StateBasic
 {
 	private Character _character;
 	private float _durationToExit = 0;

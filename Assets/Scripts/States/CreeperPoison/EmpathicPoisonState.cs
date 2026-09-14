@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmpathicPoisonsState : RefreshingStateStacking, IDamageable
+public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 {
     private PoisonCloudStateStacking _poisonCloud;
     private Character _player;

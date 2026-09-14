@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManaRegen : AbstractCharacterState
+public class ManaRegen : StateBasic
 {
     private GameObject _manaRegen;
 

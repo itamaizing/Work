@@ -13,7 +13,7 @@ public class StateIcoItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public Image border;
     public TextMeshProUGUI Text;
 
-    public AbstractCharacterState StateInstance;
+    public StateBasic StateInstance;
     public States State { get; set; }
 
     public string ResolvedTooltipName { get; set; }

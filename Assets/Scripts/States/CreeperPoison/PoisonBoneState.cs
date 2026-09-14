@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonBoneStateStacking : RefreshingStateStacking
+public class PoisonBoneStateStacking : StateStackingRefreshing
 {
     public bool turnOff = false;
 

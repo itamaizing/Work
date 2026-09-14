@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Bound : AbstractCharacterState
+public class Bound : StateBasic
 {
 	public bool turnOff = false;
 	private float _baseDuration;

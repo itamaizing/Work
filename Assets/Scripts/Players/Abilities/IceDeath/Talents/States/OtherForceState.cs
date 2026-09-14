@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OtherForceStateStacking : RefreshingStateStacking
+public class OtherForceStateStacking : StateStackingRefreshing
 {
     private float _currentBonus = 0f;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisciplineAuraStateStacking : RefreshingStateStacking
+public class DisciplineAuraStateStacking : StateStackingRefreshing
 {
     public override States State      => States.DisciplineAura;
     public override StateType Type { get; }

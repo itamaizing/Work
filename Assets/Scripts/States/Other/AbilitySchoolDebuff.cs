@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilitySchoolDebuff : RefreshingStateStacking
+public class AbilitySchoolDebuff : StateStackingRefreshing
 {
 	public bool turnOff = false;
 	private float _baseDuration;

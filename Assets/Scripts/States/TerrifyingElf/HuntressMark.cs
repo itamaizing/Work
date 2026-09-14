@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HuntressMark : AbstractCharacterState
+public class HuntressMark : StateBasic
 {
     private float _duration;
 

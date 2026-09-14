@@ -25,7 +25,7 @@ namespace Gangdollarff.EarthElemental
         }
     }
 
-    public class EarthsHealthBuff : AbstractCharacterState
+    public class EarthsHealthBuff : StateBasic
     {
         private List<StatusEffect> _effects = new();
 

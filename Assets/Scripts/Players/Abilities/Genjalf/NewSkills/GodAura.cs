@@ -36,7 +36,7 @@ public class GodAura : AuraStateHandler
     }
 }
 
-public class GodAuraBuff : RefreshingStateStacking
+public class GodAuraBuff : StateStackingRefreshing
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     private Character _character;

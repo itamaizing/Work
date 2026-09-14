@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
-public class IgnitionStateStacking : RefreshingStateStacking
+public class IgnitionStateStacking : StateStackingRefreshing
 {
     private float _tickTimer = 0f;
     private int _currentTick = 0;

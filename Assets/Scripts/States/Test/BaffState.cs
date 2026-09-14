@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaffState : RefreshingStateStacking
+public class BaffState : StateStackingRefreshing
 {
     private float _durationRemaining;
     private string _skillName;
