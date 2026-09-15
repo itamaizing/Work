@@ -74,7 +74,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         }
         if (_rows != null)
             if (_rows.Count > 0)
-            _rows[0].SetRowActive(true);
+                _rows[0].SetRowActive(true);
 
         for(int i = 0; i < _rows.Count - 1; i++)
         {
@@ -163,16 +163,14 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         grid.cellSize = new Vector2(gridSize.x, _initialParentCellHeight * rows);
     }
     
-	public void Show()
+	public void Toggle()
     {
-        if (_itemsParent.gameObject.activeInHierarchy == false)
+        bool isCurrentlyActive = _itemsParent.gameObject.activeSelf;
+        _itemsParent.gameObject.SetActive(!isCurrentlyActive);
+
+        if (_itemsParent.gameObject.activeSelf)
         {
-            OnShowPanelGroup?.Invoke();
-            _itemsParent.gameObject.SetActive(true);
-        }
-        else
-        {
-            OnShowPanelGroup?.Invoke();
+            ChangeParentCellHeight();
         }
         ChangeParentCellHeight();
     }

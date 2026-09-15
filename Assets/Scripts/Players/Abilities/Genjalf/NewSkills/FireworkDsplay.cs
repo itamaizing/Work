@@ -64,7 +64,7 @@ namespace Gangdollarff
             float manaTimer = 0f;
 
             Hero.Move.RotateModifier = 0.05f;
-            DisableMove();
+            StartAnim();
             
             var streamStarted = new WaitUntil(() => _castStreamCoroutine != null);
             
@@ -182,10 +182,9 @@ namespace Gangdollarff
             Hero.Move.RotateModifier = 1f;
         }
 
-        private void DisableMove()
+        private void StartAnim()
         {
             Hero.Animator.SetTrigger("Fire");
-            Hero.Move.IsMoveBlocked = true;
             Hero.Move.StopLookAt();
         }
         

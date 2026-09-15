@@ -35,7 +35,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
             panel.SetPanel(data, _attributesPanel, isGameUI, isInteractable);
 
-            panel.OnShowPanelGroup += HidePanels;
+            //panel.OnShowPanelGroup += HidePanels;
             panel.PointerEnteredOnTalentIcon += ShowTalentInfo;
             panel.PointerExitedOnTalentIcon += HideTalentInfo;
             panel.OnTalentChanged += UpdateTalentPointsText;

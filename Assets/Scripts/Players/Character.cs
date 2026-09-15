@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using Mirror;
 
+public enum CharacterRelation { Self, Ally, Enemy }
+
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITargetable
 {
@@ -71,6 +73,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	public TransformationComponent TransformationComponent => _transformationComponent;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
     public AttributeSystem AttributeSystem => _attributeSystem;
+    
+    public static Character Local { get; private set; }
+    
 	public Character CharacterParent
 	{
 		get => _characterParent;
@@ -168,6 +173,14 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		Health.Died += AddDeadCounter;
 		TemporaryResourceDisplay = _resources.Values.ToList();
 	}
+    
+    public CharacterRelation RelationTo(Character other)
+    {
+	    if (other == this) return CharacterRelation.Self;
+	    return other.NetworkSettings.TeamIndex == NetworkSettings.TeamIndex
+		    ? CharacterRelation.Ally
+		    : CharacterRelation.Enemy;
+    }
 
     private void EnsureResources()
 	{
@@ -279,6 +292,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	public override void OnStartClient()
 	{
+		if (isOwned)
+		{
+			Local = this;
+		}
+
 		if (!isClientOnly && !isOwned)
 		{
 			return;
@@ -288,6 +306,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	public override void OnStopClient()
 	{
+		if (isOwned && Local == this)
+		{
+			Local = null;
+		}
+
 		if (!isClientOnly && !isOwned)
 		{
 			return;

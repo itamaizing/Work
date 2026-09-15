@@ -30,7 +30,11 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     public void Show(Character hero, bool isMenu = true)
     {
-        if (_hero == hero) return;
+        if (_hero == hero) 
+        {
+            _itemsParent.gameObject.SetActive(true);
+            return;
+        }
         _hero = hero;
         if (isMenu)
         {
@@ -64,16 +68,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     [ContextMenu("Run Custom Debug Function")]
     public void SwitchPanel()
     {
-        if(_isActive)
-        {
-            _isActive = false;
-            Show(_hero);
-        }
-        else
-        {
-            _isActive = true;
-            ResetPanel();
-        }
+        bool isCurrentlyActive = _itemsParent.gameObject.activeSelf;
+        _itemsParent.gameObject.SetActive(!isCurrentlyActive);
     }
 
     private void OnDisable()

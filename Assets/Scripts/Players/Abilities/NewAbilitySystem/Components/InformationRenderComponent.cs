@@ -2,6 +2,15 @@
 using TMPro;
 using UnityEngine;
 
+[Flags]
+public enum CastBarObservers
+{
+    None    = 0,
+    Self    = 1 << 0,
+    Allies  = 1 << 1,
+    Enemies = 1 << 2
+}
+
 [Serializable]
 public class InformationRenderComponent : BaseSkillComponent
 {
@@ -10,6 +19,9 @@ public class InformationRenderComponent : BaseSkillComponent
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
     [SerializeField] protected bool _isDynamicRenderer = false;
+    [Header("Cast Bars")]
+    [SerializeField] protected CastBarObservers _prepareBarVisibility = CastBarObservers.Self;
+    [SerializeField] protected CastBarObservers _castBarVisibility = CastBarObservers.Self;
     #endregion
     
     #region RuntimeVariables
@@ -26,6 +38,9 @@ public class InformationRenderComponent : BaseSkillComponent
     public bool IsAutoAreaRender => _isAutoAreaRender;
     public bool IsAutoLineRender => _isAutoLineRender;
     public bool IsDynamicRenderer => _isDynamicRenderer;
+    
+    public CastBarObservers PrepareBarVisibility => _prepareBarVisibility;
+    public CastBarObservers CastBarVisibility => _castBarVisibility;
     #endregion
 
     #region Methods
@@ -61,6 +76,9 @@ public class InformationRenderComponent : BaseSkillComponent
 
     public void ShowSmartIndicator()
     {
+        if (!_skill.SkillRender.TryClaimIndicator(_skill))
+            return;
+        
         Damage damage = new Damage
         {
             Value = _skill.Damage,
@@ -142,16 +160,9 @@ public class InformationRenderComponent : BaseSkillComponent
 
     public void HideSmartIndicator()
     {
-        if (_character != null && _character.Abilities != null)
-        {
-            var preparingSkill = _character.Abilities.CurrentCastingSkill;
-            if (preparingSkill != null && preparingSkill != _skill)
-            {
-                _hasCachedValues = false;
-                return;
-            }
-        }
-        
+        if (_skill.SkillRender.IndicatorOwner != _skill)
+            return;
+
         if (!_skill.IsPreparing && _hasCachedValues == false)
         {
             return;
@@ -171,14 +182,13 @@ public class InformationRenderComponent : BaseSkillComponent
         {
             _skill.SkillRender.StopDrawLineForZone();
         }
-
-
         /*if (true)
 		{
 			Character enemy = GetCloserTargets(transform.position, AreaInfo.Radius)[0];
 			enemy.SelectedCircle.IsActive = false;
 		}*/
         
+        _skill.SkillRender.ReleaseIndicator(_skill);
         _hasCachedValues = false;
     }
 

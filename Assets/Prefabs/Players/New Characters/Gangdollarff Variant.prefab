@@ -12917,6 +12917,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _UICanvas
+      value: 
+      objectReference: {fileID: 2470101827010266775}
     - target: {fileID: 3405671967090184702, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialCharacter
       value: 
@@ -13876,6 +13880,11 @@ MonoBehaviour:
 --- !u!4 &1526857230373420528 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2519476906010346640, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 4019047507394361696}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &2470101827010266775 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 1549544950739599351, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 4019047507394361696}
   m_PrefabAsset: {fileID: 0}
 --- !u!120 &4073253261590549315 stripped
@@ -15319,7 +15328,7 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _whileMoving: 0
+    _whileMoving: 1
     _autoAttack: 1
   _targetingComponent:
     oldType: 1
@@ -15380,6 +15389,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: -1
+    _castBarVisibility: -1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -15479,6 +15490,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -15572,6 +15585,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -15663,6 +15678,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -15757,6 +15774,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -15850,6 +15869,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -15939,6 +15960,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16045,6 +16068,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16134,6 +16159,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16224,6 +16251,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16320,6 +16349,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16411,6 +16442,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16503,6 +16536,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16597,6 +16632,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16706,6 +16743,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16803,6 +16842,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -16926,6 +16967,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17018,6 +17061,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17109,6 +17154,8 @@ MonoBehaviour:
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17200,6 +17247,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17290,6 +17339,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17385,6 +17436,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17478,6 +17531,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17568,6 +17623,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -17660,6 +17717,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:

@@ -443,7 +443,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4095313312207524361}
         m_TargetAssemblyTypeName: UIMenuMainTalentsPanelGroup, Assembly-CSharp
-        m_MethodName: Show
+        m_MethodName: Toggle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

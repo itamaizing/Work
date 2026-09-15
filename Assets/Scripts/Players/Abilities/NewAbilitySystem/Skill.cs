@@ -492,7 +492,7 @@ public abstract class Skill : NetworkBehaviour
     /// </summary>
     public virtual bool TryCast()
     {
-        if (_isCasting || _isPreparing)
+        if (_isCasting)
             return false;
 
         LoadTargetDataForCheckCast();
@@ -530,7 +530,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast(TargetInfo targetInfo)
     {
-        if (_isCasting || _isPreparing)
+        if (_isCasting)
             return false;
 
         LoadTargetDataForCheckCast();
@@ -587,6 +587,7 @@ public abstract class Skill : NetworkBehaviour
         {
             Hero.Abilities.NotifySkillIsPreparing(this, false);
             Canceled?.Invoke();
+            CmdBroadcastCanceled();
             _hero.Move.SetCanMove(true);
             ClearData();
             _isPlayCastAnim = false;
@@ -651,7 +652,6 @@ public abstract class Skill : NetworkBehaviour
         _isPreparing = true;
         //ClearData();
         Renderer.ShowSmartIndicator();
-
         if (_informationRenderComponent.IsDynamicRenderer)
         {
             StartDynamicRenderer();
@@ -721,6 +721,8 @@ public abstract class Skill : NetworkBehaviour
 
         bool noCast = Hero.Abilities.TryConsumeNoCast();
 
+        if (Info.Moving == Moving.Static)
+            _hero.Move.SetCanMove(false);
 
         if (!noCast && CastDeley > 0)
             yield return StartCastDeleyCoroutine();
@@ -835,6 +837,7 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
+        CmdBroadcastCastDeleyStarted(delayTime); 
         PlayPrepareAnim();
         float time = 0;
 
@@ -857,6 +860,7 @@ public abstract class Skill : NetworkBehaviour
         }
         _castDeleyCoroutine = null;
         CastDeleyEnded?.Invoke();
+        CmdBroadcastCastDeleyEnded();
     }
     #endregion CastDelay
     #endregion
@@ -1064,6 +1068,43 @@ public abstract class Skill : NetworkBehaviour
         Debug.Log($"_cooldownEndTime");
     }
     #endregion
+    
+    #region Networked Cast Bar Events
+    [Command] private void CmdBroadcastCastDeleyStarted(float duration) => RpcCastDeleyStarted(duration);
+    [ClientRpc] private void RpcCastDeleyStarted(float duration)
+    {
+        if (isOwned) return;
+        CastDeleyStarted?.Invoke(duration);
+    }
+
+    [Command] private void CmdBroadcastCastDeleyEnded() => RpcCastDeleyEnded();
+    [ClientRpc] private void RpcCastDeleyEnded()
+    {
+        if (isOwned) return;
+        CastDeleyEnded?.Invoke();
+    }
+
+    [Command] private void CmdBroadcastCastStreamStarted(float duration) => RpcCastStreamStarted(duration);
+    [ClientRpc] private void RpcCastStreamStarted(float duration)
+    {
+        if (isOwned) return;
+        CastStreamStarted?.Invoke(duration);
+    }
+
+    [Command] private void CmdBroadcastCastStreamEnded() => RpcCastStreamEnded();
+    [ClientRpc] private void RpcCastStreamEnded()
+    {
+        if (isOwned) return;
+        CastStreamEnded?.Invoke();
+    }
+
+    [Command] private void CmdBroadcastCanceled() => RpcCanceled();
+    [ClientRpc] private void RpcCanceled()
+    {
+        if (isOwned) return;
+        Canceled?.Invoke();
+    }
+    #endregion
 
     #region Channeling
 
@@ -1082,10 +1123,12 @@ public abstract class Skill : NetworkBehaviour
     public void InvokeCastStreamStarted(float duration)
     {
         CastStreamStarted?.Invoke(duration);
+        CmdBroadcastCastStreamStarted(duration);
     }
     private IEnumerator CastStreamJob()
     {
         CastStreamStarted?.Invoke(CastStreamDuration);
+        CmdBroadcastCastStreamStarted(CastStreamDuration);
         float time = 0;
 
         while (time < CastStreamDuration)
@@ -1119,6 +1162,7 @@ public abstract class Skill : NetworkBehaviour
         }
         _castStreamCoroutine = null;
         CastStreamEnded?.Invoke();
+        CmdBroadcastCastStreamEnded();
     }
 
     #endregion
