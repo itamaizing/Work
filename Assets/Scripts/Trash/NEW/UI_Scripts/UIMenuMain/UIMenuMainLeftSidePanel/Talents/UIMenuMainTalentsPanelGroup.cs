@@ -30,6 +30,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     public event UnityAction OnTalentChanged;
     public event Action<TalentData> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
+    
+    public bool IsExpanded => _itemsParent.gameObject.activeSelf;
 
 
     public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
@@ -178,6 +180,17 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     public void Hide()
     {
         _itemsParent.gameObject.SetActive(false);
+    }
+    
+    public void SetGroupVisible(bool visible)
+    {
+        gameObject.SetActive(visible);
+    }
+
+    public void SetItemsExpanded(bool expanded)
+    {
+        _itemsParent.gameObject.SetActive(expanded);
+        if (expanded) ChangeParentCellHeight();
     }
 
     public void Destroy()

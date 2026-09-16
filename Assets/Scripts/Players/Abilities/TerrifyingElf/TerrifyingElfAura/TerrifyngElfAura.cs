@@ -271,7 +271,7 @@ public class TerrifyingElfAura : Skill
     {
         if (currentSkill != null)
         {
-            currentSkill.CastSuccess -= ApplyCalmnessTalent;
+            currentSkill.CastFinished -= ApplyCalmnessTalent;
             currentSkill.CastStarted -= ApplyFireWorshipperTalent;
         }
 
@@ -287,7 +287,7 @@ public class TerrifyingElfAura : Skill
         currentSkill = skill;
         if (skill == null) return;
 
-        if (calmnessTalent) skill.CastSuccess += ApplyCalmnessTalent;
+        if (calmnessTalent) skill.CastFinished += ApplyCalmnessTalent;
 
         if (fireWorshipperTalent) skill.CastStarted += ApplyFireWorshipperTalent;
     }

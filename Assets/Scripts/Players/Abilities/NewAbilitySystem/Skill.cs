@@ -181,6 +181,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action CastDeleyEnded;
     public event Action CastStarted;
     public event Action CastSuccess;
+    public event Action CastFinished;
     public event Action CastEnded;
     public event Action Canceled;
     public event Action OnSkillCanceled;
@@ -685,6 +686,16 @@ public abstract class Skill : NetworkBehaviour
 
         _prepareCoroutine = null;
     }
+    
+    private bool TryAbortIfForceFailed()
+    {
+        if (!_forceFailCastEarly)
+            return false;
+
+        _forceFailCastEarly = false;
+        CancelCastEarly();
+        return true;
+    }
 
     private void CancelCastEarly()
     {
@@ -694,25 +705,27 @@ public abstract class Skill : NetworkBehaviour
         CancelAnim();
 
         _hero.Move.StopLookAt();
-        _hero.Move.SetCanMove(true);
+        HandleMovementLock(MovementLockPhase.CastFailedEarly);
+
+        Hero.Abilities.NotifySkillIsPreparing(this, false);
 
         ClearData();
 
-        CastEnded?.Invoke();
-        OnSkillCanceled?.Invoke();
-        Canceled?.Invoke();
+        try { CastEnded?.Invoke(); }
+        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] CastEnded subscriber threw: {ex}"); }
+
+        try { OnSkillCanceled?.Invoke(); }
+        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] OnSkillCanceled subscriber threw: {ex}"); }
+
+        try { Canceled?.Invoke(); }
+        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] Canceled subscriber threw: {ex}"); }
 
         Hero.UIComponent.Miss();
     }
 
     private IEnumerator ActionWrapperForCastingJob()
     {
-        if (_forceFailCastEarly)
-        {
-            _forceFailCastEarly = false;
-            CancelCastEarly();
-            yield break;
-        }
+        if (TryAbortIfForceFailed()) yield break;
 
         Hero.Abilities.NotifySkillPrepared(this);
         Hero.Abilities.NotifySkillIsPreparing(this, true); 
@@ -721,18 +734,12 @@ public abstract class Skill : NetworkBehaviour
 
         bool noCast = Hero.Abilities.TryConsumeNoCast();
 
-        if (Info.Moving == Moving.Static)
-            _hero.Move.SetCanMove(false);
+        HandleMovementLock(MovementLockPhase.CastStarted);
 
         if (!noCast && CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
-        if (_forceFailCastEarly)
-        {
-            _forceFailCastEarly = false;
-            CancelCastEarly();
-            yield break;
-        }
+        if (TryAbortIfForceFailed()) yield break;
 
         if (!noCast && AnimTriggerCast != 0)
         {
@@ -741,33 +748,13 @@ public abstract class Skill : NetworkBehaviour
 
             PlayCastAnim();
 
-            if (_forceFailCastEarly)
-            {
-                _forceFailCastEarly = false;
-                _isCasting = false;
-                _isPlayCastAnim = false;
-
-                CancelAnim();
-                _hero.Move.StopLookAt();
-                Hero.Move.SetCanMove(true);
-
-                ClearData();
-                CastEnded?.Invoke();
-                OnSkillCanceled?.Invoke();
-                Canceled?.Invoke();
-                _actionWrapperForCastCoroutine = null;
-                Hero.UIComponent.Miss();
-                yield return null;
-            }
+            if (TryAbortIfForceFailed()) yield break;
 
             while (_isPlayCastAnim)
             {
                 //*
                 if (Targeting.ForDamage?.Damageable != null && !IsValidTarget(Targeting.ForDamage?.Damageable))
                 {
-                    _isCanCancel = true;
-                    _hero.Move.SetCanMove(true);
-
                     TryCancel(true);
                     yield break;
                 }
@@ -786,24 +773,24 @@ public abstract class Skill : NetworkBehaviour
 
         else
         {
-            if (_forceFailCastEarly)
-            {
-                _forceFailCastEarly = false;
-                CancelCastEarly();
-                yield break;
-            }
+            if (TryAbortIfForceFailed()) yield break;
 
             CancelAnim();
 
             _castCoroutine = StartCoroutine(CastJob());
             if (_castDuration > 0 && !SkipLegacyCastStreamJob) _castStreamCoroutine = StartCoroutine(CastStreamJob());
+            
+            CastSuccess?.Invoke();
+            CmdBroadcastCastSuccess();
+            HandleMovementLock(MovementLockPhase.CastTriggered);
+            
             yield return _castCoroutine;
         }
 
         //CancelAnim();
 
         CommitUse();
-        CastSuccess?.Invoke();
+        CastFinished?.Invoke();
         CastEnded?.Invoke();
         _isCasting = false;
 
@@ -819,7 +806,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         _hero.Move.StopLookAt();
-        if (!_isAutoMode) _hero.Move.SetCanMove(true);
+        if (!_isAutoMode) HandleMovementLock(MovementLockPhase.CastFinished);
 
         _castCoroutine = null;
     }
@@ -865,6 +852,43 @@ public abstract class Skill : NetworkBehaviour
     #endregion CastDelay
     #endregion
 
+    #region LockMovementPhase
+
+    protected enum MovementLockPhase
+    {
+        CastStarted,
+        CastTriggered,
+        CastFinished,
+        CastCanceled,
+        CastFailedEarly
+    }
+    
+    protected virtual void HandleMovementLock(MovementLockPhase phase)
+    {
+        if (Info.Moving == Moving.Free)
+            return;
+
+        switch (phase)
+        {
+            case MovementLockPhase.CastStarted:
+                _hero.Move.SetCanMove(false);
+                break;
+
+            case MovementLockPhase.CastTriggered:
+                if (Info.Moving == Moving.UntilCast)
+                    _hero.Move.SetCanMove(true);
+                break;
+
+            case MovementLockPhase.CastFinished:
+            case MovementLockPhase.CastCanceled:
+            case MovementLockPhase.CastFailedEarly:
+                _hero.Move.SetCanMove(true);
+                break;
+        }
+    }
+
+    #endregion
+    
     #region Charges
     // Пока не вырезал, есть скиллы завязанные на ручном управлении зарядами
     // Для переписывания, добавил в новую систему тип Infinite (не тикающие)
@@ -1215,11 +1239,22 @@ public abstract class Skill : NetworkBehaviour
     {
         _castCoroutine = StartCoroutine(CastJob());
         if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
+        
+        CastSuccess?.Invoke();
+        CmdBroadcastCastSuccess();
+        HandleMovementLock(MovementLockPhase.CastTriggered);
     }
 
     protected virtual void AnimCastEnded()
     {
         _isPlayCastAnim = false;
+    }
+    
+    [Command] private void CmdBroadcastCastSuccess() => RpcCastSuccess();
+    [ClientRpc] private void RpcCastSuccess()
+    {
+        if (isOwned) return;
+        CastSuccess?.Invoke();
     }
 
     protected virtual void PlayCastAnim()

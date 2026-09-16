@@ -15328,7 +15328,7 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _whileMoving: 1
+    _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
     oldType: 1
@@ -15814,7 +15814,7 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _whileMoving: 0
+    _whileMoving: 1
     _autoAttack: 1
   _targetingComponent:
     oldType: 0

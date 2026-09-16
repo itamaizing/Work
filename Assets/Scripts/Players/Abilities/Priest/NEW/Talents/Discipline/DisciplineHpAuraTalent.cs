@@ -14,8 +14,8 @@ public class DisciplineHpAuraTalent : Talent
         foreach (var skill in character.Abilities.Abilities)
         {
             if (skill.Info.School != Schools.Discipline) continue;
-            skill.CastSuccess -= OnDisciplineSkillCast;
-            skill.CastSuccess += OnDisciplineSkillCast;
+            skill.CastFinished -= OnDisciplineSkillCast;
+            skill.CastFinished += OnDisciplineSkillCast;
             _disciplineSkills.Add(skill);
         }
     }
@@ -23,7 +23,7 @@ public class DisciplineHpAuraTalent : Talent
     public override void Exit()
     {
         foreach (var skill in _disciplineSkills)
-            skill.CastSuccess -= OnDisciplineSkillCast;
+            skill.CastFinished -= OnDisciplineSkillCast;
 
         _disciplineSkills.Clear();
         _priest = null;

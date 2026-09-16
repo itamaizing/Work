@@ -29,7 +29,7 @@ public class RetributionStateStacking : StateStackingRefreshing
 
         foreach (var castingSkill in GetCastingSkills())
         {
-            castingSkill.CastSuccess += CastingSkillOnCastEnded;
+            castingSkill.CastFinished += CastingSkillOnCastEnded;
         }
     }
 

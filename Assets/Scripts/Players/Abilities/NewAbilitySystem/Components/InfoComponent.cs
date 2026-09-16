@@ -43,8 +43,9 @@ public enum SkillType
 
 public enum Moving
 {
-    Static,
-    NonStatic
+    UntilFinish,
+    UntilCast,
+    Free
 }
 
 public enum AutoAttack

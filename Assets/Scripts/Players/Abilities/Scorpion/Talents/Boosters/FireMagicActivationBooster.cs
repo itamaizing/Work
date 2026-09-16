@@ -34,14 +34,14 @@ public class FireMagicActivationBooster : Skill, IPassiveSkill
                 {
                     System.Action handler = () => OnFireMagicCastStarted(skill);
                     _fireMagicHandlers[skill] = handler;
-                    skill.CastSuccess += handler;
+                    skill.CastFinished += handler;
                 }
             }
         }
         else
         {
             foreach (var kvp in _fireMagicHandlers)
-                kvp.Key.CastSuccess -= kvp.Value;
+                kvp.Key.CastFinished -= kvp.Value;
             _fireMagicHandlers.Clear();
 
             foreach (var kvp in _consumeHandlers)

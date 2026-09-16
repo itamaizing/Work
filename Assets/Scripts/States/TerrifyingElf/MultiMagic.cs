@@ -47,7 +47,7 @@ public class MultiMagic : StateStackingRefreshing
             {
                 Skill capturedSkill = skill;
                 Action handler = () => OnTargetSkillCast(capturedSkill);
-                skill.CastSuccess += handler;
+                skill.CastFinished += handler;
                 _castSuccessHandlers[skill] = handler;
             }
         }
@@ -64,7 +64,7 @@ public class MultiMagic : StateStackingRefreshing
                 if (skill.CastStreamDuration > 0)
                     skill.PreparingSuccess -= OnTargetSkillCast;
                 else if (_castSuccessHandlers.TryGetValue(skill, out var handler) && handler != null)
-                    skill.CastSuccess -= handler;
+                    skill.CastFinished -= handler;
             }
         }
 

@@ -55,7 +55,7 @@ public class AbsorbationSwordSkill : Skill
         _swordSkills = _hero.Abilities.Abilities.Where(s => s is ISwordSkill).ToList();
         foreach (var swordSkill in _swordSkills)
         {
-            swordSkill.CastSuccess += () => ApplyAbsorbedDamage(swordSkill);
+            swordSkill.CastFinished += () => ApplyAbsorbedDamage(swordSkill);
         }
     }
     
@@ -71,7 +71,7 @@ public class AbsorbationSwordSkill : Skill
         _hero.Health.DamageTaken -= OnHeroDamageTaken;
         foreach (var swordSkill in _swordSkills)
         {
-            swordSkill.CastSuccess -= () => ApplyAbsorbedDamage(swordSkill);
+            swordSkill.CastFinished -= () => ApplyAbsorbedDamage(swordSkill);
         }
     }
     

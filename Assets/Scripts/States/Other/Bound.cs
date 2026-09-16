@@ -38,7 +38,7 @@ public class Bound : StateBasic
 		{
 			abilities = ability.Abilities;
 
-			foreach (var skill in abilities.Abilities) if (skill.Info.Moving == Moving.NonStatic) skill.Disactive = true;
+			foreach (var skill in abilities.Abilities) if (skill.Info.Moving == Moving.Free) skill.Disactive = true;
 		}
 
 		characterState.Character.Move.IsMoveBlocked = true;
@@ -81,7 +81,7 @@ public class Bound : StateBasic
 		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);
 		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
-		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) if (skill.Info.Moving == Moving.NonStatic) skill.Disactive = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) if (skill.Info.Moving == Moving.Free) skill.Disactive = false;
 		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
 
 		var animator = characterState.Character.Animator;

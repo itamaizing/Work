@@ -19140,6 +19140,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5213413364149109789, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.04699707
+      objectReference: {fileID: 0}
+    - target: {fileID: 5213413364149109789, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.33898926
+      objectReference: {fileID: 0}
     - target: {fileID: 6090191188679666220, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
       propertyPath: m_Name
       value: PlayerIcon

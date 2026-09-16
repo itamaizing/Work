@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.UI;
 
 public class UIMenuMainTalentsPanel : MonoBehaviour
 {
@@ -9,16 +9,57 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private TalentInfoPanel _talentInfoPanel;
     [SerializeField] private TMProLocalizer _talantsText;
+    [SerializeField] private Button _headerButton;
 
     [SerializeField] private bool _isMainMenu = true;
 
     private List<UIMenuMainTalentsPanelGroup> ItemsPool = new();
 
+    private bool _isCollapsed;
+    private readonly Dictionary<UIMenuMainTalentsPanelGroup, bool> _savedGroupStates = new();
+    
     private TalentSystem _talentSystem;
+    
+    private void Awake()
+    {
+        if (_headerButton != null)
+            _headerButton.onClick.AddListener(ToggleWholePanel);
+    }
+    
+    public void ToggleWholePanel()
+    {
+        _isCollapsed = !_isCollapsed;
+
+        if (_isCollapsed)
+        {
+            _savedGroupStates.Clear();
+            foreach (var group in ItemsPool)
+            {
+                _savedGroupStates[group] = group.IsExpanded;
+                group.SetGroupVisible(false);
+            }
+            if (_attributesPanel != null)
+                _attributesPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            foreach (var group in ItemsPool)
+            {
+                group.SetGroupVisible(true);
+                if (_savedGroupStates.TryGetValue(group, out var wasExpanded))
+                    group.SetItemsExpanded(wasExpanded);
+            }
+            if (_attributesPanel != null)
+                _attributesPanel.gameObject.SetActive(true);
+        }
+    }
 
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
         ResetPanel();
+        
+        _isCollapsed = false;
+        _savedGroupStates.Clear();
 
         _talentSystem = talentSystem;
 
