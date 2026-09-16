@@ -32,7 +32,7 @@ public class SlowFlowLightStateStacking : StateStackingRefreshing
 	public override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
-		currentStacksCount = 0;
+		CurrentStacksCount = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
 		characterState.Character.Abilities.Abilities.ForEach(s => s.Buff.CastSpeed.Reset());
 		characterState.RemoveState(this);

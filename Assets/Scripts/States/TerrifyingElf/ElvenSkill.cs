@@ -79,9 +79,9 @@ public class ElvenSkill : StateStackingRefreshing
     private void AddStack()
     {
         if (abilities == null) return;
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             
             foreach (var skill in abilities.Abilities)
             {
@@ -97,24 +97,13 @@ public class ElvenSkill : StateStackingRefreshing
     
     public override void ReduceStack()
     {
-        ReduceStackExternal();
+        base.ReduceStack();
+        RemoveOneStack();
     }
 
     public void ReduceStackExternal(bool isExternal = false)
     {
-        currentStacksCount--;
-        RemainingDuration = _baseDuration;
-        if (isExternal)
-        {
-
-        }
-        
-        if (currentStacksCount > 0)
-        {
-            RemoveOneStack();
-            return;
-        }
-        ExitState();
+        ReduceStack();
     }
 
     private void RemoveOneStack()
@@ -132,7 +121,7 @@ public class ElvenSkill : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         
         if (_move) _move.SetCanMoveState(false);
 

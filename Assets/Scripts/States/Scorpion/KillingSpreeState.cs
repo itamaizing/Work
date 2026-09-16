@@ -86,7 +86,7 @@ public class KillingSpreeStateStacking : StateStackingRefreshing
             UnsubscribeFromPhysicalSkills();
         _lastTarget = null;
         _currentBonus = 1f;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         base.ExitState();
     }

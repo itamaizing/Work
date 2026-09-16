@@ -34,9 +34,9 @@ public class RegeneratingPoisonState : StateStacking
 
         _baseDuration = durationToExit;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
     }
 
@@ -59,9 +59,9 @@ public class RegeneratingPoisonState : StateStacking
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             RemainingDuration = _baseDuration;
             return true;
         }
@@ -75,7 +75,7 @@ public class RegeneratingPoisonState : StateStacking
     [Server]
     private void MakeHeal()
     {
-        _endHealingValue = currentStacksCount * _baseHealingValue;
+        _endHealingValue = CurrentStacksCount * _baseHealingValue;
 
         Heal heal = new Heal
         {
@@ -89,7 +89,7 @@ public class RegeneratingPoisonState : StateStacking
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
         RemainingDuration = 0;

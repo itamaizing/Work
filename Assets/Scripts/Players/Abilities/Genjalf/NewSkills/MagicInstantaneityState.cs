@@ -25,7 +25,7 @@ public class MagicInstantaneityStateStacking : StateStacking
         _time = durationToExit;
         _character = character.Character;
         SetMaxStacks(5);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         var skillsWithDelay = _character.Abilities.Abilities
             .Where(s => s.CastDeley > 0 && s.IsSkillActive)
@@ -49,7 +49,7 @@ public class MagicInstantaneityStateStacking : StateStacking
     {
         if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             foreach (var skill in _buffedSkills)
             {
                 skill.Buff.CastSpeed.Reset();

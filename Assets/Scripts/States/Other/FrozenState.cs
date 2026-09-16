@@ -36,12 +36,12 @@ public class FrozenStateStacking : StateStackingRefreshing
     private Renderer[] _renderers;
     private readonly Dictionary<Renderer, Material[]> _originalMaterials = new();
     
-    public float CurrentAttackSlowPercent => CastSlowPerStack * currentStacksCount;
+    public float CurrentAttackSlowPercent => CastSlowPerStack * CurrentStacksCount;
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         SetMaxStacks(MaxStacks);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         RemainingDuration = durationToExit;
         _baseDuration = durationToExit;
         parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1 : damageToExit;
@@ -150,7 +150,7 @@ public class FrozenStateStacking : StateStackingRefreshing
         characterState.Character.Health.OnBeforeTakeDamage -= OnDamaged;
         RemoveEffects();
         _damageCount = 0f;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
 
         if (_frozenEffectInstance != null)
@@ -162,7 +162,7 @@ public class FrozenStateStacking : StateStackingRefreshing
     {
         RemoveEffects();
 
-        if (currentStacksCount < MaxStacks) currentStacksCount++;
+        if (CurrentStacksCount < MaxStacks) CurrentStacksCount++;
 
         
         if (_ninjaResources.IsDeepFrosting)
@@ -193,7 +193,7 @@ public class FrozenStateStacking : StateStackingRefreshing
 
     private void ApplyMoveSlow()
     {
-        float moveSlow = MoveSlowPerStack * currentStacksCount;
+        float moveSlow = MoveSlowPerStack * CurrentStacksCount;
 
         _moveSpeedModifier = new AttributeModifier(-moveSlow, ModifierType.Multiplier, this);
         characterState.Character.Move.AddModifier(_moveSpeedModifier);
@@ -211,7 +211,7 @@ public class FrozenStateStacking : StateStackingRefreshing
     private void ApplyCastSlow()
     {
         _affectedSkills.Clear();
-        _appliedCastSlow = CastSlowPerStack * currentStacksCount;
+        _appliedCastSlow = CastSlowPerStack * CurrentStacksCount;
 
         if (abilities == null) return;
 

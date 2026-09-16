@@ -32,9 +32,9 @@ public class HeatedGlandsState : StateStackingRefreshing
 
         _baseManaRegen = personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             IncreasingManaRegeneration();
         }
     }
@@ -50,16 +50,16 @@ public class HeatedGlandsState : StateStackingRefreshing
         
         _allManaRegenIncrease = 0;
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
 
             RemainingDuration = _baseDuration;
 

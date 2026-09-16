@@ -20,7 +20,7 @@ public class Anxiety : StateStacking
         SetMaxStacks(maxStacks);
 
         ApplyEffects();
-        Debug.Log($"Anxiety state applied: {currentStacksCount}/{MaxStacksCount} stacks, duration {RemainingDuration}s");
+        Debug.Log($"Anxiety state applied: {CurrentStacksCount}/{MaxStacksCount} stacks, duration {RemainingDuration}s");
     }
 
     public override void UpdateState()
@@ -30,14 +30,14 @@ public class Anxiety : StateStacking
     public override void ExitState()
     {
         RemoveEffects();
-        Debug.Log($"Anxiety state removed: {currentStacksCount}/{MaxStacksCount} stacks");
+        Debug.Log($"Anxiety state removed: {CurrentStacksCount}/{MaxStacksCount} stacks");
     }
 
     public override bool Stack(float newDuration)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
         RemainingDuration = Mathf.Max(RemainingDuration, newDuration);
         ApplyEffects();
@@ -51,13 +51,13 @@ public class Anxiety : StateStacking
         {
             foreach (var skill in abilities.Abilities)
             {
-                skill.CastDeley *= 1f + (spellSpeedReduction * currentStacksCount);
+                skill.CastDeley *= 1f + (spellSpeedReduction * CurrentStacksCount);
 
-                if (currentStacksCount < MaxStacksCount)
+                if (CurrentStacksCount < MaxStacksCount)
                     skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(new AttributeModifier(manaCostIncrease, ModifierType.Flat, source: this));
                 //foreach (var cost in skill.SkillEnergyCosts)
                 //{
-                //    cost.ModifyResourceCost(1f + (manaCostIncrease * currentStacksCount));
+                //    cost.ModifyResourceCost(1f + (manaCostIncrease * CurrentStacksCount));
                 //}
                 Debug.Log(skill.Attributes[SkillAttributeName.ResourceCost].GetValue());
             }
@@ -71,12 +71,12 @@ public class Anxiety : StateStacking
         {
             foreach (var skill in abilities.Abilities)
             {
-                skill.CastDeley /= 1f + (spellSpeedReduction * currentStacksCount);
+                skill.CastDeley /= 1f + (spellSpeedReduction * CurrentStacksCount);
 
                 skill.Attributes[SkillAttributeName.ResourceCost].RemoveBySource(this, all: true);
                 //foreach (var cost in skill.SkillEnergyCosts)
                 //{
-                //    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * currentStacksCount)));
+                //    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * CurrentStacksCount)));
                 //}
             }
         }

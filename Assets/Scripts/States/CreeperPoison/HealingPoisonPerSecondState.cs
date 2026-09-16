@@ -52,7 +52,7 @@ public class HealingPoisonPerSecondState : StateStackingRefreshing
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
-            if (currentStacksCount < _maxStack)
+            if (CurrentStacksCount < _maxStack)
             {
                 MakeHeal();
             }

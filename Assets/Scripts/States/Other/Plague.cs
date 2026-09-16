@@ -34,7 +34,7 @@ public class Plague : StateStackingRefreshing
         
         _healthResource = character.Character.TryGetResource(ResourceType.Health);
 
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         
         if (_healthResource == null)
             ExitState();
@@ -57,7 +57,7 @@ public class Plague : StateStackingRefreshing
     {
         float maxHp = _healthResource.MaxValue;
 
-        float damageValue = maxHp * 0.01f * currentStacksCount;
+        float damageValue = maxHp * 0.01f * CurrentStacksCount;
         
         var dmg = new Damage { Value = damageValue, School = Schools.Dark };
 
@@ -69,7 +69,7 @@ public class Plague : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacks) currentStacksCount++;
+        if (CurrentStacksCount < MaxStacks) CurrentStacksCount++;
 
 
         return true;
@@ -77,9 +77,9 @@ public class Plague : StateStackingRefreshing
 
     public override void ReduceStack()
     {
-        currentStacksCount--;
+        CurrentStacksCount--;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             
             ExitState();
@@ -98,7 +98,7 @@ public class Plague : StateStackingRefreshing
     public override void ExitState()
     {
         base.ExitState();
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _damageSum = 0;
     }
 

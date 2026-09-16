@@ -23,7 +23,7 @@ public class HardenedFlesh : StateStackingRefreshing
         abilities = character.Character.Abilities;
         
         
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         SetMaxStacks(_maxStacks);
         RemainingDuration = durationToExit;
 
@@ -36,15 +36,15 @@ public class HardenedFlesh : StateStackingRefreshing
         base.ExitState();
         RemoveModifier();
         
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < _maxStacks)
+        if (CurrentStacksCount < _maxStacks)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             ApplyOrUpdateModifier();
         }
 
@@ -60,7 +60,7 @@ public class HardenedFlesh : StateStackingRefreshing
         if (characterState?.Character == null) return;
 
         var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
-        float totalBonus = currentStacksCount * BuffPerStack;
+        float totalBonus = CurrentStacksCount * BuffPerStack;
 
         if (_resistanceModifier == null)
         {

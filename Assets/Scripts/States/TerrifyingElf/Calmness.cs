@@ -42,9 +42,9 @@ public class Calmness : StateStackingRefreshing
     public override void ReduceStack()
     {
         RemainingDuration = _baseDuration;
-        currentStacksCount--;
+        CurrentStacksCount--;
         RecalcRegenAmount(0, 0);
-        if (currentStacksCount == 0)
+        if (CurrentStacksCount == 0)
         {
             ExitState();
         }
@@ -52,7 +52,7 @@ public class Calmness : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         manaResource.MaxValueChanged -= RecalcRegenAmount;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
         
@@ -70,14 +70,14 @@ public class Calmness : StateStackingRefreshing
         _lastTreesCount = newTreesCount;
         SetMaxStacks(_baseMaxStacks + _lastTreesCount);
 
-        if (currentStacksCount > MaxStacksCount) currentStacksCount = MaxStacksCount;
+        if (CurrentStacksCount > MaxStacksCount) CurrentStacksCount = MaxStacksCount;
     }
 
     private void RecalcRegenAmount(float oldValue, float newValue)
     {
         if (manaResource != null)
         {
-            _regenAmount = manaResource.MaxValue * _manaRegenPercent * currentStacksCount;
+            _regenAmount = manaResource.MaxValue * _manaRegenPercent * CurrentStacksCount;
         }
     }
 

@@ -18,7 +18,7 @@ public class CorrodedArmorState : StateStackingRefreshing
     public CorrodedArmorState()
     {
         SetMaxStacks(5);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void Apply(CharacterState character,
@@ -43,9 +43,9 @@ public class CorrodedArmorState : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         _durationRemaining = time;
@@ -58,7 +58,7 @@ public class CorrodedArmorState : StateStackingRefreshing
     {
         if (health == null) return;
 
-        float totalReduction = currentStacksCount * ReductionPerStack;
+        float totalReduction = CurrentStacksCount * ReductionPerStack;
 
         health.DefPhysDamage -= _appliedReduction;
 
@@ -73,7 +73,7 @@ public class CorrodedArmorState : StateStackingRefreshing
             health.DefPhysDamage += _appliedReduction;
         }
         
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         _appliedReduction = 0f;
 
         

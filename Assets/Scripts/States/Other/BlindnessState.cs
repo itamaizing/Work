@@ -28,7 +28,7 @@ public class BlindnessStateStacking : StateStackingRefreshing
         _baseDuration = durationToExit;
         characterState = character;
         SetMaxStacks(1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         if (characterState.isOwned) ApplyEffectToLocalCamera();
 

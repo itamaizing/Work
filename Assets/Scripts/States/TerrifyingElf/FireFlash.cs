@@ -26,7 +26,7 @@ public class FireFlash : StateStackingRefreshing
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(currentStacksCount, 1, 9999);
+        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 9999);
     }
 
     public void SwitchToInfinite()
@@ -41,7 +41,7 @@ public class FireFlash : StateStackingRefreshing
         characterState = character;
         RemainingDuration = durationToExit;
         _timer = 0f;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -54,14 +54,14 @@ public class FireFlash : StateStackingRefreshing
         {
             _timer = 0f;
 
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount--;
+                CurrentStacksCount--;
                 
             }
 
             _remaining--;
-            if (currentStacksCount <= 0) ExitState();
+            if (CurrentStacksCount <= 0) ExitState();
         }
     }
 
@@ -69,8 +69,8 @@ public class FireFlash : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount >= MaxStacksCount) return false;
-        currentStacksCount++;
+        if (CurrentStacksCount >= MaxStacksCount) return false;
+        CurrentStacksCount++;
         if (!_infinite) SwitchToInfinite();
 
         return true;

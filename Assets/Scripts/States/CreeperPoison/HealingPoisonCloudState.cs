@@ -42,7 +42,7 @@ public class HealingPoisonCloudState : StateStackingRefreshing
             SearchAbilities();
         }
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -68,7 +68,7 @@ public class HealingPoisonCloudState : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -81,15 +81,15 @@ public class HealingPoisonCloudState : StateStackingRefreshing
 
         if (_explosion != null)
         {
-            _explosion.CurrentStacksHealingPoisonCloud(currentStacksCount, _radiusCloud);
+            _explosion.CurrentStacksHealingPoisonCloud(CurrentStacksCount, _radiusCloud);
         }
     }
 
     public void AddStacks()
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             RemainingDuration = _baseDuration;
         }
         else
@@ -99,7 +99,7 @@ public class HealingPoisonCloudState : StateStackingRefreshing
 
         if (_explosion != null)
         {
-            _explosion.CurrentStacksHealingPoisonCloud(currentStacksCount, _radiusCloud);
+            _explosion.CurrentStacksHealingPoisonCloud(CurrentStacksCount, _radiusCloud);
         }
     }
 
@@ -147,7 +147,7 @@ public class HealingPoisonCloudState : StateStackingRefreshing
     {
         Character targetCharacter = target.GetComponent<Character>();
 
-        _increasedHeal = _baseHeal * currentStacksCount;
+        _increasedHeal = _baseHeal * CurrentStacksCount;
         _endHeal = targetCharacter.Health.MaxValue * _increasedHeal;
 
         Heal heal = new Heal
@@ -162,7 +162,7 @@ public class HealingPoisonCloudState : StateStackingRefreshing
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         RemainingDuration = 0;
         _endHeal = 0;

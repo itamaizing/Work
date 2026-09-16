@@ -24,7 +24,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
 
     private Character _player;
 
-    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get =>RemainingDuration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
@@ -42,7 +42,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
 
         _baseDuration = durationToExit;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             UpdatePoisonBoneStackAtSkills();
@@ -62,11 +62,11 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
                     if (_creeperStrike == null)
                     {
                         _creeperStrike = creeperStrike;
-                        _creeperStrike.PoisonBoneStack = currentStacksCount;
+                        _creeperStrike.PoisonBoneStack = CurrentStacksCount;
                     }
                     else
                     {
-                        _creeperStrike.PoisonBoneStack = currentStacksCount;
+                        _creeperStrike.PoisonBoneStack = CurrentStacksCount;
                     }
                 }
                 if (ability is SpitPoison spitPoison)
@@ -74,7 +74,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
                     if (_spitPoison == null)
                     {
                         _spitPoison = spitPoison;
-                        _spitPoison.PoisonBoneStack = currentStacksCount;
+                        _spitPoison.PoisonBoneStack = CurrentStacksCount;
                     }
                 }
                 if (ability is PoisonBall poisonBall)
@@ -82,7 +82,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
                     if (_poisonBall == null)
                     {
                         _poisonBall = poisonBall;
-                        _poisonBall.PoisonBoneStack = currentStacksCount;
+                        _poisonBall.PoisonBoneStack = CurrentStacksCount;
                     }
                 }
                 if (ability is PoisonSlap poisonSlap)
@@ -90,7 +90,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
                     if (_poisonSlap == null)
                     {
                         _poisonSlap = poisonSlap;
-                        _poisonSlap.PoisonBoneStack = currentStacksCount;
+                        _poisonSlap.PoisonBoneStack = CurrentStacksCount;
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
 
     public override void UpdateState()
     {
-        if (currentStacksCount <= MaxStacksCount)
+        if (CurrentStacksCount <= MaxStacksCount)
         {
             _timeBetweenAttack -= Time.deltaTime;
             if (_timeBetweenAttack <= 0)
@@ -109,7 +109,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
             }
         }
 
-        if (currentStacksCount == 0)
+        if (CurrentStacksCount == 0)
         {
             ExitState();
         }
@@ -124,7 +124,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             UpdatePoisonBoneStackAtSkills();
@@ -145,14 +145,14 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
 
     private void AddStacks()
     {
-        currentStacksCount++;
+        CurrentStacksCount++;
         RemainingDuration = _baseDuration;
     }
 
     [Server]
     private void DamageDeal()
     {
-        _endDamage = currentStacksCount * _baseDamage;
+        _endDamage = CurrentStacksCount * _baseDamage;
 
         Damage damage = new Damage
         {
@@ -166,7 +166,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         RemainingDuration = 0;
         _endDamage = 0;

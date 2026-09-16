@@ -107,7 +107,7 @@ public class Burning : StateStackingRefreshing
 
         Damage damage = new Damage
         {
-            Value = _damage * (currentStacksCount + 1)
+            Value = _damage * (CurrentStacksCount + 1)
         };
         if (character.isClient)
             character.Character.CmdTryTakeDamage(damage, null);
@@ -125,7 +125,7 @@ public class Burning : StateStackingRefreshing
 
         if (_stackTimer <= 0)
         {
-            currentStacksCount--;
+            CurrentStacksCount--;
             if (CurrentStacksCount <= 0)
             {
                 ExitState();
@@ -138,7 +138,7 @@ public class Burning : StateStackingRefreshing
 
         if (_timeAfterLastEffect < _effectRate) return;
 
-        Damage damage = new Damage { Value = _damage * currentStacksCount };
+        Damage damage = new Damage { Value = _damage * CurrentStacksCount };
         if (characterState.isClient)
             characterState.Character.CmdTryTakeDamage(damage, null);
         _timeAfterLastEffect = 0;

@@ -38,7 +38,7 @@ public class OtherForceStateStacking : StateStackingRefreshing
         }
 
         SetMaxStacks(1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -66,7 +66,7 @@ public class OtherForceStateStacking : StateStackingRefreshing
         }
 
         _currentBonus = 0f;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         characterState?.RemoveState(this);
     }

@@ -26,7 +26,7 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
         characterState = character;
         _baseDuration = durationToExit;
         RemainingDuration = durationToExit;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         SetMaxStacks(_baseMaxStacks);
 
         _healthComponent = characterState.Character.Health;
@@ -48,9 +48,9 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             RemainingDuration = _baseDuration;
         }
         else
@@ -70,7 +70,7 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
         if (_spiritEnergyStateEffectInstance != null)
             _spiritEnergyStateEffectInstance.SetActive(false);
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         RemainingDuration = 0f;
         _baseDuration = 0f;
         _regenAmount = 0f;
@@ -84,11 +84,11 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        float manaRestoreValue = damage.Value * DamageManaRestorePercent * currentStacksCount;
+        float manaRestoreValue = damage.Value * DamageManaRestorePercent * CurrentStacksCount;
         ApplyRegen(manaRestoreValue);
     }
 
-    public float GetHealBonus() => currentStacksCount * 1f;
+    public float GetHealBonus() => CurrentStacksCount * 1f;
 
     public void ApplyRegen(float manaRestoreValue)
     {
@@ -99,6 +99,6 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
     private void RecalcRegenAmount()
     {
         if (_manaResource != null)
-            _regenAmount = _manaResource.MaxValue * DamageManaRestorePercent * currentStacksCount;
+            _regenAmount = _manaResource.MaxValue * DamageManaRestorePercent * CurrentStacksCount;
     }
 }

@@ -75,7 +75,7 @@ public abstract class StateBasic
     protected float DamageToExit =>
         parameters.TryGetValue(StateParameter.DamageToExit, out var v) ? (float)v : float.MaxValue;
 
-    private float _duration = -1f;
+    protected float _duration = -1f;
     private float _maxDuration = -1f;
     private string _displayText = "";
     private float _tickTimer;
@@ -195,15 +195,20 @@ public abstract class StateBasic
 	    ExitState();
 	    return true;
     }
+
+	protected void SendDurationChange(float duration, float max)
+	{
+		OnDurationChanged?.Invoke(this, duration, max);
+	}
 }
 
 public abstract class StateStacking : StateBasic
 {
-	protected int currentStacksCount = 0;
+	protected int сurrentStacksCount = 0;
 	public override int CurrentStacksCount
 	{
-		get => currentStacksCount;
-		protected set { currentStacksCount = value; UpdateDisplayText(); }
+		get => сurrentStacksCount;
+		protected set { сurrentStacksCount = value; UpdateDisplayText(); }
 	}
 
 	private int _maxStacksCount = 1;
@@ -213,7 +218,7 @@ public abstract class StateStacking : StateBasic
 	public override bool TryApply(CharacterState character, float durationToExit, float damageToExit,
 		Character sourceCaster, string skillName)
 	{
-		bool wasFirstApply = currentStacksCount == 0;
+		bool wasFirstApply = CurrentStacksCount == 0;
 		bool applied = base.TryApply(character, durationToExit, damageToExit, sourceCaster, skillName);
 
 		if (applied && wasFirstApply)
@@ -229,8 +234,8 @@ public abstract class StateStacking : StateBasic
 
 	public virtual bool Stack(float time)
 	{
-		if (currentStacksCount < MaxStacksCount)
-			CurrentStacksCount = currentStacksCount + 1;
+		if (CurrentStacksCount < MaxStacksCount)
+			CurrentStacksCount = CurrentStacksCount + 1;
 
 		RemainingDuration = MaxDuration;
 		return true;
@@ -238,17 +243,17 @@ public abstract class StateStacking : StateBasic
 
 	public virtual void ReduceStack()
 	{
-		if (currentStacksCount <= 1)
+		if (CurrentStacksCount <= 1)
 		{
 			ExitState();
 			return;
 		}
 
-		CurrentStacksCount = currentStacksCount - 1;
+		CurrentStacksCount = CurrentStacksCount - 1;
 		RemainingDuration = MaxDuration;
 	}
 
-	protected virtual void UpdateDisplayText() => DisplayText = currentStacksCount.ToString();
+	protected virtual void UpdateDisplayText() => DisplayText = CurrentStacksCount.ToString();
 
 	public override void GlobalUpdate()
 	{
@@ -266,13 +271,27 @@ public abstract class StateStacking : StateBasic
 
 public abstract class StateStackingRefreshing : StateStacking
 {
-	public virtual float StackLingerTime => 0.2f;
+	/// <summary>
+	/// <0:	Окончание 1 стака сбрасывает все состояние
+	/// 0:	После окончания 1 стака предыдущий живет MaxDuration
+	/// >0:	После окончания 1 стака предыдущий живет LingerTime
+	/// </summary>
+	public virtual float StackLingerTime => 0;
 
 	public override void ReduceStack()
 	{
-		if (currentStacksCount <= 1) { ExitState(); return; }
-		CurrentStacksCount = currentStacksCount - 1;
-		RemainingDuration = StackLingerTime;
+		if (CurrentStacksCount <= 1) { ExitState(); return; }
+		CurrentStacksCount = CurrentStacksCount - 1;
+
+		if (StackLingerTime < 0)
+			ExitState();
+		else if (StackLingerTime == 0)
+			RemainingDuration = MaxDuration;
+		else
+		{
+			_duration = StackLingerTime;
+			SendDurationChange(StackLingerTime, StackLingerTime);
+		}
 	}
 }
 
@@ -291,31 +310,32 @@ public class StackInfo
 public abstract class StateStackingIndependent : StateStacking
 {
 	protected readonly List<StackInfo> stacks = new();
+    public override int CurrentStacksCount { get => stacks.Count; }
+
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
+    {
+		Stack(durationToExit);
+    }
 
 	public override bool Stack(float time)
 	{
-		if (currentStacksCount < MaxStacksCount)
-		{
-			currentStacksCount++;
-			UpdateDisplayText();
-		}
-		else
-		{
+		if (CurrentStacksCount >= MaxStacksCount)
 			stacks.RemoveAt(0);
-		}
 
 		stacks.Add(CreateStackInfo(time));
 		MaxDuration = stacks[^1].MaxDuration;
 		RemainingDuration = stacks[^1].CurrentDuration;
+		UpdateDisplayText();
+
 		return true;
 	}
+
 
 	protected virtual StackInfo CreateStackInfo(float duration) => new StackInfo(duration);
 
 	public override void ReduceStack()
 	{
-		if (currentStacksCount <= 1) { ExitState(); return; }
-		currentStacksCount--;
+		if (CurrentStacksCount <= 1) { ExitState(); return; }
 		UpdateDisplayText();
 		stacks.RemoveAt(0);
 	}
@@ -330,12 +350,12 @@ public abstract class StateStackingIndependent : StateStacking
 			stacks[i].CurrentDuration -= Time.deltaTime;
 			if (stacks[i].CurrentDuration <= 0f) RemoveStackAt(i);
 		}
+		RemainingDuration -= Time.deltaTime;
 	}
 
 	protected void RemoveStackAt(int index)
 	{
 		stacks.RemoveAt(index);
-		currentStacksCount--;
 		UpdateDisplayText();
 
 		if (stacks.Count == 0) ExitState();
@@ -489,7 +509,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyStateStacking(),
 		[States.SpiritHealth] = new SpiritHealthStateStacking(),
-		[States.DisciplineAura]   = new DisciplineAuraStateStacking(),
+		[States.DisciplineAura] = new DisciplineAuraStateStacking(),
 
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
@@ -578,7 +598,7 @@ public class CharacterState : NetworkBehaviour
 		[States.MultiMagic] = new MultiMagic(),
 		[States.FireFlash] = new FireFlash(),
 		[States.WarmingUpState] = new WarmingUpStateStacking(),
-		
+
 		#endregion
 
 		#region Gandollarf	
@@ -587,13 +607,13 @@ public class CharacterState : NetworkBehaviour
 		[States.MagicWater] = new MagicWater(),
 		[States.HotBloodBuff] = new HotAuraBuff(),
 		[States.GodAuraBuff] = new GodAuraBuff(),
-        [States.TransformationDebuff] = new TransformationDebuff(),
-        [States.PetrificationDebuff] = new PetrificationStateStacking(),
-        [States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
-        [States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
-        [States.Burning] = new Burning(),
-        [States.BurningMatter] = new BurningMatterDebuff(),
-        [States.Burn] = new Burn(),
+		[States.TransformationDebuff] = new TransformationDebuff(),
+		[States.PetrificationDebuff] = new PetrificationStateStacking(),
+		[States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
+		[States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
+		[States.Burning] = new Burning(),
+		[States.BurningMatter] = new BurningMatterDebuff(),
+		[States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
@@ -602,10 +622,10 @@ public class CharacterState : NetworkBehaviour
 		[States.ImmortalityState] = new ImmortalityState(),
 		#endregion
 
-        #region Test Baff and Debaff
-        [States.BaffState] = new BaffState(),
+		#region Test Baff and Debaff
+		[States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
-        #endregion
+		#endregion
 	};
 
 	public void Initialize(Character hero)

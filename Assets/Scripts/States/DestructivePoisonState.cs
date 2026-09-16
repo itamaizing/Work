@@ -47,7 +47,7 @@ public class DestructivePoisonStateStacking : StateStackingRefreshing
 
             if (_health == null || _target == null || _target.IsDead) return;
 
-            float damageValue = DamagePerTick * currentStacksCount;
+            float damageValue = DamagePerTick * CurrentStacksCount;
 
             if (NetworkServer.active) DestructiveDamage();
 
@@ -59,16 +59,16 @@ public class DestructivePoisonStateStacking : StateStackingRefreshing
     {
         RemainingDuration = time;
 
-        if (currentStacksCount >= MaxStacksCount)
+        if (CurrentStacksCount >= MaxStacksCount)
             return false;
 
-        currentStacksCount++;
+        CurrentStacksCount++;
         return true;
     }
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
     }
 
@@ -78,7 +78,7 @@ public class DestructivePoisonStateStacking : StateStackingRefreshing
     {
         if (_target == null || _target.IsDead) return;
 
-        float damageValue = DamagePerTick * currentStacksCount;
+        float damageValue = DamagePerTick * CurrentStacksCount;
 
         Debug.Log($"damageValue: {damageValue}");
 

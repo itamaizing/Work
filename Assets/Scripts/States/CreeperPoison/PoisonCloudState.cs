@@ -63,7 +63,7 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
 
     public override void ReduceStack()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         ExitState();
     }
 
@@ -71,9 +71,9 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
     {
         RemainingDuration = _baseDuration;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         return true;
@@ -94,7 +94,7 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
             Character target = col.GetComponent<Character>();
             if (target == null || target == _caster || target.IsDead) continue;
             
-            float percentDamage = _baseDamagePercent * currentStacksCount;
+            float percentDamage = _baseDamagePercent * CurrentStacksCount;
             float endDamageValue = target.Health.MaxValue * percentDamage;
 
             Damage damage = new Damage()
@@ -130,7 +130,7 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         RemainingDuration = 0;
     }

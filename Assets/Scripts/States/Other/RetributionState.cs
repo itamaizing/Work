@@ -23,7 +23,7 @@ public class RetributionStateStacking : StateStackingRefreshing
         _baseDuration = durationToExit;
         RemainingDuration = durationToExit;
         SetMaxStacks(3);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         GetLightSkills();
         IncreaseLightSkillDamage();
 
@@ -80,8 +80,8 @@ public class RetributionStateStacking : StateStackingRefreshing
     
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
-            currentStacksCount++;
+        if (CurrentStacksCount < MaxStacksCount)
+            CurrentStacksCount++;
 
         RemainingDuration = _baseDuration;
         RemainingDuration = _baseDuration;
@@ -92,7 +92,7 @@ public class RetributionStateStacking : StateStackingRefreshing
     public override void ExitState()
     {
         RemainingDuration = 0f;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         ReturnToBaseDamage();
         characterState?.RemoveState(this);
         characterState = null;

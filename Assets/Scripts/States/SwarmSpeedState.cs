@@ -26,7 +26,7 @@ public class SwarmSpeedStateStacking : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         RemoveSpeedModifier();
         base.ExitState();
     }

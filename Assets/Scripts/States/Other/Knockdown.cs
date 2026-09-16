@@ -29,7 +29,7 @@ public class Knockdown : StateStackingRefreshing
         _duration = durationToExit;
         _baseDuration = durationToExit;
         SetMaxStacks(3);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         ApplyDebuff();
     }
@@ -42,9 +42,9 @@ public class Knockdown : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             _duration = _baseDuration;
             ApplyDebuff();
             return true;
@@ -68,7 +68,7 @@ public class Knockdown : StateStackingRefreshing
         var abilities = characterState.GetComponentInChildren<SkillManager>();
         foreach (var ability in abilities.Abilities)
         {
-            float reduction = 1f + (0.01f * currentStacksCount);
+            float reduction = 1f + (0.01f * CurrentStacksCount);
             ability.Buff.Damage.ReductionPercentage(reduction);
         }
     }
@@ -78,7 +78,7 @@ public class Knockdown : StateStackingRefreshing
         var abilities = characterState.GetComponentInChildren<SkillManager>();
         foreach (var ability in abilities.Abilities)
         {
-            float reduction = 1f + (0.01f * currentStacksCount);
+            float reduction = 1f + (0.01f * CurrentStacksCount);
             ability.Buff.Damage.IncreasePercentage(reduction);
         }
     }

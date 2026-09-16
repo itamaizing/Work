@@ -22,7 +22,7 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
 
         _armorModifier.Source = this;
 
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         ApplyReduction();
     }
@@ -31,13 +31,13 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
     {
         RemainingDuration = time;
 
-        if (currentStacksCount >= MaxStacksCount)
+        if (CurrentStacksCount >= MaxStacksCount)
         {
             ApplyReduction();
             return false;
         }
 
-        currentStacksCount++;
+        CurrentStacksCount++;
         ApplyReduction();
 
         return true;
@@ -47,7 +47,7 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
     {
         if (characterState == null || characterState.Character == null) return;
 
-        float newValue = currentStacksCount * ReductionPerStackPercent;
+        float newValue = CurrentStacksCount * ReductionPerStackPercent;
 
         var armorAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
 
@@ -62,7 +62,7 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
 
     public override void ReduceStack()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         ExitState();
             
     }
@@ -70,7 +70,7 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
     public override void ExitState()
     {
         RemoveReduction();
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         base.ExitState();
     }
 

@@ -25,7 +25,7 @@ public class LightningEvadeStateStacking : StateStackingRefreshing
         _evadePhysicalModifier.Source = this;
         _evadeMagicalModifier.Source = this;
 
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         ApplyEvade();
     }
@@ -34,10 +34,10 @@ public class LightningEvadeStateStacking : StateStackingRefreshing
     {
         RemainingDuration = time;
 
-        if (currentStacksCount >= MaxStacksCount)
+        if (CurrentStacksCount >= MaxStacksCount)
             return false;
 
-        currentStacksCount++;
+        CurrentStacksCount++;
         ApplyEvade();
 
         return true;
@@ -45,7 +45,7 @@ public class LightningEvadeStateStacking : StateStackingRefreshing
 
     private void ApplyEvade()
     {
-        float newValue = currentStacksCount * _evadePerStack;
+        float newValue = CurrentStacksCount * _evadePerStack;
 
         var physical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical];
         var magical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionMagical];
@@ -62,13 +62,13 @@ public class LightningEvadeStateStacking : StateStackingRefreshing
 
     public override void ReduceStack()
     {
-        currentStacksCount--;
+        CurrentStacksCount--;
         ExitState();
     }
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         RemoveEvade();
         base.ExitState();
     }

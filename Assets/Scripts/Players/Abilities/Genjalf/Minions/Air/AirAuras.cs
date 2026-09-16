@@ -46,7 +46,7 @@ namespace Gangdollarff.AirElemental
 
         public override void ExitState()
         {
-            currentStacksCount = 0;
+            CurrentStacksCount = 0;
             RemoveSlow();
             characterState.RemoveState(this);
         }

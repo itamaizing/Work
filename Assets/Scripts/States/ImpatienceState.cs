@@ -73,7 +73,7 @@ public class ImpatienceStateStacking : StateStackingRefreshing
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
         }
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
     }
 

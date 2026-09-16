@@ -43,7 +43,7 @@ public class ShieldBaff : StateStackingRefreshing, IDamageable
     {
         //_duration = time;
         //_damageAbsorbed = 0;
-        currentStacksCount += 1;
+        CurrentStacksCount += 1;
         return false;
     }
 

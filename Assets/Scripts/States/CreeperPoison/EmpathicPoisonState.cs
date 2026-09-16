@@ -35,7 +35,7 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
 
-    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get =>RemainingDuration; }
 
     public event Action<Damage, Skill> DamageTaken;
@@ -66,9 +66,9 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 
         _baseDuration = durationToExit;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
     }
 
@@ -79,7 +79,7 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (currentStacksCount > 0)
+        if (CurrentStacksCount > 0)
         {
           //  Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
             switch (_damageType)
@@ -135,7 +135,7 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
         _playerPosition = _player.transform.position;
         _characterPosition = characterState.transform.position;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -165,9 +165,9 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             RemainingDuration = _baseDuration;
             return true;
         }
@@ -180,9 +180,9 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 
     private void ReducingChanceOfHittingAtEnemy()
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _increasedEvasionValue = _baseEvasionValue * currentStacksCount;
+            _increasedEvasionValue = _baseEvasionValue * CurrentStacksCount;
             _evadeMeleePhysicalDamage += _increasedEvasionValue;
             _evadeRangePhysicalDamage += _increasedEvasionValue;
         }
@@ -203,7 +203,7 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         RemainingDuration = 0;
 

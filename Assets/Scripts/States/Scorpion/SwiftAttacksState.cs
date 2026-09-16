@@ -40,7 +40,7 @@ public class SwiftAttacksStateStacking : StateStackingRefreshing
         }
 
         SetMaxStacks(1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     private void ApplySpeedBuff()
@@ -89,7 +89,7 @@ public class SwiftAttacksStateStacking : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         
         foreach (var skill in _affectedSkills)
         {

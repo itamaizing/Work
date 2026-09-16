@@ -27,7 +27,7 @@ public class WarmingUpStateStacking : StateStackingRefreshing
 	    public WarmingUpStateStacking()
     {
         SetMaxStacks(3);
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit,
@@ -35,7 +35,7 @@ public class WarmingUpStateStacking : StateStackingRefreshing
     {
         characterState = character;
         _baseDuration = durationToExit;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         _castSpeedModifier.Source = this;
         _incomingHealModifier.Source = this;
@@ -60,9 +60,9 @@ public class WarmingUpStateStacking : StateStackingRefreshing
     public override bool Stack(float time)
     {
         RemainingDuration = time;
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             UpdateCastSpeedBonus();
             return true;
         }
@@ -72,9 +72,9 @@ public class WarmingUpStateStacking : StateStackingRefreshing
 
     public override void ReduceStack()
     {
-        currentStacksCount--;
+        CurrentStacksCount--;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             
             ExitState();
@@ -94,7 +94,7 @@ public class WarmingUpStateStacking : StateStackingRefreshing
         var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
         if (castSpeedAttr == null) return;
 
-        _castSpeedModifier.Value = BonusPerStack * currentStacksCount;
+        _castSpeedModifier.Value = BonusPerStack * CurrentStacksCount;
 
         if (!castSpeedAttr.Modifiers.Contains(_castSpeedModifier))
         {
@@ -126,7 +126,7 @@ public class WarmingUpStateStacking : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         RemoveBuffs();
         
         base.ExitState();

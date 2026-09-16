@@ -32,7 +32,7 @@ public class HealingSlime : StateStackingRefreshing
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(currentStacksCount, 1, 999f);
+        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 999f);
     }
 
     public void SwitchToInfinite()
@@ -44,7 +44,7 @@ public class HealingSlime : StateStackingRefreshing
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         characterState = character;
 
         SwitchToInfinite();
@@ -58,7 +58,7 @@ public class HealingSlime : StateStackingRefreshing
             health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
         }
         
-        UpdateAttributeValues(currentStacksCount);
+        UpdateAttributeValues(CurrentStacksCount);
     }
 
     public override void UpdateState()
@@ -70,28 +70,28 @@ public class HealingSlime : StateStackingRefreshing
         {
             _timer = 0f;
 
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount--;
+                CurrentStacksCount--;
 
                 
             }
 
-            UpdateAttributeValues(currentStacksCount);
+            UpdateAttributeValues(CurrentStacksCount);
             
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || CurrentStacksCount <= 0) ExitState();
         }
     }
     
     public override bool Stack(float _)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
 
         }
-        UpdateAttributeValues(currentStacksCount);
+        UpdateAttributeValues(CurrentStacksCount);
 
         if (!_infinite) SwitchToInfinite();
 
@@ -108,7 +108,7 @@ public class HealingSlime : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _infinite = false;
 
         if (health != null && !characterState.isClient)

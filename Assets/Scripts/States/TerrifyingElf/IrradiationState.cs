@@ -46,13 +46,13 @@ public class IrradiationState : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             RemainingDuration = _baseDuration;
             ApplyMagicDefenseReduction();
 
-            Debug.Log($"Stacking Irradiation. Current stacks: {currentStacksCount}, New duration: {RemainingDuration}s");
+            Debug.Log($"Stacking Irradiation. Current stacks: {CurrentStacksCount}, New duration: {RemainingDuration}s");
             return true;
         }
         else

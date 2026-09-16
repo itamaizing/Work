@@ -31,7 +31,7 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
         _baseDuration = durationToExit;
         RemainingDuration = durationToExit;
         _tickTimer = TickInterval;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         _player = personWhoMadeBuff;
 
@@ -62,7 +62,7 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
             _tickTimer = TickInterval;
         }
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -70,7 +70,7 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
     
     public override void ReduceStack()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         ExitState();
     }
 
@@ -78,9 +78,9 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
     {
         RemainingDuration = time;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         return true;
@@ -88,7 +88,7 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         ResetValues();
         base.ExitState();
     }
@@ -101,7 +101,7 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
         var mainResource = characterState.Character.Resource;
         if (mainResource != null && mainResource.CurrentValue > 0f)
         {
-            float burnAmount = mainResource.CurrentValue * (ResourceBurnPercent * currentStacksCount);
+            float burnAmount = mainResource.CurrentValue * (ResourceBurnPercent * CurrentStacksCount);
 
             if (burnAmount > 0f)
             {
@@ -122,7 +122,7 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0f;
         RemainingDuration = 0f;
         _tickTimer = TickInterval;

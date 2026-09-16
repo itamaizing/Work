@@ -35,7 +35,7 @@ public class CounterRageStateStacking : StateStackingRefreshing
             _energyResource.AddMax(CurrentBonus, keepPercent: true);
 
         SetMaxStacks(1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -72,7 +72,7 @@ public class CounterRageStateStacking : StateStackingRefreshing
         }
 
         CurrentBonus = 0f;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState?.RemoveState(this);
     }
 

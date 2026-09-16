@@ -33,10 +33,10 @@ public class FeelingPoisoningStateStacking : StateStackingRefreshing
     {
         RemainingDuration = time;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             ApplyRegenBonus();
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         return true;
@@ -50,9 +50,9 @@ public class FeelingPoisoningStateStacking : StateStackingRefreshing
 
     public override void ReduceStack()
     {
-        currentStacksCount--;
+        CurrentStacksCount--;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
             return;

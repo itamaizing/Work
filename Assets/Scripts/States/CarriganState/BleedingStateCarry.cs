@@ -39,7 +39,7 @@ public class BleedingStateStackingCarry : StateStackingRefreshing
         _timeBetweenAttack = _startTimeBetweenAttack;
 
         SetMaxStacks(1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override bool Stack(float time)
@@ -62,7 +62,7 @@ public class BleedingStateStackingCarry : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
     }
 

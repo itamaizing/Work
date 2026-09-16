@@ -28,7 +28,7 @@ public class ParasitesStateStacking : StateStackingRefreshing
         this.sourceCaster = personWhoMadeBuff;
 
         RemainingDuration = durationToExit;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         _tickTimer = TickInterval;
     }
@@ -44,7 +44,7 @@ public class ParasitesStateStacking : StateStackingRefreshing
         {
             _tickTimer = TickInterval;
 
-            float percentDamage = health.CurrentValue * PercentDamage * currentStacksCount;
+            float percentDamage = health.CurrentValue * PercentDamage * CurrentStacksCount;
 
             Damage damage = new Damage
             {
@@ -60,8 +60,8 @@ public class ParasitesStateStacking : StateStackingRefreshing
     {
         RemainingDuration = time;
 
-        if (currentStacksCount >= MaxStacksCount) return false;
-        currentStacksCount++;
+        if (CurrentStacksCount >= MaxStacksCount) return false;
+        CurrentStacksCount++;
 
         return true;
     }

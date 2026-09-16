@@ -13,14 +13,14 @@ public class FocusingOnReflexesStateStacking : StateStackingRefreshing
     public FocusingOnReflexesStateStacking()
     {
         SetMaxStacks(1);
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         this.sourceCaster = personWhoMadeBuff;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -35,7 +35,7 @@ public class FocusingOnReflexesStateStacking : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         
         characterState.RemoveState(this);
     }

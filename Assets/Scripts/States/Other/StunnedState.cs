@@ -17,7 +17,7 @@ public class StunnedStateStacking : StateStackingRefreshing
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		SetMaxStacks(1);
-		currentStacksCount = 1;
+		CurrentStacksCount = 1;
 		RemainingDuration = Mathf.Min(durationToExit, _maxDuration);
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -51,7 +51,7 @@ public class StunnedStateStacking : StateStackingRefreshing
 
 	public override void ExitState()
 	{
-		currentStacksCount = 0;
+		CurrentStacksCount = 0;
 		 characterState.Character.Move.IsMoveBlocked = false;
 		abilities.SetAbilitiesDisactive(false);
 		characterState.RemoveState(this);

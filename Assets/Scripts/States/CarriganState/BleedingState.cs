@@ -26,7 +26,7 @@ public class BleedingStateStacking : StateStackingRefreshing
         _timeBetweenAttack = _startTimeBetweenAttack;
 
         SetMaxStacks(3);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -42,9 +42,9 @@ public class BleedingStateStacking : StateStackingRefreshing
     
     public override void ReduceStack()
     {
-        currentStacksCount--;
+        CurrentStacksCount--;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             
             ExitState();
@@ -62,9 +62,9 @@ public class BleedingStateStacking : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < 3)
+        if (CurrentStacksCount < 3)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
         RemainingDuration = _baseDuration;
         

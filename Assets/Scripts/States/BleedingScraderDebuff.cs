@@ -20,7 +20,7 @@ public class BleedingScraderDebuff : StateStackingRefreshing
     public BleedingScraderDebuff()
     {
         SetMaxStacks(3);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -39,9 +39,9 @@ public class BleedingScraderDebuff : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             _baseDamage += _damage;
         }
 
@@ -75,9 +75,9 @@ public class BleedingScraderDebuff : StateStackingRefreshing
     {
         if (RemainingDuration < 0)
         {
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount--;
+                CurrentStacksCount--;
                 _baseDamage -= _damage;
                 RemainingDuration = _baseDuration;
             }

@@ -59,7 +59,7 @@ public class GodAuraBuff : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount == 0)
+        if (CurrentStacksCount == 0)
         {
             return true;
         }
@@ -67,7 +67,7 @@ public class GodAuraBuff : StateStackingRefreshing
         _baseDuration = time;
         _stackTimer = _baseDuration;
 
-        UpdateModifier(currentStacksCount + 1);
+        UpdateModifier(CurrentStacksCount + 1);
 
         return true;
     }
@@ -89,20 +89,20 @@ public class GodAuraBuff : StateStackingRefreshing
 
         if (_stackTimer <= 0)
         {
-            currentStacksCount--;
+            CurrentStacksCount--;
 
-            if (currentStacksCount <= 0)
+            if (CurrentStacksCount <= 0)
             {
                 ExitState();
                 return;
             }
             
-            _stackTimer = currentStacksCount == 1 ? -1f : _baseDuration;
+            _stackTimer = CurrentStacksCount == 1 ? -1f : _baseDuration;
             if (_stackTimer == -1f)
             {
     
             }
-            UpdateModifier(currentStacksCount);
+            UpdateModifier(CurrentStacksCount);
         }
     }
 
@@ -110,7 +110,7 @@ public class GodAuraBuff : StateStackingRefreshing
     {
         RemoveModifierFromAllSkills(_modifier);
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _stackTimer = 0;
         _modifier.Value = _modifierPerStack;

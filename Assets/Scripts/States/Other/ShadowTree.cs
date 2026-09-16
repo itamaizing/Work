@@ -28,7 +28,7 @@ public class ShadowTree : StateStackingRefreshing
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(currentStacksCount, 1, 9999);
+        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 9999);
     }
 
     public void SwitchToInfinite()
@@ -44,7 +44,7 @@ public class ShadowTree : StateStackingRefreshing
         sourceCaster = caster;
         _infinite = true;
         RemainingDuration = 9999;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         Stack(0);
     }
 
@@ -57,22 +57,22 @@ public class ShadowTree : StateStackingRefreshing
         {
             _timer = 0f;
 
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount--;
+                CurrentStacksCount--;
                 characterState.Character.Health.AddMax(-BonusPerStack);
                 
             }
             
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || CurrentStacksCount <= 0) ExitState();
         }
     }
 
     public override bool Stack(float _)
     {
-        if (currentStacksCount >= MaxStacksCount) return false;
-        currentStacksCount++;
+        if (CurrentStacksCount >= MaxStacksCount) return false;
+        CurrentStacksCount++;
         characterState.Character.Health.AddMax(BonusPerStack);
 
 
@@ -82,7 +82,7 @@ public class ShadowTree : StateStackingRefreshing
 
     public override void ExitState()
     {
-        if (currentStacksCount > 0)  characterState.Character.Health.AddMax(-currentStacksCount * BonusPerStack);
+        if (CurrentStacksCount > 0)  characterState.Character.Health.AddMax(-CurrentStacksCount * BonusPerStack);
         characterState.RemoveState(this);
     }
 }

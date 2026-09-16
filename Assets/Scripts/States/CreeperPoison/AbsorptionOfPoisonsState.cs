@@ -57,7 +57,7 @@ public class AbsorptionOfPoisonsState : StateStackingRefreshing
     private void IncreaseHealth()
     {
         _player.Health.RemoveModifier(_attributeModifiers);
-        float increasingValue = currentStacksCount * _baseHealthIncrease;
+        float increasingValue = CurrentStacksCount * _baseHealthIncrease;
 
         _increasedHealth = _maxHealth * increasingValue;
 
@@ -75,7 +75,7 @@ public class AbsorptionOfPoisonsState : StateStackingRefreshing
         _player.Health.RemoveModifier(_attributeModifiers);
         _allIncreasedHealth = 0;
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         _duration = 0;
 

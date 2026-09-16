@@ -52,20 +52,20 @@ public class InnerDarkness : StateStackingRefreshing
     public override void ExitState()
     {
         characterState.RemoveState(this);
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override bool Stack(float time)
     {
-        Debug.Log($"CurrentStacksCount: {currentStacksCount}");
+        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
 
-        if(currentStacksCount < MaxStacksCount)
+        if(CurrentStacksCount < MaxStacksCount)
         {
             AddNewStack(time);
             return true;
         }
 
-        else if (currentStacksCount == MaxStacksCount)
+        else if (CurrentStacksCount == MaxStacksCount)
         {
             UpdateDurationForMaxStacks(time);
             return false;
@@ -76,16 +76,16 @@ public class InnerDarkness : StateStackingRefreshing
 
     private void AddNewStack(float time)
     {
-        currentStacksCount++;
+        CurrentStacksCount++;
 
-        if (currentStacksCount == MaxStacksCount) CmdStateFear();
+        if (CurrentStacksCount == MaxStacksCount) CmdStateFear();
 
-        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
+        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
     }
 
     private void UpdateDurationForMaxStacks(float time)
     {
-        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
+        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
         CmdStateFear();
         Debug.Log("обновление при максимальном стаке");
     }

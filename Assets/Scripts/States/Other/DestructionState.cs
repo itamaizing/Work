@@ -38,7 +38,7 @@ public class DestructionStateStacking : StateStackingRefreshing
         _isActive = true;
 
         SetMaxStacks(IsStackingMode ? 2 : 1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         ApplyDamageTick();
     }
@@ -58,7 +58,7 @@ public class DestructionStateStacking : StateStackingRefreshing
 
     private void ApplyDamageTick()
     {
-        int effectiveStacks = Mathf.Min(currentStacksCount, MaxStacksCount);
+        int effectiveStacks = Mathf.Min(CurrentStacksCount, MaxStacksCount);
         float damageValue = _damagePerTickBase * effectiveStacks;
 
         CmdDamage(damageValue);
@@ -101,8 +101,8 @@ public class DestructionStateStacking : StateStackingRefreshing
             return true;
         }
         
-        if (currentStacksCount < MaxStacksCount)
-            currentStacksCount++;
+        if (CurrentStacksCount < MaxStacksCount)
+            CurrentStacksCount++;
 
         RemainingDuration = _baseDuration;
         RemainingDuration = _baseDuration;
@@ -115,7 +115,7 @@ public class DestructionStateStacking : StateStackingRefreshing
         _isActive = false;
         RemainingDuration = 0f;
         _timer = 0f;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState?.RemoveState(this);
         characterState = null;
     }

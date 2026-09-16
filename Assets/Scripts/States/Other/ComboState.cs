@@ -17,7 +17,7 @@ public class ComboStateStacking : StateStackingRefreshing
 
     public ComboStateStacking()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -31,7 +31,7 @@ public class ComboStateStacking : StateStackingRefreshing
         {
             SetMaxStacks(MaxStacksCount + 1);
         }
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -46,15 +46,15 @@ public class ComboStateStacking : StateStackingRefreshing
 
     public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
     }
     
     public override void ReduceStack()
     {
-        currentStacksCount--;
+        CurrentStacksCount--;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             
             ExitState();
@@ -67,9 +67,9 @@ public class ComboStateStacking : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             return true;
         }
 

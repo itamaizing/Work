@@ -14,18 +14,18 @@ public class TiredSoul : StateStacking
     {
         characterState = character;
         _baseDuration = durationToExit;
-        currentStacksCount++;
+        CurrentStacksCount++;
         SetMaxStacks(2);
     }
 
     public override void UpdateState()
     { 
-        if (RemainingDuration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
+        if (RemainingDuration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
         {
-            currentStacksCount--;
-            RemainingDuration = _baseDuration * currentStacksCount;
+            CurrentStacksCount--;
+            RemainingDuration = _baseDuration * CurrentStacksCount;
 
-            if (currentStacksCount == 0)
+            if (CurrentStacksCount == 0)
             {
                 ExitState();
             }
@@ -42,11 +42,11 @@ public class TiredSoul : StateStacking
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             RemainingDuration += time;
-            RemainingDuration = Mathf.Min(RemainingDuration, _baseDuration * currentStacksCount);
+            RemainingDuration = Mathf.Min(RemainingDuration, _baseDuration * CurrentStacksCount);
         }
         return true;
     }

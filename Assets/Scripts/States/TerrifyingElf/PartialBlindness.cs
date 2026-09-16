@@ -36,7 +36,7 @@ public class PartialBlindness : StateStackingRefreshing
         _baseDuration = durationToExit;
 
         SetMaxStacks(MaxStacks);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         _isDoubleMissChance = skillName == PartialBlindnessTalentSkillName;
 
@@ -48,7 +48,7 @@ public class PartialBlindness : StateStackingRefreshing
     {
         _character.Abilities.OnSkillPreparedSuccessfully -= HandleSkillPrepared;
         characterState.RemoveState(this);
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override void UpdateState()

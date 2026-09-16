@@ -17,7 +17,7 @@ public class BaffState : StateStackingRefreshing
     public BaffState()
     {
         SetMaxStacks(20);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -46,9 +46,9 @@ public class BaffState : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             _durationRemaining = time;
 
             return true;

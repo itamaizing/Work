@@ -36,7 +36,7 @@ public class DisappointmentStateStacking : StateStackingRefreshing
         }
 
         SetMaxStacks(1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -77,7 +77,7 @@ public class DisappointmentStateStacking : StateStackingRefreshing
             tracker?.OnEffectEnded(DrGroup);
         }
         
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
     }
 

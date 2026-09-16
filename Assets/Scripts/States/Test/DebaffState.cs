@@ -18,7 +18,7 @@ public class DebaffState : StateStacking
     public DebaffState()
     {
         SetMaxStacks(20);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -47,9 +47,9 @@ public class DebaffState : StateStacking
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             _durationRemaining = time;
 
             return true;

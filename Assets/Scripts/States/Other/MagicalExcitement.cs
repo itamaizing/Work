@@ -28,7 +28,7 @@ public class MagicalExcitement : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        currentStacksCount++;
+        CurrentStacksCount++;
 
         _duration = time;
 

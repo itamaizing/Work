@@ -11,7 +11,7 @@ public class BindingPoisonState : StateStackingRefreshing
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get => RemainingDuration; }
 
     public override States State => States.BindingPoison;
@@ -27,7 +27,7 @@ public class BindingPoisonState : StateStackingRefreshing
         _baseDuration = durationToExit;
         SetMaxStacks(_maxStacks);
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -37,7 +37,7 @@ public class BindingPoisonState : StateStackingRefreshing
 
     public override void UpdateState()
     {
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -57,7 +57,7 @@ public class BindingPoisonState : StateStackingRefreshing
     public override bool Stack(float time)
     {
         //Debug.Log($"BindingPoisonState / Stack / CharacterManager = {_skillManager}");
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -71,9 +71,9 @@ public class BindingPoisonState : StateStackingRefreshing
 
     public void AddStacks()
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
             RemainingDuration = _baseDuration;
         }
@@ -105,7 +105,7 @@ public class BindingPoisonState : StateStackingRefreshing
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         RemainingDuration = 0;
     }

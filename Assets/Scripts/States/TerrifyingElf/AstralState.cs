@@ -31,7 +31,7 @@ public class AstralStateStacking : StateStackingRefreshing
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         
         _moveMod.Value = -0.5f;
         _moveMod.Type = ModifierType.Multiplier;

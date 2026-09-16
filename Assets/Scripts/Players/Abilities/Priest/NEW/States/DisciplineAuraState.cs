@@ -27,7 +27,7 @@ public class DisciplineAuraStateStacking : StateStackingRefreshing
         characterState     = character;
         _priest            = personWhoMadeBuff;
         RemainingDuration           = _auraDuration;
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _checkTimer        = 0f;
 
         AddModifierToCharacter(_priest, isPriest: true);
@@ -55,7 +55,7 @@ public class DisciplineAuraStateStacking : StateStackingRefreshing
         {
             if (_charactersInRadius.Contains(ally)) continue;
             _charactersInRadius.Add(ally);
-            for (int i = 0; i < currentStacksCount; i++)
+            for (int i = 0; i < CurrentStacksCount; i++)
                 AddModifierToCharacter(ally, isPriest: false);
         }
 
@@ -76,7 +76,7 @@ public class DisciplineAuraStateStacking : StateStackingRefreshing
         RemainingDuration          = _auraDuration;
         RemainingDuration = _auraDuration;
         
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             foreach (var ally in _charactersInRadius)
                 AddModifierToCharacter(ally, isPriest: false);
@@ -95,7 +95,7 @@ public class DisciplineAuraStateStacking : StateStackingRefreshing
 
         _modifiers.Clear();
         _charactersInRadius.Clear();
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         RemainingDuration           = 0f;
 
         characterState?.RemoveState(this);

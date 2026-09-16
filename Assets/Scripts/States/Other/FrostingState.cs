@@ -28,7 +28,7 @@ public class FrostingStateStacking : StateStackingRefreshing
 
 	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		currentStacksCount = 1;
+		CurrentStacksCount = 1;
 		_damageCount = 0;
 
 		parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1 : damageToExit;
@@ -101,7 +101,7 @@ public class FrostingStateStacking : StateStackingRefreshing
 		_damageCount = 0;
 		//Debug.Log("Exiting Frosting State");
 		characterState.RemoveState(this);
-		currentStacksCount = 0;
+		CurrentStacksCount = 0;
 		if (!characterState.Check(StatusEffect.Move))
 		{
 			characterState.Character.Move.SetCanMoveState(true);
@@ -118,7 +118,7 @@ public class FrostingStateStacking : StateStackingRefreshing
 
 		if (_ninjaResources != null && _ninjaResources.IsRepeatedFrost)
 		{
-			currentStacksCount = 0;
+			CurrentStacksCount = 0;
 			if(characterState.isClient)
 				_ninjaResources.AddRepeatedFrozen(characterState.gameObject,time);
 		}

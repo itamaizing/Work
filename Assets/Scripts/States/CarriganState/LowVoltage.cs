@@ -16,7 +16,7 @@ public class LowVoltage : StateStackingRefreshing
 
     public LowVoltage()
     {
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
         SetMaxStacks(MaxStack);
     }
 
@@ -27,7 +27,7 @@ public class LowVoltage : StateStackingRefreshing
 
         _duration = durationToExit;
         _remainingDuration = _duration;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         Debug.Log($"[LowVoltage] Applied! Max stacks: {MaxStacksCount}, duration: {_duration}s");
 
@@ -52,7 +52,7 @@ public class LowVoltage : StateStackingRefreshing
     {
         Debug.Log("[LowVoltage] ExitState called");
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         characterState.OnStateAdded -= OnNewStateAdded;
 
@@ -63,14 +63,14 @@ public class LowVoltage : StateStackingRefreshing
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         _remainingDuration = time;
 
-        Debug.Log($"[LowVoltage] Stacked to {currentStacksCount}. Remaining duration: {_remainingDuration}");
+        Debug.Log($"[LowVoltage] Stacked to {CurrentStacksCount}. Remaining duration: {_remainingDuration}");
 
         ApplyDebuffToActiveMagicBuffs();
 
@@ -96,7 +96,7 @@ public class LowVoltage : StateStackingRefreshing
         if (newState.Type != StateType.Magic || newState.BaffDebaff != BaffDebaff.Baff)
             return;
 
-        float totalReduction = ReductionPerStack * currentStacksCount;
+        float totalReduction = ReductionPerStack * CurrentStacksCount;
         ReduceStateDuration(newState, totalReduction);
     }
 

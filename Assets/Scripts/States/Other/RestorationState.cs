@@ -27,7 +27,7 @@ public class RestorationStateStacking : StateStackingRefreshing, ITickableState
     {
         SetMaxStacks(IsStackingMode ? 2 : 1);
         SetMaxStacks(IsStackingMode ? 2 : 1);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         sourceCaster?.Abilities?.GetSkill<Restoration>()?.RestorationHealBooster.Reset();
 
@@ -46,7 +46,7 @@ public class RestorationStateStacking : StateStackingRefreshing, ITickableState
 
     private void ApplyHealTick()
     {
-        float baseHeal = _healPerTickBase * currentStacksCount;
+        float baseHeal = _healPerTickBase * CurrentStacksCount;
         float healValue = baseHeal + GetSpiritEnergyBonus(characterState.Character);
 
         var spark = sourceCaster?.Abilities?.GetSkill<SparkOfLight>();
@@ -64,8 +64,8 @@ public class RestorationStateStacking : StateStackingRefreshing, ITickableState
 
     public override bool Stack(float time)
     {
-        if (IsStackingMode && currentStacksCount < MaxStacksCount)
-            currentStacksCount++;
+        if (IsStackingMode && CurrentStacksCount < MaxStacksCount)
+            CurrentStacksCount++;
 
         RemainingDuration = time;
         UpdateDisplayText();
@@ -75,13 +75,13 @@ public class RestorationStateStacking : StateStackingRefreshing, ITickableState
 
     public override void ReduceStack()
     {
-        if (currentStacksCount <= 1)
+        if (CurrentStacksCount <= 1)
         {
             ExitState();
             return;
         }
 
-        currentStacksCount--;
+        CurrentStacksCount--;
         RemainingDuration = MaxDuration;
         UpdateDisplayText();
     }

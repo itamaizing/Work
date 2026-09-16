@@ -29,7 +29,7 @@ public class ScorchedSoul : StateStackingRefreshing
         _duration = durationToExit;
         _baseDuration = durationToExit;
         SetMaxStacks(3);
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
     }
 
     public override void ExitState()
@@ -49,18 +49,18 @@ public class ScorchedSoul : StateStackingRefreshing
             }
         }
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < 3)
+        if (CurrentStacksCount < 3)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             _duration = _baseDuration;
             foreach (var ability in abilities.Abilities)
             {
-                ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage * currentStacksCount);
+                ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage * CurrentStacksCount);
             }
             return true;
         }

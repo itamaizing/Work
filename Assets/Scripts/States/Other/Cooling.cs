@@ -29,7 +29,7 @@ public class Cooling : StateStackingRefreshing
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
 
 		characterState.Character.Move.AddModifier(_modif);
-		currentStacksCount = 1;
+		CurrentStacksCount = 1;
 	}
 
 	public override void UpdateState()
@@ -44,7 +44,7 @@ public class Cooling : StateStackingRefreshing
 	public override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
-		currentStacksCount = 0;
+		CurrentStacksCount = 0;
 		turnOff = false;
 		_damageOnStart = 0;
 		_damageToExit = 0;
@@ -55,11 +55,11 @@ public class Cooling : StateStackingRefreshing
     public override bool Stack(float time)
     {
         RemainingDuration = time;
-		if(currentStacksCount < MaxStacksCount)
+		if(CurrentStacksCount < MaxStacksCount)
 		{
             characterState.Character.Move.RemoveModifier(_modif);
-            currentStacksCount++;
-			_modif.Value = currentStacksCount * _speedDebuf;
+            CurrentStacksCount++;
+			_modif.Value = CurrentStacksCount * _speedDebuf;
 			characterState.Character.Move.AddModifier(_modif);
 		}
 		return true;

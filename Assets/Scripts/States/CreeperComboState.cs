@@ -12,7 +12,7 @@ public class CreeperComboStateStacking : StateStackingRefreshing
     public CreeperComboStateStacking()
     {
         SetMaxStacks(3);
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
     }
 
     public override void Apply(
@@ -39,7 +39,7 @@ public class CreeperComboStateStacking : StateStackingRefreshing
 
     public void ResetStacks()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         RemainingDuration = -1f;
     }
 
