@@ -394,7 +394,7 @@ public abstract class GameRules : NetworkBehaviour
     protected void InitializeChat()
     {
         if (_gameManager == null || _gameManager.ChatController == null) return;
-        
+
         foreach (var player in _players)
         {
             var networkIdentity = player.GetComponent<NetworkIdentity>();

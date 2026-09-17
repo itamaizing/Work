@@ -13,6 +13,7 @@ public struct Damage : NetworkMessage
     public AttackRangeType PhysicAttackType;
     public SkillType SkillType;
     public string DamageKey;
+    public bool FullyAbsorbed;
 }
 
 public interface IDamageable

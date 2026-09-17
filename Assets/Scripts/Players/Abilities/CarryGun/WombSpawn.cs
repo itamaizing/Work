@@ -190,24 +190,28 @@ public class WombSpawn : Skill
     private void SpawnWomb(Vector3 position)
     {
         if (!IsValidVector(position)) return;
-        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, Hero);
-        CmdTentacleWomb();
+        CmdSpawnWombAndAssign(position, Hero);
     }
 
     [Command]
-    private void CmdTentacleWomb()
+    private void CmdSpawnWombAndAssign(Vector3 position, Character parentCharacter)
     {
-        RpcTentacleWomb();
+        var spawned = _spawnComponent.SpawnEnemyPointServer(position, Quaternion.identity, null, 0, false, parentCharacter);
         _skillRender.StopDrawRadius();
+
+        if (spawned == null) return;
+
+        RpcTentacleWomb(spawned.netIdentity);
     }
 
     [ClientRpc]
-    private void RpcTentacleWomb()
+    private void RpcTentacleWomb(NetworkIdentity wombIdentity)
     {
-        foreach (var womb in _spawnComponent.Units)
-        {
-            if (womb.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn)) creatureSpawn.WombSpawn = this;
-            _spawnedWombs.Add(womb.gameObject);
-        }
+        if (wombIdentity == null) return;
+
+        if (wombIdentity.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn))
+            creatureSpawn.WombSpawn = this;
+
+        _spawnedWombs.Add(wombIdentity.gameObject);
     }
 }

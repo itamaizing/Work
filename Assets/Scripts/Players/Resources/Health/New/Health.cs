@@ -49,9 +49,6 @@ public class Health : Resource, IDamageable, IHealable
 
     public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
     public event BeforeDamageDelegate OnBeforeDamage;
-    
-    public event Action<float, DamageType, bool> OnDirectDamageProcessed;
-    
     public delegate void BeforeHealDelegate(ref Heal heal, Skill skill);
     public event BeforeHealDelegate OnBeforeHeal;
 
@@ -93,7 +90,6 @@ public class Health : Resource, IDamageable, IHealable
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
-            //Debug.Log($"Evade");
             Evaded?.Invoke(skill);
             ClientRpcEvade();
             return false;
@@ -104,42 +100,31 @@ public class Health : Resource, IDamageable, IHealable
             foreach (TryResistDelegate resist in OnTryResist.GetInvocationList())
             {
                 if (resist.Invoke(damage, skill))
-                {
                     return false;
-                }
             }
         }
 
         Defence(ref damage);
 
-        // Test: If the state has a damage modification, it increases the damage.
-        //Or if skill has IDamageGivenModifier interface, it increases the damage.
         if (skill != null && skill.Hero != null)
         {
             foreach (var state in skill.Hero.CharacterState.CurrentStates)
-            {
                 if (state is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
-            }
 
             foreach (var ability in skill.Hero.Abilities.Abilities)
-            {
                 if (ability is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
-            }
         }
-        
+
         float preShieldValue = damage.Value;
         UseShields(ref damage, skill);
-        
-        if (damage.Type != DamageType.DOTPhys && damage.Type != DamageType.DOTMag)
-        {
-            bool fullyAbsorbed = damage.Value == 0 && preShieldValue > 0;
-            
-            OnDirectDamage(gameObject, preShieldValue, damage.Type, fullyAbsorbed);
-        }
+        damage.FullyAbsorbed = damage.Value == 0 && preShieldValue > 0;
+
+        ClientRpcDamage(damage, skill);
+        _sumDamageTaken += damage.Value;
 
         if (damage.Value == 0)
             return true;
-        
+
         if (!TryUse(damage.Value))
         {
             if (isServer)
@@ -149,9 +134,7 @@ public class Health : Resource, IDamageable, IHealable
             }
             return true;
         }
-        ClientRpcDamage(damage, skill);
-        _sumDamageTaken += damage.Value;
-        //Debug.Log("Sum damage update " + _sumDamageTaken);
+
         return true;
     }
 
@@ -159,12 +142,6 @@ public class Health : Resource, IDamageable, IHealable
     public void CmdTryTakeDamage(Damage damage, GameObject skillCanBeNull)
     {
         TryTakeDamage(ref damage, null);
-    }
-
-    [TargetRpc]
-    private void OnDirectDamage(GameObject target, float preShieldValue, DamageType type, bool fullyAbsorbed)
-    {
-        OnDirectDamageProcessed?.Invoke(preShieldValue, type, fullyAbsorbed);
     }
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)

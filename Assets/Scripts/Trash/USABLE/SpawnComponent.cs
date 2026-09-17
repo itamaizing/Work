@@ -112,12 +112,7 @@ public class SpawnComponent : NetworkBehaviour
     public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove,
         Character parenCharacter)
     {
-        var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parenCharacter);
-
-        if (toReplace != null && remove == true)
-        {
-            RemoveUnitServer(toReplace);
-        }
+        SpawnAliesPointServer(position, rotation, toReplace, index, remove, parenCharacter);
     }
 
     [Command]
@@ -205,6 +200,30 @@ public class SpawnComponent : NetworkBehaviour
         AddUnit(spawnedCharacter);
 
         return spawnedCharacter;
+    }
+    
+    public Character SpawnAliesPointServer(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parentCharacter)
+    {
+        var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parentCharacter);
+
+        if (toReplace != null && remove == true)
+        {
+            RemoveUnitServer(toReplace);
+        }
+
+        return spawned;
+    }
+    
+    public Character SpawnEnemyPointServer(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parentCharacter)
+    {
+        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parentCharacter);
+
+        if (toReplace != null && remove == true)
+        {
+            RemoveUnitServer(toReplace);
+        }
+
+        return spawned;
     }
 
     public void RemoveUnitServer(Character character)
@@ -334,6 +353,8 @@ public class SpawnComponent : NetworkBehaviour
     [ClientRpc]
     private void ClientRpcUnitAdded(GameObject characterObject)
     {
+        if (isServer) return;
+
         if (characterObject == null)
         {
             Debug.LogWarning("Character is null in ClientRpcUnitAdded.");
@@ -360,6 +381,8 @@ public class SpawnComponent : NetworkBehaviour
     [ClientRpc]
     private void ClientRpcOnUnitDestroyed(GameObject characterObject)
     {
+        if (isServer) return;
+
         if (characterObject != null)
         {
             var character = characterObject.GetComponent<Character>();

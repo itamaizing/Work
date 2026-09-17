@@ -192,6 +192,7 @@ public class UIPlayerComponents : MonoBehaviour
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
+        if (damage.Value <= 0) return;
         ShowPopupValue(-damage.Value, _physDamageColor, _physDamageColor);
     }
 

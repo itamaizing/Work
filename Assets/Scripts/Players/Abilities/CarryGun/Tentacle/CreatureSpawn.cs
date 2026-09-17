@@ -71,6 +71,7 @@ public class CreatureSpawn : Skill
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
     {
+
         TargetInfo info = new TargetInfo();
         info.Points.Add(transform.position);
         callback?.Invoke(info);
@@ -106,36 +107,34 @@ public class CreatureSpawn : Skill
         {
             Vector3 spawnPos = GetRandomOffsetPosition(_spawnPoint, 1.6f);
 
-            spawnComponent.CmdSpawnAliesPoint(spawnPos, Quaternion.identity, minion, index, false, wombSpawn.Hero);
-
-            CmdTentacleCocoon(spawnComponent.netIdentity);
+            CmdSpawnAndTentacleCocoon(spawnComponent.netIdentity, spawnPos, index, wombSpawn.Hero);
         }
 
         yield return null;
     }
 
     [Command]
-    private void CmdTentacleCocoon(NetworkIdentity spawnIdentity)
-    {
-        RpcTentacleCocoon(spawnIdentity);
-    }
-
-    [ClientRpc]
-    private void RpcTentacleCocoon(NetworkIdentity spawnIdentity)
+    private void CmdSpawnAndTentacleCocoon(NetworkIdentity spawnIdentity, Vector3 position, int index, Character parentCharacter)
     {
         if (spawnIdentity == null) return;
 
-        var spawnComponent = spawnIdentity.GetComponent<SpawnComponent>();
-        if (spawnComponent == null) return;
+        var spawnComponentServer = spawnIdentity.GetComponent<SpawnComponent>();
+        if (spawnComponentServer == null) return;
 
-        foreach (var unit in spawnComponent.Units)
+        var spawned = spawnComponentServer.SpawnAliesPointServer(position, Quaternion.identity, minion, index, false, parentCharacter);
+        if (spawned == null) return;
+
+        RpcTentacleCocoon(spawned.netIdentity);
+    }
+
+    [ClientRpc]
+    private void RpcTentacleCocoon(NetworkIdentity spawnedUnitIdentity)
+    {
+        if (spawnedUnitIdentity == null) return;
+
+        foreach (var spawn in spawnedUnitIdentity.GetComponents<CreatureCarryGun>())
         {
-            if (unit == null) continue;
-
-            foreach (var spawn in unit.GetComponents<CreatureCarryGun>())
-            {
-                spawn.DadSkill = wombSpawn;
-            }
+            spawn.DadSkill = wombSpawn;
         }
     }
 

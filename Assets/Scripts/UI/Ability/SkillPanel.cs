@@ -27,6 +27,8 @@ public class SkillPanel : MonoBehaviour
     private bool _isSelect;
     private bool _isMenu = false;
     private SaveSystem _saveSystem = new();
+    
+    public DraggableIcon GetIcon(Skill skill) => _skills.FirstOrDefault(i => i.Skill == skill);
 
     private void Start()
     {
@@ -308,6 +310,29 @@ public class SkillPanel : MonoBehaviour
             //ico.CurrentIcon = null;
             ico.ClearData();
         }
+    }
+    
+    public void RemoveSkill(Skill skill)
+    {
+        if (skill == null) return;
+
+        var icon = _skills.FirstOrDefault(i => i.Skill == skill);
+        if (icon == null) return;
+
+        var slot = _skillIcons.FirstOrDefault(s => s.CurrentIcon == icon);
+        if (slot != null)
+        {
+            slot.CurrentIcon = null;
+            slot.ClearData();
+        }
+
+        icon.BeginDrag -= OnBeginDrag;
+        icon.EndDrag -= OnEndDrag;
+        icon.PointerEnter -= OnPointerEnterIcon;
+        icon.PointerExit -= OnPointerExitIcon;
+
+        _skills.Remove(icon);
+        Destroy(icon.gameObject);
     }
 
     private void OnAbilitySelected(int index)

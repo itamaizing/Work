@@ -92,7 +92,7 @@ public class SkillManager : MonoBehaviour
         
         if (_hero != null && _hero.Health != null)
         {
-            _hero.Health.OnDirectDamageProcessed += HandleHeroDirectDamage;
+            _hero.Health.DamageTaken += HandleHeroDirectDamage;
         }
     }
 
@@ -145,12 +145,15 @@ public class SkillManager : MonoBehaviour
         }
     }
     
-    private void HandleHeroDirectDamage(float damageValue, DamageType type, bool fullyAbsorbed)
+    private void HandleHeroDirectDamage(Damage damage, Skill skill)
     {
+        if (damage.Type == DamageType.DOTPhys || damage.Type == DamageType.DOTMag)
+            return;
+
+        if (!_hero.isOwned) return;
+
         if (CurrentCastingSkill != null)
-        {
-            CurrentCastingSkill.HandleDirectDamageDuringCast(damageValue, type, fullyAbsorbed);
-        }
+            CurrentCastingSkill.HandleDirectDamageDuringCast(damage.Value, damage.Type, damage.FullyAbsorbed);
     }
 
     public void CancleAllSkills()
@@ -407,6 +410,15 @@ public class SkillManager : MonoBehaviour
         }
         return true;
     }
+    
+    public void SelectAndPrepareSkill(Skill skill)
+    {
+        if (skill == null || skill.Disactive) 
+            return;
+
+        SetSelectSkill(skill);
+        PrepereSkill();
+    }
 
     private void SetSelectSkill(Skill skill)
     {
@@ -542,7 +554,7 @@ public class SkillManager : MonoBehaviour
         
         if (_hero != null && _hero.Health != null)
         {
-            _hero.Health.OnDirectDamageProcessed -= HandleHeroDirectDamage;
+            _hero.Health.DamageTaken -= HandleHeroDirectDamage;
         }
     }
 
