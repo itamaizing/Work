@@ -30,7 +30,6 @@ public class TestGameRulesBattlegrounds : GameRules
 
     protected override void GameStartClient()
     {
-        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
     protected override void OnPlayerDied(Character player)
@@ -292,6 +291,8 @@ public class TestGameRulesBattlegrounds : GameRules
         }
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
+        
+        RpcEnablePreparationAreas(5f); 
     }
 
     private IEnumerator CloseJob()

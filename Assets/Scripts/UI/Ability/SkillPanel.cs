@@ -17,7 +17,8 @@ public class SkillPanel : MonoBehaviour
     [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private QueuePanel _queuePanel;
     [SerializeField] private AbilityNameBox _abilityNameBox;
-
+    [SerializeField] private bool _isMinionPanel = false;
+    
     private List<DraggableIcon> _skills = new List<DraggableIcon>();
     private Character _currentCharacter;
     private SkillManager _playerAbilities;
@@ -69,6 +70,7 @@ public class SkillPanel : MonoBehaviour
             }
             var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
             icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance);
+            icon.EnableClickToCast = _isMinionPanel;
             _skillIcons[i].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
@@ -118,6 +120,7 @@ public class SkillPanel : MonoBehaviour
 
             var icon = Instantiate(_draggableIconPref, _skillIcons[j].transform);
             icon.Init(skill, _skillIcons[j].transform, _uiCamera, _cameraCanvasDistance, true);
+            icon.EnableClickToCast = _isMinionPanel;
             _skillIcons[j].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
@@ -141,6 +144,7 @@ public class SkillPanel : MonoBehaviour
             }
             var icon = Instantiate(_draggableIconPref, _skillIcons[j].transform);
             icon.Init(skill, _skillIcons[j].transform, _uiCamera, _cameraCanvasDistance, true);
+            icon.EnableClickToCast = _isMinionPanel;
             _skillIcons[j].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
@@ -180,6 +184,7 @@ public class SkillPanel : MonoBehaviour
 
             var icon = Instantiate(_draggableIconPref, freeIcon.transform);
             icon.Init(skill, freeIcon.transform, _uiCamera, _cameraCanvasDistance);
+            icon.EnableClickToCast = _isMinionPanel;
             freeIcon.CurrentIcon = icon;
             freeIcon.Show();
             icon.transform.SetAsFirstSibling();
@@ -387,6 +392,7 @@ public class SkillPanel : MonoBehaviour
 
         var icon = Instantiate(_draggableIconPref, freeIcon.transform);
         icon.Init(skill, freeIcon.transform, _uiCamera, _cameraCanvasDistance);
+        icon.EnableClickToCast = _isMinionPanel;
         freeIcon.CurrentIcon = icon;
         freeIcon.Show();
         icon.transform.SetAsFirstSibling();

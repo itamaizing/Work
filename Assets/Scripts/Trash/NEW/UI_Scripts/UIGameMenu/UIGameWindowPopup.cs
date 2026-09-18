@@ -80,6 +80,11 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
     
+    private void OnDestroy()
+    {
+        _minionSkillController?.Dispose();
+    }
+    
     private void OnCharacterSelected(Character character)
     {
         _currentCharacter = character;

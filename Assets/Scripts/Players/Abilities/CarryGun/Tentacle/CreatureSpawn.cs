@@ -1,7 +1,9 @@
+using System;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum SpawnType
 {
@@ -25,9 +27,24 @@ public class CreatureSpawn : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
+    
+    public override object GroupKey => (GetType(), SpawnType);
 
-    public SpawnType SpawnType { get => _spawnType; set => _spawnType = value; }
+    public SpawnType SpawnType
+    {
+        get => _spawnType;
+        set
+        {
+            Debug.Log($"[CreatureSpawn:{GetInstanceID()}] SpawnType set attempt: {_spawnType} -> {value}");
+            if (_spawnType == value) return;
+            _spawnType = value;
+            Debug.Log($"[CreatureSpawn:{GetInstanceID()}] SpawnType CHANGED, firing OnSpawnTypeChanged({value})");
+            OnSpawnTypeChanged?.Invoke(value);
+        }
+    }
     public WombSpawn WombSpawn { get => wombSpawn; set => wombSpawn = value; }
+    
+    public event Action<SpawnType> OnSpawnTypeChanged;
 
     private void OnEnable()
     {
@@ -140,6 +157,7 @@ public class CreatureSpawn : Skill
 
     protected override void ClearData()
     {
-        _spawnType = SpawnType.None;
+        Debug.Log($"[CreatureSpawn:{GetInstanceID()}] ClearData called, current _spawnType={_spawnType}");
+        SpawnType = SpawnType.None;
     }
 }

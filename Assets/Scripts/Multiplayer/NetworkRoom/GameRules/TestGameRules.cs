@@ -31,7 +31,6 @@ public class TestGameRules : GameRules
 
     protected override void GameStartClient()
     {
-        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
     protected override void OnPlayerDied(Character player)
@@ -244,6 +243,8 @@ public class TestGameRules : GameRules
         }
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
+        
+        RpcEnablePreparationAreas(5f); 
     }
 
     private IEnumerator CloseJob()

@@ -13,7 +13,7 @@ public class CreatureIcon : MonoBehaviour
     private void Awake()
     {
         _button.onClick.AddListener(OnClick);
-        _creatureSpawn.CastStarted += OnCastStarted;
+        _creatureSpawn.PreparingSuccess += OnCastStarted;
         _creatureSpawn.CastEnded += OnCanceled;
         _creatureSpawn.Canceled += OnCanceled;
 
@@ -31,7 +31,7 @@ public class CreatureIcon : MonoBehaviour
 
     private void OnDestroy()
     {
-        _creatureSpawn.CastStarted -= OnCastStarted;
+        _creatureSpawn.PreparingSuccess -= OnCastStarted;
         _creatureSpawn.CastEnded -= OnCanceled;
         _creatureSpawn.Canceled -= OnCanceled;
     }
@@ -41,7 +41,7 @@ public class CreatureIcon : MonoBehaviour
         _creatureSpawn.SpawnType = _spawnType;
     }
 
-    private void OnCastStarted()
+    private void OnCastStarted(Skill skill)
     {
         gameObject.SetActive(true);
     }

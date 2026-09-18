@@ -30,6 +30,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Transform ParentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
+    public bool EnableClickToCast { get; set; } = false;
 
     public event Action BeginDrag;
     public event Action EndDrag;
@@ -86,13 +87,23 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_isDragging || eventData.button != PointerEventData.InputButton.Left)
-            return;
+        if (_isDragging) return;
+        if (_skill == null || _isMenu) return;
 
-        if (_skill == null || _isMenu)
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (_skill.IsPreparing)
+                _skill.TryCancel();
+            return;
+        }
+
+        if (eventData.button != PointerEventData.InputButton.Left)
             return;
 
         if (ClickOverride != null && ClickOverride(this))
+            return;
+
+        if (!EnableClickToCast)
             return;
 
         if (_skill.IsPreparing)

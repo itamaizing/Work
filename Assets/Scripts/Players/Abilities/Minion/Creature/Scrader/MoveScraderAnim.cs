@@ -10,13 +10,13 @@ public class MoveScraderAnim : MonoBehaviour
     private void OnEnable()
     {
         _spell.DoMove += HandleDoMove;
-        _scratchClaws.DoMove += HandleDoMove;
+        //_scratchClaws.DoMove += HandleDoMove;
     }
 
     private void OnDisable()
     {
         _spell.DoMove -= HandleDoMove;
-        _scratchClaws.DoMove -= HandleDoMove;
+        //_scratchClaws.DoMove -= HandleDoMove;
     }
 
     private void HandleDoMove(GameObject gameObject) => _animator?.SetTrigger("MoveScared");

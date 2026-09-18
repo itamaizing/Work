@@ -8,5 +8,6 @@ public class ScraderAutoAttack : MonoBehaviour
     public void OnAutoAttackAnimationHitScrader() => spellMoveScraderTo.OnAutoAttackAnimationHit();
     public void OnAutoAttackAnimationEndScrader() => spellMoveScraderTo.OnAutoAttackAnimationEnd();
 
-    public void ScratchClawsAttackAnimationHit() => scratchClaws.AnimationHit();
+    public void ScratchClawsAttackAnimationHit() => scratchClaws.AnimCastScratch();
+    public void ScratchClawsAttackAnimationHitEnd() => scratchClaws.AnimScratchEnd();
 }

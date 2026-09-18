@@ -1317,7 +1317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveScraderTo: {fileID: 8331210179348555134}
+  spellMoveScraderTo: {fileID: 0}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
@@ -13081,21 +13081,21 @@ GameObject:
   - component: {fileID: 1655977055310397963}
   - component: {fileID: 2075396149247580188}
   - component: {fileID: 2769373615330125278}
-  - component: {fileID: 3962161804199240009}
   - component: {fileID: 4316793701678651147}
   - component: {fileID: 6795151795875073132}
   - component: {fileID: 6892265620981845488}
   - component: {fileID: 4677353127167607557}
+  - component: {fileID: 1862294686169972346}
+  - component: {fileID: 542506517503282851}
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
   - component: {fileID: 8741847699558006757}
-  - component: {fileID: 8331210179348555134}
-  - component: {fileID: 2196113789592555911}
   - component: {fileID: 1393425115325331674}
   - component: {fileID: 2019673168310186118}
   - component: {fileID: 193648750797128802}
   - component: {fileID: 1860083781445571932}
   - component: {fileID: 8886534226296608121}
+  - component: {fileID: 5264275895270310813}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13339,10 +13339,10 @@ MonoBehaviour:
   _rigidbody: {fileID: 512746244656594313}
   _collider: {fileID: 3393799689084107314}
   _lvl: {fileID: 193648750797128802}
-  _animator: {fileID: 4853408415625794062}
+  _animator: {fileID: 1215395125402789392}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
-  _playerMove: {fileID: 2196113789592555911}
+  _playerMove: {fileID: 1862294686169972346}
   _abilities: {fileID: 6892265620981845488}
   characterState: {fileID: 161335861236570360}
   uiComponent: {fileID: 1655977055310397963}
@@ -13358,7 +13358,7 @@ MonoBehaviour:
   _transformationComponent: {fileID: 1860083781445571932}
   _expForDieKill: 5
   _costCall: 1
-  _navMeshAgent: {fileID: 0}
+  _navMeshAgent: {fileID: 542506517503282851}
 --- !u!114 &245123127051599623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13551,6 +13551,7 @@ MonoBehaviour:
   _castLine: {fileID: 1442509341297034394}
   skillRenderer: {fileID: 5133789345881183399}
   _damageTracker: {fileID: 245123127051599623}
+  _UICanvas: {fileID: 0}
   DamageSpawn: {fileID: 7368256261084317141}
   RegenSpawn: {fileID: 8886684124031440947}
   PopupText: {fileID: 3712476584407953316, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
@@ -13589,22 +13590,6 @@ MonoBehaviour:
   _clonePrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
---- !u!114 &3962161804199240009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9566eed453ace294f9630617b8f34010, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _animator: {fileID: 1215395125402789392}
-  _moveCreature: {fileID: 2196113789592555911}
-  _spell: {fileID: 8331210179348555134}
-  _scratchClaws: {fileID: 8741847699558006757}
 --- !u!114 &4316793701678651147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13643,7 +13628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skills:
-  - {fileID: 8331210179348555134}
+  - {fileID: 5264275895270310813}
   - {fileID: 8741847699558006757}
   - {fileID: 8886534226296608121}
   _hero: {fileID: 5830977165762126247}
@@ -13661,6 +13646,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8529c4355f63304281f497141304f73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1862294686169972346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe64170e9d68a24408eeba3a57ca02b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _smoothTime: 0.15
+  _currentSpeed: 5
+  _rotationDefaultSpeed: 1000
+  _anim: {fileID: 1215395125402789392}
+  _flyChecker: {fileID: 2036623601641642670}
+  moveAudioSource: {fileID: 0}
+  moveClips: []
+  MoveDirection: {x: 0, y: 0, z: 0}
+  ExternalMoveDirection: {x: 0, y: 0, z: 0}
+  IsMoving: 0
+  IsSelect: 0
+  IsNoRotateAtCursor: 0
+  _agent: {fileID: 542506517503282851}
+--- !u!195 &542506517503282851
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.35
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 300
+  m_StoppingDistance: 0.4
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!82 &5970206098610166088
 AudioSource:
   m_ObjectHideFlags: 0
@@ -13789,44 +13824,34 @@ MonoBehaviour:
   _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 525d1b266d2d7a549a1a844f9a13b581, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 0
-  _castDeley: 0
-  _damageValue: 0
   _infoComponent:
     _school: 0
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 0
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -13834,24 +13859,28 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _autoAttackDelay: 0
+  _castDeley: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _areaComponent:
     _radius: 1.5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 3
   _tags:
     skillType: 0
@@ -13862,138 +13891,11 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
-  _moveCreature: {fileID: 2196113789592555911}
-  _animator: {fileID: 1215395125402789392}
-  _stopDistance: 1.5
+  _agent: {fileID: 542506517503282851}
   minDamage: 1
   maxDamage: 4
   bleedingDuration: 3
   bleedingChance: 1
---- !u!114 &8331210179348555134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9304b59bc4e9f1a40943ec59c2a591a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellMoveScraderTo
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 0
-  _castDeley: 0
-  _damageValue: 0
-  _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
-    _rangeType: 0
-    _skillType: 0
-    _whileMoving: 0
-    _autoAttack: 0
-  _targetingComponent:
-    type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _chargeComponent:
-    _usesCharges: 0
-    _isComboPart: 0
-    _cooldownType: 0
-    _maxCharges: 0
-    _baseCooldown: 0
-    affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _areaComponent:
-    _radius: 6
-    _area: 0
-    _castLength: 0
-    _castWidth: 0
-  _autoAttackDelay: 0
-  _informationRenderComponent:
-    _isAutoRadiusRender: 1
-    _isAutoAreaRender: 1
-    _isAutoLineRender: 1
-    _isDynamicRenderer: 0
-  _disactive: 0
-  _earlyCooldown: 0
-  maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
-  _animationComponent:
-    _prepareTriggers: []
-    _castTriggers: []
-  _moveCreature: {fileID: 2196113789592555911}
-  attackDistance: 1.5
-  damageDelay: 0.7
-  animator: {fileID: 1215395125402789392}
-  skillManager: {fileID: 6892265620981845488}
-  damage: 5
---- !u!114 &2196113789592555911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9afd7493b334a5242bc46972f1d2d7e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoveCreature
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _smoothTime: 0.15
-  _currentSpeed: 5
-  _rotationDefaultSpeed: 1000
-  _anim: {fileID: 1215395125402789392}
-  _flyChecker: {fileID: 2036623601641642670}
-  moveAudioSource: {fileID: 0}
-  moveClips: []
-  MoveDirection: {x: 0, y: 0, z: 0}
-  ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  IsMoving: 0
-  IsSelect: 0
-  IsNoRotateAtCursor: 0
-  _moveDurationPerUnit: 0.9
 --- !u!114 &1393425115325331674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14081,44 +13983,34 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 25d75c4213f0d834fba0b9fdcc68ec14, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 14
-  _cooldownComponent:
-    _baseCooldown: 0
-  _castDeley: 0
-  _damageValue: 0
   _infoComponent:
     _school: 0
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 0
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -14126,24 +14018,28 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _autoAttackDelay: 0
+  _castDeley: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -14155,6 +14051,93 @@ MonoBehaviour:
     _prepareTriggers: []
     _castTriggers: []
   _duration: 5
+--- !u!114 &5264275895270310813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d986a7a12a44c42adb26489cec2029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
+  _infoComponent:
+    _school: 8
+    _form: 0
+    _damageType: 5
+    _rangeType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    oldType: 0
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 5
+  _isSubjectToGlobalCooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _autoAttackDelay: 0
+  _castDeley: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _areaComponent:
+    _radius: 2
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
+  _disactive: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
+  _agent: {fileID: 542506517503282851}
+  _stopDistance: 0.5
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
