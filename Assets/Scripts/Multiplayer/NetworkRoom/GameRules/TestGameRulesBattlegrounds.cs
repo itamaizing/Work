@@ -365,6 +365,4 @@ public class TestGameRulesBattlegrounds : GameRules
             RestartRound();
         }
     }
-
-    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 }

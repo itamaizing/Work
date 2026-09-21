@@ -416,7 +416,15 @@ public class SkillManager : MonoBehaviour
         if (skill == null || skill.Disactive) 
             return;
 
-        SetSelectSkill(skill);
+        if (_selectedSkill != skill)
+        {
+            if (_selectedSkill != null && _selectedSkill.IsPreparing)
+                _selectedSkill.TryCancel(true);
+
+            DeselectSkill();
+            SetSelectSkill(skill);
+        }
+
         PrepereSkill();
     }
 

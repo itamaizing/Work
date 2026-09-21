@@ -323,6 +323,8 @@ public class SkillPanel : MonoBehaviour
 
         var icon = _skills.FirstOrDefault(i => i.Skill == skill);
         if (icon == null) return;
+        
+        _abilityNameBox.gameObject.SetActive(false);
 
         var slot = _skillIcons.FirstOrDefault(s => s.CurrentIcon == icon);
         if (slot != null)
@@ -330,6 +332,9 @@ public class SkillPanel : MonoBehaviour
             slot.CurrentIcon = null;
             slot.ClearData();
         }
+        
+        if (skill.IsPreparing)
+            skill.TryCancel(true);
 
         icon.BeginDrag -= OnBeginDrag;
         icon.EndDrag -= OnEndDrag;

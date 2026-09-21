@@ -10,14 +10,14 @@ public class MoveSpisnaciderAnim : MonoBehaviour
 
     private void OnEnable()
     {
-        _spellMoveCreatureTo.DoMove += HandleDoMove;
-        _spittingAcid.DoMove += HandleDoMove;
+        //_spellMoveCreatureTo.DoMove += HandleDoMove;
+       // _spittingAcid.DoMove += HandleDoMove;
     }
 
     private void OnDisable()
     {
-        _spellMoveCreatureTo.DoMove -= HandleDoMove;
-        _spittingAcid.DoMove -= HandleDoMove;
+        //_spellMoveCreatureTo.DoMove -= HandleDoMove;
+        //_spittingAcid.DoMove -= HandleDoMove;
     }
 
     private void HandleDoMove(GameObject gameObject) => _animator?.SetTrigger("MoveScared");

@@ -10,6 +10,6 @@ public class SpisnaciderAutoAttack : MonoBehaviour
     public void OnAutoAttackAnimationHitSpisnacider() => _spellMoveSpisnacider.OnAutoAttackAnimationHit();
     public void OnAutoAttackAnimationEndSpisnacider() => _spellMoveSpisnacider.OnAutoAttackAnimationEnd();
 
-    public void SpittingAcidAttackAnimationHit() => _spittingAcid.AnimationHit();
+    public void SpittingAcidAttackAnimationHit() => _spittingAcid.AnimCastAcid();
     public void ParalyzingTentaclesAttackAnimationHit() => _paralyzingTentacles.AnimationHit();
 }
