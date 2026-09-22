@@ -383,9 +383,9 @@ public class SkillPanel : MonoBehaviour
     {
         if (skill == null) return;
 
-        if (skill is SpellMoveCreatureTo || skill is SpellMoveTo)
+        if (skill is SpellMoveTo)
         {
-            if (_skills.Any(icon => icon.Skill is SpellMoveCreatureTo || icon.Skill is SpellMoveTo)) return;
+            if (_skills.Any(icon => icon.Skill is SpellMoveTo)) return;
         }
 
         if (_skills.Any(icon => icon.Skill == skill)) return;

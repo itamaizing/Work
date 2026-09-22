@@ -6221,7 +6221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354455cd68c54c241ac91492460c532c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpisnaciderAutoAttack
-  _spellMoveSpisnacider: {fileID: 0}
   _spittingAcid: {fileID: 5921960195754634602}
   _paralyzingTentacles: {fileID: 6885845920278527182}
 --- !u!1 &1816582864147950907
@@ -17994,7 +17993,6 @@ GameObject:
   - component: {fileID: 6690729223382654426}
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
-  - component: {fileID: 6883696665691649820}
   - component: {fileID: 3764020448229271524}
   - component: {fileID: 6309914231843903030}
   - component: {fileID: 7610105537004708782}
@@ -18713,23 +18711,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_VisionRange: 5
---- !u!114 &6883696665691649820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abc530b67d9356f4bb29123a2c4dc7fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoveSpisnaciderAnim
-  _animator: {fileID: 1215395125402789392}
-  _moveCreature: {fileID: 0}
-  _spell: {fileID: 0}
-  _spellMoveCreatureTo: {fileID: 0}
-  _spittingAcid: {fileID: 5921960195754634602}
 --- !u!114 &3764020448229271524
 MonoBehaviour:
   m_ObjectHideFlags: 0
