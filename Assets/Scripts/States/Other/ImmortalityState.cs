@@ -5,9 +5,6 @@ public class ImmortalityState : StateBasic
 {
     private float _duration;
     private Character _player;
-    private float _savedEvadeMelee;
-    private float _savedEvadeRange;
-    private float _savedResistMag;
 
     private List<StatusEffect> _effects = new();
     public override States State => States.ImmortalityState;
@@ -21,14 +18,15 @@ public class ImmortalityState : StateBasic
         _player = characterState.Character;
         _duration = durationToExit;
 
-        _savedEvadeMelee  = _player.Health.EvadeMeleeDamage;
-        _savedEvadeRange  = _player.Health.EvadeRangeDamage;
-        _savedResistMag   = _player.Health.ResistMagDamage;
+        var attrs = _player.AttributeSystem;
+        var evadeMelee = attrs[CharacterAttributeName.EvasionPhysicalMelee];
+        var evadeRange = attrs[CharacterAttributeName.EvasionPhysicalRange];
+        var evadeMagic = attrs[CharacterAttributeName.EvasionMagical];
 
-        _player.Health.EvadeMeleeDamage  = 100f;
-        _player.Health.EvadeRangeDamage  = 100f;
-        _player.Health.ResistMagDamage   = 100f;
-        
+        evadeMelee.AddModifier(new AttributeModifier(100f - evadeMelee.GetValue(), ModifierType.Flat, this));
+        evadeRange.AddModifier(new AttributeModifier(100f - evadeRange.GetValue(), ModifierType.Flat, this));
+        evadeMagic.AddModifier(new AttributeModifier(100f - evadeMagic.GetValue(), ModifierType.Flat, this));
+
         _player.Health.OnTryResist += NegateAllDamage;
     }
 
@@ -43,11 +41,12 @@ public class ImmortalityState : StateBasic
     {
         _duration = 0;
 
-        if (_player != null && _player.Health != null)
+        if (_player != null && _player.AttributeSystem != null)
         {
-            _player.Health.EvadeMeleeDamage  = _savedEvadeMelee;
-            _player.Health.EvadeRangeDamage  = _savedEvadeRange;
-            _player.Health.ResistMagDamage   = _savedResistMag;
+            var attrs = _player.AttributeSystem;
+            attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveBySource(this);
+            attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveBySource(this);
+            attrs[CharacterAttributeName.EvasionMagical].RemoveBySource(this);
 
             _player.Health.OnTryResist -= NegateAllDamage;
         }

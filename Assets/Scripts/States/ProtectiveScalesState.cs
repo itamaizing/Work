@@ -4,7 +4,6 @@ using UnityEngine;
 public class ProtectiveScalesStateStacking : StateStacking
 {
     private float _durationRemaining;
-    private float _appliedResist = 0f;
 
     private const float MagicResistValue = 90f;
 
@@ -37,7 +36,6 @@ public class ProtectiveScalesStateStacking : StateStacking
 
     public override void UpdateState()
     {
-     
     }
 
     public override bool Stack(float time)
@@ -48,12 +46,11 @@ public class ProtectiveScalesStateStacking : StateStacking
 
     private void ApplyMagicResist()
     {
-        if (health == null) return;
+        if (characterState == null) return;
 
-        health.ResistMagDamage -= _appliedResist;
-
-        _appliedResist = MagicResistValue;
-        health.ResistMagDamage += _appliedResist;
+        var attribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical];
+        attribute.RemoveBySource(this);
+        attribute.AddModifier(new AttributeModifier(MagicResistValue, ModifierType.Flat, this));
     }
 
     private void TryDispelMagicDebuffs()
@@ -63,13 +60,11 @@ public class ProtectiveScalesStateStacking : StateStacking
         for (int i = states.Count - 1; i >= 0; i--)
         {
             var state = states[i];
-
             if (state == this) continue;
 
             if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff)
             {
                 float chance = Random.Range(0f, 100f);
-
                 if (chance <= 90f)
                 {
                     characterState.RemoveState(state.State);
@@ -80,14 +75,7 @@ public class ProtectiveScalesStateStacking : StateStacking
 
     public override void ExitState()
     {
-        if (health != null)
-        {
-            health.ResistMagDamage -= _appliedResist;
-        }
-
-        _appliedResist = 0f;
-
-        
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
         characterState.RemoveState(this);
     }
 }

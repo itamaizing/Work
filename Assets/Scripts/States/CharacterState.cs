@@ -842,15 +842,15 @@ public class CharacterState : NetworkBehaviour
     private void CreateAndAddState(StateBasic stateInstance, Character sourceCaster, float duration,
         float damageToExit, string skillName, bool isCanDodgeMagState, bool checkDodge, StateType type)
     {
-        if (checkDodge && !isCanDodgeMagState && type == StateType.Magic)
-        {
-            float chanceDodgeMagDamage = Random.Range(0f, 100f);
-            if (chanceDodgeMagDamage <= _hero.Health.ResistMagDamage)
-            {
-                Debug.Log("CharacterState / DodgeMagDamage");
-                return;
-            }
-        }
+	    if (checkDodge && !isCanDodgeMagState && type == StateType.Magic)
+	    {
+		    float chanceDodgeMagDamage = Random.Range(0f, 100f);
+		    if (chanceDodgeMagDamage <= _hero.AttributeSystem[CharacterAttributeName.EvasionMagical].GetValue())
+		    {
+			    Debug.Log("CharacterState / DodgeMagDamage");
+			    return;
+		    }
+	    }
 
         bool applied = stateInstance.TryApply(this, duration, damageToExit, sourceCaster, skillName);
         if (!applied) return;

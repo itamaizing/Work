@@ -35,6 +35,12 @@ public class IcePuddleObject : Projectiles
     private const float FrostEnergyCoolingBonusPerStack  = 1f;
     private const float FrostEnergyFrostingBonusPerStack = 5f;
     private const float FrostEnergyFrozenBonusPerStack   = 10f;
+    
+    private readonly AttributeModifier _evadeMeleeModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _evadeRangeModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _evadeMagicModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _resistPhysModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _resistMagModifier = new AttributeModifier(0, ModifierType.Flat);
 
     private HashSet<Character> _alreadyDebuffed = new();
 
@@ -259,8 +265,7 @@ public class IcePuddleObject : Projectiles
 
         if (_curEvade != 0)
         {
-            ClientRpcSetEvade(_dad.gameObject, -_curEvade);
-            _dad.Health.SetEvadeAll(-_curEvade);
+            SetEvade(_dad.gameObject, -_curEvade);
             _curEvade = 0;
         }
 
@@ -276,15 +281,32 @@ public class IcePuddleObject : Projectiles
     private float RemainingLifetime() =>
         Mathf.Max(0f, _timeToDestroy - (Time.time - _spawnTime));
 
-    [ClientRpc]
-    private void ClientRpcSetEvade(GameObject player, float value)
-    {
-        player.GetComponent<Health>()?.SetEvadeAll(value);
-    }
-
     private void SetEvade(GameObject player, float value)
     {
-        player.GetComponent<Health>()?.SetEvadeAll(value);
-        ClientRpcSetEvade(player, value);
+        if (!isServer) return;
+        if (!player.TryGetComponent<Character>(out var character)) return;
+
+        var attrs = character.AttributeSystem;
+        ApplyOrRemove(attrs[CharacterAttributeName.ResistancePhysical], _resistPhysModifier, value);
+        ApplyOrRemove(attrs[CharacterAttributeName.ResistanceMagical], _resistMagModifier, value);
+        ApplyOrRemove(attrs[CharacterAttributeName.EvasionPhysicalMelee], _evadeMeleeModifier, value);
+        ApplyOrRemove(attrs[CharacterAttributeName.EvasionPhysicalRange], _evadeRangeModifier, value);
+        ApplyOrRemove(attrs[CharacterAttributeName.EvasionMagical], _evadeMagicModifier, value);
+    }
+    
+    private void ApplyOrRemove(Attribute attribute, AttributeModifier modifier, float delta)
+    {
+        if (!attribute.Modifiers.Contains(modifier))
+        {
+            modifier.Source = this;
+            modifier.Value = delta;
+            attribute.AddModifier(modifier);
+        }
+        else
+        {
+            modifier.Value += delta;
+            if (Mathf.Approximately(modifier.Value, 0f))
+                attribute.RemoveModifier(modifier);
+        }
     }
 }

@@ -3,61 +3,61 @@ using UnityEngine;
 
 public class PetrificationStateStacking : StateStacking
 {
-	private float _duration;
-	private float _curSpeedDebuf = 0f;
-	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-	public override States State => States.PetrificationDebuff;
-	public override StateType Type => StateType.Magic;
-	public override List<StatusEffect> Effects { get; }
+    private float _duration;
 
-	private float _baseMagicResist;
-	private float _basePhysicsResist;
-	
-	public override void Apply(CharacterState character, float durationToExit, float damageToExit,
-		Character personWhoMadeBuff, string skillName)
-	{
-		characterState = character;
-		//CanStack = true;
-		_duration = durationToExit;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override States State => States.PetrificationDebuff;
+    public override StateType Type => StateType.Magic;
+    public override List<StatusEffect> Effects { get; }
 
-		_baseMagicResist = characterState.Character.Health.ResistMagDamage;
-		_basePhysicsResist = characterState.Character.Health.DefPhysDamage;
-		
-		characterState.Character.Health.SetMagicDef(80);
-		characterState.Character.Health.SetPhysicDef(80);
-		characterState.Character.Move.SetCanMove(false);
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
+    {
+        characterState = character;
+        _duration = durationToExit;
 
-		foreach (var ability in characterState.Character.Abilities.Abilities)
-		{
-			ability.Disactive = true;
-		}
-	}
+        var attrs = characterState.Character.AttributeSystem;
+        var resistMag = attrs[CharacterAttributeName.ResistanceMagical];
+        var resistPhys = attrs[CharacterAttributeName.ResistancePhysical];
 
-	public override void UpdateState()
-	{
-		_duration -= Time.deltaTime;
-		if (_duration < 0)
-		{
-			ExitState();
-		}
-	}
+        resistMag.AddModifier(new AttributeModifier(80f - resistMag.GetValue(), ModifierType.Flat, this));
+        resistPhys.AddModifier(new AttributeModifier(80f - resistPhys.GetValue(), ModifierType.Flat, this));
 
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-		foreach (var ability in characterState.Character.Abilities.Abilities)
-		{
-			ability.Disactive = false;
-		}
+        characterState.Character.Move.SetCanMove(false);
 
-		characterState.Character.Move.SetCanMove(true);
-		
-		characterState.Character.Health.SetMagicDef(_baseMagicResist);
-		characterState.Character.Health.SetPhysicDef(_basePhysicsResist);
-	}
+        foreach (var ability in characterState.Character.Abilities.Abilities)
+        {
+            ability.Disactive = true;
+        }
+    }
 
-	public override bool Stack(float time)
-	{
-		return true;
-	}
+    public override void UpdateState()
+    {
+        _duration -= Time.deltaTime;
+        if (_duration < 0)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+        characterState.RemoveState(this);
+
+        foreach (var ability in characterState.Character.Abilities.Abilities)
+        {
+            ability.Disactive = false;
+        }
+
+        characterState.Character.Move.SetCanMove(true);
+
+        var attrs = characterState.Character.AttributeSystem;
+        attrs[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
+        attrs[CharacterAttributeName.ResistancePhysical].RemoveBySource(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        return true;
+    }
 }

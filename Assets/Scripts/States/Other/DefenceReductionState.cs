@@ -5,9 +5,8 @@ public class DefenceReductionState : StateBasic
 {
     private float _healthBuffActiveTime = 2f;
     private float _healthBoostPercentage = 0.25f;
-    private float _defaultPhysDef = 0;
 
-    private List<StatusEffect> _effects = new ();
+    private List<StatusEffect> _effects = new();
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DefenseReduction;
     public override StateType Type => StateType.Magic;
@@ -39,12 +38,12 @@ public class DefenceReductionState : StateBasic
 
     private void ApplyBuff()
     {
-        _defaultPhysDef = characterState.Character.Health.DefPhysDamage;
-        characterState.Character.Health.SetPhysicDef(_defaultPhysDef * _healthBoostPercentage);
-    } 
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical]
+            .AddModifier(new AttributeModifier(_healthBoostPercentage, ModifierType.Multiplier, this));
+    }
 
     private void RemoveBuff()
     {
-        characterState.Character.Health.SetPhysicDef(_defaultPhysDef);
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical].RemoveBySource(this);
     }
 }

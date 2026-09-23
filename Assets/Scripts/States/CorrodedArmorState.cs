@@ -5,7 +5,6 @@ public class CorrodedArmorState : StateStackingRefreshing
 {
     private const float ReductionPerStack = 2f;
     private float _durationRemaining;
-    private float _appliedReduction = 0f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
@@ -38,7 +37,6 @@ public class CorrodedArmorState : StateStackingRefreshing
 
     public override void UpdateState()
     {
-
     }
 
     public override bool Stack(float time)
@@ -56,27 +54,22 @@ public class CorrodedArmorState : StateStackingRefreshing
 
     private void ApplyReduction()
     {
-        if (health == null) return;
+        if (characterState == null) return;
 
-        float totalReduction = CurrentStacksCount * ReductionPerStack;
+        var attribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
 
-        health.DefPhysDamage -= _appliedReduction;
-
-        _appliedReduction = totalReduction;
-        health.DefPhysDamage -= _appliedReduction;
+        attribute.RemoveBySource(this);
+        float totalReduction = -(CurrentStacksCount * ReductionPerStack);
+        attribute.AddModifier(new AttributeModifier(totalReduction, ModifierType.Flat, this));
     }
 
     public override void ExitState()
     {
-        if (health != null)
-        {
-            health.DefPhysDamage += _appliedReduction;
-        }
-        
-        CurrentStacksCount = 1;
-        _appliedReduction = 0f;
+        var attribute = characterState?.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        attribute?.RemoveBySource(this);
 
-        
+        CurrentStacksCount = 1;
+
         characterState.RemoveState(this);
     }
 }

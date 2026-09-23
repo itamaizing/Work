@@ -1234,6 +1234,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
     public int AnimTriggerCastPublic => AnimTriggerCast;
+    public int AnimTriggerCastDelayPublic => AnimTriggerCastDelay;
 
 
     [ClientCallback]

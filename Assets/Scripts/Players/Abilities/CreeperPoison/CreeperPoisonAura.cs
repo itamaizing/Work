@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class CreeperPoisonAura : NetworkBehaviour
 {
-    [Header("Poison Aura Settings")]
     [SerializeField] private float _radius = 6f;
     [SerializeField] private LayerMask _enemyLayer;
     [SerializeField] private float _attackSpeedPerStack = 0.1f;
@@ -14,15 +13,15 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private Coroutine _poisonAuraRoutine;
     private int _lastStacks = 0;
-    
     private int _lastEnergyStacks = 0;
 
     private Health _health;
     private Character _owner;
 
-    private float _tempEvadeBonus = 0f;
-    
     private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(1, ModifierType.Percent);
+    private readonly AttributeModifier _evadeMeleeModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _evadeRangeModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _evadeMagicModifier = new AttributeModifier(0, ModifierType.Flat);
 
     #region Talent
     private bool _isFeelingPoisoning = false;
@@ -150,16 +149,25 @@ public class CreeperPoisonAura : NetworkBehaviour
         if (skill == null || skill.Hero == null) return;
 
         Character attacker = skill.Hero;
-
         if (attacker == null || attacker == _owner) return;
-
         if (!HasPoison(attacker)) return;
 
-        _tempEvadeBonus = 5f;
+        float bonus = 5f;
+        var attrs = _owner.AttributeSystem;
 
-        _health.EvadeMeleeDamage += _tempEvadeBonus;
-        _health.EvadeRangeDamage += _tempEvadeBonus;
-        _health.ResistMagDamage += _tempEvadeBonus;
+        _evadeMeleeModifier.Source = this;
+        _evadeMeleeModifier.Value = bonus;
+        _evadeRangeModifier.Source = this;
+        _evadeRangeModifier.Value = bonus;
+        _evadeMagicModifier.Source = this;
+        _evadeMagicModifier.Value = bonus;
+
+        if (!attrs[CharacterAttributeName.EvasionPhysicalMelee].Modifiers.Contains(_evadeMeleeModifier))
+            attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(_evadeMeleeModifier);
+        if (!attrs[CharacterAttributeName.EvasionPhysicalRange].Modifiers.Contains(_evadeRangeModifier))
+            attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(_evadeRangeModifier);
+        if (!attrs[CharacterAttributeName.EvasionMagical].Modifiers.Contains(_evadeMagicModifier))
+            attrs[CharacterAttributeName.EvasionMagical].AddModifier(_evadeMagicModifier);
     }
 
     private void OnDamageDealt(Damage damage, GameObject target)
@@ -179,13 +187,10 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private void OnAfterDamage(Damage damage, Skill skill)
     {
-        if (_tempEvadeBonus <= 0) return;
-
-        _health.EvadeMeleeDamage -= _tempEvadeBonus;
-        _health.EvadeRangeDamage -= _tempEvadeBonus;
-        _health.ResistMagDamage -= _tempEvadeBonus;
-
-        _tempEvadeBonus = 0f;
+        var attrs = _owner.AttributeSystem;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveModifier(_evadeMeleeModifier);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveModifier(_evadeRangeModifier);
+        attrs[CharacterAttributeName.EvasionMagical].RemoveModifier(_evadeMagicModifier);
     }
 
     private void ApplyEnergyRegen(int stacks)

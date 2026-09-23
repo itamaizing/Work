@@ -606,4 +606,43 @@ public class SkillManager : MonoBehaviour
         */
     }
     #endregion
+
+    #region Animation Cache Tool
+
+#if UNITY_EDITOR
+[ContextMenu("Cache Animation Trigger Durations")]
+private void CacheAnimationTriggerDurations()
+{
+    var animator = GetComponentInChildren<Animator>();
+    if (animator == null)
+    {
+        Debug.LogWarning($"[SkillManager] No Animator found on {gameObject.name}.");
+        return;
+    }
+
+    bool anyChanged = false;
+    foreach (var skill in _skills)
+    {
+        if (skill == null) continue;
+
+        bool changed = skill.Animation.CacheAnimationTriggersEditor(animator);
+        changed |= skill.Animation.CacheIntHashTriggersEditor(animator, skill.AnimTriggerCastPublic, skill.AnimTriggerCastDelayPublic);
+
+        if (changed) { UnityEditor.EditorUtility.SetDirty(skill); anyChanged = true; }
+    }
+
+    if (anyChanged)
+    {
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.AssetDatabase.SaveAssets();
+        Debug.Log($"[SkillManager] Cached animation trigger durations for {gameObject.name}.");
+    }
+    else
+    {
+        Debug.Log($"[SkillManager] Nothing to update for {gameObject.name}.");
+    }
+}
+#endif
+
+    #endregion 
 }
