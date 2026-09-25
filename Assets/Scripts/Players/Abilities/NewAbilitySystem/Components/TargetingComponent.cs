@@ -21,6 +21,8 @@ public enum TargetFaction
     Self = 1 << 0,
     Ally = 1 << 1,
     Enemy = 1 << 2,
+
+    All = Self | Ally | Enemy,
 }
 
 [Flags]
