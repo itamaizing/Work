@@ -44,6 +44,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected float maxCounter;
     [SerializeField] public TagComponent _tags;
     [SerializeField] private AnimationComponent _animationComponent;
+    [SerializeField] private SoundComponent _soundComponent;
     #endregion InspectorSettings
 
     #region CastReduction
@@ -146,6 +147,83 @@ public abstract class Skill : NetworkBehaviour
     public AreaComponent AreaInfo => _areaComponent;
     public InformationRenderComponent Renderer => _informationRenderComponent;
     public AnimationComponent Animation => _animationComponent;
+    public SoundComponent SoundComponent => _soundComponent;
+    
+    #region Sound
+
+    protected readonly Dictionary<Sfx_Skill, AudioData> _activeLoopSounds = new();
+
+    public virtual void PlaySound(Sfx_Skill phase)
+    {
+        if (SoundComponent == null) return;
+
+        switch (phase)
+        {
+            case Sfx_Skill.PrepareStart:
+                PlayWithLoopFallback(Sfx_Skill.PrepareStart, Sfx_Skill.PrepareLoop);
+                break;
+
+            case Sfx_Skill.CastStart:
+                PlayWithLoopFallback(Sfx_Skill.CastStart, Sfx_Skill.CastLoop);
+                break;
+
+            case Sfx_Skill.PrepareEnd:
+                StopLoopSound(Sfx_Skill.PrepareLoop);
+                PlayOnce(Sfx_Skill.PrepareEnd);
+                break;
+
+            case Sfx_Skill.CastEnd:
+                StopLoopSound(Sfx_Skill.CastLoop);
+                PlayOnce(Sfx_Skill.CastEnd);
+                break;
+
+            default:
+                PlayOnce(phase);
+                break;
+        }
+    }
+
+    private void PlayWithLoopFallback(Sfx_Skill primary, Sfx_Skill loopFallback)
+    {
+        if (SoundComponent[primary].Count > 0)
+        {
+            var asset = SoundComponent.GetRandom(primary);
+            if (asset != null)
+                AudioManager.Network.Play(SoundComponent.BuildAudioData(asset));
+            return;
+        }
+
+        if (SoundComponent[loopFallback].Count > 0)
+        {
+            var asset = SoundComponent.GetRandom(loopFallback);
+            if (asset == null) return;
+
+            var data = SoundComponent.BuildAudioData(asset, SfxPlayMode.Loop);
+            _activeLoopSounds[loopFallback] = data;
+            AudioManager.Network.Play(data);
+        }
+    }
+
+    private void PlayOnce(Sfx_Skill phase)
+    {
+        if (SoundComponent[phase].Count == 0) return;
+
+        var asset = SoundComponent.GetRandom(phase);
+        if (asset == null) return;
+
+        AudioManager.Network.Play(SoundComponent.BuildAudioData(asset));
+    }
+
+    protected void StopLoopSound(Sfx_Skill loopPhase)
+    {
+        if (_activeLoopSounds.TryGetValue(loopPhase, out var data))
+        {
+            AudioManager.Network.TryStop(data);
+            _activeLoopSounds.Remove(loopPhase);
+        }
+    }
+
+    #endregion
 
     #region Scriptable Objects
     public string Name => _abilityInfo.Name;
@@ -626,6 +704,7 @@ public abstract class Skill : NetworkBehaviour
                 _isPreparing = false;
                 Renderer.HideSmartIndicator();
 
+                StopLoopSound(Sfx_Skill.PrepareLoop);
                 PreparingCanceled?.Invoke();
 
                 UnSubscribeClickEvents();
@@ -652,6 +731,7 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator ActionWrapperForPreparingJob()
     {
         PreparingStarted?.Invoke(this);
+        PlaySound(Sfx_Skill.PrepareStart);
         _isPreparing = true;
         //ClearData();
         Renderer.ShowSmartIndicator();
@@ -682,6 +762,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         PreparingSuccess?.Invoke(this);
+        PlaySound(Sfx_Skill.PrepareEnd);
         Targeting.ClearTempTarget();
         _isPreparing = false;
         Renderer.HideSmartIndicator();
@@ -705,6 +786,7 @@ public abstract class Skill : NetworkBehaviour
         _isPlayCastAnim = false;
 
         CancelAnim();
+        StopLoopSound(Sfx_Skill.CastLoop);
 
         _hero.Move.StopLookAt();
         HandleMovementLock(MovementLockPhase.CastFailedEarly);
@@ -732,6 +814,7 @@ public abstract class Skill : NetworkBehaviour
         Hero.Abilities.NotifySkillPrepared(this);
         Hero.Abilities.NotifySkillIsPreparing(this, true); 
         CastStarted?.Invoke();
+        PlaySound(Sfx_Skill.CastStart); 
         _isCasting = true;
 
         bool noCast = Hero.Abilities.TryConsumeNoCast();
@@ -793,6 +876,7 @@ public abstract class Skill : NetworkBehaviour
 
         CommitUse();
         CastFinished?.Invoke();
+        PlaySound(Sfx_Skill.CastStart);
         CastEnded?.Invoke();
         _isCasting = false;
 

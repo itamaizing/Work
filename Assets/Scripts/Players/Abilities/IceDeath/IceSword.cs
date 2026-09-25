@@ -12,7 +12,6 @@ public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private GameObject _sword;
-	[SerializeField] private AudioClip audioClip;
 
 	[SerializeField] private float _baseEnergyCost = 40f;
 	[SerializeField] private float _maxAdditionalCost = 10f;
@@ -60,7 +59,6 @@ public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 			TryCancel(true);
 			yield break;
 		}
-		
 		OnSeriesDamaged?.Invoke(targetCharacter.gameObject,this);
 
 		if (targetCharacter == _oldtarget)
@@ -122,7 +120,6 @@ public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 	private void CmdAdd(GameObject enemy, bool isFinal)
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
-		RpcPlayShotSound();
 		if (!isFinal)
 			enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, Schools.Water, _playerLinks.gameObject, name);
 		else
@@ -132,12 +129,6 @@ public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 				enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, Schools.Water, _playerLinks.gameObject, name);
 			}
 		}
-	}
-
-	[ClientRpc]
-	private void RpcPlayShotSound()
-	{
-		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 
 	public void IceSwordCast()

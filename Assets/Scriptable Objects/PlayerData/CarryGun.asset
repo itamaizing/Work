@@ -95,8 +95,8 @@ MonoBehaviour:
       type: 3
       value: 0
     - nameToShow: MoveSpeed
-      type: 4
-      value: 7
+      type: 6
+      value: 6
     - nameToShow: VisionRadius
-      type: 5
-      value: 2
+      type: 7
+      value: 0

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 {
-	[SerializeField] private AudioClip[] _hits;
-
 	private AudioSource _audioSource;
 	private Character _curTarget;
 	private Vector2 _jumpPos;
@@ -129,7 +127,6 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 			TryCancel();
 			return;
 		}
-
 		AnimStartCastCoroutine();
 	}
 
@@ -142,13 +139,14 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 	{
 		if (_castTarget == null) return;
 
+		PlayShotSound();
+		
 		SingleHit(_castTarget);
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
 			Targeting.ClearTarget();
 		}
-		CmdPlayShotSound();
 	}
 
 
@@ -166,20 +164,23 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 		_currentDamageMultiplier = 1;
 	}
 
-	[Command]
-	private void CmdPlayShotSound()
+	private void PlayShotSound()
 	{
-		RpcPlayShotSound();
-	}
+		/*AudioAssetSO asset = SoundComponent.GetRandom(Sfx_Skill.Custom);
 
-	[ClientRpc]
-	private void RpcPlayShotSound()
-	{
-		if (_audioSource != null && _hits != null)
+		if (asset != null)
 		{
-			int index = UnityEngine.Random.Range(0, _hits.Length);
-			_audioSource.PlayOneShot(_hits[index]);
-		}
+			var data = new AudioData
+			{
+				ClipHash = asset.Hash,
+				Volume = 0f,
+				PitchDelta = 0.08f,
+				VolumeDelta = 0.05f,
+				PlayMode = SfxPlayMode.Once
+			};
+			AudioManager.Local.PlayOneShot(data);
+			AudioManager.Network.Play(data);
+		}*/
 	}
 
 	public void ApplyRootTrue()
