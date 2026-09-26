@@ -21,7 +21,7 @@ public class WaveParalyzingPoison : Skill
     private float _currentRadius;
     private HashSet<Character> _affectedTargets = new();
 
-    protected override int AnimTriggerCast => Animator.StringToHash("Spell");
+    protected override int AnimTriggerCast => Animator.StringToHash("WaveParalizyngSpell");
     protected override int AnimTriggerCastDelay => 0;
 
     protected override bool IsCanCast => true;

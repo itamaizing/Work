@@ -85,7 +85,7 @@ public class CreeperInvisible : Skill
     #endregion
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override bool IsCanCast => true;
 
     public event Action<bool> OnInvisibleChanged;

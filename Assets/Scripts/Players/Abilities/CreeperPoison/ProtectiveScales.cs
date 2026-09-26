@@ -1,13 +1,19 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
 public class ProtectiveScales : Skill
 {
-    private const float Duration = 2;
+    [SerializeField] private GameObject baseBody;
+    [SerializeField] private GameObject protectiveScalesBody;
 
+    private const float Duration = 2;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+
+    public GameObject BaseBody { get => baseBody; set => baseBody = value; }
+    public GameObject ProtectiveScalesBody { get => protectiveScalesBody; set => protectiveScalesBody = value; }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
