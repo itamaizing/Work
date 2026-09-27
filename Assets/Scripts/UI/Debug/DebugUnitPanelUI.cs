@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,15 +39,24 @@ namespace Game.Debug
         private Button _executeButton;
         private Character _unit;
 
-        protected TModule Debug { get; private set; }
+        protected TModule Module { get; private set; }
 
         protected abstract TModule CreateModule();
 
-        private void Awake() => Debug = CreateModule();
+        private void Awake() => Module = CreateModule();
         private void OnEnable() => _executeButton.onClick.AddListener(OnClick);
         private void OnDisable() => _executeButton.onClick.RemoveListener(OnClick);
+
         public override void SetUnit(Character character) => _unit = character;
-        private void OnClick() => Debug.Execute(_unit);
+
+        protected void FillDropdownWithEnum<TEnum>(TMP_Dropdown dropdown) where TEnum : Enum
+        {
+            dropdown.ClearOptions();
+            dropdown.AddOptions(Enum.GetNames(typeof(TEnum)).ToList());
+            dropdown.value = 0;
+        }
+
+        private void OnClick() => Module.Execute(_unit);
     }
 
     public abstract class DebugUnitModule
