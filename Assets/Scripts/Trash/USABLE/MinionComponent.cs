@@ -6,6 +6,13 @@ using UnityEngine.AI;
 
 public class MinionComponent : Character
 {
+    public enum MinionOrder
+    {
+        None,
+        Move,
+        AutoAttack
+    }
+    
     [SerializeField] protected int _expForDieKill = 5;
     [SerializeField] private float _costCall;
     [SerializeField] protected NavMeshAgent _navMeshAgent;
@@ -13,10 +20,13 @@ public class MinionComponent : Character
     protected HeroComponent _myHeroParent;
     [SyncVar] private bool _isIntercepted = false;
 
+    private MinionOrder _lastOrder = MinionOrder.None;
+    public MinionOrder LastOrder { get => _lastOrder; set => _lastOrder = value; }
+
     public int ExpForDieKill { get => _expForDieKill; }
     public bool IsIntercepted { get => _isIntercepted; }
     public float CostCall => _costCall;
-    
+
     private bool _destroyedNotified;
 
     public event Action<MinionComponent> Destroyed;

@@ -6,9 +6,8 @@ public class IrradiationState : StateStackingRefreshing
     private float _baseDuration;
     private float _durationIncrease = 1;
     private const float _magicDefenseReduction = 3;
-    private float _totalAppliedReduction = 0f;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability};
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Irradiation;
     public override StateType Type => StateType.Magic;
@@ -16,10 +15,9 @@ public class IrradiationState : StateStackingRefreshing
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-
         Debug.Log("Entering Irradiation State");
         characterState = character;
-        
+
         _baseDuration = durationToExit;
         RemainingDuration = _baseDuration;
 
@@ -65,14 +63,13 @@ public class IrradiationState : StateStackingRefreshing
 
     private void ApplyMagicDefenseReduction()
     {
-        characterState.Character.Health.DefMagDamage -= _magicDefenseReduction;
-        _totalAppliedReduction += _magicDefenseReduction;
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical]
+            .AddModifier(new AttributeModifier(-_magicDefenseReduction, ModifierType.Flat, this));
     }
 
     private void RestoreMagicDefense()
     {
-        characterState.Character.Health.DefMagDamage += _totalAppliedReduction;
-        _totalAppliedReduction = 0f;
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
     }
 
     private void OnNewStateAdded(StateBasic newState)
@@ -82,13 +79,13 @@ public class IrradiationState : StateStackingRefreshing
 
     private void ExtendExistingNegativeMagic()
     {
-        foreach (var state in characterState.CurrentStates) if (state != this && state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) ExtendState(state);
+        foreach (var state in characterState.CurrentStates)
+            if (state != this && state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) ExtendState(state);
     }
 
     private void ExtendState(StateBasic state)
     {
         //state.duration += _durationIncrease;
         //state.RemainingDuration += _durationIncrease;
-
     }
 }

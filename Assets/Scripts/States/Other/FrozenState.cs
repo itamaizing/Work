@@ -8,6 +8,8 @@ public class FrozenStateStacking : StateStackingRefreshing
     private AudioSource _audioSource;
     private TalentSystem _talentSystem;
     private NinjaResources _ninjaResources;
+
+    public override float StackLingerTime => 1f;
     
     private float _baseDuration;
     private bool _isInited;
@@ -38,17 +40,22 @@ public class FrozenStateStacking : StateStackingRefreshing
     
     public float CurrentAttackSlowPercent => CastSlowPerStack * CurrentStacksCount;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
         SetMaxStacks(MaxStacks);
         CurrentStacksCount = 1;
         RemainingDuration = durationToExit;
         _baseDuration = durationToExit;
         parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1 : damageToExit;
-        if (_ninjaResources.IsDeepFrosting)
+        if (_ninjaResources != null)
         {
-            parameters[StateParameter.DamageToExit] = _deepFrostDurability;
+            if (_ninjaResources.IsDeepFrosting)
+            {
+                parameters[StateParameter.DamageToExit] = _deepFrostDurability;
+            }
         }
+
         _damageCount = 0f;
         _audioSource = character.GetComponent<AudioSource>();
 
@@ -164,10 +171,12 @@ public class FrozenStateStacking : StateStackingRefreshing
 
         if (CurrentStacksCount < MaxStacks) CurrentStacksCount++;
 
-        
-        if (_ninjaResources.IsDeepFrosting)
+        if (_ninjaResources != null)
         {
-            parameters[StateParameter.DamageToExit] = _deepFrostDurability;
+            if (_ninjaResources.IsDeepFrosting)
+            {
+                parameters[StateParameter.DamageToExit] = _deepFrostDurability;
+            }
         }
 
         ApplyEffects();

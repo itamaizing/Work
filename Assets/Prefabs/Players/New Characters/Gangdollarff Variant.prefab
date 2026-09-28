@@ -15402,6 +15402,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
@@ -15502,7 +15508,17 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - TelekinesSkill
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 7400000, guid: 86ff59ecde62199429052b22460f1452, type: 2}
+    _cachedCastClipDuration: 2.1666667
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips:
+    - Trigger: TelekinesSkill
+      Clip: {fileID: 7400000, guid: 86ff59ecde62199429052b22460f1452, type: 2}
+      Duration: 2.1666667
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
@@ -15598,6 +15614,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
@@ -15691,6 +15713,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -15787,6 +15815,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 7400000, guid: 0edadcfde27cfcd4eb6af1fab58087a0, type: 2}
+    _cachedCastClipDuration: 1.2
+    _cachedCastDelayClip: {fileID: 7400000, guid: a117006c4ca803641af56923581e141f, type: 2}
+    _cachedCastDelayClipDuration: 1.6666666
+    _cachedTriggerClips: []
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
@@ -15882,6 +15916,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
 --- !u!114 &6541281367918590680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15973,6 +16013,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _maxJumps: 5
   _damageReductionPerJump: 0.2
@@ -16081,6 +16127,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 7400000, guid: c6dcc545410c3274abd376a97a7ab615, type: 2}
+    _cachedCastClipDuration: 0.6666667
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
 --- !u!114 &483165492512868837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16172,6 +16224,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   duration: 2
 --- !u!114 &-6863981154326105301
 MonoBehaviour:
@@ -16264,6 +16322,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
@@ -16362,6 +16426,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _particlePref: {fileID: 0}
   _schoolSolvent: {fileID: 8795641180420630933}
 --- !u!114 &4401943882256093312
@@ -16455,6 +16525,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
@@ -16549,6 +16625,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _waveParticlePrefab: {fileID: 2853573148958249888, guid: 13f66c9ee9497d94cbf157c81c55bac7, type: 3}
   _pushRange: 3
   _pushDuration: 0.2
@@ -16645,6 +16727,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 7400000, guid: 1e7a0a4e7add5ed448385b56ee9572be, type: 2}
+    _cachedCastClipDuration: 0.6666667
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
 --- !u!114 &3127105790014565672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16756,6 +16844,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _meshTranformation: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   _debuffDuration: 6
 --- !u!114 &4358863268785994334
@@ -16855,6 +16949,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 7400000, guid: b7a15491f878997438ac9079ef6820ac, type: 2}
+    _cachedCastDelayClipDuration: 2.0833333
+    _cachedTriggerClips: []
   _playerRenderers:
   - {fileID: 3976331384424644822}
   - {fileID: 6145141374176819678}
@@ -16980,6 +17080,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _buffDuration: 3
   _chainBreakTime: 2
   _invisDamageMultiplier: 2
@@ -17074,6 +17180,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 7400000, guid: fcc344dac6c33b64086f71d0f40d04b0, type: 2}
+    _cachedCastClipDuration: 0.8333333
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _stoneVFX: {fileID: 5127687933100530446, guid: 8eb87cb5622d932438feef9299091bc3, type: 3}
   _aoeRadius: 2
 --- !u!114 &8020773605070885895
@@ -17167,6 +17279,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _snapshotInterval: 0.1
   _rewindTime: 3
 --- !u!114 &4909088627474570662
@@ -17260,6 +17378,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 7400000, guid: 1493b169cbeed2e4dac0b241b368d921, type: 2}
+    _cachedCastClipDuration: 0.8333333
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _immortalityTime: 4
 --- !u!114 &7485692047686332734
 MonoBehaviour:
@@ -17352,6 +17476,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _whirlpoolTilePrefab: {fileID: 3817491765434079413, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   _duration: 6
   _whirlRadius: 1.5
@@ -17449,6 +17579,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _stunDuration: 4.5
   _burnDuration: 5
@@ -17544,6 +17680,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _counterSpell: {fileID: 8856192836074503412}
 --- !u!114 &2644037635160296029
 MonoBehaviour:
@@ -17636,6 +17778,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _clonePrefabIndex: 0
   _spawnOffset: 2
   _cloneDuration: 7
@@ -17730,6 +17878,12 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
   _burningMatterPrefab: {fileID: -1835582097278165225, guid: d7774d0cd1b28724d87f9fa4a1f57067, type: 3}
   _duration: 6
   _radius: 1.5

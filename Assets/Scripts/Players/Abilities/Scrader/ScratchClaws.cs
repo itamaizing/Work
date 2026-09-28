@@ -52,7 +52,6 @@ public class ScratchClaws : MoveSkill
     }
     protected override IEnumerator CastJob()
     {
-        Debug.LogError("CastJob");
         Character target = Targeting.GetTarget()?.Character;
         if (target == null)
         {
@@ -82,7 +81,6 @@ public class ScratchClaws : MoveSkill
 
     protected override void ClearData()
     {
-        Debug.LogError("ClearData");
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         AnimScratchEnd();

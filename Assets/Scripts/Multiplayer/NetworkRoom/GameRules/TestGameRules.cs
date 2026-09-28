@@ -258,8 +258,6 @@ public class TestGameRules : GameRules
         StartCoroutine(CloseRoomJob());
     }
 
-    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
-
     protected override void OnTowerDied(Object tower)
     {
         throw new System.NotImplementedException();

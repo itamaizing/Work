@@ -1317,7 +1317,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveScraderTo: {fileID: 0}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
@@ -13096,6 +13095,7 @@ GameObject:
   - component: {fileID: 1860083781445571932}
   - component: {fileID: 8886534226296608121}
   - component: {fileID: 5264275895270310813}
+  - component: {fileID: 1712362362057784844}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13317,7 +13317,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   clientAuthority: 1
-  animator: {fileID: 4853408415625794062}
+  animator: {fileID: 1215395125402789392}
 --- !u!114 &5830977165762126247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13631,6 +13631,7 @@ MonoBehaviour:
   - {fileID: 5264275895270310813}
   - {fileID: 8741847699558006757}
   - {fileID: 8886534226296608121}
+  - {fileID: 1712362362057784844}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -14138,6 +14139,99 @@ MonoBehaviour:
     _castTriggers: []
   _agent: {fileID: 542506517503282851}
   _stopDistance: 0.5
+--- !u!114 &1712362362057784844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d9c09ecb495914b903ae8c80002308, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionAutoAttackSkill
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 2a3adf6b3b20e6745afee7554777b0a5, type: 2}
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    oldType: 0
+    type: 0
+    _clickLayer: 3
+    _faction: 4
+    _unitType: -1
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 0
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _autoAttackDelay: 0
+  _castDeley: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _areaComponent:
+    _radius: 2
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
+  _disactive: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
+  _agent: {fileID: 542506517503282851}
+  _minDamage: 1
+  _maxDamage: 3
+  _attackInterval: 1.2
+  _searchInterval: 0.25
+  _targetSearchRadiusMultiplier: 1.1
+  _hasAttackAnimation: 1
+  _animationSafetyTimeout: 3
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

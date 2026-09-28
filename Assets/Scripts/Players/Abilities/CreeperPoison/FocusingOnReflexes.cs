@@ -12,6 +12,9 @@ public class FocusingOnReflexes : Skill
     private Coroutine _buffTimerCoroutine;
     private bool _isBuffActive;
 
+    private readonly AttributeModifier _evadeMeleeModifier = new(EvadeMeleeBonus, ModifierType.Flat);
+    private readonly AttributeModifier _evadeRangeModifier = new(EvadeRangeBonus, ModifierType.Flat);
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
@@ -39,7 +42,6 @@ public class FocusingOnReflexes : Skill
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);
         callbackDataSaved(targetInfo);
-
         yield break;
     }
 
@@ -66,8 +68,11 @@ public class FocusingOnReflexes : Skill
             RemoveBuffLogic();
         }
 
-        Hero.Health.EvadeMeleeDamage += EvadeMeleeBonus;
-        Hero.Health.EvadeRangeDamage += EvadeRangeBonus;
+        var attrs = Hero.AttributeSystem;
+        _evadeMeleeModifier.Source = this;
+        _evadeRangeModifier.Source = this;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(_evadeMeleeModifier);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(_evadeRangeModifier);
 
         Hero.Health.Evaded += OnEvaded;
         _isBuffActive = true;
@@ -81,7 +86,7 @@ public class FocusingOnReflexes : Skill
     private IEnumerator BuffTimer()
     {
         yield return new WaitForSeconds(duration);
-        
+
         if (_isBuffActive)
         {
             RemoveBuffLogic();
@@ -95,11 +100,11 @@ public class FocusingOnReflexes : Skill
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if(damage.Type == DamageType.DOTMag || damage.Type == DamageType.DOTPhys) return;
+        if (damage.Type == DamageType.DOTMag || damage.Type == DamageType.DOTPhys) return;
         CmdRemoveBuffLogic();
         Hero.Health.DamageTaken -= OnDamageTaken;
     }
-    
+
     private void RemoveBuffLogic()
     {
         _isBuffActive = false;
@@ -112,9 +117,10 @@ public class FocusingOnReflexes : Skill
 
         Hero.Health.Evaded -= OnEvaded;
 
-        Hero.Health.EvadeMeleeDamage -= EvadeMeleeBonus;
-        Hero.Health.EvadeRangeDamage -= EvadeRangeBonus;
-        
+        var attrs = Hero.AttributeSystem;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveModifier(_evadeMeleeModifier);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveModifier(_evadeRangeModifier);
+
         Hero.CharacterState.RemoveState(States.FocusingOnReflexesState);
     }
 

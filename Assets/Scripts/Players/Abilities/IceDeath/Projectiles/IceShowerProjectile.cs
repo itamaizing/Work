@@ -71,13 +71,14 @@ public class IceShowerProjectile : Projectiles
 				//target.Health.TryTakeDamage(ref _damage, _skill);
 
 				//talents???
-				if (_dad.Health.ResistMagDamage >= 20)
+				var evasionMagical = _dad.AttributeSystem[CharacterAttributeName.EvasionMagical];
+				if (evasionMagical.GetValue() >= 20)
 				{
-					_dad.Health.SetEvadeMagic(5);
+					evasionMagical.SetBaseValue(5);
 				}
 				else
 				{
-					_dad.Health.SetEvadeMagic(20);
+					evasionMagical.SetBaseValue(20);
 				}
                 _energy = (Energy)_dad.Resources[ResourceType.Energy];
 

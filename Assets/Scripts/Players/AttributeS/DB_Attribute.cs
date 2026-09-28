@@ -138,6 +138,8 @@ public enum CharacterAttributeName
     ResistanceMagical,
     EvasionPhysical,
     EvasionMagical,
+    EvasionPhysicalMelee,
+    EvasionPhysicalRange,
     MoveSpeed,
     VisionRadius,
     CastSpeed,

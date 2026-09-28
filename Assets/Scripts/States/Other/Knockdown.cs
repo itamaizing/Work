@@ -16,7 +16,7 @@ public class Knockdown : StateStackingRefreshing
     {
         characterState = character;
 
-        float resistance = characterState.Character.Health.DefPhysDamage;
+        float resistance = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical].GetValue();
         float chanceToApply = 100f - resistance;
 
         if (Random.Range(0f, 100f) > chanceToApply)
