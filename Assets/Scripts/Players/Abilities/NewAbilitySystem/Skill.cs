@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public abstract class Skill : NetworkBehaviour
@@ -1166,6 +1167,17 @@ public abstract class Skill : NetworkBehaviour
     public void CmdCooldownEnd()
     {
         _cooldownEndTime = NetworkTime.time;
+    }
+
+    public void CooldownReset()
+    {
+        Cooldown.SetReduced(0);
+    }
+
+    [Command]
+    public void CmdSetTargetingAll()
+    {
+        Targeting.Faction = TargetFaction.All;
     }
 
     [Server]
