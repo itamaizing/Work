@@ -363,6 +363,18 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     }
 
     [Command]
+    public void CmdSetRegenValue(float value)
+    {
+        _regenerationValue = value;
+    }
+
+    [Command]
+    public void CmdSetValue(float value)
+    {
+        _currentValue = value;
+    }
+
+    [Command]
     public void CmdUse(float value)
     {
         //Debug.Log(value + " try " + _currentValue);

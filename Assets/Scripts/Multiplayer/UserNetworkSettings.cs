@@ -84,6 +84,12 @@ public class UserNetworkSettings : NetworkBehaviour
         OnUpdateValue?.Invoke();
     }
 
+    [Command]
+    public void CmdSetTeam(byte i)
+    {
+        TeamIndex = i;
+    }
+
     public void MarkUpEnemiesOrAllies()
     {
         if (Players == null || Players.Count == 0)

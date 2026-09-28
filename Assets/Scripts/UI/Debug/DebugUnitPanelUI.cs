@@ -21,6 +21,13 @@ namespace Game.Debug
             _selectManager.CharacterSelected -= OnCharacterSelected;
         }
 
+        [ContextMenu(nameof(UpdateWindowsList))]
+        public void UpdateWindowsList()
+        {
+            var list = GetComponentsInChildren<DebugUnitModuleUI>();
+            _windows = list.ToArray();
+        }
+
         private void OnCharacterSelected(Character character)
         {
             foreach (var ui in _windows)
@@ -76,7 +83,7 @@ namespace Game.Debug
 
     public class DebugStateModule : DebugUnitModule
     {
-        private const string SKILLNAME = "None(debug)";
+        private const string SKILL_NAME = "None(debug)";
 
         public States State { get; set; }
         public float Duration { get; set; }
@@ -85,7 +92,7 @@ namespace Game.Debug
 
         protected override void ExecuteInternal(Character unit)
         {
-            unit.CharacterState.AddState(State, Duration, DamageForExit, School, unit.gameObject, SKILLNAME);
+            unit.CharacterState.CmdAddState(State, Duration, DamageForExit, School, unit.gameObject, SKILL_NAME);
         }
     }
 
@@ -120,13 +127,16 @@ namespace Game.Debug
         private void OnCooldownReset(Character unit)
         {
             foreach (var skill in unit.Abilities.Abilities)
-                skill.Cooldown.SetReduced(0);
+                skill.CooldownReset();
         }
 
         private void OnEnableTargetingAll(Character unit)
         {
             foreach (var skill in unit.Abilities.Abilities)
+            {
+                skill.CmdSetTargetingAll();
                 skill.Targeting.Faction = TargetFaction.All;
+            }     
         }
     }
 
@@ -184,27 +194,27 @@ namespace Game.Debug
 
         private void OnSetHealth(Character unit)
         {
-            unit.Health.CurrentValue = Value;
+            unit.Health.CmdSetValue(Value);
         }
 
         private void OnSetHealthRegen(Character unit)
         {
-            unit.Health.RegenerationValue = Value;
+            unit.Health.CmdSetRegenValue(Value);
         }
 
         private void OnSetMana(Character unit)
         {
-            unit.Resource.CurrentValue = Value;
+            unit.Resource.CmdSetValue(Value); ;
         }
 
         private void OnSetManaRegen(Character unit)
         {
-            unit.Resource.RegenerationValue = Value;
+            unit.Resource.CmdSetRegenValue(Value);
         }
 
         private void OnSwitchTeam(Character unit)
         {
-            unit.NetworkSettings.TeamIndex = (byte)Value;
+            unit.NetworkSettings.CmdSetTeam((byte)Value);
         }
 
         private void OnSetTalantPoints(Character unit)
@@ -216,7 +226,7 @@ namespace Game.Debug
     public class DebugDamageModule : DebugUnitModule
     {
         public float Value { get; set; }
-        public DamageType Type { get; set; }
+        public DamageType DamageType { get; set; }
         public Schools School { get; set; }
         public AbilityForm Form { get; set; }
         public AttackRangeType PhysicAttackType { get; set; }
@@ -229,7 +239,7 @@ namespace Game.Debug
             var damage = new Damage()
             {
                 Value = Value,
-                Type = Type,
+                Type = DamageType,
                 School = School,
                 Form = Form,
                 PhysicAttackType = PhysicAttackType,
@@ -237,7 +247,7 @@ namespace Game.Debug
                 DamageKey = DamageKey,
                 FullyAbsorbed = FullyAbsorbed
             };
-            unit.TryTakeDamage(ref damage, null);
+            unit.CmdTryTakeDamage(damage, null);
         }
     }
 }
