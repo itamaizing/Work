@@ -197,13 +197,13 @@ namespace HeathenEngineering.UnityPhysics
                     if (myCollider != null)
                     {
                         FieldInfo colliderField = typeof(Collision2D).GetField("m_Collider", BindingFlags.Instance | BindingFlags.NonPublic);
-                        colliderField.SetValue(collisionData, myCollider.GetInstanceID()); // Set the collider property
+                        colliderField.SetValue(collisionData, myCollider.GetEntityId()); // Set the collider property
                     }
 
                     if (myBody != null)
                     {
                         FieldInfo colliderField = typeof(Collision2D).GetField("m_Rigidbody", BindingFlags.Instance | BindingFlags.NonPublic);
-                        colliderField.SetValue(collisionData, myBody.GetInstanceID()); // Set the collider property
+                        colliderField.SetValue(collisionData, myBody.GetEntityId()); // Set the collider property
                     }
 
                     FieldInfo contactsField = typeof(Collision2D).GetField("m_ReusedContacts", BindingFlags.Instance | BindingFlags.NonPublic);

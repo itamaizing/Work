@@ -35,10 +35,10 @@ public class CreatureSpawn : Skill
         get => _spawnType;
         set
         {
-            Debug.Log($"[CreatureSpawn:{GetInstanceID()}] SpawnType set attempt: {_spawnType} -> {value}");
+            Debug.Log($"[CreatureSpawn:{GetEntityId()}] SpawnType set attempt: {_spawnType} -> {value}");
             if (_spawnType == value) return;
             _spawnType = value;
-            Debug.Log($"[CreatureSpawn:{GetInstanceID()}] SpawnType CHANGED, firing OnSpawnTypeChanged({value})");
+            Debug.Log($"[CreatureSpawn:{GetEntityId()}] SpawnType CHANGED, firing OnSpawnTypeChanged({value})");
             OnSpawnTypeChanged?.Invoke(value);
         }
     }
@@ -157,7 +157,7 @@ public class CreatureSpawn : Skill
 
     protected override void ClearData()
     {
-        Debug.Log($"[CreatureSpawn:{GetInstanceID()}] ClearData called, current _spawnType={_spawnType}");
+        Debug.Log($"[CreatureSpawn:{GetEntityId()}] ClearData called, current _spawnType={_spawnType}");
         SpawnType = SpawnType.None;
     }
 }
