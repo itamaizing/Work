@@ -14,139 +14,126 @@ public class FireAures : MonoBehaviour
     }
 }
 
-public class Burn : StateBasic
+public class Burn : StateBasic, ITickableState
 {
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
-    
-    private float _damagePerSecond = 1f;
-    private float _damageRadius = 1f;
-    private float _timer = 0f;
-    private LayerMask _enemyLayer;
+    private const float DamagePerTick = 1f;
+    private const float DamageRadius = 1f;
+    private const float BurningDuration = 7f;
+
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Others };
+    private readonly HashSet<Character> _tickTargets = new();
+    private Health _subscribedHealth;
 
     public override States State => States.Burn;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
+    public float TickInterval => 1f;
+    
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName) => Attach();
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName) => Attach();
+
+    public override void UpdateState() { }
+
+    public void Tick()
     {
-        _enemyLayer = LayerMask.GetMask("Enemy");
-        
-        character.Character.Health.DamageTaken += OnDamageTaken;
+        if (!characterState.isServer) return;
+
+        Character owner = characterState.Character;
+        _tickTargets.Clear();
+
+        foreach (var col in Physics.OverlapSphere(owner.transform.position, DamageRadius))
+        {
+            if (!col.TryGetComponent<Character>(out var other)) continue;
+            if (other.IsDead || !IsEnemy(owner, other) || !_tickTargets.Add(other)) continue;
+
+            Damage damage = new() { Value = DamagePerTick, Type = DamageType.Magical, School = Schools.Fire };
+            other.TryTakeDamage(ref damage, null);
+        }
     }
 
-    private void OnDamageTaken(Damage damage, Skill skill)
+    public override void ExitState()
     {
-        if (skill == null) return;
-        if (damage.Type != DamageType.Physical) return;
-        if (damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
+        Detach();
+        characterState?.RemoveState(this);
+    }
 
-        skill.Hero.CharacterState.AddState(States.Burning, 7f, 0,
+    private void Attach()
+    {
+        Health health = characterState.Character.Health;
+        if (_subscribedHealth == health) return;
+
+        Detach();
+        _subscribedHealth = health;
+        health.DamageTaken += OnDamageTakenServer;
+    }
+
+    private void Detach()
+    {
+        if (_subscribedHealth == null) return;
+        _subscribedHealth.DamageTaken -= OnDamageTakenServer;
+        _subscribedHealth = null;
+    }
+
+    private void OnDamageTakenServer(Damage damage, Skill skill)
+    {
+        if (damage.Value <= 0f) return;
+        if (damage.Type != DamageType.Physical || damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
+
+        Character attacker = skill?.Hero;
+        if (attacker == null || attacker == characterState.Character) return;
+
+        attacker.CharacterState.AddState(States.Burning, BurningDuration, 0f,
             characterState.Character.gameObject, nameof(Burning));
     }
 
-    public override void UpdateState()
-    {
-        _timer += Time.deltaTime;
-        if (_timer < 1f) return;
-        _timer = 0f;
-
-        var colliders = Physics.OverlapSphere(
-            characterState.Character.transform.position, _damageRadius, _enemyLayer);
-
-        foreach (var col in colliders)
-        {
-            if (col.TryGetComponent<Character>(out var enemy))
-            {
-                Damage damage = new Damage
-                {
-                    Value = _damagePerSecond,
-                    Type = DamageType.Magical,
-                    School = Schools.Fire,
-                };
-                enemy.CmdTryTakeDamage(damage, null);
-            }
-        }
-    }
-
-    public override void ExitState()
-    {
-        if (characterState?.Character != null)
-            characterState.Character.Health.DamageTaken -= OnDamageTaken;
-        
-        characterState?.RemoveState(this);
-    }
+    private static bool IsEnemy(Character owner, Character other) =>
+        other != owner && other.NetworkSettings.TeamIndex != owner.NetworkSettings.TeamIndex;
 }
 
-public class Burning : StateStackingRefreshing
+public class Burning : StateStackingRefreshing, ITickableState
 {
-    private List<StatusEffect> _effects = new List<StatusEffect>();
-    protected float _damage = 1;
-    protected float _timeAfterLastEffect = 0;
-    protected float _effectRate = 1;
+    private const int MaxStacks = 5;
+    private const float DamagePerStack = 1f;
 
-    private float _baseDuration;
-    private float _stackTimer;
+    private readonly List<StatusEffect> _effects = new();
 
     public override States State => States.Burning;
-
     public override StateType Type => StateType.Magic;
-
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-
     public override List<StatusEffect> Effects => _effects;
 
-    public override float RemainingDuration => _baseDuration;
+    public float TickInterval => 1f;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public Burning() => SetMaxStacks(MaxStacks);
+    
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
+        => DealDamage(1);
+    
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
     {
-        SetMaxStacks(5);
-        _baseDuration = durationToExit;
-        _stackTimer = durationToExit;
-
-        Damage damage = new Damage
-        {
-            Value = _damage * (CurrentStacksCount + 1)
-        };
-        if (character.isClient)
-            character.Character.CmdTryTakeDamage(damage, null);
+        bool startingFresh = CurrentStacksCount == 0;
+        base.Reapply(character, durationToExit, damageToExit, sourceCaster, skillName);
+        if (startingFresh) DealDamage(1);
     }
 
-    public override bool Stack(float time)
-    {
-        _stackTimer = _baseDuration;
-        return true;
-    }
+    public override void UpdateState() { }
 
-    public override void UpdateState()
-    {
-        _stackTimer -= Time.deltaTime;
-
-        if (_stackTimer <= 0)
-        {
-            CurrentStacksCount--;
-            if (CurrentStacksCount <= 0)
-            {
-                ExitState();
-                return;
-            }
-
-            _stackTimer = _baseDuration;
-        }
-        _timeAfterLastEffect += Time.deltaTime;
-
-        if (_timeAfterLastEffect < _effectRate) return;
-
-        Damage damage = new Damage { Value = _damage * CurrentStacksCount };
-        if (characterState.isClient)
-            characterState.Character.CmdTryTakeDamage(damage, null);
-        _timeAfterLastEffect = 0;
-    }
+    public void Tick() => DealDamage(CurrentStacksCount);
 
     public override void ExitState()
     {
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
+    }
+
+    private void DealDamage(int stacks)
+    {
+        if (characterState == null || !characterState.isServer || stacks <= 0) return;
+
+        Damage damage = new() { Value = DamagePerStack * stacks, Type = DamageType.Magical, School = Schools.Fire };
+        characterState.Character.TryTakeDamage(ref damage, null);
     }
 }
 

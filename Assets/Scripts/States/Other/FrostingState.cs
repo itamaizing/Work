@@ -32,12 +32,14 @@ public class FrostingStateStacking : StateStackingRefreshing
 		_damageCount = 0;
 
 		parameters[StateParameter.DamageToExit] = damageToExit == 0 ? 1 : damageToExit;
-
-		if (_ninjaResources.IsDeepFrosting)
+		if (_ninjaResources != null)
 		{
-			parameters[StateParameter.DamageToExit] = _deepFrostDurability;
+			if (_ninjaResources.IsDeepFrosting)
+			{
+				parameters[StateParameter.DamageToExit] = _deepFrostDurability;
+			}
 		}
-		
+
 		RemainingDuration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();

@@ -122,8 +122,8 @@ public abstract class StateBasic
 
 	    if (StartTime == 0) StartTime = NetworkTime.time;
 
-	    RemainingDuration = durationToExit;
 	    if (MaxDuration <= 0f) MaxDuration = durationToExit;
+	    RemainingDuration = durationToExit;
 
 	    if (damageToExit > 0f) parameters[StateParameter.DamageToExit] = damageToExit;
 	    if (this is ITickableState tickable && _tickTimer <= 0f) _tickTimer = tickable.TickInterval;
