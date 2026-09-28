@@ -1,43 +1,45 @@
-using Game.Debug;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DebugDamageModuleUI : DebugUnitModuleUI<DebugDamageModule>
+namespace Game.Debug
 {
-    [SerializeField] private TMP_Dropdown _damageTypeDropdown;
-    [SerializeField] private TMP_Dropdown _schoolDropdown;
-    [SerializeField] private TMP_Dropdown _abilityFormDropdown;
-    [SerializeField] private TMP_Dropdown _attackTypeFormDropdown;
-    [SerializeField] private TMP_Dropdown _skillTypeFormDropdown;
-    [SerializeField] private TMP_InputField _valueInputField;
-    [SerializeField] private TMP_InputField _DamageKeyInputField;
-    [SerializeField] private Toggle _fullyAbsorbedToggle;
-
-    private void Start()
+    public class DebugDamageModuleUI : DebugUnitModuleUI<DebugDamageModule>
     {
-        FillDropdownWithEnum<DamageType>(_damageTypeDropdown);
-        _damageTypeDropdown.onValueChanged.AddListener((index) => Module.DamageType = (DamageType)index);
+        [SerializeField] private TMP_Dropdown _damageTypeDropdown;
+        [SerializeField] private TMP_Dropdown _schoolDropdown;
+        [SerializeField] private TMP_Dropdown _abilityFormDropdown;
+        [SerializeField] private TMP_Dropdown _attackTypeFormDropdown;
+        [SerializeField] private TMP_Dropdown _skillTypeFormDropdown;
+        [SerializeField] private TMP_InputField _valueInputField;
+        [SerializeField] private TMP_InputField _DamageKeyInputField;
+        [SerializeField] private Toggle _fullyAbsorbedToggle;
 
-        FillDropdownWithEnum<Schools>(_schoolDropdown);
-        _schoolDropdown.onValueChanged.AddListener((index) => Module.School = (Schools)index);
+        private void Start()
+        {
+            FillDropdownWithEnum<DamageType>(_damageTypeDropdown);
+            _damageTypeDropdown.onValueChanged.AddListener((index) => Module.DamageType = (DamageType)index);
 
-        FillDropdownWithEnum<AbilityForm>(_abilityFormDropdown);
-        _abilityFormDropdown.onValueChanged.AddListener((index) => Module.Form = (AbilityForm)index);
+            FillDropdownWithEnum<Schools>(_schoolDropdown);
+            _schoolDropdown.onValueChanged.AddListener((index) => Module.School = (Schools)index);
 
-        FillDropdownWithEnum<AttackRangeType>(_attackTypeFormDropdown);
-        _attackTypeFormDropdown.onValueChanged.AddListener((index) => Module.PhysicAttackType = (AttackRangeType)index);
+            FillDropdownWithEnum<AbilityForm>(_abilityFormDropdown);
+            _abilityFormDropdown.onValueChanged.AddListener((index) => Module.Form = (AbilityForm)index);
 
-        FillDropdownWithEnum<SkillType>(_skillTypeFormDropdown);
-        _skillTypeFormDropdown.onValueChanged.AddListener((index) => Module.SkillType = (SkillType)index);
+            FillDropdownWithEnum<AttackRangeType>(_attackTypeFormDropdown);
+            _attackTypeFormDropdown.onValueChanged.AddListener((index) => Module.PhysicAttackType = (AttackRangeType)index);
 
-        _valueInputField.onEndEdit.AddListener((value) => Module.Value = float.Parse(value));
-        _DamageKeyInputField.onEndEdit.AddListener((value) => Module.DamageKey = value);
-        _fullyAbsorbedToggle.onValueChanged.AddListener((value) => Module.FullyAbsorbed = value);
-    }
+            FillDropdownWithEnum<SkillType>(_skillTypeFormDropdown);
+            _skillTypeFormDropdown.onValueChanged.AddListener((index) => Module.SkillType = (SkillType)index);
 
-    protected override DebugDamageModule CreateModule()
-    {
-        return new DebugDamageModule();
+            _valueInputField.onEndEdit.AddListener((value) => Module.Value = float.Parse(value));
+            _DamageKeyInputField.onEndEdit.AddListener((value) => Module.DamageKey = value);
+            _fullyAbsorbedToggle.onValueChanged.AddListener((value) => Module.FullyAbsorbed = value);
+        }
+
+        protected override DebugDamageModule CreateModule()
+        {
+            return new DebugDamageModule();
+        }
     }
 }

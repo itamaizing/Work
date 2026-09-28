@@ -1,19 +1,21 @@
-using Game.Debug;
 using TMPro;
 using UnityEngine;
 
-public class DebugSkillModuleUI : DebugUnitModuleUI<DebugSkillModule>
+namespace Game.Debug
 {
-    [SerializeField] private TMP_Dropdown _comandDropdown;
-
-    private void Start()
+    public class DebugSkillModuleUI : DebugUnitModuleUI<DebugSkillModule>
     {
-        FillDropdownWithEnum<DebugSkillCommand>(_comandDropdown);
-        _comandDropdown.onValueChanged.AddListener((index) => Module.Command = (DebugSkillCommand)index);
-    }
+        [SerializeField] private TMP_Dropdown _comandDropdown;
 
-    protected override DebugSkillModule CreateModule()
-    {
-        return new DebugSkillModule();
+        private void Start()
+        {
+            FillDropdownWithEnum<DebugSkillCommand>(_comandDropdown);
+            _comandDropdown.onValueChanged.AddListener((index) => Module.Command = (DebugSkillCommand)index);
+        }
+
+        protected override DebugSkillModule CreateModule()
+        {
+            return new DebugSkillModule();
+        }
     }
 }

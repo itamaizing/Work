@@ -1,22 +1,24 @@
-using Game.Debug;
 using TMPro;
 using UnityEngine;
 
-public class DebugAttributesModuleUI : DebugUnitModuleUI<DebugAttributesModule>
+namespace Game.Debug
 {
-    [SerializeField] private TMP_Dropdown _comandDropdown;
-    [SerializeField] private TMP_InputField _valueDropdown;
-
-    private void Start()
+    public class DebugAttributesModuleUI : DebugUnitModuleUI<DebugAttributesModule>
     {
-        FillDropdownWithEnum<DebugAttributesCommand>(_comandDropdown);
-        _comandDropdown.onValueChanged.AddListener((index) => Module.Command = (DebugAttributesCommand)index);
+        [SerializeField] private TMP_Dropdown _comandDropdown;
+        [SerializeField] private TMP_InputField _valueDropdown;
 
-        _valueDropdown.onValueChanged.AddListener((value) => Module.Value = float.Parse(value));
-    }
+        private void Start()
+        {
+            FillDropdownWithEnum<DebugAttributesCommand>(_comandDropdown);
+            _comandDropdown.onValueChanged.AddListener((index) => Module.Command = (DebugAttributesCommand)index);
 
-    protected override DebugAttributesModule CreateModule()
-    {
-        return new DebugAttributesModule();
+            _valueDropdown.onValueChanged.AddListener((value) => Module.Value = float.Parse(value));
+        }
+
+        protected override DebugAttributesModule CreateModule()
+        {
+            return new DebugAttributesModule();
+        }
     }
 }
