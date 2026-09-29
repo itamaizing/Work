@@ -65,7 +65,7 @@ public class CheliceraStrike : Skill
 
     public float ChanceCritDamageEvolutionFour { get => _chanceCritDamageEvolutionFour; set => _chanceCritDamageEvolutionFour = value; }
 
-    public event Action OnCheliceraStrikeEnd;
+    public event Action OnCriticalHit;
 
     private void Start()
     {
@@ -200,6 +200,11 @@ public class CheliceraStrike : Skill
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
+        if (_criticalDamage > 0)
+        {
+            OnCriticalHit?.Invoke();
+        }
+        
         CmdApplyDamage(_dealDamage, target.gameObject);
         
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && targetCharacter != null)
@@ -304,7 +309,6 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeEnded()
     {
-        OnCheliceraStrikeEnd?.Invoke();
         _player.Move.StopLookAt();
         _player.Move.SetCanMove(true);
         AnimCastEnded();

@@ -8,7 +8,7 @@ public class NetworkAudioSystem : NetworkBehaviour
 {
     [SerializeField] private NetworkAudioHandle _handlePrefab;
     [SerializeField] private SoundDatabase _database;
-    [SerializeField] private int _perPlayerPoolSize = 10;
+    [SerializeField] private int _perPlayerPoolSize = 5;
 
     private readonly List<NetworkAudioHandle> _pool = new();
     private readonly Dictionary<(int clipHash, uint followNetId, int requestId), NetworkAudioHandle> _active = new();
@@ -35,7 +35,7 @@ public class NetworkAudioSystem : NetworkBehaviour
 
     private NetworkAudioHandle SpawnHandle()
     {
-        var handle = Instantiate(_handlePrefab);
+        var handle = Instantiate(_handlePrefab,transform);
         handle.Released += OnHandleReleasedServer;
         NetworkServer.Spawn(handle.gameObject);
         return handle;

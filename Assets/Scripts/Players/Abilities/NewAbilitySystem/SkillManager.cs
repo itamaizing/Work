@@ -205,6 +205,19 @@ public class SkillManager : MonoBehaviour
     {
         _simpleSkills.Add(skill);
         skill.CastStarted += GlobalCooldown;
+        skill.CastStarted += () => InterruptMinionOrdersIfNeeded(skill);
+    }
+    
+    private void InterruptMinionOrdersIfNeeded(Skill startedSkill)
+    {
+        if (_hero is not MinionComponent) return;
+        if (startedSkill is SpellMoveTo or MinionAutoAttackSkill) return;
+
+        if (_hero.TryGetComponent<SpellMoveTo>(out var moveSkill) && moveSkill.IsCasting)
+            moveSkill.TryCancel(true);
+
+        if (_hero.TryGetComponent<MinionAutoAttackSkill>(out var autoAttack))
+            autoAttack.SuspendForExternalOrder();
     }
 
     private void SkillInit(Skill skill)

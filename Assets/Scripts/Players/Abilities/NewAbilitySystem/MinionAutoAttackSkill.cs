@@ -71,10 +71,26 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
         if (_minion != null) _minion.LastOrder = MinionComponent.MinionOrder.Move;
         MoveToTarget(point);
     }
-
+    
+    public void SuspendForExternalOrder()
+    {
+        AbortCastIfAny();
+        _target = null;
+        _currentOrder = MinionAttackOrder.None;
+        StopAgent();
+    }
+    
+    private void CancelExternalMoveOrder()
+    {
+        var moveSkill = Hero != null ? Hero.GetComponent<SpellMoveTo>() : null;
+        if (moveSkill != null && moveSkill.IsCasting)
+            moveSkill.TryCancel(true);
+    }
+	
     public void OrderAttackTarget(Character target)
     {
         AbortCastIfAny();
+		CancelExternalMoveOrder();
         _target = target;
         _currentOrder = MinionAttackOrder.AttackTarget;
         if (_minion != null) _minion.LastOrder = MinionComponent.MinionOrder.AutoAttack;
@@ -83,6 +99,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
     public void OrderAttackPoint(Vector3 point)
     {
         AbortCastIfAny();
+		CancelExternalMoveOrder();
         _target = null;
         _orderPoint = point;
         _currentOrder = MinionAttackOrder.AttackPoint;

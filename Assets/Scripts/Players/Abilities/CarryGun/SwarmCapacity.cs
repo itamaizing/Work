@@ -18,6 +18,17 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private float _baseCounter;
 
+    #region SwarmTalent_8
+    
+    private const float SpeedBonusPercent = 5.5f;
+    private const float TargetWindowDuration = 1.5f;
+
+    private GameObject _currentTarget;
+    private Coroutine _targetBoostRoutine;
+    private readonly AttributeModifier _attackSpeedModifier = new AttributeModifier(SpeedBonusPercent, ModifierType.Percent);
+    
+    #endregion
+    
     #region Talent
 
     private bool _isBoostSpeedSwarmDamage = false;
@@ -53,14 +64,10 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private SpawnComponent _spawnComponent;
     private Coroutine _overloadCheckRoutine;
 
-    private readonly List<MoveCreature> _swarmUnits = new();
+    private readonly List<MinionComponent> _swarmUnits = new();
 
-    public IReadOnlyList<MoveCreature> SwarmUnits => _swarmUnits;
+    public IReadOnlyList<MinionComponent> SwarmUnits => _swarmUnits;
     public event Action<float> CounterChanged;
-
-    private const string DamageBoostSource = "SwarmDamageBoost";
-    private const float DamageBoostMultiplier = 2.5f;
-    private const float DamageBoostDuration = 1f;
 
     private Coroutine _damageBoostRoutine;
 
@@ -79,7 +86,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             UpdateCounter();
         }
 
-        if (Hero != null && Hero.DamageTracker != null)
+        if (Hero != null)
         {
             Hero.DamageTracker.OnDamageTracked += OnDamageTracked;
         }
@@ -103,6 +110,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         {
             Hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
         }
+
+        ResetBoostState();
     }
 
     private void UpdateCounter(Character _) => UpdateCounter();
@@ -113,46 +122,104 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     {
         if (!isServer) return;
         if (!_isBoostSpeedSwarmDamage) return;
-        if (damage.Type != DamageType.Physical) return;
-
-        ActivateDamageBoost();
+        if (target == null) return;
+        
+        ActivateTargetSpeedBoost(_hero.gameObject, target);
     }
 
-    private void ActivateDamageBoost()
+    [TargetRpc]
+    private void ActivateTargetSpeedBoost(GameObject hero,GameObject target)
     {
-        if (_damageBoostRoutine != null)
-            StopCoroutine(_damageBoostRoutine);
+        ResetBoostState();
+        _currentTarget = target;
 
-        ApplyDamageBoost();
+        ApplySpeedBoostToUnits();
 
-        _damageBoostRoutine = StartCoroutine(DamageBoostTimer());
+        _targetBoostRoutine = StartCoroutine(TargetBoostTimer());
     }
 
-    private IEnumerator DamageBoostTimer()
-    {
-        yield return new WaitForSeconds(DamageBoostDuration);
-
-        RemoveDamageBoost();
-        _damageBoostRoutine = null;
-    }
-
-    private void RemoveDamageBoost()
+    private void ApplySpeedBoostToUnits()
     {
         foreach (var unit in _swarmUnits)
         {
             if (unit == null) continue;
 
-            unit.RemoveSpeedModifier(DamageBoostSource);
+            AddSpeedForMinion(unit.gameObject);
+
+            if (unit.TryGetComponent<Character>(out var unitChar) && unitChar.DamageTracker != null)
+            {
+                unitChar.DamageTracker.OnDamageTracked += OnUnitDamageTracked;
+            }
         }
     }
 
-    private void ApplyDamageBoost()
+    [Command]
+    private void AddSpeedForMinion(GameObject minion)
     {
+        if (minion == null) return;
+
+        if (minion.TryGetComponent<Character>(out var character))
+        {
+            var castSpeedAttr = character.AttributeSystem[CharacterAttributeName.CastSpeed];
+            if (castSpeedAttr != null && !castSpeedAttr.Modifiers.Contains(_attackSpeedModifier))
+            {
+                castSpeedAttr.AddModifier(_attackSpeedModifier);
+            }
+        }
+    }
+
+    [Command]
+    private void RemoveSpeedMinion(GameObject minion)
+    {
+        if (minion == null) return;
+
+        if (minion.TryGetComponent<Character>(out var character))
+        {
+            var castSpeedAttr = character.AttributeSystem[CharacterAttributeName.CastSpeed];
+            if (castSpeedAttr != null)
+            {
+                castSpeedAttr.RemoveModifier(_attackSpeedModifier);
+            }
+        }
+    }
+
+    private void OnUnitDamageTracked(Damage damage, GameObject unitTarget)
+    {
+        if (_currentTarget != null && unitTarget == _currentTarget)
+        {
+            ResetBoostState();
+        }
+    }
+
+    private IEnumerator TargetBoostTimer()
+    {
+        yield return new WaitForSeconds(TargetWindowDuration);
+        ResetBoostState();
+    }
+
+    private void ResetBoostState()
+    {
+        if (_targetBoostRoutine != null)
+        {
+            StopCoroutine(_targetBoostRoutine);
+            _targetBoostRoutine = null;
+        }
+
+        _currentTarget = null;
+
         foreach (var unit in _swarmUnits)
         {
             if (unit == null) continue;
 
-            unit.SetSpeedModifier(DamageBoostSource, DamageBoostMultiplier);
+            RemoveSpeedMinion(unit.gameObject);
+            
+            if (unit.TryGetComponent<Character>(out var character))
+            {
+                if (character.DamageTracker != null)
+                {
+                    character.DamageTracker.OnDamageTracked -= OnUnitDamageTracked;
+                }
+            }
         }
     }
 
@@ -173,7 +240,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             var minion = unit.GetComponent<MinionComponent>();
             if (minion != null) totalCost += minion.CostCall;
 
-            if (unit.TryGetComponent(out MoveCreature carryGun)) _swarmUnits.Add(carryGun);
+            _swarmUnits.Add(minion);
         }
 
         CurrentCounter = Mathf.RoundToInt(totalCost);

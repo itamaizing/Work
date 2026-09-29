@@ -22,6 +22,11 @@ public class ClawStrike : Skill
     [Header("Damage")]
     [SerializeField] private float _minDamage = 10f;
     [SerializeField] private float _maxDamage = 11f;
+    
+    [Header("Evolution 10")]
+    [SerializeField] private float _cheliceraStrikeCritBleedingChanceBonus = 0.8f;
+    [SerializeField] private float _cheliceraStrikeCritBleedingDuration = 12f;
+    [SerializeField] private float _cheliceraStrikeCritWindowDuration = 2f;
 
     #region Constants
 
@@ -98,6 +103,37 @@ public class ClawStrike : Skill
 
     public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
+    #endregion
+
+    #region Evolution_10
+
+    private bool _isEvolutionTenActive = false;
+    private bool _isCheliceraStrikeCritWindowOpen = false;
+    private Coroutine _cheliceraStrikeCritWindowCoroutine;
+
+    public void EvolutionTalentTen(bool value)
+    {
+        if(value == _isEvolutionTenActive) return;
+        _isEvolutionTenActive = value;
+        if(_isEvolutionTenActive) _hero.Abilities.GetSkill<CheliceraStrike>().OnCriticalHit += OpenCheliceraStrikeCritWindow;
+        else _hero.Abilities.GetSkill<CheliceraStrike>().OnCriticalHit -= OpenCheliceraStrikeCritWindow;
+    }
+    
+    public void OpenCheliceraStrikeCritWindow()
+    {
+        if (!_isEvolutionTenActive) return;
+
+        if (_cheliceraStrikeCritWindowCoroutine != null) StopCoroutine(_cheliceraStrikeCritWindowCoroutine);
+        _cheliceraStrikeCritWindowCoroutine = StartCoroutine(CheliceraStrikeCritWindowJob());
+    }
+
+    private IEnumerator CheliceraStrikeCritWindowJob()
+    {
+        _isCheliceraStrikeCritWindowOpen = true;
+        yield return new WaitForSeconds(_cheliceraStrikeCritWindowDuration);
+        _isCheliceraStrikeCritWindowOpen = false;
+    }
+
     #endregion
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -214,10 +250,18 @@ public class ClawStrike : Skill
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
         _totalChanceApplyBleeding = Mathf.Clamp01(_totalChanceApplyBleeding);
 
-        Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
+        float bleedingDuration = _durationBleeding;
+
+        if (_isCheliceraStrikeCritWindowOpen)
+        {
+            _totalChanceApplyBleeding += _cheliceraStrikeCritBleedingChanceBonus;
+            bleedingDuration = _cheliceraStrikeCritBleedingDuration;
+        }
         
+        Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
+
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
-        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
+        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target, bleedingDuration);
 
         _jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
@@ -308,9 +352,9 @@ public class ClawStrike : Skill
     }
 
     [Command]
-    private void CmdAddBleeding(Character target)
+    private void CmdAddBleeding(Character target, float duration)
     {
-        target.CharacterState.AddState(States.BleedingCarry, _durationBleeding, 0.003f, _player.gameObject, "ClawStrike");
+        target.CharacterState.AddState(States.BleedingCarry, duration, 0.003f, _player.gameObject, "ClawStrike");
     }
 
     [Command]
