@@ -29,34 +29,6 @@ public class DoubleCheliceraStrike : Skill
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        //_runtimeTarget = null;
-
-        while (Targeting.GetTarget()?.Character == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget();
-                //_target = GetRaycastTarget();
-
-                if (Targeting.GetTarget()?.Character != null)
-                {
-                    if (Targeting.GetTarget()?.Character is Character characterTarget)
-                    {
-                        //_runtimeTarget = characterTarget;
-                        characterTarget.SelectedCircle.IsActive = true;
-                    }
-                }
-            }
-            yield return null;
-        }
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-        callbackDataSaved(targetInfo);
-    }
-
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget()?.Character == null) yield return null;

@@ -63,6 +63,7 @@ public class UIGameWindowPopup : MonoBehaviour
         else
         {
             _teamStatistics.SetActive(true);
+            _teamStatistics.GetComponent<TeamSource>().UpdateInfo();
         }
     }
 
