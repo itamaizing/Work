@@ -42,8 +42,26 @@ public class CreatureSpawn : Skill
             OnSpawnTypeChanged?.Invoke(value);
         }
     }
-    public WombSpawn WombSpawn { get => wombSpawn; set => wombSpawn = value; }
-    
+    public WombSpawn WombSpawn
+    {
+        get => wombSpawn;
+        set
+        {
+            if (wombSpawn == value) return;
+
+            if (wombSpawn != null)
+                wombSpawn.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
+
+            wombSpawn = value;
+
+            if (wombSpawn != null)
+            {
+                wombSpawn.OnSpawnGetomirChanged += HandleSpawnGetomirChanged;
+                HandleSpawnGetomirChanged(wombSpawn.IsSpawnGetomir);
+            }
+        }
+    }
+
     public event Action<SpawnType> OnSpawnTypeChanged;
 
     private void OnEnable()
@@ -53,10 +71,8 @@ public class CreatureSpawn : Skill
 
     private void OnDisable()
     {
-        if (_spawnType == SpawnType.Getomir && wombSpawn != null)
-        {
+        if (wombSpawn != null)
             wombSpawn.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
-        }
     }
 
     private void Start()

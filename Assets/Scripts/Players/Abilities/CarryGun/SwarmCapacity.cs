@@ -20,7 +20,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     #region SwarmTalent_8
     
-    private const float SpeedBonusPercent = 5.5f;
+    private const float SpeedBonusPercent = 1.5f;
     private const float TargetWindowDuration = 1.5f;
 
     private GameObject _currentTarget;
@@ -123,6 +123,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         if (!isServer) return;
         if (!_isBoostSpeedSwarmDamage) return;
         if (target == null) return;
+        if (damage.Type != DamageType.Physical) return;
         
         ActivateTargetSpeedBoost(_hero.gameObject, target);
     }
@@ -152,8 +153,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             }
         }
     }
-
-    [Command]
+    
     private void AddSpeedForMinion(GameObject minion)
     {
         if (minion == null) return;
@@ -167,8 +167,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             }
         }
     }
-
-    [Command]
+    
     private void RemoveSpeedMinion(GameObject minion)
     {
         if (minion == null) return;
@@ -276,8 +275,10 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         while (true)
         {
             float realCost = _spawnComponent.Units
-                .Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
-                .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall);
+                .Where(unit => unit != null && !unit.TryGetComponent<MucusArea>(out _))
+                .Select(unit => unit.GetComponent<MinionComponent>())
+                .Where(minion => minion != null)
+                .Sum(minion => minion.CostCall);
 
             if (CurrentCounter > _baseCounter)
             {
@@ -287,7 +288,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                 foreach (var minion in _spawnComponent.Units)
                 {
                     if (minion == null || minion.IsDead) continue;
-                    if (minion.TryGetComponent<MucusAutoGrowth>(out _)) continue;
+                    if (minion.TryGetComponent<MucusArea>(out _)) continue;
                     if (minion.TryGetComponent<CreatureSpawn>(out _)) continue;
 
                     float damageValue = minion.Health.MaxValue * percentDamage;

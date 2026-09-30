@@ -1,59 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
-public class ParasitesStateStacking : StateStackingRefreshing
+public class ParasitesStateStacking : StateStackingRefreshing, ITickableState
 {
-    private const float TickInterval = 3f;
-    private const float PercentDamage = 0.002f;
+    private const float TickIntervalConst = 3f;
+    private const float PercentDamage = 0.02f;
 
-    private float _tickTimer;
-
-    private List<StatusEffect> _effects = new() { StatusEffect.Poison };
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Poison };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Parasites;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
+    public float TickInterval => TickIntervalConst;
+
     public ParasitesStateStacking()
     {
         SetMaxStacks(2);
     }
-
+    
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        health = character.Character.Health;
-        this.sourceCaster = personWhoMadeBuff;
-
-        RemainingDuration = durationToExit;
-        CurrentStacksCount = 1;
-
-        _tickTimer = TickInterval;
-    }
-
-    public override void UpdateState()
-    {
-        if (!NetworkServer.active) return;
-        if (health == null) return;
-
-        _tickTimer -= Time.deltaTime;
-
-        if (_tickTimer <= 0f)
-        {
-            _tickTimer = TickInterval;
-
-            float percentDamage = health.CurrentValue * PercentDamage * CurrentStacksCount;
-
-            Damage damage = new Damage
-            {
-                Value = percentDamage,
-                Type = DamageType.Physical
-            };
-
-            health.TryTakeDamage(ref damage, skill);
-        }
     }
 
     public override bool Stack(float time)
@@ -66,8 +34,29 @@ public class ParasitesStateStacking : StateStackingRefreshing
         return true;
     }
 
+    public override void UpdateState()
+    {
+    }
+
+    public void Tick()
+    {
+        if (!characterState.isServer) return;
+        if (health == null) return;
+
+        float percentDamage = health.CurrentValue * PercentDamage * CurrentStacksCount;
+
+        Damage damage = new Damage
+        {
+            Value = percentDamage,
+            Type = DamageType.Physical
+        };
+
+        health.TryTakeDamage(ref damage, skill);
+    }
+
     public override void ExitState()
     {
+        CurrentStacksCount = 0;
         characterState.RemoveState(this);
     }
 }

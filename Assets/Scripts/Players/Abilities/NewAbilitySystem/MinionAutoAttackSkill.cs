@@ -157,6 +157,9 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
 
         if (_hero != null)
         {
+            float currentCastSpeed = _hero.AttributeSystem.Attributes[CharacterAttributeName.CastSpeed].GetValue();
+            _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, currentCastSpeed);
+
             if (_hero.Animator != null)
                 _hero.Animator.SetTrigger(AttackTrigger);
 
@@ -166,13 +169,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
 
         ApplyMinionDamage(currentTarget);
 
-        float delay = _attackInterval;
-        if (Buff != null && Buff.AttackSpeed != null)
-        {
-            delay = Buff.AttackSpeed.GetBuffedValue(_attackInterval);
-        }
-
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(_attackInterval);
     }
 
     private IEnumerator MinionAILoop()
