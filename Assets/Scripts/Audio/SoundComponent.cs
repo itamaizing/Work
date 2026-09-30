@@ -11,86 +11,93 @@ public enum Sfx_Skill
     CastStart,
     CastLoop,
     CastEnd,
-    Custom
+    Custom,
 }
 
-[Serializable]
+/*[Serializable] // Probably To Delete
 public class AudioKeyList
 {
-    public List<string> Keys = new();
-}
+    public List<AudioAssetSO> Keys = new();
+}*/
 
 [Serializable]
-public class SfxEntry
+#if UNITY_EDITOR
+public class SfxEntry<T> : ISerializationCallbackReceiver where T : Enum
 {
-    public Sfx_Skill Type;
-    public AudioKeyList Clips = new();
+    [HideInInspector, SerializeField] public string nameToShow;
+
+    public void OnBeforeSerialize() { nameToShow = Type.ToString(); }
+    public void OnAfterDeserialize() { }
+
+#else
+public class SfxEntry<T> where T : Enum
+{
+#endif
+    public T Type;
+    public List<AudioAssetSO> Clips = new();
 }
 
+[Serializable]public abstract class SoundComponentBase { }
+
 [Serializable]
-public class SoundComponent : BaseSkillComponent
+public class SoundComponent<T> where T : Enum
 {
-    private static readonly List<string> EmptyKeys = new();
+    private static readonly List<AudioAssetSO> EmptyKeys = new();
 
-    [SerializeField] private SoundDatabase _database;
-    [SerializeField] private List<SfxEntry> _entries = new();
+    [SerializeField] private List<SfxEntry<T>> _entries = new();
 
-    public List<string> this[Sfx_Skill type] => GetEntry(type)?.Clips.Keys ?? EmptyKeys;
+    public List<AudioAssetSO> this[T type] => GetEntry(type)?.Clips ?? EmptyKeys;
 
-    public AudioAssetSO Get(Sfx_Skill type, int? minId = null, int? maxId = null)
+    public AudioAssetSO Get(T type, int? minId = null, int? maxId = null)
     {
-        if (_database == null)
-        {
-            Debug.LogWarning("[SoundComponent] SoundDatabase is not assigned.");
-            return null;
-        }
-
         var entry = GetEntry(type);
-        if (entry == null || entry.Clips.Keys.Count == 0)
+        if (entry == null || entry.Clips.Count == 0)
             return null;
 
         if (!minId.HasValue)
-            return Resolve(entry.Clips.Keys[0]);
+            return GetRandom(type);
 
-        int upper = maxId.HasValue ? Mathf.Min(maxId.Value, entry.Clips.Keys.Count - 1) : minId.Value;
+        int upper = maxId.HasValue ? Mathf.Min(maxId.Value, entry.Clips.Count - 1) : minId.Value;
         int lower = Mathf.Min(minId.Value, upper);
 
         int index = lower == upper ? lower : UnityEngine.Random.Range(lower, upper + 1);
-        index = Mathf.Clamp(index, 0, entry.Clips.Keys.Count - 1);
+        index = Mathf.Clamp(index, 0, entry.Clips.Count - 1);
 
-        return Resolve(entry.Clips.Keys[index]);
+        return entry.Clips[index]; //Resolve(entry.Clips.Keys[index]);
     }
 
-    public AudioAssetSO GetRandom(Sfx_Skill type) => Get(type, 0, int.MaxValue);
+    public AudioAssetSO GetRandom(T type) => Get(type, 0, int.MaxValue);
 
-    public AudioData BuildAudioData(AudioAssetSO asset, SfxPlayMode mode = SfxPlayMode.Once, bool followCaster = true)
+    public AudioData BuildAudioData(AudioAssetSO asset, uint? target = null, Vector3? pos = null, SfxPlayMode mode = SfxPlayMode.Once)
     {
         var data = new AudioData { ClipHash = asset.Hash, PlayMode = mode };
 
-        if (followCaster && _character != null)
+        if (target.HasValue)
         {
-            data.FollowTargetNetId = _character.netId;
+            Debug.Log("Sound should follow");
+            data.FollowTargetNetId = target.Value;
         }
-        else if (_character != null)
+        else if (pos.HasValue)
         {
+            Debug.Log("Sound is positioned");
             data.HasPosition = true;
-            data.Position = _character.transform.position;
+            data.Position = pos.Value;
         }
 
         return data;
     }
 
-    private SfxEntry GetEntry(Sfx_Skill type) => _entries.FirstOrDefault(e => e.Type == type);
+    private SfxEntry<T> GetEntry(T type) => _entries.FirstOrDefault(e => EqualityComparer<T>.Default.Equals(e.Type, type));
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        var allTypes = (Sfx_Skill[])Enum.GetValues(typeof(Sfx_Skill));
+        var allTypes = (T[])Enum.GetValues(typeof(T));
 
         foreach (var type in allTypes)
         {
-            if (_entries.All(e => e.Type != type))
-                _entries.Add(new SfxEntry { Type = type });
+            if (_entries.All(e => !EqualityComparer<T>.Default.Equals(e.Type, type)))
+                _entries.Add(new SfxEntry<T> { Type = type });
         }
 
         _entries.RemoveAll(e => allTypes.Contains(e.Type) == false);
@@ -103,8 +110,11 @@ public class SoundComponent : BaseSkillComponent
         if (string.IsNullOrEmpty(key)) return null;
 
         int hash = Animator.StringToHash(key);
-        if (_database.TryGet(hash, out var asset))
+        if (AudioManager.Database.TryGet(hash, out var asset))
+        {
+            Debug.Log($"Successfully found {key} sfx");
             return asset;
+        }
 
         Debug.LogWarning($"[SoundComponent] Clip with key '{key}' not found in database.");
         return null;

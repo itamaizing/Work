@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public abstract class Skill : NetworkBehaviour
@@ -45,7 +44,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected float maxCounter;
     [SerializeField] public TagComponent _tags;
     [SerializeField] private AnimationComponent _animationComponent;
-    [SerializeField] private SoundComponent _soundComponent;
+    [SerializeField] private SoundComponent<Sfx_Skill> _soundComponent;
     #endregion InspectorSettings
 
     #region CastReduction
@@ -88,6 +87,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected bool _isCanCancel = true;
     protected bool _isPlayCastAnim;
+    bool hasCastAnim => AnimTriggerCast != 0 || Animation.CastTriggers.Count > 0;
     protected bool _forceFailCastEarly;
     //test counter
     protected float _currentCounter;
@@ -148,7 +148,7 @@ public abstract class Skill : NetworkBehaviour
     public AreaComponent AreaInfo => _areaComponent;
     public InformationRenderComponent Renderer => _informationRenderComponent;
     public AnimationComponent Animation => _animationComponent;
-    public SoundComponent SoundComponent => _soundComponent;
+    public SoundComponent<Sfx_Skill> SoundComponent => _soundComponent;
     
     #region Sound
 
@@ -190,7 +190,7 @@ public abstract class Skill : NetworkBehaviour
         {
             var asset = SoundComponent.GetRandom(primary);
             if (asset != null)
-                AudioManager.Network.Play(SoundComponent.BuildAudioData(asset));
+                AudioManager.Network.Play(SoundComponent.BuildAudioData(asset, Hero.netId));
             return;
         }
 
@@ -199,7 +199,7 @@ public abstract class Skill : NetworkBehaviour
             var asset = SoundComponent.GetRandom(loopFallback);
             if (asset == null) return;
 
-            var data = SoundComponent.BuildAudioData(asset, SfxPlayMode.Loop);
+            var data = SoundComponent.BuildAudioData(asset, Hero.netId, mode: SfxPlayMode.Loop);
             _activeLoopSounds[loopFallback] = data;
             AudioManager.Network.Play(data);
         }
@@ -212,7 +212,7 @@ public abstract class Skill : NetworkBehaviour
         var asset = SoundComponent.GetRandom(phase);
         if (asset == null) return;
 
-        AudioManager.Network.Play(SoundComponent.BuildAudioData(asset));
+        AudioManager.Network.Play(SoundComponent.BuildAudioData(asset, Hero.netId));
     }
 
     protected void StopLoopSound(Sfx_Skill loopPhase)
@@ -822,7 +822,7 @@ public abstract class Skill : NetworkBehaviour
 
         HandleMovementLock(MovementLockPhase.CastStarted);
 
-        if (!noCast && CastDeley > 0)
+        if (!noCast && hasCastAnim)
             yield return StartCastDeleyCoroutine();
 
         if (TryAbortIfForceFailed()) yield break;
@@ -877,7 +877,7 @@ public abstract class Skill : NetworkBehaviour
 
         CommitUse();
         CastFinished?.Invoke();
-        PlaySound(Sfx_Skill.CastStart);
+        PlaySound(Sfx_Skill.CastEnd);
         CastEnded?.Invoke();
         _isCasting = false;
 

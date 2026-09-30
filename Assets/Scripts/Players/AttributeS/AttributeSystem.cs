@@ -9,7 +9,7 @@ public class AttributeSystem : NetworkBehaviour
     private CharacterData _data;
     private ResourceType mainResourceType;
 
-    private Dictionary<CharacterAttributeName, Attribute> _attributes = new();
+    [SerializeField] private Dictionary<CharacterAttributeName, Attribute> _attributes = new();
     public Dictionary<CharacterAttributeName, Attribute> Attributes => _attributes;
 
     private SyncDictionary<CharacterAttributeName, float> _syncAttributes = new();

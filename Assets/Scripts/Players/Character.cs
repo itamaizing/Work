@@ -196,7 +196,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 			}
 			//Debug.Log($"Now i have {resource.Key.ToString()}", gameObject);
 			component.Init(resource.Value);
-			_resources.Add(resource.Key, component);
+			_resources.TryAdd(resource.Key, component);
         }
 
   //      foreach (var resource in Resources)
