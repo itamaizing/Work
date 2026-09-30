@@ -12711,6 +12711,10 @@ PrefabInstance:
       value: 0.42083532
       objectReference: {fileID: 0}
     - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _UICanvas
+      value: 
+      objectReference: {fileID: 2941869496323447546}
+    - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _damageTracker
       value: 
       objectReference: {fileID: 3838339407395912532}
@@ -14364,6 +14368,11 @@ CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 4418744079295177997}
   m_PrefabAsset: {fileID: 0}
+--- !u!223 &2941869496323447546 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 1549544950739599351, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 4418744079295177997}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3838339407395912532 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 582667559171038809, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -15415,7 +15424,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _player: {fileID: 8319872899575431858}
   _rechargeGlands: {fileID: 5181332647309301388}
@@ -15527,7 +15535,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _player: {fileID: 8319872899575431858}
   _rechargeGlands: {fileID: 5181332647309301388}
@@ -15636,7 +15643,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _player: {fileID: 8319872899575431858}
   _cheliceraeStrike: {fileID: 640134254429411212}
@@ -15737,7 +15743,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _player: {fileID: 8319872899575431858}
   _tentaclesPrefab: {fileID: 6610701520137683841, guid: d14badff952bb714c90f1fd43e07201c, type: 3}
@@ -15841,7 +15846,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _psionicEnergy: {fileID: 369466722820063190}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
@@ -15938,7 +15942,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   basePsionicEnergy: {fileID: 369466722820063190}
   modifier: 1
@@ -16096,7 +16099,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _playerLinks: {fileID: 8319872899575431858}
   jumpWithChelicera: {fileID: 7634851756353439263}
@@ -16195,7 +16197,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   cooldownEnergy: {fileID: 5998867522025010555}
   basePsionicEnergy: {fileID: 369466722820063190}
@@ -16295,7 +16296,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _player: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
@@ -16425,7 +16425,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
 --- !u!114 &7709957828632342126
 MonoBehaviour:
@@ -16520,7 +16519,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _playerLinks: {fileID: 8319872899575431858}
   duration: 6
@@ -16617,7 +16615,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
 --- !u!114 &1223713190726253118
 MonoBehaviour:
@@ -16712,7 +16709,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _swarmCapacity: {fileID: 3168550865384704014}
   _auraStateHandler: {fileID: 2154392197655588349}
@@ -16831,7 +16827,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
 --- !u!114 &5181332647309301388
 MonoBehaviour:
@@ -16926,7 +16921,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _durationDestructivePoison: 12
   _cooldownEnergy: {fileID: 5998867522025010555}
@@ -17027,7 +17021,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _player: {fileID: 8319872899575431858}
   _spawnComponent: {fileID: 4260348460032838645}

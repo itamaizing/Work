@@ -10,6 +10,7 @@ public class LocalAudioSystem : MonoBehaviour
 
     private readonly List<AudioHandle> _free = new();
 
+    public SoundDatabase Database => _database;
     public static LocalAudioSystem Instance { get; private set; }
 
     private void Awake()

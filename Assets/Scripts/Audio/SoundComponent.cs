@@ -14,12 +14,6 @@ public enum Sfx_Skill
     Custom,
 }
 
-/*[Serializable] // Probably To Delete
-public class AudioKeyList
-{
-    public List<AudioAssetSO> Keys = new();
-}*/
-
 [Serializable]
 #if UNITY_EDITOR
 public class SfxEntry<T> : ISerializationCallbackReceiver where T : Enum
@@ -36,8 +30,6 @@ public class SfxEntry<T> where T : Enum
     public T Type;
     public List<AudioAssetSO> Clips = new();
 }
-
-[Serializable]public abstract class SoundComponentBase { }
 
 [Serializable]
 public class SoundComponent<T> where T : Enum
@@ -70,27 +62,22 @@ public class SoundComponent<T> where T : Enum
 
     public AudioData BuildAudioData(AudioAssetSO asset, uint? target = null, Vector3? pos = null, SfxPlayMode mode = SfxPlayMode.Once)
     {
-        var data = new AudioData { ClipHash = asset.Hash, PlayMode = mode };
+        var data = new AudioData { ClipHash = asset.Hash, PlayMode = mode, RequestId = AudioManager.NextRequestId() };
 
-        if (target.HasValue)
-        {
-            Debug.Log("Sound should follow");
+        if (target.HasValue && target.Value != 0)
             data.FollowTargetNetId = target.Value;
-        }
         else if (pos.HasValue)
         {
-            Debug.Log("Sound is positioned");
             data.HasPosition = true;
             data.Position = pos.Value;
         }
-
         return data;
     }
 
     private SfxEntry<T> GetEntry(T type) => _entries.FirstOrDefault(e => EqualityComparer<T>.Default.Equals(e.Type, type));
 
 #if UNITY_EDITOR
-    private void OnValidate()
+    public void EditorValidate()
     {
         var allTypes = (T[])Enum.GetValues(typeof(T));
 
@@ -104,19 +91,4 @@ public class SoundComponent<T> where T : Enum
         _entries = _entries.OrderBy(e => Array.IndexOf(allTypes, e.Type)).ToList();
     }
 #endif
-
-    private AudioAssetSO Resolve(string key)
-    {
-        if (string.IsNullOrEmpty(key)) return null;
-
-        int hash = Animator.StringToHash(key);
-        if (AudioManager.Database.TryGet(hash, out var asset))
-        {
-            Debug.Log($"Successfully found {key} sfx");
-            return asset;
-        }
-
-        Debug.LogWarning($"[SoundComponent] Clip with key '{key}' not found in database.");
-        return null;
-    }
 }

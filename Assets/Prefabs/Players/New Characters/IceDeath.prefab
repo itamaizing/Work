@@ -84,6 +84,23 @@ MonoBehaviour:
   _rb: {fileID: 0}
   _force: 0
   _distance: 5
+  _sound:
+    _entries:
+    - nameToShow: Start
+      Type: 0
+      Clips: []
+    - nameToShow: FlyLoop
+      Type: 1
+      Clips: []
+    - nameToShow: Hit
+      Type: 2
+      Clips: []
+    - nameToShow: End
+      Type: 3
+      Clips: []
+    - nameToShow: Custom
+      Type: 4
+      Clips: []
 --- !u!1 &6885366632305310047
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,55 +201,19 @@ ParticleSystem:
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
-    serializedVersion: 2
+    serializedVersion: 3
     minMaxState: 0
     scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+      m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     minCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+      m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -244,108 +225,36 @@ ParticleSystem:
     serializedVersion: 3
     enabled: 1
     startLifetime:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 3
       scalar: 1
       minScalar: 0.5
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startSpeed:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 3
       scalar: 20
       minScalar: 11.4
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -415,320 +324,104 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
     startSize:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 3
       scalar: 2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startSizeY:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startSizeZ:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startRotationX:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startRotationY:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startRotation:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -739,7 +432,7 @@ ParticleSystem:
     size3D: 0
     rotation3D: 0
     gravityModifier:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: -0.3
       minScalar: 0
@@ -769,25 +462,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -810,55 +485,19 @@ ParticleSystem:
       mode: 0
       spread: 0
       speed:
-        serializedVersion: 2
+        serializedVersion: 3
         minMaxState: 0
         scalar: 1
         minScalar: 1
         maxCurve:
           serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+          m_Curve: []
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
         minCurve:
           serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+          m_Curve: []
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
@@ -885,55 +524,19 @@ ParticleSystem:
       mode: 0
       spread: 0
       speed:
-        serializedVersion: 2
+        serializedVersion: 3
         minMaxState: 0
         scalar: 1
         minScalar: 1
         maxCurve:
           serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+          m_Curve: []
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
         minCurve:
           serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+          m_Curve: []
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
@@ -942,55 +545,19 @@ ParticleSystem:
       mode: 0
       spread: 0
       speed:
-        serializedVersion: 2
+        serializedVersion: 3
         minMaxState: 0
         scalar: 1
         minScalar: 1
         maxCurve:
           serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+          m_Curve: []
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
         minCurve:
           serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+          m_Curve: []
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
@@ -998,7 +565,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 4
     rateOverTime:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 10
@@ -1028,78 +595,24 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     rateOverDistance:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -1108,7 +621,7 @@ ParticleSystem:
     - serializedVersion: 2
       time: 0
       countCurve:
-        serializedVersion: 2
+        serializedVersion: 3
         minMaxState: 0
         scalar: 60
         minScalar: 30
@@ -1166,7 +679,7 @@ ParticleSystem:
   SizeModule:
     enabled: 1
     curve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -1196,30 +709,12 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -1249,30 +744,12 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     z:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -1302,25 +779,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -1328,161 +787,53 @@ ParticleSystem:
   RotationModule:
     enabled: 0
     x:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     curve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0.7853982
       minScalar: 0.7853982
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -1561,7 +912,7 @@ ParticleSystem:
     timeMode: 0
     fps: 30
     frameOverTime:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 0.9999
       minScalar: 0.9999
@@ -1591,78 +942,24 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     startFrame:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -1681,113 +978,41 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     z:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 3
       minScalar: 0
@@ -1817,449 +1042,143 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     orbitalX:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     orbitalY:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     orbitalZ:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     orbitalOffsetX:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     orbitalOffsetY:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     orbitalOffsetZ:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     radial:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     speedModifier:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -2268,62 +1187,26 @@ ParticleSystem:
     enabled: 0
     m_Mode: 0
     m_Curve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
   LifetimeByEmitterSpeedModule:
     enabled: 0
     m_Curve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -2353,25 +1236,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -2379,161 +1244,53 @@ ParticleSystem:
   ForceModule:
     enabled: 0
     x:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     z:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -2543,55 +1300,19 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 0
     multiplierCurve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -2603,214 +1324,70 @@ ParticleSystem:
   ClampVelocityModule:
     enabled: 1
     x:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     z:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     magnitude:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -2820,216 +1397,72 @@ ParticleSystem:
     multiplyDragByParticleVelocity: 1
     dampen: 0.25
     drag:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
     enabled: 0
     strength:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     strengthY:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     strengthZ:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -3041,60 +1474,24 @@ ParticleSystem:
     octaveScale: 2
     quality: 1
     scrollSpeed:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     remap:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -3124,30 +1521,12 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     remapY:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -3177,30 +1556,12 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     remapZ:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -3230,192 +1591,66 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     remapEnabled: 0
     positionAmount:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     rotationAmount:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     sizeAmount:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
   SizeBySpeedModule:
     enabled: 0
     curve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -3445,30 +1680,12 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -3498,30 +1715,12 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     z:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 1
@@ -3551,25 +1750,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -3578,161 +1759,53 @@ ParticleSystem:
   RotationBySpeedModule:
     enabled: 0
     x:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     y:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     curve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0.7853982
       minScalar: 0.7853982
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -3817,161 +1890,53 @@ ParticleSystem:
     multiplyColliderForceByCollisionAngle: 1
     m_Planes: []
     m_Dampen:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     m_Bounce:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     m_EnergyLossOnCollision:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -4015,108 +1980,36 @@ ParticleSystem:
     range: 1
     intensity: 1
     rangeCurve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     intensityCurve:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -4126,55 +2019,19 @@ ParticleSystem:
     mode: 0
     ratio: 1
     lifetime:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -4257,55 +2114,19 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
     widthOverTrail:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -4445,7 +2266,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     colorLabel0: Color
     vector0_0:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 1
       scalar: 1
       minScalar: 0
@@ -4475,31 +2296,13 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel0_0: X
     vector0_1:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 3
       scalar: 10
       minScalar: 0
@@ -4529,85 +2332,31 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel0_1: Y
     vector0_2:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel0_2: Z
     vector0_3:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 1
       minScalar: 0
@@ -4637,25 +2386,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -4729,224 +2460,80 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     colorLabel1: Color
     vector1_0:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_0: X
     vector1_1:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_1: Y
     vector1_2:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_2: Z
     vector1_3:
-      serializedVersion: 2
+      serializedVersion: 3
       minMaxState: 0
       scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       minCurve:
         serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+        m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
 --- !u!199 &8707111591985130899
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4992,6 +2579,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -5012,9 +2600,9 @@ ParticleSystemRenderer:
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
   m_UseCustomVertexStreams: 1
-  m_VertexStreams: 00010304052226
+  m_VertexStreams: 00010304052226y
   m_UseCustomTrailVertexStreams: 0
-  m_TrailVertexStreams: 00010304
+  m_TrailVertexStreams: 00010304y
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -5023,7 +2611,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &8629081778426437228
 GameObject:
   m_ObjectHideFlags: 0
@@ -5112,6 +2699,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &1546086107374345874
 PrefabInstance:
@@ -6902,6 +4490,10 @@ PrefabInstance:
       propertyPath: _regenerationDelay
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _UICanvas
+      value: 
+      objectReference: {fileID: 7426570111690307941}
     - target: {fileID: 2584694462126127171, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -0.017000198
@@ -8704,6 +6296,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 1
@@ -8770,13 +6363,12 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 11400000, guid: 1db4014211a87da4b83d6018d04684a0, type: 2}
     _entries:
-    - Type: 3
+    - nameToShow: CastStart
+      Type: 3
       Clips:
-        Keys:
-        - Hit_1
-        - Hit_2
+      - {fileID: 11400000, guid: 89d4a62f760a751418bdef08b1a623dc, type: 2}
+      - {fileID: 11400000, guid: 1f07027837527e84bb27fa60a8902359, type: 2}
 --- !u!114 &752221787785051408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8803,6 +6395,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    editorBackupValue: []
     oldType: 1
     type: 1
     _clickLayer: 3
@@ -8869,7 +6462,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
@@ -8899,6 +6491,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    editorBackupValue: []
     oldType: 3
     type: 3
     _clickLayer: 0
@@ -8965,7 +6558,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _icyStream: {fileID: 8854865153303019716}
@@ -8999,6 +6591,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 2
     type: 2
     _clickLayer: 2
@@ -9065,7 +6658,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _puddle: {fileID: -4751265457872843896, guid: 49b94ed23b9d6a447b459769dcbb348d, type: 3}
   _puddleBig: {fileID: -4751265457872843896, guid: 846556c08d21ee240b3671a600246389, type: 3}
@@ -9104,6 +6696,7 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 1
   _targetingComponent:
+    editorBackupValue: []
     oldType: 2
     type: 2
     _clickLayer: 3
@@ -9170,7 +6763,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _baseRange: 2
   _maxRange: 4
@@ -9209,6 +6801,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 1
@@ -9275,7 +6868,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
 --- !u!114 &1352912860454630216
@@ -9304,6 +6896,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 1
@@ -9370,7 +6963,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _deathSpiral: {fileID: 5605713643324713456}
   _playerLinks: {fileID: 4374618947117916461}
@@ -9400,6 +6992,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 1
     type: 1
     _clickLayer: 3
@@ -9466,7 +7059,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _iceArrow: {fileID: -4716538455152202873, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
@@ -9500,6 +7092,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    editorBackupValue: []
     oldType: 1
     type: 1
     _clickLayer: 3
@@ -9572,7 +7165,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _projectile: {fileID: -5318331524605723407, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
@@ -9604,6 +7196,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 1
@@ -9670,17 +7263,15 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 11400000, guid: 1db4014211a87da4b83d6018d04684a0, type: 2}
     _entries:
-    - Type: 3
+    - nameToShow: CastStart
+      Type: 3
       Clips:
-        Keys:
-        - AttackWithSword
+      - {fileID: 11400000, guid: b1a1d3891faff8f4bafe686ca27f69ce, type: 2}
   _damage: 15
   _playerLinks: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
   _sword: {fileID: 1545470976515082280}
-  audioClip: {fileID: 8300000, guid: 7b90008d29cc7d14db8ede5bfe287bf1, type: 3}
   _baseEnergyCost: 40
   _maxAdditionalCost: 10
 --- !u!114 &8854865153303019716
@@ -9709,6 +7300,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    editorBackupValue: []
     oldType: 1
     type: 1
     _clickLayer: 3
@@ -9775,7 +7367,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _tickInterval: 0.3
   _streamWidth: 1
@@ -9807,6 +7398,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 3
     type: 3
     _clickLayer: 0
@@ -9873,7 +7465,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _particleSystem: {fileID: 8916151325973806605}
   _runeCost: 3
@@ -9905,6 +7496,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -9971,7 +7563,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _projectile: {fileID: 6346210437348289638, guid: 795c930bd55158742a432f093fa0c89e, type: 3}
   _skillRenderer: {fileID: 2643045369493803655}
@@ -10002,6 +7593,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -10068,7 +7660,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _vampirismAura: {fileID: 216189140795677596}
 --- !u!114 &2935799894972768155
@@ -10097,6 +7688,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -10169,7 +7761,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   rune: 1
   harvestOfRunes: {fileID: 5679546152039556976}
@@ -10199,6 +7790,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -10271,7 +7863,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   enegry: 70
   harvestOfEnergy: {fileID: 2935799894972768155}
@@ -10301,6 +7892,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -10367,7 +7959,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _runeCost: 1
 --- !u!114 &5339826369234288012
@@ -10396,6 +7987,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: -1
@@ -10462,7 +8054,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _playerLinks: {fileID: 4374618947117916461}
   _duration: 12
@@ -10493,6 +8084,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 1
@@ -10559,7 +8151,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
 --- !u!114 &7295284322818497419
 MonoBehaviour:
@@ -10587,6 +8178,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 2
     type: 2
     _clickLayer: 3
@@ -10653,7 +8245,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _domePrefab: {fileID: -3899065207752285923, guid: e1f5d977bc8ba6b459096f1edfd01a0c, type: 3}
 --- !u!114 &216189140795677596
@@ -10702,6 +8293,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -10768,26 +8360,25 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _comboTimeout: 2
   _energyPerHit: 5
   _energyRestorePercentOnComplete: 0.4
   _availablePatterns:
   - name: FFFFFF
-    sequence: 010000000100000001000000010000000100000001000000
+    sequence: 010000000100000001000000010000000100000001000000i
     isActive: 1
   - name: FFFFFM
-    sequence: 010000000100000001000000010000000100000000000000
+    sequence: 010000000100000001000000010000000100000000000000i
     isActive: 1
   - name: FFForTest
-    sequence: 0100000001000000
+    sequence: 0100000001000000i
     isActive: 1
   - name: FMForTest
-    sequence: 0100000000000000
+    sequence: 0100000000000000i
     isActive: 1
   - name: MMForTest
-    sequence: 0000000000000000
+    sequence: 0000000000000000i
     isActive: 1
 --- !u!114 &829006267482502751 stripped
 MonoBehaviour:
@@ -10887,6 +8478,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &7426570111690307941 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 1549544950739599351, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8255499196023441042}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8435005576640277113 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 548951138285989099, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -10911,16 +8507,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0413\u0435\u0440\u043E\u0439 \u0441\u043A\u043E\u043B\u044C\u0437\u0438\u0442
-      \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u043C \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.\n\t\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
-      2-4  (2 + 1\u043C/5\u044D\u043D)\n\t\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      0-10 (0 + 5\u044D\u043D/1\u043C)"
+    - "\u0413\u0435\u0440\u043E\u0439 \u0441\u043A\u043E\u043B\u044C\u0437\u0438\u0442 \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u043C \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.\n\t\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C: 2-4  (2 + 1\u043C/5\u044D\u043D)\n\t\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 0-10 (0 + 5\u044D\u043D/1\u043C)"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
-      Description: "\u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F
-        \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-        \u043D\u0430 50% \u0438\u043B\u0438 \u0437\u0430\u0445\u0432\u0430\u0442\u044B\u0432\u0430\u0435\u0442
-        \u0446\u0435\u043B\u0438 \u043D\u0430 \u043F\u0443\u0442\u0438"
+      Description: "\u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430 50% \u0438\u043B\u0438 \u0437\u0430\u0445\u0432\u0430\u0442\u044B\u0432\u0430\u0435\u0442 \u0446\u0435\u043B\u0438 \u043D\u0430 \u043F\u0443\u0442\u0438"
     IsOpen: 0
     Description: "\u041B\u0435\u0434\u044F\u043D\u043E\u0439 \u043F\u043E\u0434\u043A\u0430\u0442"
     Icon: {fileID: 21300000, guid: 9499c35003f5fb14387943ad17f06e37, type: 3}
@@ -10943,16 +8533,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041C\u043E\u0436\u0435\u0442 \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u0442\u044C
-      \u0441\u0435\u0440\u0438\u044F\u043C\u0438, \u043A\u043E\u043C\u0431\u0438\u043D\u0438\u0440\u0443\u044F
-      \u0444\u0438\u0437. \u0438 \u043C\u0430\u0433. \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
-      \u0432 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439
-      \u043F\u043E\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438.\n\t[\u0424\u0424\u0424\u0424\u0424\u0424]\n\t[\u0424\u0424\u0424\u0424\u0424\u041C]"
+    - "\u041C\u043E\u0436\u0435\u0442 \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u0442\u044C \u0441\u0435\u0440\u0438\u044F\u043C\u0438, \u043A\u043E\u043C\u0431\u0438\u043D\u0438\u0440\u0443\u044F \u0444\u0438\u0437. \u0438 \u043C\u0430\u0433. \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0432 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439 \u043F\u043E\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438.\n\t[\u0424\u0424\u0424\u0424\u0424\u0424]\n\t[\u0424\u0424\u0424\u0424\u0424\u041C]"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
-      Description: "\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-        40% \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u043E\u0439 \u043D\u0430
-        \u0441\u0435\u0440\u0438\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
+      Description: "\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 40% \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u043E\u0439 \u043D\u0430 \u0441\u0435\u0440\u0438\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
     IsOpen: 1
     Description: "\u0421\u0435\u0440\u0438\u0438 \u043D\u0438\u043D\u0434\u0437\u0438"
     Icon: {fileID: 21300000, guid: 167c36e4613aae345aae37dec1c098ed, type: 3}
@@ -10974,25 +8558,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0423\u0434\u0430\u0440\u044F\u0435\u0442 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430
-      \u043B\u0435\u0434\u044F\u043D\u044B\u043C \u043C\u0435\u0447\u043E\u043C,
-      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435
-      \u043D\u0430 12 \u0441\u0435\u043A.\n\t\u0423\u0440\u043E\u043D: 15-25 (15
-      + 1/1 \u044D\u043D\u0435\u0440\u0433\u0438\u0438)\n\t\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      40-50 (40 + 1/1 \u0443\u0440\u043E\u043D\u0430)"
+    - "\u0423\u0434\u0430\u0440\u044F\u0435\u0442 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430 \u043B\u0435\u0434\u044F\u043D\u044B\u043C \u043C\u0435\u0447\u043E\u043C, \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435 \u043D\u0430 12 \u0441\u0435\u043A.\n\t\u0423\u0440\u043E\u043D: 15-25 (15 + 1/1 \u044D\u043D\u0435\u0440\u0433\u0438\u0438)\n\t\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 40-50 (40 + 1/1 \u0443\u0440\u043E\u043D\u0430)"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
-      Description: "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
-        5 \u0441\u0442\u0430\u043A\u043E\u0432 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D\r\n"
+      Description: "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 5 \u0441\u0442\u0430\u043A\u043E\u0432 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D\r\n"
     - StateName: "\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435"
-      Description: "\u0437\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
-        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F
-        \u043D\u0430 5% \u0438 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
-        \u0430\u0442\u0430\u043A \u043D\u0430 10% \u043D\u0430 12 \u0441\u0435\u043A\u0443\u043D\u0434, 
-        \u0441\u0443\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E
-        5 \u0440\u0430\u0437, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444.\u043D\u0430\u0441\u0442\u0440\u043E\u0438\u0442\u044C
-        \u0432 \u0438\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0435"
+      Description: "\u0437\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F \u043D\u0430 5% \u0438 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0430\u0442\u0430\u043A \u043D\u0430 10% \u043D\u0430 12 \u0441\u0435\u043A\u0443\u043D\u0434,  \u0441\u0443\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E 5 \u0440\u0430\u0437, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444.\u043D\u0430\u0441\u0442\u0440\u043E\u0438\u0442\u044C \u0432 \u0438\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0435"
     IsOpen: 0
     Description: "\u041C\u0435\u0447 \u043B\u044C\u0434\u0430"
     Icon: {fileID: 21300000, guid: aad58fe05c776024b9cbcc8dd111c711, type: 3}
@@ -11015,9 +8586,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0432 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430
-      \u043E\u0441\u043A\u043E\u043B\u043E\u043A \u043B\u044C\u0434\u0430, \u043D\u0430\u043D\u043E\u0441\u044F
-      3-6 \u0443\u0440\u043E\u043D\u0430."
+    - "\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0432 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430 \u043E\u0441\u043A\u043E\u043B\u043E\u043A \u043B\u044C\u0434\u0430, \u043D\u0430\u043D\u043E\u0441\u044F 3-6 \u0443\u0440\u043E\u043D\u0430."
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438"
       Description: 
@@ -11044,12 +8613,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_5
   _data:
     _descriptionsForInfoPanel:
-    - "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      1 \u0440\u0443\u043D\u0443."
-    - "\u0412\u043E\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u044B\u0435
-      \u043D\u0430 \u0441\u0435\u0440\u0438\u044E \u0440\u0443\u043D\u044B \u0432
-      \u0434\u0432\u043E\u0439\u043D\u043E\u043C \u043E\u0431\u044A\u0435\u043C\u0435."
+    - "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 1 \u0440\u0443\u043D\u0443."
+    - "\u0412\u043E\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u044B\u0435 \u043D\u0430 \u0441\u0435\u0440\u0438\u044E \u0440\u0443\u043D\u044B \u0432 \u0434\u0432\u043E\u0439\u043D\u043E\u043C \u043E\u0431\u044A\u0435\u043C\u0435."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 5"
@@ -11071,12 +8636,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_6
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0441\u043B\u0435 \u041B\u0435\u0434\u044F\u043D\u043E\u0433\u043E
-      \u043F\u043E\u0434\u043A\u0430\u0442\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439
-      \u0444\u0438\u0437. \u0443\u0440\u043E\u043D \u043D\u0430\u043B\u043E\u0436\u0438\u0442
-      \u043D\u0430 \u0446\u0435\u043B\u044C \u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D
-      \u043D\u0430 0.7 \u0437\u0430 \u043F\u0440\u043E\u0439\u0434\u0435\u043D\u043D\u044B\u0439
-      \u043C\u0435\u0442\u0440."
+    - "\u041F\u043E\u0441\u043B\u0435 \u041B\u0435\u0434\u044F\u043D\u043E\u0433\u043E \u043F\u043E\u0434\u043A\u0430\u0442\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439 \u0444\u0438\u0437. \u0443\u0440\u043E\u043D \u043D\u0430\u043B\u043E\u0436\u0438\u0442 \u043D\u0430 \u0446\u0435\u043B\u044C \u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D \u043D\u0430 0.7 \u0437\u0430 \u043F\u0440\u043E\u0439\u0434\u0435\u043D\u043D\u044B\u0439 \u043C\u0435\u0442\u0440."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 6"
@@ -11099,11 +8659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_7
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0448\u0430\u043D\u0441
-      \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F \u043D\u0430 40% \u0437\u0430\u043C\u0435\u0434\u043B\u0435\u043D\u0438\u044F
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0430\u0442\u0430\u043A\u0438
-      \u043E\u0442 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D
-      \u043D\u0430 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u043C."
+    - "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0448\u0430\u043D\u0441 \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F \u043D\u0430 40% \u0437\u0430\u043C\u0435\u0434\u043B\u0435\u043D\u0438\u044F \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0430\u0442\u0430\u043A\u0438 \u043E\u0442 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D \u043D\u0430 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u043C."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 7"
@@ -11126,9 +8682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_8
   _data:
     _descriptionsForInfoPanel:
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0441\u0442\u0430\u0440\u0442\u043E\u0432\u0443\u044E
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0441\u0435\u0440\u0438\u0438
-      \u0432 2 \u0440\u0430\u0437\u0430."
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0441\u0442\u0430\u0440\u0442\u043E\u0432\u0443\u044E \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0441\u0435\u0440\u0438\u0438 \u0432 2 \u0440\u0430\u0437\u0430."
     _stateInfos: []
     IsOpen: 1
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 8"
@@ -11150,8 +8704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_9
   _data:
     _descriptionsForInfoPanel:
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u043D\u0430 30."
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u043D\u0430 30."
     _stateInfos: []
     IsOpen: 1
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 9"
@@ -11176,9 +8729,7 @@ MonoBehaviour:
     - 
     _stateInfos:
     - StateName: "\u041B\u0435\u0434\u044F\u043D\u0430\u044F \u0442\u0435\u043D\u044C:"
-      Description: "\\n\u0412 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A.
-        \u043F\u043E\u0441\u043B\u0435 \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F
-        \u043D\u0435 \u043F\u043E\u0442\u0440\u0430\u0442\u0438\u0442 \u044D\u043D\u0435\u0440\u0433\u0438\u044E."
+      Description: "\\n\u0412 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A. \u043F\u043E\u0441\u043B\u0435 \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F \u043D\u0435 \u043F\u043E\u0442\u0440\u0430\u0442\u0438\u0442 \u044D\u043D\u0435\u0440\u0433\u0438\u044E."
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 10"
     Icon: {fileID: 522920930, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
@@ -11203,8 +8754,7 @@ MonoBehaviour:
     - 
     _stateInfos:
     - StateName: "\u0421\u0435\u0440\u0438\u044F \u043A\u043E\u043C\u0431\u043E"
-      Description: "\\n\u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u043D\u043E\u0432\u044B\u0435
-        \u0441\u0435\u0440\u0438\u0438:\n\t[\u0424\u0424\u041C\u0424]\n\t[\u041C\u041C\u0424\u041C]"
+      Description: "\\n\u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u043D\u043E\u0432\u044B\u0435 \u0441\u0435\u0440\u0438\u0438:\n\t[\u0424\u0424\u041C\u0424]\n\t[\u041C\u041C\u0424\u041C]"
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 11"
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
@@ -11225,21 +8775,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaTalent_12
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0443\u0440\u043E\u043D
-      \u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u0448\u0430\u043D\u0441
-      \u043A\u0440\u0438\u0442\u0430 \u043F\u043E \u0446\u0435\u043B\u044F\u043C
-      \u0441 \u0434\u0435\u0431\u0430\u0444\u0444\u0430\u043C\u0438:\n"
+    - "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0443\u0440\u043E\u043D \u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u0448\u0430\u043D\u0441 \u043A\u0440\u0438\u0442\u0430 \u043F\u043E \u0446\u0435\u043B\u044F\u043C \u0441 \u0434\u0435\u0431\u0430\u0444\u0444\u0430\u043C\u0438:\n"
     _stateInfos:
     - StateName: 
       Description: 
     - StateName: "\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435"
-      Description: "\u0434\u043E\u043F \u0443\u0440\u043E\u043D: 10%, \u0448\u0430\u043D\u0441
-        \u043A\u0440\u0438\u0442\u0430: 30%, \u043A\u0440\u0438\u0442 \u0443\u0440\u043E\u043D:
-        x1.8-2.3\r\n"
+      Description: "\u0434\u043E\u043F \u0443\u0440\u043E\u043D: 10%, \u0448\u0430\u043D\u0441 \u043A\u0440\u0438\u0442\u0430: 30%, \u043A\u0440\u0438\u0442 \u0443\u0440\u043E\u043D: x1.8-2.3\r\n"
     - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
-      Description: "\u0434\u043E\u043F \u0443\u0440\u043E\u043D: 10%, \u0448\u0430\u043D\u0441
-        \u043A\u0440\u0438\u0442\u0430: 30%, \u043A\u0440\u0438\u0442 \u0443\u0440\u043E\u043D:
-        x1.8-2.3"
+      Description: "\u0434\u043E\u043F \u0443\u0440\u043E\u043D: 10%, \u0448\u0430\u043D\u0441 \u043A\u0440\u0438\u0442\u0430: 30%, \u043A\u0440\u0438\u0442 \u0443\u0440\u043E\u043D: x1.8-2.3"
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 12"
     Icon: {fileID: 21300000, guid: 08c8d122ee6490c478098cac7c15c649, type: 3}
@@ -11283,25 +8826,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "<alpha=#aa><i>\u041F\u041E\u0422\u041E\u041A\u041E\u0412\u041E\u0415</i><alpha=#ff>\n\u0412\u044B\u043F\u0443\u0441\u043A\u0430\u0435\u0442
-      \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439 \u043E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439
-      \u043F\u043E\u0442\u043E\u043A, \u043D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D
-      \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D
-      \u043D\u0430 \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432.
-      \u0423\u0440\u043E\u043D \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u043F\u043E \u043C\u0435\u0440\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u044F."
+    - "<alpha=#aa><i>\u041F\u041E\u0422\u041E\u041A\u041E\u0412\u041E\u0415</i><alpha=#ff>\n\u0412\u044B\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439 \u043E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439 \u043F\u043E\u0442\u043E\u043A, \u043D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430 \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432. \u0423\u0440\u043E\u043D \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u043F\u043E \u043C\u0435\u0440\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u044F."
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
       Description: 
     - StateName: "\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435:"
-      Description: "\u0417\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0435
-        \u043D\u0430 5% \u0438 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043A\u0430\u0441\u0442\u0430
-        \u0444\u0438\u0437. \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
-        \u043D\u0430 10%. \u0421\u0442\u0430\u043A\u0430\u0435\u0442\u0441\u044F
-        \u0434\u043E 5. \u041C\u0430\u0433. \u0434\u0435\u0431\u0430\u0444\u0444."
+      Description: "\u0417\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0435 \u043D\u0430 5% \u0438 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043A\u0430\u0441\u0442\u0430 \u0444\u0438\u0437. \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439 \u043D\u0430 10%. \u0421\u0442\u0430\u043A\u0430\u0435\u0442\u0441\u044F \u0434\u043E 5. \u041C\u0430\u0433. \u0434\u0435\u0431\u0430\u0444\u0444."
     IsOpen: 0
-    Description: "\u041E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439 
-      \u043F\u043E\u0442\u043E\u043A"
+    Description: "\u041E\u0445\u043B\u0430\u0436\u0434\u0430\u044E\u0449\u0438\u0439  \u043F\u043E\u0442\u043E\u043A"
     Icon: {fileID: 21300000, guid: 86525d715f89f3c449729556c8557842, type: 3}
     Group: 0
     Row: 0
@@ -11322,23 +8854,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u0435\u0442 \u0437\u0435\u043C\u043B\u044E
-      \u0432 \u0442\u043E\u0447\u043A\u0435 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
-      + 1 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
-      \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 7 \u0441\u0435\u043A. \u041D\u0430\u0445\u043E\u0434\u044F\u0441\u044C
-      \u0432 \u043B\u0443\u0436\u0435 \u0434\u043E\u043B\u044C\u0448\u0435 0.8 \u0441\u0435\u043A\u0443\u043D\u0434
-      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442
-      \"\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\" \u0434\u043E
-      \u043A\u043E\u043D\u0446\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
-      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438"
+    - "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u0435\u0442 \u0437\u0435\u043C\u043B\u044E \u0432 \u0442\u043E\u0447\u043A\u0435 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B + 1 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 7 \u0441\u0435\u043A. \u041D\u0430\u0445\u043E\u0434\u044F\u0441\u044C \u0432 \u043B\u0443\u0436\u0435 \u0434\u043E\u043B\u044C\u0448\u0435 0.8 \u0441\u0435\u043A\u0443\u043D\u0434 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \"\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\" \u0434\u043E \u043A\u043E\u043D\u0446\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
-      Description: "\u041B\u0443\u0436\u0430 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-        \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435"
+      Description: "\u041B\u0443\u0436\u0430 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435"
     - StateName: "\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435:"
-      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F.
-        \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
-        \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433. \u0434\u0435\u0431\u0430\u0444\u0444."
+      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F. \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433. \u0434\u0435\u0431\u0430\u0444\u0444."
     IsOpen: 0
     Description: "\u041B\u0443\u0436\u0430 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F"
     Icon: {fileID: 21300000, guid: 060880a1a872c9d41895f9e89e58cd3a, type: 3}
@@ -11361,22 +8882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "<alpha=#aa><i>\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0430\u0435\u043C\u0430\u044F</i><alpha=#ff>\n<color=\"Yellow\">\u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-      \u0443\u0434\u0430\u0440</color> \u0438 <color=\"Yellow>\u041E\u0441\u043A\u043E\u043B\u043E\u043A
-      \u043B\u044C\u0434\u0430</color> \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442
-      \u0448\u0430\u043D\u0441 60% \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C
-      \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430
-      ? \u0441\u0435\u043A.\r\n\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
-      \u0443\u0440\u043E\u043D \u0448\u043A\u043E\u043B\u044B \u0432\u043E\u0434\u044B
-      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A
-      \u0434\u0435\u0431\u0430\u0444\u0444\u0430 \u043D\u0430 \u0446\u0435\u043B\u0438:\r\n<indent=5%><color=\"Yellow\">\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435</color>:
-      +1\r\n<color=\"Yellow\">\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435</color>:
-      +5\r\n<color=\"Yellow\">\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430</color>:
-      +10</indent>\r\n\u0417\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u043F\u0440\u0438 \u0437\u0430\u0442\u0440\u0430\u0442\u0435 \u0440\u0443\u043D.\r\n<color=\"Blue>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C</color>:
-      1 \u0440\u0443\u043D\u0430 \u0437\u0430 \u043F\u0435\u0440\u0432\u044B\u0435
-      2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0414\u0430\u043B\u0435\u0435
-      10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0432 \u0441\u0435\u043A\u0443\u043D\u0434\u0443."
+    - "<alpha=#aa><i>\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0430\u0435\u043C\u0430\u044F</i><alpha=#ff>\n<color=\"Yellow\">\u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0443\u0434\u0430\u0440</color> \u0438 <color=\"Yellow>\u041E\u0441\u043A\u043E\u043B\u043E\u043A \u043B\u044C\u0434\u0430</color> \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u0448\u0430\u043D\u0441 60% \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430 ? \u0441\u0435\u043A.\r\n\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0443\u0440\u043E\u043D \u0448\u043A\u043E\u043B\u044B \u0432\u043E\u0434\u044B \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A \u0434\u0435\u0431\u0430\u0444\u0444\u0430 \u043D\u0430 \u0446\u0435\u043B\u0438:\r\n<indent=5%><color=\"Yellow\">\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435</color>: +1\r\n<color=\"Yellow\">\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435</color>: +5\r\n<color=\"Yellow\">\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430</color>: +10</indent>\r\n\u0417\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u043F\u0440\u0438 \u0437\u0430\u0442\u0440\u0430\u0442\u0435 \u0440\u0443\u043D.\r\n<color=\"Blue>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C</color>: 1 \u0440\u0443\u043D\u0430 \u0437\u0430 \u043F\u0435\u0440\u0432\u044B\u0435 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0414\u0430\u043B\u0435\u0435 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0432 \u0441\u0435\u043A\u0443\u043D\u0434\u0443."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437\u043D\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F"
@@ -11400,25 +8906,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442 \u043B\u0435\u0434\u044F\u043D\u0443\u044E
-      \u0442\u0435\u043D\u044C, \u201C\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0443\u044E\"
-      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 \u043D\u0430
-      \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F
-      \u0436\u0438\u0437\u043D\u0438.\n<indent=5%>\u0412\u0440\u0435\u043C\u044F
-      \u0436\u0438\u0437\u043D\u0438: 2-5\u0441\u0435\u043A (2 + 1/10\u044D\u043D\u0435\u0440\u0433\u0438\u0438)\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      0-30 (0 + 10/1\u0441\u0435\u043A)\n</indent>"
+    - "\u041E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442 \u043B\u0435\u0434\u044F\u043D\u0443\u044E \u0442\u0435\u043D\u044C, \u201C\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0443\u044E\" \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 \u043D\u0430 \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F \u0436\u0438\u0437\u043D\u0438.\n<indent=5%>\u0412\u0440\u0435\u043C\u044F \u0436\u0438\u0437\u043D\u0438: 2-5\u0441\u0435\u043A (2 + 1/10\u044D\u043D\u0435\u0440\u0433\u0438\u0438)\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 0-30 (0 + 10/1\u0441\u0435\u043A)\n</indent>"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
       Description: 
     - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430:"
-      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
-        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438.
-        \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
-        \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B."
+      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438. \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B."
     IsOpen: 0
-    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0430\u044F
-      \u0442\u0435\u043D\u044C"
+    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0430\u044F \u0442\u0435\u043D\u044C"
     Icon: {fileID: 21300000, guid: 03a6c3f41c3356f428ba170ba3af9be5, type: 3}
     Group: 0
     Row: 0
@@ -11439,31 +8934,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_5
   _data:
     _descriptionsForInfoPanel:
-    - "\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0437\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
-      \u043E\u0431\u043B\u0430\u043A\u043E \u0432 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.
-      \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A
-      \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0443\u0440\u043E\u043D \u0438
-      \u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D.\n<indent=5%>\u0423\u0440\u043E\u043D:
-      10 + 1/5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
-      <color=\"Yellow\">\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438\u201D</color>:
-      1 + 1 \u0437\u0430 20 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. .\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      \u0432\u0441\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F</indent>"
+    - "\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0437\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435 \u043E\u0431\u043B\u0430\u043A\u043E \u0432 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438. \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0443\u0440\u043E\u043D \u0438 \u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D.\n<indent=5%>\u0423\u0440\u043E\u043D: 10 + 1/5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C <color=\"Yellow\">\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438\u201D</color>: 1 + 1 \u0437\u0430 20 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. .\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: \u0432\u0441\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F</indent>"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
-      Description: "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
-        \u201C\u0413\u043B\u0443\u0431\u043E\u043A\u0443\u044E \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D,
-        \u043A\u043E\u0442\u043E\u0440\u0430\u044F \u0441\u043F\u0430\u0434\u0430\u0435\u0442
-        \u043F\u043E\u0441\u043B\u0435 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F
-        30 \u0443\u0440\u043E\u043D\u0430."
+      Description: "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u201C\u0413\u043B\u0443\u0431\u043E\u043A\u0443\u044E \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D, \u043A\u043E\u0442\u043E\u0440\u0430\u044F \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u043E\u0441\u043B\u0435 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F 30 \u0443\u0440\u043E\u043D\u0430."
     - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430:"
-      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
-        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438.
-        \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
-        \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B"
+      Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438. \u0421\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B"
     IsOpen: 0
-    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
-      \u043E\u0431\u043B\u0430\u043A\u043E "
+    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435 \u043E\u0431\u043B\u0430\u043A\u043E "
     Icon: {fileID: 21300000, guid: 065515d67444a0f43a053540c5f49c8c, type: 3}
     Group: 0
     Row: 0
@@ -11484,8 +8962,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_6
   _data:
     _descriptionsForInfoPanel:
-    - "\u0422\u0435\u043D\u044C \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0435\u0442
-      \u0442\u0435\u043A\u0443\u0449\u0438\u0439 \u043A\u0430\u0441\u0442 \u0433\u0435\u0440\u043E\u044F."
+    - "\u0422\u0435\u043D\u044C \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0435\u0442 \u0442\u0435\u043A\u0443\u0449\u0438\u0439 \u043A\u0430\u0441\u0442 \u0433\u0435\u0440\u043E\u044F."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 6"
@@ -11507,12 +8984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_7
   _data:
     _descriptionsForInfoPanel:
-    - "\u201C\u041F\u0440\u0438\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u0435\u0442\u201D
-      \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
-      \u0432 4 \u043C\u0435\u0442\u0440\u0430\u0445 \u0432\u043E\u043A\u0440\u0443\u0433
-      \u0433\u0435\u0440\u043E\u044F.\n<indent=5%>\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
-      \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438: 2 - 5 (2 + 1/10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438)\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:\n<indent=20%>0-30
-      (0 + 10\u044D\u043D/1 \u0441\u0435\u043A)\r\n 3 \u0440\u0443\u043D\u044B</indent></indent>"
+    - "\u201C\u041F\u0440\u0438\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u0435\u0442\u201D \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 \u0432 4 \u043C\u0435\u0442\u0440\u0430\u0445 \u0432\u043E\u043A\u0440\u0443\u0433 \u0433\u0435\u0440\u043E\u044F.\n<indent=5%>\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438: 2 - 5 (2 + 1/10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438)\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:\n<indent=20%>0-30 (0 + 10\u044D\u043D/1 \u0441\u0435\u043A)\r\n 3 \u0440\u0443\u043D\u044B</indent></indent>"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
       Description: "\u041A\u0430\u0441\u0442\u0443\u0435\u0442\u0441\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E"
@@ -11541,10 +9013,7 @@ MonoBehaviour:
     - 
     _stateInfos:
     - StateName: "\u041C\u043E\u0440\u043E\u0437\u043D\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F:"
-      Description: "\\n\u0421\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438,
-        \u0442\u0440\u0435\u0431\u0443\u044E\u0449\u0438\u0435 \u0440\u0443\u043D\u0443
-        \u043B\u044C\u0434\u0430 \u043F\u043E\u043B\u0443\u0447\u0430\u0442 \u0431\u043E\u043D\u0443\u0441
-        \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F \u0441\u0435\u0440\u0438\u0438.\r\n"
+      Description: "\\n\u0421\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u0442\u0440\u0435\u0431\u0443\u044E\u0449\u0438\u0435 \u0440\u0443\u043D\u0443 \u043B\u044C\u0434\u0430 \u043F\u043E\u043B\u0443\u0447\u0430\u0442 \u0431\u043E\u043D\u0443\u0441 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F \u0441\u0435\u0440\u0438\u0438.\r\n"
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 8"
     Icon: {fileID: 21300000, guid: 05e9dc472a8a279439a75ccf171a5a6f, type: 3}
@@ -11566,13 +9035,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_9
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u0435 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u043D\u0438\u0435
-      <color=\"Yellow\">\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\u201D</color>
-      \u043F\u0440\u0435\u0432\u0440\u0430\u0442\u0438\u0442 \u0435\u0433\u043E \u0432
-      <color=\"Yellow>\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D</color>."
-    - "5 \u0441\u0442\u0430\u043A <color=\"Yellow\">\u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D</color>
-      \u043D\u0430\u043B\u043E\u0436\u0438\u0442 <color=\"Yellow\">\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D</color>
-      \u043D\u0430 2 \u0441\u0435\u043A."
+    - "\u041F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u0435 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u043D\u0438\u0435 <color=\"Yellow\">\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\u201D</color> \u043F\u0440\u0435\u0432\u0440\u0430\u0442\u0438\u0442 \u0435\u0433\u043E \u0432 <color=\"Yellow>\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0443\u201D</color>."
+    - "5 \u0441\u0442\u0430\u043A <color=\"Yellow\">\u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u044F\u201D</color> \u043D\u0430\u043B\u043E\u0436\u0438\u0442 <color=\"Yellow\">\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D</color> \u043D\u0430 2 \u0441\u0435\u043A."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 9"
@@ -11594,21 +9058,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_10
   _data:
     _descriptionsForInfoPanel:
-    - "\u0412\u044B\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u043B\u0435\u0434\u044F\u043D\u0443\u044E
-      \u0441\u0442\u0440\u0435\u043B\u0443 \u0432 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438.
-      \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A
-      \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0443\u0440\u043E\u043D \u0438
-      \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430
-      ? \u0441\u0435\u043A.\n<indent=5%>\u0423\u0440\u043E\u043D: [20-25] + [0-15]
-      (3\u0443\u0440/5\u044D\u043D)\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      0-25 (0 + 5\u044D\u043D/ 3\u0443\u0440</indent>"
+    - "\u0412\u044B\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u043B\u0435\u0434\u044F\u043D\u0443\u044E \u0441\u0442\u0440\u0435\u043B\u0443 \u0432 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438. \u041F\u0435\u0440\u0432\u044B\u0439 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0443\u0440\u043E\u043D \u0438 \u201C\u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430 ? \u0441\u0435\u043A.\n<indent=5%>\u0423\u0440\u043E\u043D: [20-25] + [0-15] (3\u0443\u0440/5\u044D\u043D)\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 0-25 (0 + 5\u044D\u043D/ 3\u0443\u0440</indent>"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
-      Description: "\u041D\u0430\u043D\u043E\u0441\u0438\u0442 30% \u0443\u0440\u043E\u043D\u0430
-        \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
-        \u201C\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D
-        \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
-        \u043F\u043E\u0437\u0430\u0434\u0438 \u0446\u0435\u043B\u0438."
+      Description: "\u041D\u0430\u043D\u043E\u0441\u0438\u0442 30% \u0443\u0440\u043E\u043D\u0430 \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u201C\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\u201D \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 \u043F\u043E\u0437\u0430\u0434\u0438 \u0446\u0435\u043B\u0438."
     IsOpen: 1
     Description: "\u0413\u043B\u044B\u0431\u0430 \u043B\u044C\u0434\u0430"
     Icon: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
@@ -11631,12 +9084,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_11
   _data:
     _descriptionsForInfoPanel:
-    - "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
-      \u0440\u0443\u043D \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u0446\u0435\u043B\u044C
-      \u0441 \u044D\u0444\u0444\u0435\u043A\u0442\u043E\u043C:\r\n<indent=5%>\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D
-      +10% (+5% \u0434\u043B\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432)\r\n\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D
-      +20% (+10% \u0434\u043B\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432)</indent>\r\n"
+    - "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u0440\u0443\u043D \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u0446\u0435\u043B\u044C \u0441 \u044D\u0444\u0444\u0435\u043A\u0442\u043E\u043C:\r\n<indent=5%>\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D +10% (+5% \u0434\u043B\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432)\r\n\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D +20% (+10% \u0434\u043B\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432)</indent>\r\n"
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 11"
@@ -11659,10 +9107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_12
   _data:
     _descriptionsForInfoPanel:
-    - "<color=\"Yellow>\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D</color>
-      \u0438 <color=\"Yellow>\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D</color>
-      \u0432\u044B\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044E\u0442 \u0434\u043E
-      30 \u0443\u0440\u043E\u043D\u0430"
+    - "<color=\"Yellow>\u201C\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\u201D</color> \u0438 <color=\"Yellow>\u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D</color> \u0432\u044B\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044E\u0442 \u0434\u043E 30 \u0443\u0440\u043E\u043D\u0430"
     _stateInfos: []
     IsOpen: 0
     Description: "\u0413\u043B\u0443\u0431\u043E\u043A\u0430\u044F \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
@@ -11684,8 +9129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_13
   _data:
     _descriptionsForInfoPanel:
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441
-      \u0440\u0443\u043D \u043D\u0430 5."
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441 \u0440\u0443\u043D \u043D\u0430 5."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0440\u043E\u0437 13"
@@ -11730,20 +9174,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
-      \u0446\u0435\u043B\u044C \u201C\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B\u201D
-      \u043D\u0430 12 \u0441\u0435\u043A.\r\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      20</indent>"
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430 \u0446\u0435\u043B\u044C \u201C\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B\u201D \u043D\u0430 12 \u0441\u0435\u043A.\r\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 20</indent>"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
       Description: 
     - StateName: "\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B:"
-      Description: "\u041A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434\u0443
-        \u0441 \u0448\u0430\u043D\u0441\u043E\u043C 5% \u043F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u0442
-        \u0422\u0440\u0443\u043F \u0440\u044F\u0434\u043E\u043C \u0441 \u0446\u0435\u043B\u044C\u044E.
-        \u0428\u0430\u043D\u0441 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-        \u0432 2 \u0440\u0430\u0437\u0430, \u0435\u0441\u043B\u0438 \u0446\u0435\u043B\u044C
-        \u0441\u0442\u043E\u0438\u0442 \u043D\u0430 \u043C\u0435\u0441\u0442\u0435."
+      Description: "\u041A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434\u0443 \u0441 \u0448\u0430\u043D\u0441\u043E\u043C 5% \u043F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u0442 \u0422\u0440\u0443\u043F \u0440\u044F\u0434\u043E\u043C \u0441 \u0446\u0435\u043B\u044C\u044E. \u0428\u0430\u043D\u0441 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0432 2 \u0440\u0430\u0437\u0430, \u0435\u0441\u043B\u0438 \u0446\u0435\u043B\u044C \u0441\u0442\u043E\u0438\u0442 \u043D\u0430 \u043C\u0435\u0441\u0442\u0435."
     IsOpen: 0
     Description: "\u041F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B"
     Icon: {fileID: 21300000, guid: 1e7fdd7f8d2544b4abc30cf32b1431ec, type: 3}
@@ -11766,18 +9202,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "<color=\"Yellow>\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D</color>:
-      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442 \u043E\u0434\u043D\u0443
-      \u0440\u0443\u043D\u0443, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C
-      70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. \r\n<color=\"Yellow>\u0416\u0430\u0442\u0432\u0430
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438</color>: \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442
-      70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u0447\u0442\u043E\u0431\u044B
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C 1
-      \u0440\u0443\u043D\u0443.\r\n"
+    - "<color=\"Yellow>\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D</color>: \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442 \u043E\u0434\u043D\u0443 \u0440\u0443\u043D\u0443, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C 70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. \r\n<color=\"Yellow>\u0416\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438</color>: \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442 70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C 1 \u0440\u0443\u043D\u0443.\r\n"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
-      Description: "\u041D\u0435 \u0443\u0445\u043E\u0434\u0438\u0442 \u043D\u0430
-        \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0443"
+      Description: "\u041D\u0435 \u0443\u0445\u043E\u0434\u0438\u0442 \u043D\u0430 \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0443"
     IsOpen: 0
     Description: "\u0416\u0430\u0442\u0432\u0430"
     Icon: {fileID: 21300000, guid: ba741e0a405245447ae2ba2fee7fd82a, type: 3}
@@ -11801,22 +9229,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041A\u0430\u0436\u0434\u0430\u044F 1 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E
-      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
-      \u0438\u043C\u0435\u0435\u0442 1% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C
-      \u043D\u0430 \u0433\u0435\u0440\u043E\u044F \"\u0423\u043F\u0440\u043E\u0447\u0435\u043D\u043D\u043D\u0430\u044F
-      \u043F\u043B\u043E\u0442\u044C\" \u043D\u0430 9 \u0441\u0435\u043A."
+    - "\u041A\u0430\u0436\u0434\u0430\u044F 1 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u0435\u0442 1% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 \u0433\u0435\u0440\u043E\u044F \"\u0423\u043F\u0440\u043E\u0447\u0435\u043D\u043D\u043D\u0430\u044F \u043F\u043B\u043E\u0442\u044C\" \u043D\u0430 9 \u0441\u0435\u043A."
     _stateInfos:
-    - StateName: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u043D\u0430\u044F
-        \u043F\u043B\u043E\u0442\u044C:"
-      Description: "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
-        \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0443\u044E \u0437\u0430\u0449\u0438\u0442\u0443
-        \u043D\u0430 5%. \u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0431\u0430\u0444\u0444. \u0421\u0442\u0430\u043A\u0430\u0435\u0442\u0441\u044F
-        \u0434\u043E 5 \u0440\u0430\u0437."
+    - StateName: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u043D\u0430\u044F \u043F\u043B\u043E\u0442\u044C:"
+      Description: "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0443\u044E \u0437\u0430\u0449\u0438\u0442\u0443 \u043D\u0430 5%. \u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444\u0444. \u0421\u0442\u0430\u043A\u0430\u0435\u0442\u0441\u044F \u0434\u043E 5 \u0440\u0430\u0437."
     IsOpen: 0
-    Description: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u043C\u0451\u0440\u0442\u0432\u043E\u0439
-      \u043F\u043B\u043E\u0442\u0438"
+    Description: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u043C\u0451\u0440\u0442\u0432\u043E\u0439 \u043F\u043B\u043E\u0442\u0438"
     Icon: {fileID: 21300000, guid: e372d60187227324ba3c5de47777b41e, type: 3}
     Group: 0
     Row: 0
@@ -11836,16 +9254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_4
   _data:
     _descriptionsForInfoPanel:
-    - "\u041D\u0430\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442 \u0447\u0430\u0441\u0442\u0438\u0446\u0443
-      \u0441\u043C\u0435\u0440\u0442\u0438 \u0432 \u0446\u0435\u043B\u044C.\n<indent=5%>\u041F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A:
-      \u043D\u0430\u043D\u043E\u0441\u0438\u0442 15 (+0-30 1/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438)
-      \u0443\u0440\u043E\u043D\u0430.\r\n\u0422\u0440\u0443\u043F: \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      30 (+0-60 2/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F.\r\n\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      0-30.</indent>\r\n\u041D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442
-      1 \u0437\u0430\u0440\u044F\u0434, \u043A\u043E\u0433\u0434\u0430 \u0433\u0435\u0440\u043E\u0439
-      \u0438\u043B\u0438 \u0435\u0433\u043E \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430
-      \u043D\u0430\u043D\u043E\u0441\u044F\u0442 30 \u0444\u0438\u0437. \u0443\u0440\u043E\u043D\u0430.
-      \u041C\u0430\u043A\u0441\u0438\u043C\u0443\u043C ?.\r\n"
+    - "\u041D\u0430\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442 \u0447\u0430\u0441\u0442\u0438\u0446\u0443 \u0441\u043C\u0435\u0440\u0442\u0438 \u0432 \u0446\u0435\u043B\u044C.\n<indent=5%>\u041F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A: \u043D\u0430\u043D\u043E\u0441\u0438\u0442 15 (+0-30 1/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0443\u0440\u043E\u043D\u0430.\r\n\u0422\u0440\u0443\u043F: \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 30 (+0-60 2/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F.\r\n\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 0-30.</indent>\r\n\u041D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442 1 \u0437\u0430\u0440\u044F\u0434, \u043A\u043E\u0433\u0434\u0430 \u0433\u0435\u0440\u043E\u0439 \u0438\u043B\u0438 \u0435\u0433\u043E \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430 \u043D\u0430\u043D\u043E\u0441\u044F\u0442 30 \u0444\u0438\u0437. \u0443\u0440\u043E\u043D\u0430. \u041C\u0430\u043A\u0441\u0438\u043C\u0443\u043C ?.\r\n"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
       Description: 
@@ -11871,13 +9280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_5
   _data:
     _descriptionsForInfoPanel:
-    - "\u0413\u0435\u0440\u043E\u0439 \u0438 \u0435\u0433\u043E \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0438
-      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0442
-      \u0440\u0435\u0441\u0443\u0440\u0441 \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435
-      20% \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430. \u041F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438
-      100 \u0443\u0440\u043E\u043D\u0430 \u0433\u0435\u0440\u043E\u0439 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
-      1 \u0440\u0443\u043D\u0443."
+    - "\u0413\u0435\u0440\u043E\u0439 \u0438 \u0435\u0433\u043E \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0442 \u0440\u0435\u0441\u0443\u0440\u0441 \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435 20% \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430. \u041F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438 100 \u0443\u0440\u043E\u043D\u0430 \u0433\u0435\u0440\u043E\u0439 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 1 \u0440\u0443\u043D\u0443."
     _stateInfos: []
     IsOpen: 0
     Description: "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B"
@@ -11902,10 +9305,7 @@ MonoBehaviour:
     - 
     _stateInfos:
     - StateName: "\u0422\u0440\u0443\u043F:"
-      Description: "\\n\u041F\u0440\u0438 \u0441\u043C\u0435\u0440\u0442\u0438 \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F,
-        \u043D\u0430\u043D\u043E\u0441\u044F 20 \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u043A\u0440\u0443\u0433
-        \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u0427\u0443\u043C\u0443\u201D
-        \u043D\u0430 ? \u0441\u0435\u043A.\r\n"
+      Description: "\\n\u041F\u0440\u0438 \u0441\u043C\u0435\u0440\u0442\u0438 \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F, \u043D\u0430\u043D\u043E\u0441\u044F 20 \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u043A\u0440\u0443\u0433 \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044F \u201C\u0427\u0443\u043C\u0443\u201D \u043D\u0430 ? \u0441\u0435\u043A.\r\n"
     IsOpen: 0
     Description: 
     Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
@@ -11926,30 +9326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbsotptionTalent
   _data:
     _descriptionsForInfoPanel:
-    - "<b>\u0422\u0440\u0443\u043F</b>:\n\u0412\u043E\u0440\u0443\u0435\u0442 20
-      (+0-40 1/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F
-      \u0442\u0440\u0443\u043F\u0430\r\n\r\n<b>\u041F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A</b>:\n\u041D\u0430\u043D\u043E\u0441\u0438\u0442
-      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0443 (1% + 0.1%/1 \u044D\u043D\u0435\u0440\u0433\u0438\u044E
-      \u043C\u0430\u043A\u0441 \u0445\u043F) \u0443\u0440\u043E\u043D\u0430 \u0438
-      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
-      \u0433\u0435\u0440\u043E\u044F \u0441\u0442\u043E\u043B\u044C\u043A\u043E \u0436\u0435
-      \u0441\u0442\u0430\u043A\u043E\u0432 \u201C\u0427\u0443\u0436\u043E\u0439 \u0441\u0438\u043B\u044B\u201D
-      \u043D\u0430 12 \u0441\u0435\u043A.\r\n<color=\"Yellow>\u0427\u0443\u0436\u0430\u044F
-      \u0441\u0438\u043B\u0430</color>: \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
-      \u0437\u0430\u043F\u0430\u0441 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F.
-      \u041E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u043F\u0440\u0438
-      \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438.
-      \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444\u0444.
-      \u0428\u043A\u043E\u043B\u0430 \u0442\u044C\u043C\u044B.\r\n\r\n<b>\u0413\u0435\u0440\u043E\u0439</b>:\n\u0422\u0440\u0430\u0442\u0438\u0442
-      \u0441\u0432\u043E\u0435 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435,
-      \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C
-      0-160 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 (4\u044D\u043D\u0435\u0440\u0433\u0438\u0438/1\u0445\u043F).
-      \u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0440\u0435\u0433\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044E
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u043A\u043E\u043D\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0435\u0442
-      1 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435 \u0432 4 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      \u0434\u043E \u043F\u043E\u043B\u043D\u043E\u0433\u043E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F\r\n
-      <indent=5%>\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:</indent>\n<indent=20%>0-40
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438\r\n1 \u0440\u0443\u043D\u0430</indent>"
+    - "<b>\u0422\u0440\u0443\u043F</b>:\n\u0412\u043E\u0440\u0443\u0435\u0442 20 (+0-40 1/1\u044D\u043D\u0435\u0440\u0433\u0438\u0438) \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0442\u0440\u0443\u043F\u0430\r\n\r\n<b>\u041F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A</b>:\n\u041D\u0430\u043D\u043E\u0441\u0438\u0442 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0443 (1% + 0.1%/1 \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u043C\u0430\u043A\u0441 \u0445\u043F) \u0443\u0440\u043E\u043D\u0430 \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430 \u0433\u0435\u0440\u043E\u044F \u0441\u0442\u043E\u043B\u044C\u043A\u043E \u0436\u0435 \u0441\u0442\u0430\u043A\u043E\u0432 \u201C\u0427\u0443\u0436\u043E\u0439 \u0441\u0438\u043B\u044B\u201D \u043D\u0430 12 \u0441\u0435\u043A.\r\n<color=\"Yellow>\u0427\u0443\u0436\u0430\u044F \u0441\u0438\u043B\u0430</color>: \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043F\u0430\u0441 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F. \u041E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444\u0444. \u0428\u043A\u043E\u043B\u0430 \u0442\u044C\u043C\u044B.\r\n\r\n<b>\u0413\u0435\u0440\u043E\u0439</b>:\n\u0422\u0440\u0430\u0442\u0438\u0442 \u0441\u0432\u043E\u0435 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C 0-160 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 (4\u044D\u043D\u0435\u0440\u0433\u0438\u0438/1\u0445\u043F). \u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0440\u0435\u0433\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u043A\u043E\u043D\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0435\u0442 1 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435 \u0432 4 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0434\u043E \u043F\u043E\u043B\u043D\u043E\u0433\u043E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F\r\n <indent=5%>\r\n\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:</indent>\n<indent=20%>0-40 \u044D\u043D\u0435\u0440\u0433\u0438\u0438\r\n1 \u0440\u0443\u043D\u0430</indent>"
     _stateInfos: []
     IsOpen: 1
     Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435"
@@ -11976,10 +9353,7 @@ MonoBehaviour:
     - StateName: "\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D:"
       Description: "\u041F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u0442 \u0442\u0440\u0443\u043F\r\n\r\n"
     - StateName: "\u0416\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438:"
-      Description: "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0434\u043E\u043F.
-        \u0443\u0440\u043E\u043D \u0437\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u044E
-        \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0439 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
-        \u043D\u0430 50%."
+      Description: "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0434\u043E\u043F. \u0443\u0440\u043E\u043D \u0437\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0439 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u043D\u0430 50%."
     IsOpen: 0
     Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0436\u0430\u0442\u0432"
     Icon: {fileID: 21300000, guid: 320be945beda75f4b848dd57579ecb6c, type: 3}
@@ -12000,15 +9374,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IncreaseVampiricTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B
-      \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 2 \u0440\u0430\u0437\u0430
-      \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435, \u043A\u043E\u0433\u0434\u0430
-      \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u201C\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435
-      \u043C\u0435\u0440\u0442\u0432\u043E\u0439 \u043F\u043B\u043E\u0442\u0438\u201D"
+    - "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 2 \u0440\u0430\u0437\u0430 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435, \u043A\u043E\u0433\u0434\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u201C\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u043C\u0435\u0440\u0442\u0432\u043E\u0439 \u043F\u043B\u043E\u0442\u0438\u201D"
     _stateInfos: []
     IsOpen: 0
-    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0432\u0430\u043C\u0438\u0440\u0438\u0437\u043C\u0430
-      \u0441\u0438\u043B"
+    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0432\u0430\u043C\u0438\u0440\u0438\u0437\u043C\u0430 \u0441\u0438\u043B"
     Icon: {fileID: 8056498707614395508, guid: f93099b36e559b64894be862e9aa53be, type: 3}
     Group: 0
     Row: 0
@@ -12027,21 +9396,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SecondarySpiralTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\xAB\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438\"
-      \u043F\u043E\u043F\u0430\u0434\u0430\u044F \u0432 \u0446\u0435\u043B\u044C
-      \u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 3 \u043C\u0435\u0442\u0440\u043E\u0432
-      \u0432\u044B\u043B\u0435\u0442\u0430\u0435\u0442 \u201E\u0427\u0430\u0441\u0442\u0438\u0446\u0430
-      \u0441\u043C\u0435\u0440\u0442\u0438\xBB \u0441 75% \u0443\u0440\u043E\u043D\u043E\u043C
-      \u0432 \u0446\u0435\u043B\u0438 \u043D\u0430 \u043A\u043E\u043C \xAB\u043F\u043E\u0440\u0442\u0430\u043B
-      \u0442\u044C\u043C\u044B\xBB"
+    - "\xAB\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438\" \u043F\u043E\u043F\u0430\u0434\u0430\u044F \u0432 \u0446\u0435\u043B\u044C \u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 3 \u043C\u0435\u0442\u0440\u043E\u0432 \u0432\u044B\u043B\u0435\u0442\u0430\u0435\u0442 \u201E\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438\xBB \u0441 75% \u0443\u0440\u043E\u043D\u043E\u043C \u0432 \u0446\u0435\u043B\u0438 \u043D\u0430 \u043A\u043E\u043C \xAB\u043F\u043E\u0440\u0442\u0430\u043B \u0442\u044C\u043C\u044B\xBB"
     _stateInfos:
     - StateName: "\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438:"
-      Description: "\\n\u041F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438,
-        \u0442\u0430\u043A\u0436\u0435 \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442
-        \u043D\u0430 \u0432\u0441\u0435 \u0446\u0435\u043B\u0438 \u043F\u043E\u0431\u043B\u0438\u0437\u043E\u0441\u0442\u0438
-        \u0441 \u201C\u041F\u043E\u0440\u0442\u0430\u043B\u043E\u043C \u0442\u044C\u043C\u044B\u201D
-        \u0441 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C\u044E
-        75%."
+      Description: "\\n\u041F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438, \u0442\u0430\u043A\u0436\u0435 \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u043D\u0430 \u0432\u0441\u0435 \u0446\u0435\u043B\u0438 \u043F\u043E\u0431\u043B\u0438\u0437\u043E\u0441\u0442\u0438 \u0441 \u201C\u041F\u043E\u0440\u0442\u0430\u043B\u043E\u043C \u0442\u044C\u043C\u044B\u201D \u0441 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C\u044E 75%."
     IsOpen: 0
     Description: "\u0421\u043C\u0435\u0440\u0442\u044C 10"
     Icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}
@@ -12065,18 +9423,7 @@ MonoBehaviour:
     - 
     _stateInfos:
     - StateName: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435:"
-      Description: "\\n\u041A\u0430\u0441\u0442\u0443\u0435\u0442\u0441\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E
-        \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
-        \u0441 \u201C\u041F\u043E\u0440\u0442\u0430\u043B\u043E\u043C \u0442\u044C\u043C\u044B\u201D.\n\u041F\u043E\u043F\u0430\u0434\u0430\u044F
-        \u043F\u043E \u0446\u0435\u043B\u0438 \u0441 \"\u0427\u0443\u043C\u043E\u0439\":\n<indent=5%>\u0421\u043D\u0438\u043C\u0430\u0435\u0442
-        1 \u0441\u0442\u0430\u043A \u201C\u0427\u0443\u043C\u044B\u201D, \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u044F
-        \u043A \u201C\u0427\u0443\u0436\u043E\u0439 \u0441\u0438\u043B\u0435\u201D
-        \u0443\u0440\u043E\u043D, \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u044B\u0439
-        \u0447\u0443\u043C\u043E\u0439 \u0438 \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u044F
-        \u0437\u0430\u0440\u044F\u0434 \u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F,
-        \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 6.\n\u0417\u0430\u0440\u044F\u0434\u044B
-        \u0440\u0430\u0441\u0445\u043E\u0434\u0443\u044E\u0442\u0441\u044F \u043D\u0430
-        <color=\"Yellow><u>\u0417\u0430\u0449\u0438\u0442\u0443 \u043E\u0442 \u043C\u0430\u0433\u0438\u0438</u></color>.</indent>"
+      Description: "\\n\u041A\u0430\u0441\u0442\u0443\u0435\u0442\u0441\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 \u0441 \u201C\u041F\u043E\u0440\u0442\u0430\u043B\u043E\u043C \u0442\u044C\u043C\u044B\u201D.\n\u041F\u043E\u043F\u0430\u0434\u0430\u044F \u043F\u043E \u0446\u0435\u043B\u0438 \u0441 \"\u0427\u0443\u043C\u043E\u0439\":\n<indent=5%>\u0421\u043D\u0438\u043C\u0430\u0435\u0442 1 \u0441\u0442\u0430\u043A \u201C\u0427\u0443\u043C\u044B\u201D, \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u044F \u043A \u201C\u0427\u0443\u0436\u043E\u0439 \u0441\u0438\u043B\u0435\u201D \u0443\u0440\u043E\u043D, \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u044B\u0439 \u0447\u0443\u043C\u043E\u0439 \u0438 \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u044F \u0437\u0430\u0440\u044F\u0434 \u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F, \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 6.\n\u0417\u0430\u0440\u044F\u0434\u044B \u0440\u0430\u0441\u0445\u043E\u0434\u0443\u044E\u0442\u0441\u044F \u043D\u0430 <color=\"Yellow><u>\u0417\u0430\u0449\u0438\u0442\u0443 \u043E\u0442 \u043C\u0430\u0433\u0438\u0438</u></color>.</indent>"
     IsOpen: 0
     Description: "\u0421\u043C\u0435\u0440\u0442\u044C 11"
     Icon: {fileID: 21300000, guid: 31dbceb263cafaa458e7f30743b9267a, type: 3}
@@ -12097,35 +9444,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MagicShieldTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
-      \u0446\u0435\u043B\u044C \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-      \u0449\u0438\u0442\u201D \u0438\u043B\u0438 \u0441\u043E\u0437\u0434\u0430\u0435\u0442
-      \u043E\u0431\u043B\u0430\u0441\u0442\u044C %\u0437\u0430\u0449\u0438\u0442\u044B\u043E\u0442\u043C\u0430\u0433\u0438\u0438%\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-      2 \u0440\u0443\u043D\u044B. \r\n\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435:
-      60 + 15 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
-      2 + 1 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.</indent>"
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430 \u0446\u0435\u043B\u044C \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0449\u0438\u0442\u201D \u0438\u043B\u0438 \u0441\u043E\u0437\u0434\u0430\u0435\u0442 \u043E\u0431\u043B\u0430\u0441\u0442\u044C %\u0437\u0430\u0449\u0438\u0442\u044B\u043E\u0442\u043C\u0430\u0433\u0438\u0438%\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 2 \u0440\u0443\u043D\u044B. \r\n\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435: 60 + 15 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: 2 + 1 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.</indent>"
     _stateInfos:
     - StateName: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0438\u0438:"
       Description: 
     - StateName: "\u041E\u0431\u043B\u0430\u0441\u0442\u044C\u0437\u0430\u0449\u0438\u0442\u044B\u043E\u0442\u043C\u0430\u0433\u0438\u0438\u2122:"
-      Description: "\u0412\u0441\u0435 \u0446\u0435\u043B\u0438 \u0432 \u043E\u0431\u043B\u0430\u0441\u0442\u0438
-        \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0449\u0438\u0442\u201D \u0438 \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435
-        \u0438\u0441\u0442\u043E\u0449\u0435\u043D\u0438\u0435?\u201D \u0441 \u043E\u0431\u0449\u0435\u0439
-        \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C\u044E.\r\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C:
-        4 \u0440\u0443\u043D\u044B.\r\n\u041F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C:
-        120 + 15 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 .\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
-        2 + 1 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.</indent>\r\n"
+      Description: "\u0412\u0441\u0435 \u0446\u0435\u043B\u0438 \u0432 \u043E\u0431\u043B\u0430\u0441\u0442\u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0449\u0438\u0442\u201D \u0438 \u201C\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0438\u0441\u0442\u043E\u0449\u0435\u043D\u0438\u0435?\u201D \u0441 \u043E\u0431\u0449\u0435\u0439 \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C\u044E.\r\n<indent=5%>\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: 4 \u0440\u0443\u043D\u044B.\r\n\u041F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C: 120 + 15 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438 .\r\n\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: 2 + 1 \u0437\u0430 10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.</indent>\r\n"
     - StateName: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0449\u0438\u0442:"
-      Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0443\u0440\u043E\u043D \u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0435
-        \u0434\u0435\u0431\u0430\u0444\u0444\u044B. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0431\u0430\u0444\u0444."
+      Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0443\u0440\u043E\u043D \u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0435 \u0434\u0435\u0431\u0430\u0444\u0444\u044B. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444\u0444."
     - StateName: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0438\u0441\u0442\u043E\u0449\u0435\u043D\u0438\u0435:"
-      Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435
-        \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0435
-        \u0431\u0430\u0444\u0444\u044B. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
-        \u0434\u0435\u0431\u0430\u0444\u0444."
+      Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u0438 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0435 \u0431\u0430\u0444\u0444\u044B. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444\u0444."
     IsOpen: 1
     Description: "\u0417\u0430\u0449\u0438\u0442\u0430 \u043E\u0442 \u043C\u0430\u0433\u0438\u0438"
     Icon: {fileID: 21300000, guid: 1528fdab5129db143969848ac9d45298, type: 3}
@@ -12181,6 +9509,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -12247,7 +9576,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   _comboTimeout: 6
   _energyPerHit: 5

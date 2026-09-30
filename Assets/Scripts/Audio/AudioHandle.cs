@@ -10,6 +10,7 @@ public class AudioHandle : MonoBehaviour
     public event Action<AudioHandle> Released;
 
     private Transform _followTarget;
+    private bool _hasFollowTarget;
     private Coroutine _autoReleaseJob;
 
     public void Play(AudioData data, AudioAssetSO asset, Vector3? position, Transform followTarget)
@@ -20,8 +21,9 @@ public class AudioHandle : MonoBehaviour
         AudioHandleUtility.ApplyAudioData(_audioSource, data, asset);
 
         _followTarget = followTarget;
+        _hasFollowTarget = followTarget != null;
 
-        if (followTarget != null)
+        if (_hasFollowTarget)
         {
             _audioSource.spatialBlend = 1f;
             transform.position = followTarget.position;
@@ -44,13 +46,21 @@ public class AudioHandle : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_followTarget != null)
-            transform.position = _followTarget.position;
+        if (!IsInUse || !_hasFollowTarget) return;
+
+        if (_followTarget == null)
+        {
+            Stop();
+            return;
+        }
+
+        transform.position = _followTarget.position;
     }
 
     private IEnumerator AutoReleaseAfterClip()
     {
         yield return new WaitForSeconds(_audioSource.clip.length / Mathf.Max(0.01f, _audioSource.pitch));
+        _autoReleaseJob = null;
         Stop();
     }
 
@@ -68,6 +78,7 @@ public class AudioHandle : MonoBehaviour
 
         IsInUse = false;
         _followTarget = null;
+        _hasFollowTarget = false;
         _audioSource.clip = null;
         gameObject.SetActive(false);
 
