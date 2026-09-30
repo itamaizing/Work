@@ -435,7 +435,10 @@ public class Tentacles : Skill
         }
         else if (_isWombSpawning)
         {
-            _hero.Abilities.GetSkill<WombSpawn>().SpawnWombExternal(_spawnPoint);
+            if (_spawnPoint != Vector3.positiveInfinity)
+            {
+                _hero.Abilities.GetSkill<WombSpawn>().SpawnWombExternal(_spawnPoint);
+            }
         }
 
         ClearData();

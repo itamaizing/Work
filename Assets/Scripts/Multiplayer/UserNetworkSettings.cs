@@ -28,6 +28,7 @@ public class UserNetworkSettings : NetworkBehaviour
             if (isServer)
             {
                 _teamIndex = value;
+                RpcUpdateLayers();
                 StartCoroutine(DelayedTargetUpdate());
             }
         }

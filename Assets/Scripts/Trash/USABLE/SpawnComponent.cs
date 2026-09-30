@@ -173,30 +173,28 @@ public class SpawnComponent : NetworkBehaviour
 
     #region Test
 
-    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove,
-        Character parenCharacter)
+    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove, Character parentCharacter)
     {
         if (prefab == null) return null;
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
-        spawnedCharacter.CharacterParent = parenCharacter;
+        spawnedCharacter.CharacterParent = parentCharacter;
         spawnedCharacter.Initialize();
 
-        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
-
-        if (_hero == null || _hero.NetworkSettings == null)
-        {
-            Destroy(spawnedCharacter.gameObject);
-            return null;
-        }
-
-        if (connectionToClient == null)
+        if (_hero == null || _hero.NetworkSettings == null || connectionToClient == null)
         {
             Destroy(spawnedCharacter.gameObject);
             return null;
         }
 
         NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
+
+        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
+        spawnedCharacter.NetworkSettings.TeamIndex = _hero.NetworkSettings.TeamIndex;
+
+        Debug.LogError($"spawned character team {spawnedCharacter.NetworkSettings.TeamIndex}");
+        Debug.LogError($"hero team {_hero.NetworkSettings.TeamIndex}");
+
         AddUnit(spawnedCharacter);
 
         return spawnedCharacter;
@@ -368,7 +366,7 @@ public class SpawnComponent : NetworkBehaviour
             return;
         }
 
-        characterObject.layer = gameObject.layer;
+        //characterObject.layer = gameObject.layer;
 
         _units.Add(character);
         _units.RemoveAll(unit => unit == null);

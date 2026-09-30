@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &5546833081286919816
 GameObject:
@@ -177,6 +178,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6434436958443670105
 GameObject:
@@ -301,4 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aede400380e996646bd8efd160bd7c0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpikeTentacle
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _animatorSpike: {fileID: 4741508788615651261}
