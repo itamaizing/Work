@@ -401,38 +401,15 @@ public abstract class GameRules : NetworkBehaviour
                 }
 
                 _gameManager.Source.AddInTeam(playerSettings);
-            
-            /*if (playerSettings.NetworkSettings.TeamIndex == 1)
-            {
-                _gameManager.Source.AddInFirstTeam(playerSettings);
-            }
-            else
-            {
-                _gameManager.Source.AddInSecondTeam(playerSettings);
-            }*/
             }
 
-        InitializeChat();
+            InitializeChat();
 
-        //UnityEngine.Debug.Log("this");
-        //foreach (var playerSettings in _players)
-        //{
-        //    UnityEngine.Debug.Log("123123123");
-        //    if (playerSettings.NetworkSettings.TeamIndex == 1)
-        //    {
-        //        _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
-        //        _gameManager.Source.AddInFirstTeam(playerSettings);
-        //    }
-        //    else
-        //    {
-        //        _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
-        //        _gameManager.Source.AddInSecondTeam(playerSettings);
-        //    }
-        //}
 
-        GameStartClient();
+            GameStartClient();
+        }
     }
-    
+
     protected void InitializeChat()
     {
         if (_gameManager == null || _gameManager.ChatController == null) return;

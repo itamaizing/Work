@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -49,6 +50,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
             _menuAttributeSystemGO = new GameObject("MenuAttributeSystem_" + hero.Data.Name);
             _menuAttributeSystemGO.transform.SetParent(transform);
+            _menuAttributeSystemGO.AddComponent<NetworkIdentity>();
             _attributeSystem = _menuAttributeSystemGO.AddComponent<AttributeSystem>();
             _attributeSystem.Init(hero.Data);
         }

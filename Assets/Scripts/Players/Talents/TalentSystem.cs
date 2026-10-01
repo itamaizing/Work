@@ -23,6 +23,8 @@ public class TalentSystem : NetworkBehaviour
     
     private bool _initialized;
     private bool _pointsLoaded;
+    
+    public bool IsPreview { get; set; }
 
    public Level Level { get => _lvl; set => _lvl = value; }
 
@@ -57,7 +59,10 @@ public class TalentSystem : NetworkBehaviour
         GetComponentsInChildren<Talent>(true, _allTalents);
 
         foreach (var item in _allTalents)
+        {
+            item.Owner = this;
             item.Init();
+        }
     }
 
     private void OnDisable()
@@ -68,6 +73,10 @@ public class TalentSystem : NetworkBehaviour
             _lvl.LevelLoaded -= OnLevelLoaded;
         }
     }
+
+    public void RefreshEffects() => RefreshTalentVisuals();
+
+    private void ApplyEffect(Talent talent, bool on) => talent?.ApplyEffect(on);
 
     // [Command]
     public void Initialize(Level level)
@@ -105,8 +114,7 @@ public class TalentSystem : NetworkBehaviour
         foreach (var talent in talentRow.Talents)
         {
             talent.Data.Name = talent.GetType().Name;
-            if (talent.Data.IsOpen) talent.Enter();
-            else talent.Exit();
+            ApplyEffect(talent, talent.Data.IsOpen);
         }
     }
 
@@ -118,14 +126,7 @@ public class TalentSystem : NetworkBehaviour
             foreach (var talent in talentRow.Talents)
             {
                 talent.Data.Name = talent.GetType().Name;
-                if (talent.Data.IsOpen)
-                {
-                    talent.Enter();
-                }
-                else
-                {
-                    talent.Exit();
-                }
+                ApplyEffect(talent, talent.Data.IsOpen);
             }
 		}
 	}
@@ -152,12 +153,7 @@ public class TalentSystem : NetworkBehaviour
         _pointsLoaded = true;
     }
 
-   /* public void SetActive(int row, int id, bool value)
-    {
-        _talents[row].TalentsData[id].SetActive(value);
-    }*/
-
-	public void SetActive(int group, int row ,int id, bool value)
+    public void SetActive(int group, int row ,int id, bool value)
 	{
         _talents[group].TalentRows[row].Talents[id].SetActive(value);
         if (value) _points--;
@@ -176,8 +172,6 @@ public class TalentSystem : NetworkBehaviour
 
     public void SetActive(int group, int row, string name, bool value)
     {
-        //Debug.Log(" Try group" + group + " row " + row + " " + name);
-        //Debug.Log(" Has group" + _talents.Count + " row " + _talents[0].TalentRows.Count + " " + _talents[0].TalentRows[0].Talents.Count);
         var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
 
         var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
@@ -189,7 +183,6 @@ public class TalentSystem : NetworkBehaviour
             int maxPoints = GetMaxTalentPoints();
             if (_points < maxPoints) _points++;
         }
-        //_talents[group].TalentRows[row].Talents[id].SetActive(value);
     }
 
     public void SwitchTalent(int id, int row, string talentName, bool isActive)
@@ -217,14 +210,7 @@ public class TalentSystem : NetworkBehaviour
             return;
         }
 
-        if (isActive)
-        {
-            talent.Enter();
-        }
-        else
-        {
-            talent.Exit();
-        }
+        ApplyEffect(talent, isActive);
     }
 
 	[Command]
@@ -242,13 +228,11 @@ public class TalentSystem : NetworkBehaviour
 
     public void Add(Talent talent)
     {
-        talent.Enter();
         talent.SetActive(true);
     }
 
     public void Remove(Talent talent)
     {
-        talent.Exit();
         talent.SetActive(false);
     }
 

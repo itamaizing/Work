@@ -84,7 +84,6 @@ public static class HeroProgressSnapshotApplier
         foreach (var talent in row.Talents)
         {
             talent.Data.SetOpen(false);
-            talent.Exit();
         }
 
         foreach (var entry in snapshot.talents ?? Array.Empty<TalentSnapshotEntry>())
@@ -95,7 +94,6 @@ public static class HeroProgressSnapshotApplier
 
             talent.Data.SetOpen(true);
             talent.Data.SetLevel(entry.lvl);
-            talent.Enter();
         }
 
         hero.TalentManager.SetPoints(snapshot.talentPoints);

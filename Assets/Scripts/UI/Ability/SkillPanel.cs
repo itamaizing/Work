@@ -265,6 +265,11 @@ public class SkillPanel : MonoBehaviour
         }
         //SavePanel();
     }
+    
+    public void UI_SaveAbilityLayout()
+    {
+        if (_isMenu) SavePanel();
+    }
 
     private void SkillChanged(int index, Skill skill)
     {

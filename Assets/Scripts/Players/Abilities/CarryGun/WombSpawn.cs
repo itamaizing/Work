@@ -53,14 +53,19 @@ public class WombSpawn : Skill
 
     private void SetFlag(WombFlags flag, bool on)
     {
-        if (isServer) ApplyFlag(flag, on);
-        else CmdSetFlag(flag, on);
+        if (isServer)
+            ApplyFlag(flag, on);
+        else if (isClient)
+        {
+            if (isOwned) CmdSetFlag(flag, on);
+        }
+        else
+            ApplyFlag(flag, on);
     }
 
     [Command]
     private void CmdSetFlag(WombFlags flag, bool on) => ApplyFlag(flag, on);
-
-    [Server]
+    
     private void ApplyFlag(WombFlags flag, bool on) =>
         _flags = on ? _flags | flag : _flags & ~flag;
 

@@ -17,6 +17,7 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
     {
         _icon.sprite = hero.Data.Icon;
         var spawnedHero = Instantiate(hero, transform);
+        spawnedHero.MarkAsMenuPreview();
         spawnedHero.Initialize();
         CurrentHero = spawnedHero;
         spawnedHero.Rigidbody.isKinematic = true;

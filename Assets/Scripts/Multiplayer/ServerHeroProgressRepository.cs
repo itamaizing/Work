@@ -143,7 +143,6 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
         foreach (var talent in row.Talents)
         {
             talent.Data.SetOpen(false);
-            talent.Exit();
         }
 
         foreach (var entry in serverData.talents)
@@ -154,7 +153,6 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
 
             talent.Data.SetOpen(true);
             talent.Data.SetLevel(entry.lvl);
-            talent.Enter();
         }
 
         hero.TalentManager.SetPoints(serverData.freeTalentPoints);

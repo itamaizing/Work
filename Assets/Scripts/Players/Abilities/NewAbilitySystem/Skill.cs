@@ -1467,7 +1467,7 @@ public abstract class Skill : NetworkBehaviour
     [Server]
     private void OnSkillAttributeChange(string name, float value)
     {
-        Debug.Log($"[Skill Attribute] {Hero.name} {Name} {name}: {value}", gameObject);
+        //Debug.Log($"[Skill Attribute] {Hero.name} {Name} {name}: {value}", gameObject);
         if (!Enum.TryParse<SkillAttributeName>(name, out SkillAttributeName attr))
             return;
         if (_syncAttributes.Keys.Contains(attr))
