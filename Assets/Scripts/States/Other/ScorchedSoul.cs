@@ -1,38 +1,45 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ScorchedSoul : RefreshingState
+public class ScorchedSoul : StateStackingRefreshing
 {
+    private SkillManager abilities;
+    
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
     private float _reducePercentage = .5f;
+    private float _baseDuration;
+    private float _duration;
 
     public override States State => States.ScorchedSoul;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("Entering ScorchedSoulDebuff State");
-
-        var abilities = characterState.GetComponentInChildren<SkillManager>();
+        characterState = character;
+        
+        abilities = characterState.Character.Abilities;
 
         foreach (var ability in abilities.Abilities)
         {
-            Debug.LogWarning($"Cast speed before: {ability.Buff.CastSpeed.Multiplier}");
             ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage);
-            Debug.LogWarning("Cast speed reduced!!!! - CharacterState.EnterState()");
-            Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.Multiplier}");
-            Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.GetBuffedValue(1f)}");
         }
+        
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+        SetMaxStacks(3);
+        CurrentStacksCount = 1;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
+        base.ExitState();
+        
         if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
             //return cast speed
-            if (characterState.TryGetComponent<SkillManager>(out SkillManager abilities))
+            if (abilities)
             {
                 foreach (var ability in abilities.Abilities)
                 {
@@ -41,34 +48,33 @@ public class ScorchedSoul : RefreshingState
                 }
             }
         }
-        //if (characterState.Check(StatusEffect.AbilityCooldownSpeed))
-        //{
-        //    //return abilitys' CD speed
-        //}
-        characterState.RemoveStateFromList(this);
+
+        CurrentStacksCount = 0;
     }
 
     public override bool Stack(float time)
     {
-        duration = time;
-
-        if (currentStacksCount < 3)
+        if (CurrentStacksCount < 3)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
+            _duration = _baseDuration;
             foreach (var ability in abilities.Abilities)
             {
-                Debug.LogWarning($"Cast speed before: {ability.Buff.CastSpeed.Multiplier}");
-                ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage * currentStacksCount);
-                Debug.LogWarning("Cast speed reduced!!!! - CharacterState.EnterState()");
-                Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.Multiplier}");
-                Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.GetBuffedValue(1f)}");
+                ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage * CurrentStacksCount);
             }
+            return true;
         }
-
-        return true;
+        _duration = _baseDuration;
+        return false;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        if (RemainingDuration <= 0)
+        {
+            ExitState();
+        }
     }
+    
+    
 }

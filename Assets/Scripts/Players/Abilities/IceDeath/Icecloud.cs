@@ -3,20 +3,18 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IceCloud : Skill
+public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
-	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip _audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
     private Vector3 _mousePos2 = Vector2.positiveInfinity;
     private AudioSource _audioSource;
-	private bool _boostDmg;
-	private bool _lastHit;
+    private bool _lastHit;
 	private Energy _energy;
-	private bool _frozwenTalent;
 	private float _baseDamage = 10f;
+	private float _energyToUse;
 
 	#region Constants
 	private const float ProjectileSpawnOffset = 0.2f;
@@ -68,41 +66,48 @@ public class IceCloud : Skill
 		if (_energy == null)
 			_energy = (Energy)Hero.Resources[ResourceType.Energy];
 
+		_energyToUse = _energy.CurrentValue;
+		
+		OnSeriesDamaged?.Invoke(null, this);
+		
+		_energy.CmdUse(_energyToUse);
+
+		_mousePos = Targeting.GetTarget().Position;
         Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
-		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
-
-		float energyToUse = _energy.CurrentValue;
-		_energy.CmdUse(energyToUse);
-
-		CmdCreateProjecttile(angle, energyToUse, lookDir.normalized);
+		
+		Debug.LogError("LastHit: " + _lastHit);
+		
+		CmdCreateProjecttile(angle, _energyToUse, lookDir.normalized,_lastHit);
 
 		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
+		_lastHit = false;
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir)
+	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir,bool isLastHit)
     {
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * ProjectileSpawnOffset, Quaternion.Euler(0, -angle, 0));
 		projectile.Init(Hero, manaValue, false, this);
 		projectile.InitIceCloud(manaValue, Damage);
-		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);
+		projectile.Talent(isLastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcPlayShotSound();
-		RpcInit(projectile.gameObject, manaValue);
+		RpcInit(projectile.gameObject, manaValue,isLastHit);
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue)
+	private void RpcInit(GameObject obj, float manaValue,bool isLastHit)
 	{
 		if (obj.TryGetComponent<IceCloudProjectile>(out IceCloudProjectile ice))
         {
 			ice.Init(Hero, manaValue, false, this);
 			ice.InitIceCloud(manaValue, Damage);
+			ice.Talent(isLastHit);
 		}
 	}
 
@@ -112,57 +117,9 @@ public class IceCloud : Skill
 		if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
 	}
 
-	public void TalentBoostDmg(bool value)
-	{
-		_boostDmg = value;
-	}
-
-	public void TalentBoostFrozenState(bool value)
-	{
-		_frozwenTalent = value;
-	}
-
-	public override void LoadTargetData(TargetInfo targetInfo)
-	{
-		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
-	}
-
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_mousePos2.x))
-		{
-			if (GetMouseButton)
-			{
-				if(Targeting.GetTarget()?.Character == null) yield return null;
-				if (Targeting.GetTarget()?.Character != null)
-				{
-					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
-
-					if (distance <= AreaInfo.Radius) _mousePos2 = Targeting.GetTarget().Character.transform.position;
-
-					else
-					{
-						//Targeting.FindTempTarget();
-
-						//_target = Targeting.GetTarget()?.Character;
-						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
-						_mousePos2 = Targeting.GetTarget().Character.transform.position;
-					}
-				}
-
-				else _mousePos2 = Targeting.GetMousePoint();
-			}
-			yield return null;
-		}        
-
-        TargetInfo targetInfo = new TargetInfo();
-		if (Targeting.GetTarget()?.Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
-		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
-		callbackDataSaved(targetInfo);
-
-        _mousePos = _mousePos2;
-        _mousePos2 = Vector3.positiveInfinity;
+		return base.PrepareJob(callbackDataSaved);
     }
 
 	protected override IEnumerator CastJob()
@@ -190,5 +147,36 @@ public class IceCloud : Skill
 
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
+	public bool IsStreamSkill { get; }
+	public bool IsFrostEnergyApplied => true;
+	
+	public bool IgnoresEnergyCostCheck => true;
+
+	#region Series
+	public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+	public event Action<GameObject, Skill> OnSeriesDamaged;
+	public float EnergyCostOnHit => _energyToUse;
+	public float RuneCostOnHit { get; }
+	public bool IsTicking => false;
+	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
+	{
+		Debug.LogError("SeriesHit");
+	}
+
+	public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
+	{
+		Debug.LogError("seriesComplete");
+		_lastHit = true;
+	}
+
+	public void OnSeriesBroken(Character target)
+	{
+	}
+
+	public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
+	{
+	}
+
+	#endregion
 }
 

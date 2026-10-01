@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImpatienceState : AbstractCharacterState
+public class ImpatienceStateStacking : StateStackingRefreshing
 {
     private float _durationRemaining;
 
@@ -10,7 +10,6 @@ public class ImpatienceState : AbstractCharacterState
     private static bool _isProcessingSharedDamage;
 
     private bool _isAccumulationActive;
-    private bool _extendDamageAbsorption;
     private BasePsionicEnergy _casterPsionic;
     private Impatica _impatica;
 
@@ -24,11 +23,11 @@ public class ImpatienceState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
@@ -42,16 +41,28 @@ public class ImpatienceState : AbstractCharacterState
             _casterPsionic = personWhoMadeBuff.GetComponent<BasePsionicEnergy>();
             _impatica = personWhoMadeBuff.GetComponent<Impatica>();
 
-            if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
+            if (_casterPsionic != null)
+            {
+                _isAccumulationActive = _casterPsionic.IsPsionicsTalentActive;
+                _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
+            }
         }
     }
+    
+    
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
 
     }
+    
+    public override bool Stack(float time)
+    {
+        RemainingDuration = time;
+        return false;
+    }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (characterState.Character.isServer)
         {
@@ -61,26 +72,27 @@ public class ImpatienceState : AbstractCharacterState
 
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
         }
+
+        CurrentStacksCount = 0;
+        characterState.RemoveState(this);
     }
 
     private void HandleAccumulationChanged(bool value) => _isAccumulationActive = value;
 
     private void HandleBeforeDamage(ref Damage damage, Skill skill)
     {
-        if (!NetworkServer.active) return;
         if (_isProcessingSharedDamage) return;
         if (damage.Value <= 0) return;
 
         float originalDamage = damage.Value;
 
-        if (_isAccumulationActive && _casterPsionic != null)
+        if (_isAccumulationActive && _casterPsionic != null && damage.Type == DamageType.Physical && _casterPsionic.IsAttackingPsiEnergyActive)
         {
             float psiGain = originalDamage;
-
             _casterPsionic.AddPsiAndRestartDecay(psiGain);
         }
 
-        if (_extendDamageAbsorption && _casterPsionic != null)
+        if (_impatica != null && _impatica.IsExtendDamageAbsorption && _casterPsionic != null)
         {
             if (_casterPsionic.CurrentValue > 0)
             {
@@ -119,9 +131,9 @@ public class ImpatienceState : AbstractCharacterState
                         enemiesHitCount++;
                     }
 
-                    var psionicEnergy = _casterPsionic.GetComponent<PsionicEnergySkill>();
+                    var psionicEnergy = _casterPsionic.PsionicEnergySkill;
 
-                    if (psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
+                    if (psionicEnergy != null && psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
                     {
                         float bonusTime = enemiesHitCount * 0.1f;
 
@@ -131,7 +143,7 @@ public class ImpatienceState : AbstractCharacterState
 
                         foreach (var character in ActiveCharacters)
                         {
-                            var state = character.CharacterState.GetState(States.Impatience) as ImpatienceState;
+                            var state = character.CharacterState.GetState(States.Impatience) as ImpatienceStateStacking;
                             if (state != null)
                                 state.ExtendDuration(bonusTime);
                         }
@@ -144,11 +156,11 @@ public class ImpatienceState : AbstractCharacterState
 
         List<Character> recipients = new List<Character>(ActiveCharacters);
 
-        if (personWhoMadeBuff != null &&
-            !personWhoMadeBuff.IsDead &&
-            !recipients.Contains(personWhoMadeBuff))
+        if (sourceCaster != null &&
+            !sourceCaster.IsDead &&
+            !recipients.Contains(sourceCaster))
         {
-            recipients.Add(personWhoMadeBuff);
+            recipients.Add(sourceCaster);
         }
 
         if (recipients.Count <= 1)

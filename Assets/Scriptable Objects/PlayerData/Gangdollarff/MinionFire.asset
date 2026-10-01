@@ -27,6 +27,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 3
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenPeriod
+      type: 3
+      value: 0.5
   _mainResource:
     nameToShow: Mana
     type: 1
@@ -37,6 +43,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 0
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenPeriod
+      type: 3
+      value: 0.5
   _extraResources: []
   _attributes:
     _attributes:
@@ -52,21 +64,9 @@ MonoBehaviour:
     - nameToShow: EvasionMagical
       type: 3
       value: 0
-    - nameToShow: MoveSpeed
-      type: 4
-      value: 1.2
-    - nameToShow: VisionRadius
-      type: 5
-      value: 2
     - nameToShow: CastSpeed
       type: 6
-      value: 0
+      value: 4
     - nameToShow: CastSpeedPhysical
       type: 7
-      value: 0
-    - nameToShow: CastSpeedMagical
-      type: 8
-      value: 0
-    - nameToShow: ResourceCost
-      type: 9
       value: 0

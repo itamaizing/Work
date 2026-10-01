@@ -71,8 +71,10 @@ public class LightSparkProjectile : Projectiles
     
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject != _target) return;
         if (other.gameObject.TryGetComponent(out Character character))
         {
+            PlayHitSound();
             EndPointReached?.Invoke(this, _target.gameObject);
             Destroy(gameObject, 0.1f);
         }

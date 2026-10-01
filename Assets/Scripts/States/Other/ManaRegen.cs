@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManaRegen : AbstractCharacterState
+public class ManaRegen : StateBasic
 {
     private GameObject _manaRegen;
 
@@ -13,27 +13,22 @@ public class ManaRegen : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _manaRegen = characterState.StateEffects.ManaRegen;
 
         if (_manaRegen) _manaRegen.SetActive(true);
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (_manaRegen) _manaRegen.SetActive(false);
 
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveStateFromList(this);
+        
+        characterState.RemoveState(this);
     }
 
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
-
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 }

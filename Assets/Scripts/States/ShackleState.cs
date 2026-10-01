@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShackleState : StackableState
+public class ShackleState : StateBasic
 {
     private float _duration;
     private Character _character;
@@ -11,24 +11,25 @@ public class ShackleState : StackableState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void OnEnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         this.characterState = characterState;
         _character     = characterState.Character;
         _duration      = durationToExit;
-        MaxStacksCount = 1;
 
         _character.Move.SetCanMove(false);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _duration -= Time.deltaTime;
+        if (_duration <= 0f)
+            ExitState();
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         _character.Move.SetCanMove(true);
+        characterState.RemoveState(this);
     }
-
-    public override bool Stack(float time) => false;
 }

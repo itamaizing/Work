@@ -211,6 +211,8 @@ public class PillarOfLight : Skill, IPolaritySwitchable
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
 
+        Cooldown.OnForceRefreshUI();
+
         UpdateVFXColors();
     }
 

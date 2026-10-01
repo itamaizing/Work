@@ -8,11 +8,13 @@ public class NinjaPoisonTalent_9 : Talent
 
     public override void Enter()
     {
-        _creeperStrike.ColdBloodStrike(true);
+        character.Abilities.GetSkill<ColdBlood>().SetTalentActive(true);
+        //_creeperStrike.ColdBloodStrike(true);
     }
 
     public override void Exit()
     {
-        _creeperStrike.ColdBloodStrike(false);
+        character.Abilities.GetSkill<ColdBlood>().SetTalentActive(false);
+        //_creeperStrike.ColdBloodStrike(false);
     }
 }

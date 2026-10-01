@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlowFlowLightState : RefreshingState
+public class SlowFlowLightStateStacking : StateStackingRefreshing
 {
 	private float _speedDebuf = -0.6f;
 	private AttributeModifier _modif = new AttributeModifier(0f, ModifierType.Percent);
@@ -13,33 +13,34 @@ public class SlowFlowLightState : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
 		characterState = character;
-		MaxStacksCount = 1;
+		SetMaxStacks(1);
 
 		characterState.Character.Move.AddModifier(_modif);
 		characterState.Character.Abilities.Abilities.ForEach(s =>
 			s.Buff.CastSpeed.IncreasePercentage(1 - _speedDebuf));
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
-		currentStacksCount = 0;
+		CurrentStacksCount = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
 		characterState.Character.Abilities.Abilities.ForEach(s => s.Buff.CastSpeed.Reset());
+		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
         return false;
     }
 }

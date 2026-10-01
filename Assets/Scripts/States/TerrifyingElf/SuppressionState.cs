@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SuppressionState : StackableState
+public class SuppressionState : StateBasic
 {
     private const int MaxStacks = 1;
 
@@ -12,16 +12,14 @@ public class SuppressionState : StackableState
     private GameObject _suppressionIdle;
     private GameObject _suppressionMove;
 
-    private MoveComponent _move;
-    private Rigidbody _rigidbody;
     private Resource manaResource;
     private Suppression _suppression;
 
     private float _baseDuration;
-    private float _duration;
-
     private float _distBuffer;
     private bool _isMoving;
+
+    private Vector3 _lastPosition; 
 
     private static readonly List<StatusEffect> _effects = new() { StatusEffect.Move };
 
@@ -30,22 +28,25 @@ public class SuppressionState : StackableState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
                                     Character caster, string skillName)
     {
         characterState = character;
-        personWhoMadeBuff = caster;
+        sourceCaster = caster;
 
-        _suppression = personWhoMadeBuff.GetComponent<Suppression>();
+        if (sourceCaster != null)
+        {
+            _suppression = sourceCaster.GetComponent<Suppression>();
+        }
 
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
-
-        _move = character.Character.GetComponent<MoveComponent>();
-        _rigidbody = _move != null ? _move.Rigidbody : character.Character.GetComponent<Rigidbody>();
+        RemainingDuration = _baseDuration;
 
         _distBuffer = 0f;
         _isMoving = false;
+
+        _lastPosition = characterState.transform.position;
+        _lastPosition.y = 0f;
 
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
 
@@ -59,39 +60,37 @@ public class SuppressionState : StackableState
         if (_suppressionMove) _suppressionMove.SetActive(false);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        if (RemainingDuration <= 0f)
+        {
+            ExitState();
+            return;
+        }
+
         float deltaDist = CalcHorizontalDistanceThisFrame();
         HandleVisuals(deltaDist);
         DrainManaByDistance(deltaDist);
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
 
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveStateFromList(this);
+        
+        characterState.RemoveState(this);
 
         if (health != null) health.DamageTaken -= OnDamageTaken;
     }
 
-    public override bool Stack(float time)
-    {
-        if (currentStacksCount < MaxStacks) currentStacksCount++;
-        _duration = _baseDuration;
-        return true;
-    }
-
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (!characterState.isServer) return;
-        if (!_suppression.IsSuppressionManaAbsorbtion) return;
+        if (characterState.isServer) return;
+        if (_suppression == null || !_suppression.IsSuppressionManaAbsorbtion) return;
         if (skill == null || skill.Hero == null) return;
 
         Character attacker = skill.Hero;
-
         if (!IsFromRequiredSource(attacker)) return;
 
         ApplyManaBurn(damage.Value);
@@ -100,10 +99,8 @@ public class SuppressionState : StackableState
     private bool IsFromRequiredSource(Character attacker)
     {
         if (attacker == null) return false;
-
         if (attacker.TryGetComponent<TerrifyingElfAura>(out _)) return true;
         if (attacker.TryGetComponent<GhostAura>(out _)) return true;
-
         return false;
     }
 
@@ -112,29 +109,30 @@ public class SuppressionState : StackableState
         if (manaResource == null) return;
 
         float burnAmount = damageValue * 0.25f;
-
         float currentMana = manaResource.CurrentValue;
         float newMana = Mathf.Max(0, currentMana - burnAmount);
 
-        manaResource.TryUse(newMana);
+        manaResource.CmdUse(burnAmount); 
     }
 
     #region Helpers
     private float CalcHorizontalDistanceThisFrame()
     {
-        if (_rigidbody == null) return 0f;
+        Vector3 currentPos = characterState.transform.position;
+        currentPos.y = 0f;
 
-        Vector3 distance = _rigidbody.linearVelocity;
-        distance.y = 0f;
-        return distance.magnitude * Time.deltaTime;
+        float dist = Vector3.Distance(currentPos, _lastPosition);
+        _lastPosition = currentPos;
+        return dist;
     }
 
     private void HandleVisuals(float deltaDist)
     {
-        bool nowMoving = deltaDist / Time.deltaTime > MoveEpsilon;
+        if (Time.deltaTime <= 0f) return;
+        
+        bool nowMoving = (deltaDist / Time.deltaTime) > MoveEpsilon;
 
         if (nowMoving == _isMoving) return;
-
         _isMoving = nowMoving;
 
         if (_isMoving)
@@ -151,7 +149,7 @@ public class SuppressionState : StackableState
 
     private void DrainManaByDistance(float deltaDist)
     {
-        if (deltaDist <= 0f) return;
+        if (deltaDist <= 0f || manaResource == null) return;
 
         _distBuffer += deltaDist;
 
@@ -160,10 +158,10 @@ public class SuppressionState : StackableState
 
         _distBuffer -= cells * CellLength;
 
-        if (characterState.Character.TryGetResource(ResourceType.Mana) is Mana mana)
+        if (characterState.isServer)
         {
-            float loss = cells * mana.MaxValue * ManaLossPerCell;
-            mana.TryUse(loss);
+            float loss = cells * manaResource.MaxValue * ManaLossPerCell;
+            manaResource.TryUse(loss);
         }
     }
     #endregion

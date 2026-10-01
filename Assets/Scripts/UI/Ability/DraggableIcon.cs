@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] Image _image;
 
@@ -30,11 +30,16 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Transform ParentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
+    public bool EnableClickToCast { get; set; } = false;
 
     public event Action BeginDrag;
     public event Action EndDrag;
     public event Action<DraggableIcon> PointerEnter;
     public event Action<DraggableIcon> PointerExit;
+    
+    private bool _isDragging = false;
+    
+    public Func<DraggableIcon, bool> ClickOverride { get; set; }
 
     private void OnEnable()
     {
@@ -79,9 +84,71 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //_skill.ChargeCooldownEnded -= OnChargeCooldownEnded;
         _skill.Charges.OnRechargeEnd -= OnChargeCooldownEnded; //new
     }
+    
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (_isDragging) return;
+        if (_skill == null || _isMenu) return;
+
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (_skill.IsPreparing)
+                _skill.TryCancel();
+            return;
+        }
+
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        if (ClickOverride != null && ClickOverride(this))
+            return;
+
+        if (!EnableClickToCast)
+            return;
+
+        if (_skill.IsPreparing)
+        {
+            _skill.TryCancel();
+        }
+        else
+        {
+            SkillManager skillManager = _skill.Hero != null ? _skill.Hero.GetComponent<SkillManager>() : null;
+            skillManager?.SelectAndPrepareSkill(_skill);
+        }
+    }
+    
+    public void Rebind(Skill newSkill)
+    {
+        if (_skill != null)
+        {
+            UnsubscribingSkillOnEvents(_skill);
+            _skill.OnSkillStateChanged -= UpdateIconState;
+            if (_skill.Charges != null)
+                _skill.Charges.OnRechargeEnd -= OnChargeCooldownEnded;
+        }
+
+        _skill = newSkill;
+        _image.sprite = _skill.Icon;
+        _skill.LinkedChargeCDUI = _chargeCD;
+
+        _skill.OnSkillStateChanged += UpdateIconState;
+        _skill.Charges.OnRechargeEnd += OnChargeCooldownEnded;
+        UpdateIconState(_skill.Disactive);
+
+        if (_skill.Charges.UsesCharges)
+        {
+            _chargeCounter.gameObject.SetActive(true);
+            OnCurrentChargeChanged(_skill.Chargers);
+        }
+
+        SubscribingSkillOnEvents(_skill);
+        UpdateAllInfo();
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        _isDragging = true;
+        
         ParentAfterDrag = transform.parent;
         ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
 
@@ -120,8 +187,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
 
         EndDrag?.Invoke();
+        
+        _isDragging = false;
     }
-
     public void UpdatePosition(Transform parent)
     {
         ParentAfterDrag = transform.parent;

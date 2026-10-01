@@ -17,6 +17,10 @@ public class GangInvisibleSkill : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GangInvisible");
     protected override bool IsCanCast => true;
 
+    private Resource _mana;
+
+    private float _manaPerSecond = 10f;
+
     #region PrepareAndCastJob
 
     protected override void ClearData() { }
@@ -39,6 +43,9 @@ public class GangInvisibleSkill : Skill
 
     protected override IEnumerator CastJob()
     {
+        if(!_mana)
+            _mana = _hero.Resources[ResourceType.Mana];
+        
         if (!_isInvisible)
         {
             EnteringInvisible();
@@ -88,12 +95,13 @@ public class GangInvisibleSkill : Skill
             if (!_isInvisible)
                 yield break;
 
-            if (!IsHaveResourceOnSkill)
+            if (_mana.CurrentValue < _manaPerSecond)
             {
                 ExitingInvisible();
                 yield break;
             }
-            TryPayCost(_skillEnergyCosts,false);
+            
+            _mana.CmdUse(_manaPerSecond);
         }
     }
 

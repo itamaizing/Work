@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingScraderDebuff : StackableState
+public class BleedingScraderDebuff : StateStackingRefreshing
 {
     private Character _target;
 
@@ -19,11 +19,11 @@ public class BleedingScraderDebuff : StackableState
 
     public BleedingScraderDebuff()
     {
-        MaxStacksCount = 3;
-        currentStacksCount = 1;
+        SetMaxStacks(3);
+        CurrentStacksCount = 1;
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
         _damage = damageToExit;
@@ -32,18 +32,23 @@ public class BleedingScraderDebuff : StackableState
         _baseDuration = durationToExit;
     }
 
+    public override void ExitState()
+    {
+        characterState.RemoveState(this);
+    }
+
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             _baseDamage += _damage;
         }
 
         return true;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         timerTick += Time.deltaTime;
 
@@ -66,15 +71,15 @@ public class BleedingScraderDebuff : StackableState
         _target.Health.TryTakeDamage(ref damage, null);
     }
 
-    protected override void OnReduceStack(int count = 1)
+    public override void ReduceStack()
     {
-        if (duration < 0)
+        if (RemainingDuration < 0)
         {
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount-= count;
+                CurrentStacksCount--;
                 _baseDamage -= _damage;
-                duration = _baseDuration;
+                RemainingDuration = _baseDuration;
             }
 
             else ExitState();

@@ -2,21 +2,16 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class IcePuddle : Skill
+public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 {
     [Header("Puddle prefabs & preview")]
     [SerializeField] private IcePuddleObject _puddle;
     [SerializeField] private IcePuddleObject _puddleBig;
     [SerializeField] private GameObject preViewPuddlePrefab;
-
-    //[Header("Optional visuals (left for backward compatibility)")]
-    //[SerializeField] private GameObject _lowePoint;
-    //[SerializeField] private DecalProjector _puddleProjector;
+    [SerializeField] private GameObject preViewBigPuddlePrefab;
 
     [Header("Ability settings")]
-    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private float _timeToDestroy = 3f;
     [SerializeField] private float _maxLifePuddleTime = 7f;
     [SerializeField] private MoveComponent _move;
@@ -29,7 +24,7 @@ public class IcePuddle : Skill
     private Energy _energy;
     private GameObject _preViewPuddle;
 
-    private Vector3 _placedPosition = Vector3.positiveInfinity;
+    private Vector3 _placedPosition;
     private float _placedAngleDeg;
 
     private bool _shooted = false;
@@ -39,16 +34,7 @@ public class IcePuddle : Skill
     private bool _talentFrostingFrozen = false;
     private bool _talentEvadeDadBoost = false;
     private bool _iceDeathInIcePudleTalent;
-
-    // private Vector3 _mousePos;
-    // private float _angle;
-    // private float _angle2;
-    // private float _angle3;
-    // private bool _enabled = false;
-    // private bool _secondPoind = false;
-    // private bool _crutch = false;
-    // private float _timer = 2;
-    // private float _time = 0;
+    private bool _radiusNeedsRedraw = false;
 
     private void OnEnable()
     {
@@ -58,26 +44,67 @@ public class IcePuddle : Skill
     private void OnDisable()
     {
         OnSkillCanceled -= ClearData;
+        
+        foreach (var skill in _hero.Abilities.Abilities)
+            skill.OnSkillCanceled -= OnAnySkillCanceled;
     }
 
-    protected override bool IsCanCast
+    protected override bool IsCanCast => CheckCanCast();
+    
+    private bool CheckCanCast()
     {
-        get
-        {
-            return _shooted;
-        }
+        return Vector3.Distance(_placedPosition, transform.position) <= AreaInfo.Radius;
     }
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IcePuddle");
 
-    private void Start()
+    
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
-
-        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
+        foreach (var skill in hero.Abilities.Abilities)
+            skill.OnSkillCanceled += OnAnySkillCanceled;
+    }
+    
+    private void OnAnySkillCanceled()
+    {
+        if (IsPreparing)
+            _radiusNeedsRedraw = true;
+        
+        if (_preViewPuddle)
+        {
+            Destroy(_preViewPuddle);
+            _preViewPuddle = null;
+        }
     }
 
+    private void RefreshPreview()
+    {
+        GameObject prefab = _isSeriesPotentialFinal ? preViewBigPuddlePrefab : preViewPuddlePrefab;
+
+        if (_preViewPuddle == null)
+        {
+            _preViewPuddle = Instantiate(prefab);
+            return;
+        }
+
+        bool needBig = _preViewPuddle.name.Contains(preViewBigPuddlePrefab.name);
+
+        if (needBig != _isSeriesPotentialFinal)
+        {
+            Destroy(_preViewPuddle);
+            _preViewPuddle = Instantiate(prefab);
+        }
+    }
+
+    private void RedrawRadius()
+    {
+        SkillRender.StopDrawRadius();
+        SkillRender.DrawRadius(AreaInfo.Radius);
+    }
+    
     private void UpdatePreviewAtMouse()
     {
         Vector3 mousePos = GetMousePointOnGround();
@@ -113,44 +140,38 @@ public class IcePuddle : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo == null || targetInfo.Points == null || targetInfo.Points.Count == 0) return;
-
-        _placedPosition = targetInfo.Points[0];
-        var dir = _placedPosition - _hero.transform.position;
-        _placedAngleDeg = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg - 90f;
-
-        _shooted = true;
+        if (targetInfo.Points.Count > 0)
+        {
+            _placedPosition = targetInfo.Points[0];
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_energy == null)
             _energy = (Energy)Hero.Resources[ResourceType.Energy]; ;
-        if (preViewPuddlePrefab != null) _preViewPuddle = Instantiate(preViewPuddlePrefab);
 
-
+        if (_preViewPuddle == null)
+        {
+            _preViewPuddle = Instantiate(_isSeriesPotentialFinal ? preViewBigPuddlePrefab : preViewPuddlePrefab);
+        }
+        
         while (true)
         {
+            if (_previewDirty || _radiusNeedsRedraw)
+            {
+                RefreshPreview();
+                RedrawRadius();
+                _previewDirty = false;
+                _radiusNeedsRedraw = false;
+            }
+            
             UpdatePreviewAtMouse();
 
 
             if (GetMouseButton)
             {
-                _placedPosition = GetMousePointOnGround();
-                if (float.IsPositiveInfinity(_placedPosition.x))
-                {
-                    yield return null;
-                    continue;
-                }
-
-
-                float dist = Vector3.Distance(_hero.transform.position, _placedPosition);
-                if (dist > AreaInfo.Radius)
-                {
-                    yield return null;
-                    continue;
-                }
-
+                Vector3 clickPoint = GetMousePointOnGround();
 
                 Vector3 direction = (_hero.transform.position - _placedPosition).normalized;
                 if (direction != Vector3.zero)
@@ -158,14 +179,10 @@ public class IcePuddle : Skill
                     Quaternion lookRot = Quaternion.LookRotation(direction, Vector3.up);
                     _placedAngleDeg = lookRot.eulerAngles.y;
                 }
-
-
                 var info = new TargetInfo();
-                info.Points.Add(_placedPosition);
+                info.Points.Add(clickPoint);
                 callbackDataSaved?.Invoke(info);
 
-
-                _shooted = true;
                 break;
             }
 
@@ -179,10 +196,36 @@ public class IcePuddle : Skill
 
     protected override IEnumerator CastJob()
     {
-        _lastHit = _seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
+        var dir = _placedPosition - _hero.transform.position;
+        _placedAngleDeg = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg - 90f;
+        
+        ShootAtPosition(_placedPosition,_placedAngleDeg);
 
-        Shoot();
         yield return null;
+    }
+
+    private void ShootAtPosition(Vector3 position,float angle)
+    {
+        int timeToAdd = (int)_energy.CurrentValue / 5;
+        if (timeToAdd > 4) timeToAdd = 4;
+
+        float energyToSpend = timeToAdd * 5f;
+        float lifeTime = LifeTimePuddle(timeToAdd);
+
+        _energy.CmdUse(energyToSpend);
+        _totalEnergySpend = energyToSpend;
+
+        
+        OnSeriesDamaged?.Invoke(null, this);
+        
+        bool isBig = _lastHit;
+
+        if (isBig)
+            CmdCreateProjecttileBig(angle, position, lifeTime, _lastHit, _talentEvadeDadBoost, _talentFrostingFrozen);
+        else
+            CmdCreateProjecttile(angle, position, lifeTime, _lastHit, _talentEvadeDadBoost, _talentFrostingFrozen);
+
+        _lastHit = false;
     }
 
     protected override void ClearData()
@@ -190,37 +233,7 @@ public class IcePuddle : Skill
         _move?.StopLookAt();
 
         _shooted = false;
-        _placedPosition = Vector3.positiveInfinity;
-        _placedAngleDeg = 0f;
-
-        //if (_preViewPuddle) _preViewPuddle.SetActive(false); ?
-
-        if (_preViewPuddle)
-        {
-            Destroy(_preViewPuddle);
-            _preViewPuddle = null;
-        }
-
-        // _enabled = false;
-        // _secondPoind = false;
-        // _crutch = false;
-        // _time = 0;
-        // _angle = _angle2 = _angle3 = 0;
-        // _mousePos = Vector3.zero;
-    }
-
-    private void Shoot()
-    {
-        if (float.IsPositiveInfinity(_placedPosition.x))
-            return;
-
-        int timeToAdd = (int)_energy.CurrentValue / 5;
-        if (timeToAdd > 4) timeToAdd = 4;
-
-        _energy.CmdUse(timeToAdd * 5);
-
-        if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, LifeTimePuddle(timeToAdd), _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
-        else CmdCreateProjecttile(_placedAngleDeg, LifeTimePuddle(timeToAdd), _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+        //_placedAngleDeg = 0f;
     }
 
     private float LifeTimePuddle(float timeToAdd)
@@ -229,31 +242,36 @@ public class IcePuddle : Skill
     }
 
     [Command]
-    private void CmdCreateProjecttileBig(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+    private void CmdCreateProjecttile(float angle, Vector3 position, float timeToDestroy, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
-        IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(Hero, timeToDestroy, lastHit, this);
-        projectile.SetTalents(talentEvade, talentFrostingFrozen);
+        IcePuddleObject puddle = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
+        puddle.Init(Hero, timeToDestroy, lastHit, this);
+        puddle.SetTalents(talentEvade, talentFrostingFrozen);
+        puddle.IceDeathInIcePudleTalentActive(_iceDeathInIcePudleTalent);
 
-        NetworkServer.Spawn(projectile.gameObject);
-
+        NetworkServer.Spawn(puddle.gameObject);
         RpcPlayShotSound();
-        RpcInit(projectile.gameObject, timeToDestroy, lastHit);
     }
 
     [Command]
-    private void CmdCreateProjecttile(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+    private void CmdCreateProjecttileBig(float angle, Vector3 position, float timeToDestroy, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
-        IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        Vector3 direction = (_hero.transform.position - position).normalized;
+    
+        float yRotation = 0f;
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRot = Quaternion.LookRotation(direction, Vector3.up);
+            yRotation = lookRot.eulerAngles.y;
+        }
+
+        IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90f, yRotation, 0f));
+
         projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
-
         RpcPlayShotSound();
-        RpcInit(projectile.gameObject, timeToDestroy, lastHit);
     }
 
     [ClientRpc]
@@ -272,8 +290,6 @@ public class IcePuddle : Skill
         if (_audioSource != null && _audioClip != null)
             _audioSource.PlayOneShot(_audioClip);
     }
-
-    public void SetTalentPuddleSize(bool active) => _talentPuddleSize = active;
     public void SetTalentFrostingFrozen(bool value) => _talentFrostingFrozen = value;
     public void SetTalentEvadeDadBoost(bool value) => _talentEvadeDadBoost = value;
     public void IceDeathInIcePudleTalentActive(bool value)
@@ -293,105 +309,42 @@ public class IcePuddle : Skill
         if (_move) _move.SetCanMove(false);
     }
 
-    /*
-    private Vector3 InstantiatePoint()
-    {
-        Vector3 worldPosition = Vector3.zero;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            worldPosition = hit.point;
-        }
+    public bool IsStreamSkill { get; }
+    public bool IsFrostEnergyApplied => true;
+    
+    #region Series
+    
+    private bool _isSeriesPotentialFinal;
+    private bool _previewDirty;
+    private float _totalEnergySpend = 0f;
+    
+    public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+    public event Action<GameObject, Skill> OnSeriesDamaged;
+    public float EnergyCostOnHit => _totalEnergySpend;
+    public float RuneCostOnHit { get; }
+    public bool IsTicking { get; }
 
-        float distance = Vector3.Distance(gameObject.transform.position, worldPosition);
-        if (distance <= _radius)
-        {
-            _crutch = false;
-            return worldPosition;
-        }
-        else
-        {
-            _crutch = true;
-            Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
-            Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
-            return spawnPosition;
-        }
+    public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
+    {
     }
 
-    private Vector3 InstantiatePoint2()
+    public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
     {
-        Vector3 worldPosition = Vector3.zero;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            worldPosition = hit.point;
-        }
-
-        worldPosition += (worldPosition - _preViewPuddle.transform.position).normalized * 2;
-        float distance = Vector3.Distance(gameObject.transform.position, worldPosition);
-        if (distance <= _radius)
-        {
-            _crutch = false;
-            return worldPosition;
-        }
-        else
-        {
-            _crutch = true;
-            Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
-            Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
-            return spawnPosition;
-        }
+        _lastHit = true;
     }
 
-    private void PlacePuddle()
+    public void OnSeriesBroken(Character target)
     {
-        if (!_secondPoind)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                _mousePos = hit.point;
-            }
-            Vector3 lookDir = _mousePos - _hero.transform.position;
-            _angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-            _preViewPuddle.transform.rotation = Quaternion.Euler(-90, -_angle, 0);
-            _preViewPuddle.transform.position = InstantiatePoint();
-        }
-        else
-        {
-            Vector3 _mousePos2 = Vector3.zero;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                _mousePos2 = hit.point;
-            }
-            Vector3 lookDir = _mousePos2 - _preViewPuddle.transform.position;
-            _angle2 = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg + 90f;
-
-            _lowePoint.transform.position = InstantiatePoint2();
-            if (!_crutch)
-            {
-                _angle3 = _angle2;
-                _preViewPuddle.transform.rotation = Quaternion.Euler(-90, -_angle2, 0);
-            }
-        }
+        _isSeriesPotentialFinal = false;
+        _lastHit = false;
     }
 
-    private void Timer()
+    public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
     {
-        if (_lastHit)
-        {
-            _time += Time.deltaTime;
-            if (_time >= _timer)
-            {
-                _lastHit = false;
-                _preViewPuddle.transform.localScale = Vector3.one;
-            }
-        }
+        _isSeriesPotentialFinal = isPotentialFinal;
+        _previewDirty = true;
     }
-    */
+
+    #endregion
+
 }

@@ -7,65 +7,62 @@ using UnityEngine;
 
 public class ComboPoints_Player : Resource
 {
-    //public float Value { get { return _baseValue; } }
+    [Header("Combo Points Settings")]
+    [SerializeField] private int _maxComboPoints = 3;
 
-    //[SerializeField] protected int _baseValue;
-    //[SerializeField] protected int _maxValue;
-    //[SyncVar(hook = nameof(HookMaxValueChanged))]
-    //new protected float _maxValue = 3;
-    public int ComboAbilities {  get; private set; }
+    public int CurrentComboPoints { get; private set; } = 0;
+    public int MaxComboPoints => _maxComboPoints;
 
-    private void Start()
+    public int ComboAbilitiesUsed { get; private set; } = 0;
+
+    public event Action<int> OnComboPointsChanged;
+
+    private void Awake()
     {
-        _currentValue = 0;
-        _maxValue = 3;
+        CurrentComboPoints = 0;
+        ComboAbilitiesUsed = 0;
     }
-    public void RemoveAll()
-    {
-        _currentValue = 0;
 
-        //visualize
-    }
     public override void Add(float value)
     {
-        //_currentValue += (int)value;
-        _currentValue = Mathf.Clamp(value + _currentValue, 0, _maxValue);
-        //if (_currentValue > _maxValue)
-        //{
-        //    _currentValue = _maxValue;
-        //    UpdateBar();
-        //    return;
-        //}
+        if (value <= 0) return;
 
-        //visualize
-        //_comboBar.TurnOn((int)value);
+        int added = Mathf.FloorToInt(value);
+        int oldValue = CurrentComboPoints;
+
+        CurrentComboPoints = Mathf.Clamp(CurrentComboPoints + added, 0, _maxComboPoints);
+
+        if (CurrentComboPoints != oldValue)
+        {
+            OnComboPointsChanged?.Invoke(CurrentComboPoints);
+        }
     }
 
-    //public override bool TryUse(float value)
-    //{
+    public bool TryUse(int amount = 1)
+    {
+        if (CurrentComboPoints < amount)
+            return false;
 
-    //    if (_baseValue >= value)
-    //    {
-    //        _baseValue -= (int) value;
-    //        ComboAbilities += (int) value;
-    //        if (_baseValue < 0) { _baseValue = 0; }
+        CurrentComboPoints -= amount;
+        ComboAbilitiesUsed += amount;
 
-    //        //visualize
-    //        //_comboBar.TurnOff((int)value);
-    //        UpdateBar();
-    //        return true;
-    //    }
-    //    else return false;
-    //}
+        OnComboPointsChanged?.Invoke(CurrentComboPoints);
+        return true;
+    }
 
-    //protected override void UpdateBar()
-    //{
-    //    _comboBar.UpdateBar((int) _baseValue);
-    //}
+    public void RemoveAll()
+    {
+        if (CurrentComboPoints == 0) return;
 
-    //[Command]
-    //private void UpdateValue(int newValue)
-    //{
-    //    _baseValue = newValue;
-    //}
+        CurrentComboPoints = 0;
+        OnComboPointsChanged?.Invoke(0);
+    }
+
+    public bool HasPoints(int amount = 1) => CurrentComboPoints >= amount;
+
+    public void SetPoints(int value)
+    {
+        CurrentComboPoints = Mathf.Clamp(value, 0, _maxComboPoints);
+        OnComboPointsChanged?.Invoke(CurrentComboPoints);
+    }
 }

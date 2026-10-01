@@ -12,7 +12,7 @@ public class SwarmTalent_2 : Talent
     {
         skillManager.ActivateSkill(swarmCapacity);
         skillManager.ActivateSkill(_wombSpawn);
-
+        skillManager.GetSkill<Tentacles>().ActivateWombSpawning(true);
         AddingDescriptionSet(true);
     }
 
@@ -20,6 +20,7 @@ public class SwarmTalent_2 : Talent
     {
         skillManager.DeactivateSkill(swarmCapacity);
         skillManager.DeactivateSkill(_wombSpawn);
+        skillManager.GetSkill<Tentacles>().ActivateWombSpawning(false);
 
         AddingDescriptionSet(false);
     }

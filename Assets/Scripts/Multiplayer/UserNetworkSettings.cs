@@ -28,6 +28,7 @@ public class UserNetworkSettings : NetworkBehaviour
             if (isServer)
             {
                 _teamIndex = value;
+                RpcUpdateLayers();
                 StartCoroutine(DelayedTargetUpdate());
             }
         }
@@ -82,6 +83,12 @@ public class UserNetworkSettings : NetworkBehaviour
     {
         MarkUpEnemiesOrAllies();
         OnUpdateValue?.Invoke();
+    }
+
+    [Command]
+    public void CmdSetTeam(byte i)
+    {
+        TeamIndex = i;
     }
 
     public void MarkUpEnemiesOrAllies()

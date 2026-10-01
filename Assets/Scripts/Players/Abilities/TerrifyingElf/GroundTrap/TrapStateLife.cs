@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TrapStateLife : NetworkBehaviour
 {
-    [SyncVar] private GameObject _ownerCharacter;
+    private GameObject _ownerCharacter;
 
     private Bound _bound;  
 
@@ -20,7 +20,7 @@ public class TrapStateLife : NetworkBehaviour
 
     private void ResolveBound()
     {
-        if (_bound != null || _ownerCharacter == null) return;
+        if (_ownerCharacter == null) return;
 
         var characterState = _ownerCharacter.GetComponent<CharacterState>();
         _bound = characterState?.GetState(States.Bound) as Bound;

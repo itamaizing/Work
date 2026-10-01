@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class LightShield : StackableState, IDamageable
+public class LightShield : StateBasic, IDamageable
 {
     private BladeMailPriestTalent _bladeMailPriestTalent;
     private GameObject _lightShield;
@@ -22,13 +22,13 @@ public class LightShield : StackableState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;
         _damageAbsorbed = 0;
         _maxAbsorption = maxDamageAbsorbed;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
 
         if (characterState.StateEffects.LightShield != null)
         {
@@ -43,41 +43,25 @@ public class LightShield : StackableState, IDamageable
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
         {
             ExitState();
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (characterState.TryGetComponent<Health>(out var health))
         {
             health.ResetShieldValues();
         }
 
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
 
         if (_lightShield != null)
             _lightShield.SetActive(false);
-    }
-
-    public override bool Stack(float time)
-    {
-        _duration = time;
-        _damageAbsorbed = 0;
-
-        if (characterState.TryGetComponent<Health>(out var health))
-        {
-            health.AddShieldValues(_maxAbsorption);
-            health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
-        }
-
-        return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -102,13 +86,13 @@ public class LightShield : StackableState, IDamageable
         
         if (damageToAbsorb > 0)
         {
-            var pShield = personWhoMadeBuff?.Abilities?.GetSkill<PriestShield>();
+            var pShield = sourceCaster?.Abilities?.GetSkill<PriestShield>();
             pShield?.LightShieldManaRestoreBooster?.OnShieldAbsorbedDamage(characterState.Character, damageToAbsorb);
         }
 
         if (damageToAbsorb > 0)
         {
-            var pShield = personWhoMadeBuff?.Abilities?.GetSkill<PriestShield>();
+            var pShield = sourceCaster?.Abilities?.GetSkill<PriestShield>();
             if (pShield != null)
             {
                 pShield.TryApplyTalents(characterState.Character, 
@@ -134,6 +118,6 @@ public class LightShield : StackableState, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        
+        throw new NotImplementedException();
     }
 }

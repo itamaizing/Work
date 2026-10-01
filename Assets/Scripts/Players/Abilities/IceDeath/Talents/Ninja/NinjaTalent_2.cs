@@ -4,19 +4,15 @@ using UnityEngine;
 
 public class NinjaTalent_2 : Talent
 {
-    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	[SerializeField] private PhysicalAttack _physicalAttack;
+	[SerializeField] private ComboSeriesSystem _comboSeries;
 
 	public override void Enter()
     {
-        Debug.Log(Data.Level + " NinjaLv l");
-        _seriesOfStrikes.SeriesCompliteCompoTalentActive(true);
-		_physicalAttack.SeriesPhysicalTalentActive(true);
+	    _comboSeries.EnableSeries(true);
 	}
 
     public override void Exit()
     {
-        _seriesOfStrikes.SeriesCompliteCompoTalentActive(false);
-		_physicalAttack.SeriesPhysicalTalentActive(false);
+	    _comboSeries.EnableSeries(false);
 	}
 }

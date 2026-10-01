@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ShotDarkness : Skill
+public class ShotDarkness : Skill, IMultiMagicSkill
 {
     [SerializeField] private ArrowProjectile _projectile;
     [SerializeField] private HeroComponent _playerLinks;
@@ -48,7 +48,14 @@ public class ShotDarkness : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
+    protected override bool IsCanCast { get => CheckCanCast(); }
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+
+    private bool CheckCanCast()
+    {
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+    }
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
@@ -92,6 +99,14 @@ public class ShotDarkness : Skill
         }
     }
 
+    private Vector3 GetMousePoint(LayerMask mask)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, RayCastDistance, mask)) return hit.point;
+
+        return Vector3.positiveInfinity;
+    }
+
     public void ShotDarkCastStart()
     {
         AnimStartCastCoroutine();
@@ -106,36 +121,59 @@ public class ShotDarkness : Skill
         _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.SetCanMove(false);
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        _targetPoint = targetInfo.Points[0];
+    }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
+        {
+            if (GetMouseButton)
+            {
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
+                targetPoint = GetMousePoint(_groundLayerMask);
+
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                {
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
+
+                    else
+                    {
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
+            }
+            yield return null;
+        }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
+    }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null) yield return null;
+        if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
+        if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
 
         _magicDamage = CalculateAndSpendBonusMagicDamage();
         ShotDarknessAnimationMove();
         ProcessGhostCooldownReduction();
 
+        float castLengthAtCast = AreaInfo.CastLength;
+        
         HandleThirdShotRowOnCast();
 
-        if (Targeting.GetTarget().Type == TargetType.Object) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage);
-        else CmdCreateProjectileAtPosition(Targeting.GetTarget().Poisition, Damage, _magicDamage);
+        if (Targeting.GetTarget() != null) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage,castLengthAtCast);
+        else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage,castLengthAtCast);
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdUseMana(_magicDamage);
-                CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
-            }
-
-            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
-            _multiMagicSpell.Cooldown.Modify(-reduce);
-        }
-
-        else CmdUseMana(_magicDamage);
+        CmdUseMana(_magicDamage);
     }
 
 
@@ -178,6 +216,7 @@ public class ShotDarkness : Skill
         AnimCastEnded();
     }
 
+    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void UseMana(float amount)
     {
         float mana = amount;
@@ -208,23 +247,23 @@ public class ShotDarkness : Skill
     }
 
     [Command]
-    protected void CmdCreateProjectileAtTarget(Transform target, float damage, float magDamage)
+    protected void CmdCreateProjectileAtTarget(Transform target, float damage, float magDamage, float maxTravelDistance)
     {
         Vector3 direction = (target.transform.position - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, magDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        proj.Init(_playerLinks, magDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
-        RpcInit(proj.gameObject, magDamage, damage);
+        RpcInit(proj.gameObject, magDamage, damage, maxTravelDistance);
         RpcPlayShotSound();
     }
 
     [Command]
-    public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float magDamage)
+    public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float magDamage, float maxTravelDistance)
     {
         Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
         Vector3 direction = (flatTargetPoint - transform.position).normalized;
@@ -232,22 +271,22 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, magDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        proj.Init(_playerLinks, magDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject, magDamage, damage);
+        RpcInit(proj.gameObject, magDamage, damage, maxTravelDistance);
         RpcPlayShotSound();
     }
     [Command] private void CmdUseMana(float amount) => UseMana(amount);
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject, float magicDamage, float damage)
+    protected void RpcInit(GameObject gameObject, float magicDamage, float damage, float maxTravelDistance)
     {
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, magicDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        if (proj != null) proj.Init(_playerLinks, magicDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
     }
 
     [ClientRpc]
@@ -264,5 +303,19 @@ public class ShotDarkness : Skill
         Targeting.ClearTempTarget();
         _consecutiveShots = 0;
         AnimCastEnded();
+    }
+
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdUseMana(_magicDamage);
+        float castLengthAtCast = AreaInfo.CastLength;
+        CmdCreateProjectileAtPosition(target.transform.position, Damage, _magicDamage, castLengthAtCast);
+
+        if (_multiMagicSpell != null)
+        {
+            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
+            _multiMagicSpell.Cooldown.Modify(-reduce);
+        }
     }
 }

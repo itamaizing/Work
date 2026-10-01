@@ -81,7 +81,6 @@ public class ElementalSpawn : Skill
             TryActivateMinionTalent(_previousElemental,false);
             _currentElemental = null;
             CmdDestroyUnit(0);
-            Hero.SpawnComponent.Units.RemoveAt(0);
         }
         
         CmdSpawnElemental(_position, _selectedElemental);
@@ -171,7 +170,7 @@ public class ElementalSpawn : Skill
 
         bool actuallyActivate = _elementalsAuraTalent && shouldBeActive;
 
-        auraComponent.ActivateAura(actuallyActivate);
+        auraComponent.ActivateAura(actuallyActivate, isAffectOnOwner: true);
     }
 
     private void HandleSkill<T>(bool shouldBeActive,bool talentBool) where T : Skill
@@ -208,9 +207,9 @@ public class ElementalSpawn : Skill
     [Command]
     private void CmdDestroyUnit(int index)
     {
-        NetworkServer.Destroy(Hero.SpawnComponent.Units[index].gameObject);
+        if (index < 0 || index >= Hero.SpawnComponent.Units.Count) return;
 
-        Hero.SpawnComponent.Units.RemoveAt(index);
+        Hero.SpawnComponent.RemoveUnitServer(Hero.SpawnComponent.Units[index]);
     }
 }
 

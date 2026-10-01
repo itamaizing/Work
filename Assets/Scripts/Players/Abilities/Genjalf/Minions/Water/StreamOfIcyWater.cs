@@ -131,7 +131,7 @@ public class StreamOfIcyWater : MoveSkill
     private void CmdAddState(GameObject target)
     {
         if(target != null)
-            target.GetComponent<Character>().CharacterState.AddState(States.Cooling, 6, 0, Hero.gameObject, name);
+            target.GetComponent<Character>().CharacterState.AddState(States.Cooling, 6, 0, Hero.gameObject, "Minion");
     }
 
     [Command]

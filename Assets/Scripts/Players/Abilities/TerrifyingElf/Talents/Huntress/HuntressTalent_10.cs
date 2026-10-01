@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class HuntressTalent_10 : Talent
 {
-    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
 
     public override void Enter()
     {
-        terrifyingElfAura.ElvenSkillPhysDamageHealthChance(true);
+        character.Abilities.GetSkill<ShotIntoSky>().ShotRadiusUpgradeActive(true);
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.ElvenSkillPhysDamageHealthChance(false);
+        character.Abilities.GetSkill<ShotIntoSky>().ShotRadiusUpgradeActive(false);
     }
 }

@@ -11,9 +11,12 @@ public class MagicalExcitementTalent : Talent
     private WaitForSeconds _increaseManaRegenerationDeley;
     private Resource _mana;
     private float _defaultDuration = 3f;
+    private bool _isActive = false;
 
     public override void Enter()
     {
+        if(_isActive) return;
+        _isActive = true;
         _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
         _mana = character.TryGetResource(ResourceType.Mana);
 
@@ -22,6 +25,8 @@ public class MagicalExcitementTalent : Talent
 
     public override void Exit()
     {
+        if(!_isActive) return;
+        _isActive = false;
         character.DamageGeted -= OnDamageTaked;
     }
 

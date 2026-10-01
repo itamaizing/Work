@@ -3,22 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmpathicPoisonsState : StackableState, IDamageable
+public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
 {
-    private PoisonCloudState _poisonCloud;
+    private PoisonCloudStateStacking _poisonCloud;
     private Character _player;
     private DamageType _damageType;
-    private Resource _playerResource;
     private AttackRangeType _attackRangeType;
 
     private int _maxStacks = 8;
-
     private float _baseEvasionValue = 0.03f;
-    private float _increasedEvasionValue;
-    private float _evadeMeleePhysicalDamage;
-    private float _evadeRangePhysicalDamage;
-    private float _originalEvadeMeleeDamage;
-    private float _originalEvadeRangeDamage;
 
     private float _radiusCloud;
 
@@ -26,7 +19,6 @@ public class EmpathicPoisonsState : StackableState, IDamageable
     private float _startTimeBeforeReductionDebuff = 1.0f;
 
     private float _baseDuration;
-    private float _damageToExit;
 
     private Vector3 _playerPosition;
     private Vector3 _characterPosition;
@@ -35,12 +27,12 @@ public class EmpathicPoisonsState : StackableState, IDamageable
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
 
-    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => duration; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
+    public float StacksDuration { get => RemainingDuration; }
 
     public event Action<Damage, Skill> DamageTaken;
     public override States State => States.EmpathicPoisons;
-    public override StateType Type => StateType.Physical; 
+    public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => _effects;
@@ -48,94 +40,56 @@ public class EmpathicPoisonsState : StackableState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
 
         _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
-
-        _originalEvadeMeleeDamage = _player.Health.EvadeMeleeDamage;
-        _evadeMeleePhysicalDamage = _player.Health.EvadeMeleeDamage;
-
-        _originalEvadeRangeDamage = _player.Health.EvadeRangeDamage;
-        _evadeRangePhysicalDamage = _player.Health.EvadeRangeDamage;
+        _player = character.Character;
 
         _player.Health.Shields.Add(this);
-        _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
-        _radiusCloud = _poisonCloud.RadiusCloud;
+        _poisonCloud = (PoisonCloudStateStacking)_player.CharacterState.GetState(States.PoisonCloud);
 
         _baseDuration = durationToExit;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
+
+        ApplyEvasionBonus();
     }
 
-    public void ShowPhantomValue(Damage value)
-    {
-
-    }
+    public void ShowPhantomValue(Damage value) { }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (currentStacksCount > 0)
+        if (CurrentStacksCount > 0)
         {
-          //  Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
-            switch (_damageType)
+            if (damage.Type == DamageType.Physical)
             {
-                case DamageType.Physical:
-                //    Debug.Log("EmpathicPoison / TryTakeDamage / Case Info.DamageType.Physical");
-                    switch (_attackRangeType)
-                    {
-                        case AttackRangeType.MeleeAttack:
-                       //     Debug.Log("EmpathicPoison / TryTakeDamage / Case Info.DamageType.Physical / case Info.AttackRangeType.Melee");
-                            if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeMeleePhysicalDamage)
-                            {
-                           //     Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Melee / if evadeMeleeDamage");
-                                damage.Value = 0;
-                                return true;
-                            }
-                            else
-                            {
-                             //   Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Melee / else evadeMeleeDamage");
-                                return false;
-                            }
-                            break;
+                var attrs = _player.AttributeSystem;
+                float evade = damage.PhysicAttackType == AttackRangeType.MeleeAttack
+                    ? attrs[CharacterAttributeName.EvasionPhysicalMelee].GetValue()
+                    : attrs[CharacterAttributeName.EvasionPhysicalRange].GetValue();
 
-                        case AttackRangeType.RangeAttack:
-                          //  Debug.Log("EmpathicPoison / TryTakeDamage / Case Info.DamageType.Physical / case Info.AttackRangeType.Range");
-                            if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeRangePhysicalDamage)
-                            {
-                               // Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Range / if evadeRangeDamage");
-                                damage.Value = 0;
-                                return true;
-                            }
-                            else
-                            {
-                              //  Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Range / else evadeRangeDamage");
-                                return false;
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                    break;
-
-                default:
-                    break;
+                if (UnityEngine.Random.Range(0.0f, 100.0f) <= evade)
+                {
+                    damage.Value = 0;
+                    return true;
+                }
+                return false;
             }
         }
         return true;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         _playerPosition = _player.transform.position;
         _characterPosition = characterState.transform.position;
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -146,53 +100,41 @@ public class EmpathicPoisonsState : StackableState, IDamageable
             CheckIfInPoisonCloud(_playerPosition, _characterPosition);
             if (_isInPoisonCloud)
             {
-                ReducingChanceOfHittingAtEnemy();
-                _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
+                ApplyEvasionBonus();
             }
-            else
-            {
-                DecreaseEvasionForCurrentTarget();
-                _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
-            }
+            _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         ResetValues();
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
-            duration = _baseDuration;
-            return true;
+            CurrentStacksCount++;
         }
-        else
-        {
-            duration = _baseDuration;
-            return true;
-        }
+        RemainingDuration = _baseDuration;
+        ApplyEvasionBonus();
+        return true;
     }
 
-    private void ReducingChanceOfHittingAtEnemy()
+    private void ApplyEvasionBonus()
     {
-        if (currentStacksCount < MaxStacksCount)
-        {
-            _increasedEvasionValue = _baseEvasionValue * currentStacksCount;
-            _evadeMeleePhysicalDamage += _increasedEvasionValue;
-            _evadeRangePhysicalDamage += _increasedEvasionValue;
-        }
-    }
+        if (_player == null) return;
 
-    private void DecreaseEvasionForCurrentTarget()
-    {
-        //float reductionPerSecond = _baseEvasionValue * 0.33f;
-        //_endEvasionValue = Mathf.Max(_originalEvasionValue, characterState.Character.Health.EvadeMeleeDamage + reductionPerSecond);
-        //characterState.Character.Health.EvadeMeleeDamage = _endEvasionValue;
+        float bonus = _baseEvasionValue * CurrentStacksCount;
+
+        var attrs = _player.AttributeSystem;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveBySource(this);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveBySource(this);
+
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(new AttributeModifier(bonus, ModifierType.Flat, this));
+        attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(new AttributeModifier(bonus, ModifierType.Flat, this));
     }
 
     private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)
@@ -203,18 +145,11 @@ public class EmpathicPoisonsState : StackableState, IDamageable
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
 
-        _baseEvasionValue = 0.03f;
-        _increasedEvasionValue = 0;
-        _evadeMeleePhysicalDamage = _originalEvadeMeleeDamage;
-        _evadeRangePhysicalDamage = _originalEvadeRangeDamage;
-    }
-
-    public void SetRadiusCloud(float value)
-    {
-        _radiusCloud = value;
+        _player?.AttributeSystem[CharacterAttributeName.EvasionPhysicalMelee].RemoveBySource(this);
+        _player?.AttributeSystem[CharacterAttributeName.EvasionPhysicalRange].RemoveBySource(this);
     }
 }

@@ -1,68 +1,62 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
-public class ParasitesState : RefreshingState
+public class ParasitesStateStacking : StateStackingRefreshing, ITickableState
 {
-    private const float TickInterval = 3f;
-    private const float PercentDamage = 0.002f;
+    private const float TickIntervalConst = 3f;
+    private const float PercentDamage = 0.02f;
 
-    private float _tickTimer;
-
-    private List<StatusEffect> _effects = new() { StatusEffect.Poison };
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Poison };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Parasites;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
-    public ParasitesState()
+    public float TickInterval => TickIntervalConst;
+
+    public ParasitesStateStacking()
     {
-        MaxStacksCount = 2;
+        SetMaxStacks(2);
     }
-
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
-
-        duration = durationToExit;
-        currentStacksCount = 1;
-
-        _tickTimer = TickInterval;
-    }
-
-    public override void OnUpdateState()
-    {
-        if (!NetworkServer.active) return;
-        if (health == null) return;
-
-        _tickTimer -= Time.deltaTime;
-
-        if (_tickTimer <= 0f)
-        {
-            _tickTimer = TickInterval;
-
-            float percentDamage = health.CurrentValue * PercentDamage * currentStacksCount;
-
-            Damage damage = new Damage
-            {
-                Value = percentDamage,
-                Type = DamageType.Physical
-            };
-
-            health.TryTakeDamage(ref damage, skill);
-        }
     }
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
-        if (currentStacksCount >= MaxStacksCount) return false;
-        currentStacksCount++;
+        if (CurrentStacksCount >= MaxStacksCount) return false;
+        CurrentStacksCount++;
 
         return true;
+    }
+
+    public override void UpdateState()
+    {
+    }
+
+    public void Tick()
+    {
+        if (!characterState.isServer) return;
+        if (health == null) return;
+
+        float percentDamage = health.CurrentValue * PercentDamage * CurrentStacksCount;
+
+        Damage damage = new Damage
+        {
+            Value = percentDamage,
+            Type = DamageType.Physical
+        };
+
+        health.TryTakeDamage(ref damage, skill);
+    }
+
+    public override void ExitState()
+    {
+        CurrentStacksCount = 0;
+        characterState.RemoveState(this);
     }
 }

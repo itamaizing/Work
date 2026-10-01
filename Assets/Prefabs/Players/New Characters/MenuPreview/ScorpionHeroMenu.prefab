@@ -128,6 +128,10 @@ PrefabInstance:
       propertyPath: bar
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7368319014048586301, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _ringOfFireAura
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8086357493113313276, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -224,6 +228,26 @@ PrefabInstance:
     - {fileID: 2675348779447106883, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 3713062146289152410, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 4607475415042520886, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6525268692662128158, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1583754041930301776, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7049285627988083031, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5037355390853188139, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4675390448830311774, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7368319014048586301, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7515729527109596431, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6547569093080466137, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2402640990303222928, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4456664982614311635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5117323362961484153, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3174753857147274348, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8046677360150043576, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6940025011153418937, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7450304206093058557, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4971719459195699825, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 441611718746620835, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5358761953826108934, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3314343911270447806, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4775199032102754426, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1073531778476955462, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 3785244378745797364, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}

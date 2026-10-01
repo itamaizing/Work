@@ -6,6 +6,7 @@ using UnityEngine;
 public class GroundTrap : Skill
 {
     [SerializeField] private Trap trapPrefab;
+    [SerializeField] private Trap trapPrefabPreview;
     [SerializeField] private HeroComponent owner;
     [SerializeField] private DrawCircleAlternative minDistanceRadiusCircle;
     [SerializeField] private ArrowTrapProjectile arrowTrapProjectile;
@@ -14,11 +15,17 @@ public class GroundTrap : Skill
     [SerializeField] private float newHealth = 80;
     [SerializeField] private ObjectData groundData;
 
+    [Header("Sky Arrow Settings")]
+    [SerializeField] private DrawCircle _extendedRadiusCircle;
+    [SerializeField] private Color _extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
+
     [Header("Talents")]
     [SerializeField] private bool isGroundHealthTalent;
 
     [Header("Raycast masks")]
     [SerializeField] private LayerMask groundLayer;
+
+    private ShotIntoSky _shotIntoSky;
 
     private Color minDistanceGreenColor = Color.green;
     private Color minDistanceRedColor = Color.red;
@@ -30,9 +37,15 @@ public class GroundTrap : Skill
 
     private float baseHealth = 23;
 
+    private float _arrowImpactHeightOffset = 0.8f;
     private float _baseCastDelay;
+    private float _extendedRadius;
+    private bool _castFromExtendedRadius;
+    private bool _isTrapArrowIntoSkyRadiusTalent;
     private Coroutine _boostWindow;
+    private Coroutine _checkExtendedRadiusCoroutine;
     private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
+    private WaitForSeconds _waitForExtendedRadiusInterval = new WaitForSeconds(0.1f);
 
     #region Talent
 
@@ -48,26 +61,28 @@ public class GroundTrap : Skill
         {
             if (_disactive) return false;
 
+            float allowedRadius = IsExtendedRadiusAvailable() ? _extendedRadius : AreaInfo.Radius;
+
             if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
             {
                 Vector3 point = target.Points[0];
                 if (float.IsPositiveInfinity(point.x)) return false;
 
                 float distantion = Vector3.Distance(transform.position, point);
-                return distantion <= AreaInfo.Radius && distantion >= minDistanceRadius;
+                return distantion <= allowedRadius && distantion >= minDistanceRadius;
             }
 
             if (!float.IsPositiveInfinity(_startPosition.x))
             {
                 float distantion = Vector3.Distance(transform.position, _startPosition);
-                return distantion <= AreaInfo.Radius && distantion >= minDistanceRadius;
+                return distantion <= allowedRadius && distantion >= minDistanceRadius;
             }
 
             return true;
         }
     }
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Shot");
+    protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
@@ -140,15 +155,22 @@ public class GroundTrap : Skill
 
     private void HandleSkillCanceled()
     {
+        if (_checkExtendedRadiusCoroutine != null)
+        {
+            StopCoroutine(_checkExtendedRadiusCoroutine);
+            _checkExtendedRadiusCoroutine = null;
+        }
+        HideExtendedRadius();
+
         if (_preview != null)
         {
             Destroy(_preview.gameObject);
             _preview = null;
         }
-
         else KillFirstQueuedPreview();
 
         SkillCastEnd();
+        ResetData();
     }
 
     private void UpdateMinRadiusCircle(Vector3 mousePos)
@@ -183,16 +205,45 @@ public class GroundTrap : Skill
         DisableSkillBoost();
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        _baseCastDelay = CastDeley;
+
+        _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
+        if (_extendedRadiusCircle != null)
+        {
+            _extendedRadiusCircle.Clear();
+        }
+
+        _shotIntoSky = _hero.Abilities.GetSkill<ShotIntoSky>();
+    }
+
+    protected override void PlayPrepareAnim()
+    {
+        float dist = Vector3.Distance(transform.position, _startPosition);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
+
+        string trigger = _castFromExtendedRadius ? "ShotSkyCastDelay" : "Shot";
+        Animation.PlayTrigger(trigger);
+        
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (isGroundHealthTalent) SetGroundNewHealth();
         else SetGroundBaseHealth();
 
-        Debug.Log($"GroundTrapHealth: {groundData.MaxHealth}");
+        if (IsExtendedRadiusAvailable())
+        {
+            ShowExtendedRadius();
+            if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
+            _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
+        }
 
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-
-        _preview = Instantiate(trapPrefab);
+        _preview = Instantiate(trapPrefabPreview);
         _preview.ResetPreview();
 
         minDistanceRadiusCircle?.SetColor(minDistanceGreenColor);
@@ -204,9 +255,10 @@ public class GroundTrap : Skill
             if (float.IsPositiveInfinity(mousePos.x)) { yield return null; continue; }
 
             float dist = Vector3.Distance(transform.position, mousePos);
-            bool inOuterRadius = dist <= AreaInfo.Radius;
+            float allowedRadius = IsExtendedRadiusAvailable() ? _extendedRadius : AreaInfo.Radius;
+
+            bool inOuterRadius = dist <= allowedRadius;
             bool outOfInnerRing = dist >= minDistanceRadius;
-            //bool validPlacement = inOuterRadius && outOfInnerRing;
 
             UpdateMinRadiusCircle(mousePos);
 
@@ -235,6 +287,13 @@ public class GroundTrap : Skill
             yield return null;
         }
 
+
+        if (_checkExtendedRadiusCoroutine != null)
+        {
+            StopCoroutine(_checkExtendedRadiusCoroutine);
+            _checkExtendedRadiusCoroutine = null;
+        }
+        HideExtendedRadius();
         minDistanceRadiusCircle?.Clear();
 
         TargetInfo targetInfo = new TargetInfo();
@@ -246,11 +305,20 @@ public class GroundTrap : Skill
     protected override IEnumerator CastJob()
     {
         KillFirstQueuedPreview();
-        CmdSpawnGroundTrap(_startPosition, _startRotation);
+        float dist = Vector3.Distance(transform.position, _startPosition);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
+
+        CmdSpawnGroundTrap(_startPosition, _startRotation, _castFromExtendedRadius, IsExtendedRadiusAvailable());
 
         SkillCastEnd();
         _preview = null;
         yield break;
+    }
+
+    private void ResetData()
+    {
+        _castFromExtendedRadius = false;
+        CastDeley = _baseCastDelay;
     }
 
     protected override void ClearData()
@@ -258,11 +326,16 @@ public class GroundTrap : Skill
         Hero.Animator.speed = 1;
         _startPosition = Vector3.positiveInfinity;
         _startRotation = Quaternion.identity;
+
+        ResetData();
     }
 
     public void AnimSpawnTrapProjectile()
     {
         if (!isClient || !owner) return;
+
+        if (_castFromExtendedRadius) return; 
+
         CmdSpawnArrowProjectile(_startPosition);
     }
 
@@ -278,15 +351,47 @@ public class GroundTrap : Skill
     [Command] private void CmdSetGorundBaseHealth() => groundData.MaxHealth = baseHealth;
 
     [Command]
-    private void CmdSpawnGroundTrap(Vector3 startPosition, Quaternion rotation)
+    private void CmdSpawnGroundTrap(Vector3 startPosition, Quaternion rotation, bool castFromExtendedRadius, bool isTrapArrowIntoSkyRadiusTalent)
+    {
+        if (castFromExtendedRadius && isTrapArrowIntoSkyRadiusTalent && _shotIntoSky != null)
+        {
+            Vector3 arrowImpactPosition = startPosition + Vector3.up * _arrowImpactHeightOffset;
+
+            _shotIntoSky.SpawnFullImpact(arrowImpactPosition, _shotIntoSky.Damage, () =>
+            {
+                StartCoroutine(SpawnTrapAfterArrowDelay(startPosition, rotation, 0.5f));
+            });
+        }
+        else
+        {
+            SpawnTrapInstant(startPosition, rotation);
+        }
+    }
+
+    private IEnumerator SpawnTrapAfterArrowDelay(Vector3 startPosition, Quaternion rotation, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SpawnTrapInstant(startPosition, rotation);
+    }
+    
+
+    [Server]
+    private void SpawnTrapInstant(Vector3 startPosition, Quaternion rotation)
     {
         Vector3 spawnPos = startPosition + new Vector3(0f, 2f, 0f);
 
         Trap trap = Instantiate(trapPrefab, spawnPos, rotation);
         trap.Init(owner, this, spawnPos, startPosition);
         trap.Finalise();
-        //SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(trap.gameObject);
+
+        NetworkConnectionToClient playerConnection = (_hero != null && _hero.netIdentity != null) 
+            ? _hero.netIdentity.connectionToClient 
+            : connectionToClient;
+
+        NetworkServer.Spawn(trap.gameObject, playerConnection);
+
+        trap.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
+    
         RpcInit(trap.netIdentity, spawnPos, rotation);
     }
 
@@ -300,7 +405,6 @@ public class GroundTrap : Skill
         if (direction == Vector3.zero) return;
 
         var arrow = Instantiate(arrowTrapProjectile, startPos, Quaternion.LookRotation(direction));
-        //SceneManager.MoveGameObjectToScene(arrow.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(arrow.gameObject);
 
         arrow.StartFly(targetPosition);
@@ -326,7 +430,78 @@ public class GroundTrap : Skill
         }
     }
 
+    private void ShowExtendedRadius()
+    {
+        if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
+    }
+
+    private void HideExtendedRadius()
+    {
+        if (_extendedRadiusCircle != null)
+        {
+            _extendedRadiusCircle.Clear();
+        }
+    }
+
+    private IEnumerator CheckExtendedRadiusJob()
+    {
+        float lastCalculatedRadius = -1f;
+
+        while (true)
+        {
+            if (_extendedRadiusCircle == null)
+            {
+                yield return null;
+                continue;
+            }
+
+            _extendedRadius = _shotIntoSky.AreaInfo.Radius;
+
+            Vector3 mousePoint = GetMousePointOnGround();
+            bool cursorInside = !float.IsPositiveInfinity(mousePoint.x) && Vector3.Distance(mousePoint, transform.position) <= _extendedRadius;
+
+            _extendedRadiusCircle.SetColor(cursorInside ? Color.green : _extendedRadiusColor);
+
+            if (!Mathf.Approximately(lastCalculatedRadius, _extendedRadius))
+            {
+                lastCalculatedRadius = _extendedRadius;
+                _extendedRadiusCircle.Clear();
+                _extendedRadiusCircle.Draw(_extendedRadius);
+            }
+
+            yield return _waitForExtendedRadiusInterval;
+        }
+    }
+
     #region Talent
     public void GroundTrapHealthActiveTalent(bool value) => isGroundHealthTalent = value;
+    
+    private bool IsExtendedRadiusAvailable()
+    {
+        return _hero.Abilities.GetSkill<ShotIntoSky>().IsSkillActive && _isTrapArrowIntoSkyRadiusTalent;
+    }
+    
+    public void TrapArrowIntoSkyRadius(bool value)
+    {
+        if (value == _isTrapArrowIntoSkyRadiusTalent) return;
+        _isTrapArrowIntoSkyRadiusTalent = value;
+
+        if (!_isTrapArrowIntoSkyRadiusTalent)
+        {
+            if (_checkExtendedRadiusCoroutine != null)
+            {
+                StopCoroutine(_checkExtendedRadiusCoroutine);
+                _checkExtendedRadiusCoroutine = null;
+            }
+            HideExtendedRadius();
+        }
+
+        if (_isTrapArrowIntoSkyRadiusTalent && IsPreparing)
+        {
+            ShowExtendedRadius();
+            if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
+            _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
+        }
+    }
     #endregion
 }

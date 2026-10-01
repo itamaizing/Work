@@ -4,18 +4,22 @@ public class PsionicsTalent_4 : Talent
 {
     [SerializeField] private Tentacles _tentacles;
     [SerializeField] private PsionicEnergySkill _psionicEnergySkill;
+    [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
 
     public override void Enter()
     {
-        _psionicEnergySkill.DischargingPsiTalen(true);
+        _basePsionicEnergy.DissipatingPsi(true);
+        
+        /*_psionicEnergySkill.DischargingPsiTalen(true);
         _tentacles.ProtectiveCooconSpawnAttack(true);
-        _tentacles.PsionicsTalentThree(true);
+        _tentacles.PsionicsTalentThree(true);*/
     }
 
     public override void Exit()
     {
-        _psionicEnergySkill.DischargingPsiTalen(false);
+        _basePsionicEnergy.DissipatingPsi(false);
+        /*_psionicEnergySkill.DischargingPsiTalen(false);
         _tentacles.ProtectiveCooconSpawnAttack(false);
-        _tentacles.PsionicsTalentThree(false);
+        _tentacles.PsionicsTalentThree(false);*/
     }
 }

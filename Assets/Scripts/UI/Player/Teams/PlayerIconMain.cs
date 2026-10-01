@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHandler
+public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler
 {
     [SerializeField] private LvlInfo _lvlInfo;
     [SerializeField] private Image _FrameBlink;
@@ -24,5 +24,12 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
         base.UpdateInfo(character);
         if( _lvlInfo != null ) 
             _lvlInfo.Init(character.LVL);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (Character == null) return;
+        if (Character == Character.Local) return;
+        TargetSelector.Instance?.SelectTarget(Character);
     }
 }

@@ -73,7 +73,7 @@ public class DispelMagic : Skill
         
         BaffDebaff typeToRemove = isAlly ? BaffDebaff.Debaff : BaffDebaff.Baff;
         
-        AbstractCharacterState stateToDispel = null;
+        StateBasic stateToDispel = null;
         foreach (var state in characterState.CurrentStates)
         {
             if (state.Type == StateType.Magic && state.BaffDebaff == typeToRemove)
@@ -85,7 +85,7 @@ public class DispelMagic : Skill
 
         if (stateToDispel == null) return;
 
-        /*RpcNotifyDispel(targetGO, stateToDispel.State, stateToDispel.CurrentStacksCount);
+        RpcNotifyDispel(targetGO, stateToDispel.State, stateToDispel.CurrentStacksCount);
 
         if (stateToDispel.CurrentStacksCount > 1)
         {
@@ -94,7 +94,7 @@ public class DispelMagic : Skill
         else
         {
             characterState.RemoveState(stateToDispel.State);
-        }*/
+        }
     }
 
     [ClientRpc]
@@ -103,9 +103,9 @@ public class DispelMagic : Skill
         if (!targetGO.TryGetComponent<CharacterState>(out var characterState)) return;
         
         var stateInstance = characterState.GetState(state);
-        if (stateInstance?.PersonWhoMadeBuff == null) return;
+        if (stateInstance?.SourceCaster == null) return;
 
-        stateInstance.PersonWhoMadeBuff.CharacterState.OnOwnStateDispelled(state, 1);
+        stateInstance.SourceCaster.CharacterState.OnOwnStateDispelled(state, 1);
     }
 
     [ClientRpc]
@@ -116,7 +116,7 @@ public class DispelMagic : Skill
         var stateInstance = characterState.GetState(state);
         if (stateInstance == null) return;
 
-        //stateInstance.ReduceStack();
-        characterState.StateIcons.RemoveIconCount();
+        (stateInstance as StateStacking)?.ReduceStack();
+        
     }
 }

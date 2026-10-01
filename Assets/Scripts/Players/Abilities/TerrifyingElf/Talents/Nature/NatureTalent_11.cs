@@ -9,13 +9,13 @@ public class NatureTalent_11 : Talent
 
     public override void Enter()
     {
-        shotIntoSky.ShotsIntoSkyMagicDebuffTalentActive(true);
+        //shotIntoSky.ShotsIntoSkyMagicDebuffTalentActive(true);
         shotsIntoSky.ShotsIntoSkyMagicDebuffTalentActive(true);
     }
 
     public override void Exit()
     {
-        shotIntoSky.ShotsIntoSkyMagicDebuffTalentActive(false);
+        //shotIntoSky.ShotsIntoSkyMagicDebuffTalentActive(false);
         shotsIntoSky.ShotsIntoSkyMagicDebuffTalentActive(false);
     }
 }

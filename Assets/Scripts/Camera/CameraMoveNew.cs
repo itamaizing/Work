@@ -9,7 +9,7 @@ public class CameraMoveNew : MonoBehaviour
     [SerializeField] float m_MaxX = 64;
     [SerializeField] float m_MinY = -64;
     [SerializeField] float m_MaxY = 64;
-
+    [SerializeField] private CameraBoxLimiter _limiter;
     public TestController Target;
 
     public float moveSpeed = 5f;
@@ -158,35 +158,56 @@ public class CameraMoveNew : MonoBehaviour
 
     void HandleMovement2()
     {
-        Vector2 screenpos = Input.mousePosition * 100.0f;
-        screenpos.x /= (float)Screen.width;
-        screenpos.y /= (float)Screen.height;
-
-
-        if (screenpos.x >= 0 && screenpos.x <= 100.0f)
+        if (Input.mousePosition.x < 0 || Input.mousePosition.x > Screen.width ||
+            Input.mousePosition.y < 0 || Input.mousePosition.y > Screen.height)
         {
-            if (screenpos.x < m_BorderDistance)
-            {
-                transform.position += Vector3.left * Time.deltaTime * m_MoveSpeed;
-            }
-            if (screenpos.x > 100 - m_BorderDistance)
-            {
-                transform.position += Vector3.right * Time.deltaTime * m_MoveSpeed;
-            }
-        }
-        if (screenpos.y >= 0 && screenpos.y <= 100.0f)
-        {
-
-            if (screenpos.y < m_BorderDistance)
-            {
-                transform.position += Vector3.back * Time.deltaTime * m_MoveSpeed;
-            }
-            if (screenpos.y > 100 - m_BorderDistance)
-            {
-                transform.position += Vector3.forward * Time.deltaTime * m_MoveSpeed;
-            }
+            return;
         }
 
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, m_MinX, m_MaxX), transform.position.y, Mathf.Clamp(transform.position.z, m_MinY, m_MaxY));
+        float mouseX = Mathf.Clamp(Input.mousePosition.x, 0f, Screen.width);
+        float mouseY = Mathf.Clamp(Input.mousePosition.y, 0f, Screen.height);
+
+        Vector2 screenpos = new Vector2(
+            mouseX * 100f / Screen.width,
+            mouseY * 100f / Screen.height);
+
+        Vector3 movement = Vector3.zero;
+
+        if (screenpos.x < m_BorderDistance) 
+            movement.x -= 1f;
+    
+        if (screenpos.x > 100f - m_BorderDistance) 
+            movement.x += 1f;
+
+        if (screenpos.y < m_BorderDistance) 
+            movement.y -= 1f;
+    
+        if (screenpos.y > 100f - m_BorderDistance) 
+            movement.y += 1f;
+
+        float currentSpeed = m_MoveSpeed * Time.deltaTime;
+        transform.Translate(movement * currentSpeed, Space.Self);
+
+        ApplyCurrentBounds();
+    }
+    
+    private void ApplyCurrentBounds()
+    {
+        if (_limiter == null) 
+        {
+            transform.position = new Vector3(
+                Mathf.Clamp(transform.position.x, m_MinX, m_MaxX),
+                transform.position.y,
+                Mathf.Clamp(transform.position.z, m_MinY, m_MaxY));
+            return;
+        }
+        
+        Bounds bounds = _limiter.GetCurrentBounds();
+        Vector3 pos = transform.position;
+
+        pos.x = Mathf.Clamp(pos.x, bounds.min.x, bounds.max.x);
+        pos.z = Mathf.Clamp(pos.z, bounds.min.z, bounds.max.z);
+
+        transform.position = pos;
     }
 }

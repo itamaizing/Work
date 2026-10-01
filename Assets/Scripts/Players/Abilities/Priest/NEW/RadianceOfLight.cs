@@ -190,6 +190,8 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
 
+        Cooldown.OnForceRefreshUI();
+
         UpdateParticleColors();
     }
 }

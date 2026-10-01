@@ -28,7 +28,6 @@ public class CreeperStrike : Skill
     [SerializeField] private float _baseIncreaseAttackSpeed = 0.1f;
     [SerializeField] private float _maxMinimumAttackSpeed = 0.1f;
 
-    private Character _castTarget;
     private Character _lastHitTarget;
 
     private float _currentDamage;
@@ -60,14 +59,13 @@ public class CreeperStrike : Skill
     private float _baseAttackSpeed;
     private float _currentAttackSpeedBonus;
 
-    private PoisonBoneState _poisonBoneState;
+    private PoisonBoneStateStacking _poisonBoneStateStacking;
     private EmpathicPoisonsState _empathicPoisonState;
-    private WitheringPoisonState _witheringPoisonState;
+    private WitheringPoisonStateStacking _witheringPoisonStateStacking;
     private BindingPoisonState _bindingPoisonState;
 
     protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => CheckIsCanCast();
 
     public event Action OnCreeperStrikeEnd;
     public event Action OnHit;
@@ -106,12 +104,17 @@ public class CreeperStrike : Skill
     }
 
     public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
-    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
+
+    public void ColdBloodStrike(bool value)
+    {
+        if (value == _isColdBloodStrike) return;
+            
+        _isColdBloodStrike = value;
+    }
     public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
     public void AnimCreeperStrikeCast()
     {
-        if (_castTarget == null) return;
         if (_isCreeperStrikeDamageAppliedThisCast) return;
         _isCreeperStrikeDamageAppliedThisCast = true;
 
@@ -136,103 +139,17 @@ public class CreeperStrike : Skill
         Renderer.HideSmartIndicator();
     }
 
-    private bool CheckIsCanCast()
-    {
-        Character target = GetTargetForCurrentCastCheck();
-
-        if (target == null) return false;
-        return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
-    }
-
-    private Character GetTargetForCurrentCastCheck()
-    {
-        if (IsCasting) return _castTarget;
-
-        if (TargetInfoQueue.TryPeek(out TargetInfo queuedTargetInfo))
-        {
-            if (queuedTargetInfo.GetTargets().Count > 0) return queuedTargetInfo.GetTargets()[0] as Character;
-        }
-
-        return Targeting.GetTarget()?.Character;
-    }
-
-    private bool IsAllyTarget(IDamageable target)
-    {
-        return target.gameObject.layer == LayerMask.NameToLayer("Allies");
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        TargetInfo targetInfo = new TargetInfo();
-
-        Targeting.ClearTempTarget();
-
-        while (Targeting.GetTempTarget()?.Targetable == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusSearchTarget);
-
-                if (Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
-                {
-                    Character character = damageable as Character;
-
-                    if (IsAllyTarget(damageable) || character == Hero)
-                    {
-                        Targeting.ClearTempTarget();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-
-            yield return null;
-        }
-
-        TargetData preparedTarget = Targeting.GetTempTarget();
-
-        if (preparedTarget == null || preparedTarget.Targetable == null) yield break;
-        if (!IsCasting) Targeting.SetTarget(preparedTarget.Targetable);
-
-        targetInfo.Points.Add(preparedTarget.Transform.position);
-        targetInfo.AddTarget(preparedTarget.Targetable);
-
-        callbackDataSaved?.Invoke(targetInfo);
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _castTarget = null;
-
-        if (targetInfo == null)
-            return;
-
-        if (targetInfo.GetTargets().Count == 0)
-            return;
-
-        _castTarget = targetInfo.GetTargets()[0] as Character;
-
-        if (_castTarget == null)
-            return;
-
-        Targeting.SetTarget(_castTarget);
-        Hero.Move.LookAtTransform(_castTarget.transform);
-    }
-
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null)
+        if (Targeting.GetTarget() == null)
             yield break;
-
-        Hero.Move.StopLookAt();
+        Hero.Move.LookAtTransform(Targeting.GetTarget().Transform);
 
         bool isLightningMovementHit = _isNextHitFromLightningMovement;
         _isNextHitFromLightningMovement = false;
 
-        DamageDeal(_castTarget, isLightningMovementHit);
-
+        DamageDeal(Targeting.GetTarget().Damageable, isLightningMovementHit);
+        Hero.Move.StopLookAt();
         yield return null;
     }
 
@@ -248,6 +165,7 @@ public class CreeperStrike : Skill
 
         TryApplyPoisonBone(character);
         TryApplyWitheringPoison(character);
+        TryConsumeAmbushPoison(character);
 
         _currentDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
 
@@ -258,7 +176,7 @@ public class CreeperStrike : Skill
         _isHit = true;
         OnHit?.Invoke();
 
-        TryReduceColdBloodCooldown(character);
+        //TryReduceColdBloodCooldown(character);
 
         if (CanDealColdBloodCriticalDamage())
         {
@@ -367,6 +285,14 @@ public class CreeperStrike : Skill
         if (_creeperPoisonAura == null) return;
 
         CmdTryApplyWitheringPoison(target.gameObject);
+    }
+
+    private void TryConsumeAmbushPoison(Character target)
+    {
+        if (_hero.Abilities.GetSkill<AmbushPoisons>() == null) return;
+        if (target == null) return;
+
+        _hero.Abilities.GetSkill<AmbushPoisons>().TryConsumeStack(target);
     }
 
     [Command]
@@ -508,14 +434,14 @@ public class CreeperStrike : Skill
                 if (_bindingPoisonState != null)
                     _currentStacksPoison += _bindingPoisonState.CurrentStacks;
 
-                if (_poisonBoneState != null)
-                    _currentStacksPoison += _poisonBoneState.CurrentStacks;
+                if (_poisonBoneStateStacking != null)
+                    _currentStacksPoison += _poisonBoneStateStacking.CurrentStacks;
 
                 if (_empathicPoisonState != null)
                     _currentStacksPoison += _empathicPoisonState.CurrentStacks;
 
-                if (_witheringPoisonState != null)
-                    _currentStacksPoison += _witheringPoisonState.CurrentStacks;
+                if (_witheringPoisonStateStacking != null)
+                    _currentStacksPoison += _witheringPoisonStateStacking.CurrentStacksCount;
             }
 
             _currentAllStacks = _currentStacksPoison;
@@ -529,9 +455,9 @@ public class CreeperStrike : Skill
     private void CachePoisonStates(CharacterState state)
     {
         _bindingPoisonState = state.GetState(States.BindingPoison) as BindingPoisonState;
-        _poisonBoneState = state.GetState(States.PoisonBone) as PoisonBoneState;
+        _poisonBoneStateStacking = state.GetState(States.PoisonBone) as PoisonBoneStateStacking;
         _empathicPoisonState = state.GetState(States.EmpathicPoisons) as EmpathicPoisonsState;
-        _witheringPoisonState = state.GetState(States.WitheringPoison) as WitheringPoisonState;
+        _witheringPoisonStateStacking = state.GetState(States.WitheringPoison) as WitheringPoisonStateStacking;
     }
 
     private void HandleAttackSpeed()
@@ -602,7 +528,6 @@ public class CreeperStrike : Skill
 
     protected override void ClearData()
     {
-        _castTarget = null;
         _lastHitTarget = null;
         _isNextHitFromLightningMovement = false;
 

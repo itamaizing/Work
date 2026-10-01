@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using Mirror;
 
+public enum CharacterRelation { Self, Ally, Enemy }
+
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITargetable
 {
@@ -71,6 +73,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	public TransformationComponent TransformationComponent => _transformationComponent;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
     public AttributeSystem AttributeSystem => _attributeSystem;
+    
+    public static Character Local { get; private set; }
+    
 	public Character CharacterParent
 	{
 		get => _characterParent;
@@ -150,6 +155,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		if (_initialized) return;
 
 		_initialized = true;
+		if (Data == null)
+		{
+			Debug.LogWarning("Data is null initialize not complete");
+			return;
+		}
 		AttributeSystem.Init(Data);
 		EnsureResources();
 		//Debug.Log($"Resources{_resources.Count}", gameObject);
@@ -163,6 +173,14 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		Health.Died += AddDeadCounter;
 		TemporaryResourceDisplay = _resources.Values.ToList();
 	}
+    
+    public CharacterRelation RelationTo(Character other)
+    {
+	    if (other == this) return CharacterRelation.Self;
+	    return other.NetworkSettings.TeamIndex == NetworkSettings.TeamIndex
+		    ? CharacterRelation.Ally
+		    : CharacterRelation.Enemy;
+    }
 
     private void EnsureResources()
 	{
@@ -178,7 +196,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 			}
 			//Debug.Log($"Now i have {resource.Key.ToString()}", gameObject);
 			component.Init(resource.Value);
-			_resources.Add(resource.Key, component);
+			_resources.TryAdd(resource.Key, component);
         }
 
   //      foreach (var resource in Resources)
@@ -274,6 +292,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	public override void OnStartClient()
 	{
+		if (isOwned)
+		{
+			Local = this;
+		}
+
 		if (!isClientOnly && !isOwned)
 		{
 			return;
@@ -283,6 +306,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	public override void OnStopClient()
 	{
+		if (isOwned && Local == this)
+		{
+			Local = null;
+		}
+
 		if (!isClientOnly && !isOwned)
 		{
 			return;
@@ -375,7 +403,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	private void DeleteStates()
     {
-		var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
+		var statesCopy = new List<StateBasic>(characterState.CurrentStates);
 		foreach (var state in statesCopy)
 		{
 			characterState.RemoveState(state.State);

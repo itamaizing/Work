@@ -15,6 +15,6 @@ public class FrostTalent_4 : Talent
 
     public override void Exit()
     {
-        _skillManager.ActivateSkill(_iceShadow);
+        _skillManager.DeactivateSkill(_iceShadow);
     }  
 }

@@ -31,6 +31,14 @@ public class SpellMoveTo : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (Hero is MinionComponent minion)
+        {
+            minion.LastOrder = MinionComponent.MinionOrder.Move;
+
+            var autoAttack = minion.GetComponent<MinionAutoAttackSkill>();
+            autoAttack?.SuspendForExternalOrder();
+        }
+
         _isHolding = true;
         _agent.SetDestination(_targetPoint);
 

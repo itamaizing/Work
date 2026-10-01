@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Fear : AbstractCharacterState
+public class Fear : StateBasic
 {
-    //private float _duration;
+    private float _duration;
     private float _baseDuration;
     private Character _source;
     private bool _previousIsSelect;
@@ -18,12 +18,12 @@ public class Fear : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _source = personWhoMadeBuff;
+        _duration = durationToExit;
         _baseDuration = durationToExit;
-        //MaxStacksCount = 1;
 
         MoveComponent moveComponent = characterState.Character.Move;
         _skillManager = characterState.Character.Abilities;
@@ -44,7 +44,7 @@ public class Fear : AbstractCharacterState
         Debug.Log("Страх");
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         if (_skillManager != null)
         {
@@ -57,9 +57,14 @@ public class Fear : AbstractCharacterState
                 }
             }
         }
+
+        if (_duration <= 0f)
+        {
+            ExitState();
+        }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (_moveCoroutine != null)
         {
@@ -84,18 +89,7 @@ public class Fear : AbstractCharacterState
             skill.Disactive = false;
         }
         _disabledSkills.Clear();
-        characterState.RemoveStateFromList(this);
-    }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
-
-    private void InitializeFirstStack()
-    {
-        duration = _baseDuration;
-        //currentStacksCount++;
+        characterState.RemoveState(this);
     }
 
     private IEnumerator MoveAwayCoroutine(MoveComponent moveComp)
@@ -117,8 +111,9 @@ public class Fear : AbstractCharacterState
         float changeDirectionInterval = Random.Range(0.5f, 1.5f);
         float timeSinceLastChange = 0f;
 
-        while (duration > 0f)
+        while (_duration > 0f)
         {
+            _duration -= Time.deltaTime;
             timeSinceLastChange += Time.deltaTime;
 
             if (_source) fleeDir = (moveComp.transform.position - _source.transform.position).normalized;

@@ -1,33 +1,31 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class EmeraldSkinState : AbstractCharacterState
+public class EmeraldSkinState : StateBasic
 {
-    //private float _buffDuration = 2f;
+    private float _buffDuration = 2f;
     private float _defenseIncrease = 0.9f;
-    private float _physDefenseIncrease = 0f;
-    private float _magDefenseIncrease = 0f;
 
     private float _flashBuffDuration = 1f;
     private float _lightMagicBuffDuration = 1f;
     private float _shieldBuffDuration = 2f;
 
     private bool _isTalentActive = false;
-    
+
     private List<StatusEffect> _effects = new();
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.EmeraldSkin;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        duration = durationToExit;
+        _buffDuration = durationToExit;
         _isTalentActive = damageToExit > 0;
-        
+
         ApplyBuff();
-        
+
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
             if (skill.Info.School == Schools.Light && _isTalentActive)
@@ -49,11 +47,17 @@ public class EmeraldSkinState : AbstractCharacterState
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _buffDuration -= Time.deltaTime;
+
+        if (_buffDuration <= 0)
+        {
+            ExitState();
+        }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
@@ -76,51 +80,40 @@ public class EmeraldSkinState : AbstractCharacterState
 
         Debug.Log("Emerald Skin state Exit");
         RemoveBuff();
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        _buffDuration += time;
-        return true;
-    }*/
 
     private void AddTimeByFlash()
     {
         Debug.Log("Add time by flash - " + _flashBuffDuration);
-        duration += _flashBuffDuration;
-
-        characterState.StateIcons?.ActivateIco(State, duration, 1, false);
+        _buffDuration += _flashBuffDuration;
     }
 
     private void AddTimeByShield()
     {
         Debug.Log("Add time by shield - " + _shieldBuffDuration);
-        duration += _shieldBuffDuration;
-
-        characterState.StateIcons?.ActivateIco(State, duration, 1, false);
+        _buffDuration += _shieldBuffDuration;
     }
-    
+
     private void AddTimeByLightMagic()
     {
         Debug.Log("Add time by light - " + _lightMagicBuffDuration);
-        duration += _lightMagicBuffDuration;
-
-        characterState.StateIcons?.ActivateIco(State, duration, 1, false);
+        _buffDuration += _lightMagicBuffDuration;
     }
 
     private void ApplyBuff()
     {
-        _physDefenseIncrease = _defenseIncrease - characterState.Character.Health.DefPhysDamage;
-        _magDefenseIncrease = _defenseIncrease - characterState.Character.Health.DefMagDamage;
-        
-        characterState.Character.Health.SetPhysicDef(characterState.Character.Health.DefPhysDamage + _physDefenseIncrease);
-        characterState.Character.Health.SetMagicDef(characterState.Character.Health.DefMagDamage + _magDefenseIncrease);
+        var attrs = characterState.Character.AttributeSystem;
+        var physRes = attrs[CharacterAttributeName.ResistancePhysical];
+        var magRes = attrs[CharacterAttributeName.ResistanceMagical];
+
+        physRes.AddModifier(new AttributeModifier(_defenseIncrease - physRes.GetValue(), ModifierType.Flat, this));
+        magRes.AddModifier(new AttributeModifier(_defenseIncrease - magRes.GetValue(), ModifierType.Flat, this));
     }
 
     private void RemoveBuff()
     {
-        characterState.Character.Health.SetPhysicDef(characterState.Character.Health.DefPhysDamage - _physDefenseIncrease);
-        characterState.Character.Health.SetMagicDef(characterState.Character.Health.DefMagDamage - _magDefenseIncrease);
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical].RemoveBySource(this);
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
     }
 }

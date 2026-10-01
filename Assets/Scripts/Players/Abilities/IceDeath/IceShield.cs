@@ -8,7 +8,6 @@ public class IceShield : Skill
 	[SerializeField] private float _percentOfShield = 0.9f;
 	[SerializeField] private float _decreaseSpeed = 0.2f;
 	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private IceShieldObject _shield;
 
 	private bool _active = false;

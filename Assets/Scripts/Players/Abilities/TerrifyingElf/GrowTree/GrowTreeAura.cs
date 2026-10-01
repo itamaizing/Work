@@ -21,6 +21,7 @@ public class GrowTreeAura : NetworkBehaviour
     private Coroutine _routine;
     private const float TreeMultiplier = 1.2f;
     private const float VisionBonus = 3f;
+    private const float TreeBuffPercent = 1.5f;
 
     private readonly Dictionary<Skill, SkillBaseData> _baseValues = new();
     private bool _isBuffApplied = false;
@@ -30,13 +31,41 @@ public class GrowTreeAura : NetworkBehaviour
 
     [Header("Talent")]
     private bool _growTreeIncreasesMaxHealth;
-
+    
     public bool GrowTreeIncreasesMaxHealth { get => _growTreeIncreasesMaxHealth; set => _growTreeIncreasesMaxHealth = value; }
 
     public void Init(SkillManager skill, Character hero)
     {
         _skillManager = skill;
         _Hero = hero;
+    }
+    
+    public void EnableTreeManaRegen(bool isEnable)
+    {
+        _treeManaRegenTalent = isEnable;
+
+        EnableManaRegen(_treeManaRegenTalent);
+    }
+
+    private void EnableManaRegen(bool value)
+    {
+        if (value)
+        {
+            if(_manaRegenRoutine == null)
+                _manaRegenRoutine = StartCoroutine(ApplyTreeManaRegenPeriodically());
+        }
+        else
+        {
+            if (_manaRegenRoutine != null)
+            {
+                StopCoroutine(_manaRegenRoutine);
+                _manaRegenRoutine = null;
+            }
+            if (_Hero.TryGetResource(ResourceType.Mana) is Mana manaResource)
+            {
+                ResetTreeManaModifier(manaResource);
+            }
+        }
     }
 
     [Server]
@@ -58,6 +87,20 @@ public class GrowTreeAura : NetworkBehaviour
         charactersInZone.Clear();
         clientIds.Clear();
         if (_Hero != null) RemoveTreeBuff(_Hero);
+        
+        if (_manaRegenRoutine != null)
+        {
+            StopCoroutine(_manaRegenRoutine);
+            _manaRegenRoutine = null;
+        }
+
+        if (_Hero != null)
+        {
+            if (_Hero.TryGetResource(ResourceType.Mana) is Mana manaResource)
+            {
+                ResetTreeManaModifier(manaResource);
+            }
+        }
     }
 
     public void ApplyTreeBuff(Character character)
@@ -65,16 +108,18 @@ public class GrowTreeAura : NetworkBehaviour
         if (_skillManager == null) return;
         if (_Hero != character) return;
 
-        if (character != null) RemoveTreeBuff(character);
+        RemoveTreeBuff(character);
 
         character.VisionComponent.VisionRange += VisionBonus;
 
         foreach (var skill in _skillManager.Abilities)
         {
             if (skill == null) continue;
-
-            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
-            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+            if (skill.Info.AbilityForm == AbilityForm.Physical || skill.Info.AbilityForm == AbilityForm.Both)
+            {
+                skill.Attributes[SkillAttributeName.Length].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
+                skill.Attributes[SkillAttributeName.Radius].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
+            }
         }
     }
 
@@ -89,8 +134,8 @@ public class GrowTreeAura : NetworkBehaviour
         {
             if (skill == null) continue;
 
-            skill.Buff.Length.ReductionPercentage(TreeMultiplier);
-            skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
+            skill.Attributes[SkillAttributeName.Length].RemoveBySource(this, all: true);
+            skill.Attributes[SkillAttributeName.Radius].RemoveBySource(this, all: true);
         }
     }
 
@@ -231,4 +276,63 @@ public class GrowTreeAura : NetworkBehaviour
             (state.GetState(States.ShadowTree) as ShadowTree)?.SwitchToFinite();
         }
     }
+
+    #region TreeManaRegenTalent
+
+    private bool _treeManaRegenTalent;
+    private Coroutine _manaRegenRoutine;
+    
+    private const float ManaRegenRadius = 12f;
+    private const float MaxManaBonusPercent = 0.15f;
+    private const int MaxGrowthTicks = 10;
+    
+    private float _currentAddedPercent = 0f;
+    private int _currentGrowthTicks = 0;
+
+    private IEnumerator ApplyTreeManaRegenPeriodically()
+    {
+        var wait = new WaitForSeconds(1f);
+        var mana = _Hero != null ? _Hero.TryGetResource(ResourceType.Mana) : null;
+
+        while (_Hero != null && mana != null)
+        {
+            float distance = Vector3.Distance(transform.position, _Hero.transform.position);
+            if (distance <= ManaRegenRadius)
+            {
+                if (_currentGrowthTicks < MaxGrowthTicks)
+                {
+                    mana.RemoveModifierBySource(ResourceAttributeName.MaxValue, this, all: true);
+
+                    _currentGrowthTicks++;
+                    _currentAddedPercent = (_currentGrowthTicks / (float)MaxGrowthTicks) * MaxManaBonusPercent;
+
+                    mana.AddModifier(ResourceAttributeName.MaxValue, 
+                        new AttributeModifier(_currentAddedPercent, ModifierType.Percent, source: this));
+                }
+            }
+            else
+            {
+                if (_currentGrowthTicks > 0)
+                {
+                    ResetTreeManaModifier(mana);
+                }
+            }
+
+            yield return wait;
+        }
+
+        _manaRegenRoutine = null;
+    }
+
+    private void ResetTreeManaModifier(Resource manaResource)
+    {
+        if (manaResource == null || _currentGrowthTicks == 0) return;
+        
+        manaResource.RemoveModifierBySource(ResourceAttributeName.MaxValue, this, all: true);
+
+        _currentGrowthTicks = 0;
+        _currentAddedPercent = 0f;
+    }
+
+    #endregion
 }

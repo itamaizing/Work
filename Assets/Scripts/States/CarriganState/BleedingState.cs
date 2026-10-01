@@ -2,11 +2,10 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingState : AbstractCharacterState
+public class BleedingStateStacking : StateStackingRefreshing
 {
-    private Character _target;
-    
     private float _baseDamage;
+    private float _percentDamage;
 
     private float _baseDuration;
     
@@ -19,19 +18,18 @@ public class BleedingState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _target = characterState.Character;
-;
         _baseDuration = durationToExit;
         _baseDamage = damageToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
 
-        _target.Health.IsDot = true;
+        SetMaxStacks(3);
+        CurrentStacksCount = 1;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {        
         _timeBetweenAttack -= Time.deltaTime;
         if (_timeBetweenAttack <= 0)
@@ -41,27 +39,49 @@ public class BleedingState : AbstractCharacterState
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
-
-    protected override void OnExitState()
+    
+    public override void ReduceStack()
     {
-        _target.Health.IsDot = false;
+        CurrentStacksCount--;
+
+        if (CurrentStacksCount <= 0)
+        {
+            
+            ExitState();
+        }
+        else
+        {
+            RemainingDuration = _baseDuration;
+        }
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        duration = _baseDuration;
-        return true;
-    }*/
+        characterState.RemoveState(this);
+    }
 
-    [Server]
+    public override bool Stack(float time)
+    {
+        if (CurrentStacksCount < 3)
+        {
+            CurrentStacksCount++;
+        }
+        RemainingDuration = _baseDuration;
+        
+        return true;
+    }
+    
     private void BleedingDamage()
     {
         Damage damage = new Damage()
         {
             Value = _baseDamage,
-            Type = DamageType.Physical,
+            Type = DamageType.DOTPhys,
+            DamageKey = "bleeding"
         };
-
-        _target.Health.TryTakeDamage(ref damage, null);
+        if(characterState.isServer)
+            health.TryTakeDamage(ref damage, null);
     }
+    
+    
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityFormDebuff : AbstractCharacterState
+public class AbilityFormDebuff : StateBasic
 {
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
@@ -16,7 +16,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilityFormDebuff State");
 		characterState = character;
@@ -35,33 +35,22 @@ public class AbilityFormDebuff : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
+		Debug.Log("Updating AbilityFormDebuff State");
 		if (turnOff)
 		{
 			ExitState();
 		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
+		Debug.Log("Exiting AbilityFormDebuff State");
+		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledForm, true);
 		}
 	}
-
-	/*public override bool Stack(float time)
-	{
-
-		if (duration > time)
-		{
-			return true;
-		}
-		else
-		{
-			duration = time;
-			return true;
-		}
-	}*/
 }

@@ -53,7 +53,8 @@ public class SkillAttributes
         {
             if (_heroAttributes == null)
                 return _attributes[SkillAttributeName.CastSpeed].GetValue();
-            return GetCombined(_attributes[SkillAttributeName.CastSpeed], _heroAttributes[CharacterAttributeName.CastSpeed]);
+            return GetCombined(_attributes[SkillAttributeName.CastSpeed],
+                _heroAttributes[CharacterAttributeName.CastSpeed]);
         }
         set { _attributes[SkillAttributeName.CastSpeed].SetBaseValue(value); }
     }
@@ -67,9 +68,7 @@ public class SkillAttributes
             var heroP = _heroAttributes[CharacterAttributeName.CastSpeedPhysical];
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
-            return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.PercentBonus + heroP.PercentBonus) *
-                (skill.MultiplierBonus * heroB.MultiplierBonus * heroP.MultiplierBonus);
+            return Attribute.SumFor(skill.BaseValue, skill, heroB, heroP);
         }
     }
     public float CastSpeedMagical
@@ -78,13 +77,12 @@ public class SkillAttributes
         {
             if (_heroAttributes == null)
                 return _attributes[SkillAttributeName.CastSpeed].GetValue();
+
             var heroB = _heroAttributes[CharacterAttributeName.CastSpeed];
             var heroM = _heroAttributes[CharacterAttributeName.CastSpeedMagical];
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
-            return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.PercentBonus + heroM.PercentBonus) *
-                (skill.MultiplierBonus * heroB.MultiplierBonus * heroM.MultiplierBonus);
+            return Attribute.SumFor(skill.BaseValue, skill, heroB, heroM);
         }
     }
     #endregion Properties
@@ -122,11 +120,6 @@ public class SkillAttributes
         return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
     }
 
-    // Добавить такой же GetDamage. Вероятно вынести их в Skill.cs, чтобы сервер главентсовавал
-    // и можно было override'ить
-    /// <summary>
-    /// Возвращает шанс с учетом модификаторов на скилле и герое
-    /// </summary>
     public float GetChance(float value)
     {
         if (_heroAttributes == null)
@@ -142,8 +135,9 @@ public class SkillAttributes
         foreach (Attribute attribute in _attributes.Values)
             attribute.OnAttributeModify += SendAttributeModify;
     }
+    
+    public void SendAttributeModify(string name, float value)
 
-    private void SendAttributeModify(string name, float value)
     {
         OnAttributeModify?.Invoke(name, value);
     }

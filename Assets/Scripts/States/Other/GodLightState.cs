@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class GodLightState : AbstractCharacterState
+public class GodLightState : StateBasic
 {
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.GodLight;
@@ -9,7 +9,7 @@ public class GodLightState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         
@@ -17,13 +17,13 @@ public class GodLightState : AbstractCharacterState
         characterState.Character.Abilities.SetNextSkillNoCast();
     }
 
-
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        return true;
-    }*/
-
-    public override void OnUpdateState()
+        
+        characterState.RemoveState(this);
+    }
+    
+    public override void UpdateState()
     {
         if (!characterState.Character.Abilities.IsNextSkillNoCast) ExitState();
     }

@@ -37,6 +37,7 @@ public class SelectedCircle : MonoBehaviour
 
     public void SwitchSelectCircle(bool value)
     {
+        if (_selectProjector == null) return;
         _selectProjector.gameObject.SetActive(value);
     }
 

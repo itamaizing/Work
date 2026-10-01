@@ -85,15 +85,13 @@ public class CloneSelfSkill : Skill
 
         foreach (var skill in mgr.Skills.ToList())
         {
-            if(skill is SpellMoveTo) continue;
-            
             mgr.DeactivateSkill(skill);
         }
 
+        mgr.ActivateSkill(mgr.GetSkill<SpellMoveTo>());
         foreach (var typeName in talentTypeNames)
         {
             var type = System.Type.GetType(typeName);
-            Debug.LogError(type);
             if (type == null) continue;
 
             var match = mgr.Skills.FirstOrDefault(s => s.GetType() == type);

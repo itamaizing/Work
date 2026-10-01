@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TiredSoul : StackableState
+public class TiredSoul : StateStacking
 {
     private float _baseDuration;
 
@@ -10,41 +10,43 @@ public class TiredSoul : StackableState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
-        currentStacksCount++;
-        MaxStacksCount = 2;
+        CurrentStacksCount++;
+        SetMaxStacks(2);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     { 
-        if (duration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
+        if (RemainingDuration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
         {
-            currentStacksCount--;
-            duration = _baseDuration * currentStacksCount;
+            CurrentStacksCount--;
+            RemainingDuration = _baseDuration * CurrentStacksCount;
 
-            if (currentStacksCount == 0)
+            if (CurrentStacksCount == 0)
             {
-                UpdateState();
+                ExitState();
             }
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
        if(!characterState.CheckForState(States.TiredSoul)) 
            return;
+       
+       characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
-            duration += time;
-            duration = Mathf.Min(duration, _baseDuration * currentStacksCount);
+            CurrentStacksCount++;
+            RemainingDuration += time;
+            RemainingDuration = Mathf.Min(RemainingDuration, _baseDuration * CurrentStacksCount);
         }
         return true;
     }

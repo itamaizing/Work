@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class CreeperPoisonAura : NetworkBehaviour
 {
-    [Header("Poison Aura Settings")]
     [SerializeField] private float _radius = 6f;
     [SerializeField] private LayerMask _enemyLayer;
     [SerializeField] private float _attackSpeedPerStack = 0.1f;
@@ -14,13 +13,15 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private Coroutine _poisonAuraRoutine;
     private int _lastStacks = 0;
-    
     private int _lastEnergyStacks = 0;
 
     private Health _health;
     private Character _owner;
 
-    private float _tempEvadeBonus = 0f;
+    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(1, ModifierType.Percent);
+    private readonly AttributeModifier _evadeMeleeModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _evadeRangeModifier = new AttributeModifier(0, ModifierType.Flat);
+    private readonly AttributeModifier _evadeMagicModifier = new AttributeModifier(0, ModifierType.Flat);
 
     #region Talent
     private bool _isFeelingPoisoning = false;
@@ -38,8 +39,29 @@ public class CreeperPoisonAura : NetworkBehaviour
     public void DecreaseCooldownDamage(bool value) => _isDecreaseCooldownDamage = value;
     public void ActiveWitheringPoisonMetabolism(bool value) => _isActiveWitheringPoisonMetabolism = value;
     public void ActiveWitheringPoison(bool value) => _isActiveWitheringPoison = value;
-    public void PleasurePoisoning(bool value) => _isPleasurePoisoning = value;
-    public void OwnElement(bool value) => _isOwnElement = value;
+
+    public void PleasurePoisoning(bool value)
+    {
+        _isPleasurePoisoning = value;
+        EvaluateAuraState();
+    }
+
+    public void OwnElement(bool value)
+    {
+        if(_isOwnElement == value) return;
+
+        _isOwnElement = value;
+        if(isClient)
+            CmdOwnElement(value);
+    }
+
+    [Command]
+    private void CmdOwnElement(bool value)
+    {
+        _isOwnElement = value;
+        EvaluateAuraState();
+    }
+
     public void FeelingPoisoning(bool value) => _isFeelingPoisoning = value;
     public void EvadePoison(bool value) => _isEvadePoison = value;
     #endregion
@@ -61,8 +83,8 @@ public class CreeperPoisonAura : NetworkBehaviour
         {
             _owner.DamageTracker.OnDamageTracked += OnDamageDealt;
         }
-
-        _poisonAuraRoutine = StartCoroutine(PoisonAuraRoutine());
+        
+        EvaluateAuraState();
     }
 
     public override void OnStopServer()
@@ -78,7 +100,47 @@ public class CreeperPoisonAura : NetworkBehaviour
             _owner.DamageTracker.OnDamageTracked -= OnDamageDealt;
         }
 
-        if (_poisonAuraRoutine != null) StopCoroutine(_poisonAuraRoutine);
+        StopAuraRoutine();
+    }
+    
+    private void EvaluateAuraState()
+    {
+        if (!isServer) return;
+
+        bool needsAuraRoutine = _isOwnElement || _isPleasurePoisoning;
+
+        if (needsAuraRoutine)
+        {
+            if (_poisonAuraRoutine == null)
+            {
+                _poisonAuraRoutine = StartCoroutine(PoisonAuraRoutine());
+            }
+        }
+        else
+        {
+            StopAuraRoutine();
+            ResetAuraEffects();
+        }
+    }
+
+    private void StopAuraRoutine()
+    {
+        if (_poisonAuraRoutine != null)
+        {
+            StopCoroutine(_poisonAuraRoutine);
+            _poisonAuraRoutine = null;
+        }
+    }
+
+    private void ResetAuraEffects()
+    {
+        if (_lastStacks != 0)
+        {
+            ApplyAttackSpeed(0);
+            _lastStacks = 0;
+        }
+
+        ResetEnergyRegen();
     }
 
     private void OnBeforeTakeDamage(Damage damage, Skill skill)
@@ -87,16 +149,25 @@ public class CreeperPoisonAura : NetworkBehaviour
         if (skill == null || skill.Hero == null) return;
 
         Character attacker = skill.Hero;
-
         if (attacker == null || attacker == _owner) return;
-
         if (!HasPoison(attacker)) return;
 
-        _tempEvadeBonus = 5f;
+        float bonus = 5f;
+        var attrs = _owner.AttributeSystem;
 
-        _health.EvadeMeleeDamage += _tempEvadeBonus;
-        _health.EvadeRangeDamage += _tempEvadeBonus;
-        _health.ResistMagDamage += _tempEvadeBonus;
+        _evadeMeleeModifier.Source = this;
+        _evadeMeleeModifier.Value = bonus;
+        _evadeRangeModifier.Source = this;
+        _evadeRangeModifier.Value = bonus;
+        _evadeMagicModifier.Source = this;
+        _evadeMagicModifier.Value = bonus;
+
+        if (!attrs[CharacterAttributeName.EvasionPhysicalMelee].Modifiers.Contains(_evadeMeleeModifier))
+            attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(_evadeMeleeModifier);
+        if (!attrs[CharacterAttributeName.EvasionPhysicalRange].Modifiers.Contains(_evadeRangeModifier))
+            attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(_evadeRangeModifier);
+        if (!attrs[CharacterAttributeName.EvasionMagical].Modifiers.Contains(_evadeMagicModifier))
+            attrs[CharacterAttributeName.EvasionMagical].AddModifier(_evadeMagicModifier);
     }
 
     private void OnDamageDealt(Damage damage, GameObject target)
@@ -116,13 +187,10 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private void OnAfterDamage(Damage damage, Skill skill)
     {
-        if (_tempEvadeBonus <= 0) return;
-
-        _health.EvadeMeleeDamage -= _tempEvadeBonus;
-        _health.EvadeRangeDamage -= _tempEvadeBonus;
-        _health.ResistMagDamage -= _tempEvadeBonus;
-
-        _tempEvadeBonus = 0f;
+        var attrs = _owner.AttributeSystem;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveModifier(_evadeMeleeModifier);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveModifier(_evadeRangeModifier);
+        attrs[CharacterAttributeName.EvasionMagical].RemoveModifier(_evadeMagicModifier);
     }
 
     private void ApplyEnergyRegen(int stacks)
@@ -131,12 +199,12 @@ public class CreeperPoisonAura : NetworkBehaviour
 
         if (stacks == _lastEnergyStacks) return;
 
-        var state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningState;
+        var state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningStateStacking;
 
         if (state == null && stacks > 0)
         {
             _owner.CharacterState.CmdAddState(States.FeelingPoisoning, 999f, 0f, gameObject, "PleasurePoisoning");
-            state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningState;
+            state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningStateStacking;
         }
 
         if (state == null) return;
@@ -147,7 +215,6 @@ public class CreeperPoisonAura : NetworkBehaviour
         {
             for (int i = 0; i < delta; i++) state.Stack(999f);
         }
-
         else if (delta < 0)
         {
             for (int i = 0; i < -delta; i++) state.ReduceStack(1);
@@ -173,24 +240,20 @@ public class CreeperPoisonAura : NetworkBehaviour
     {
         while (true)
         {
-            if (!_isOwnElement)
-            {
-                if (_lastStacks != 0)
-                {
-                    ApplyAttackSpeed(0);
-                    _lastStacks = 0;
-                }
-
-                yield return new WaitForSeconds(_tickRate);
-                continue;
-            }
-
             int totalStacks = CalculatePoisonStacks();
 
-            if (totalStacks != _lastStacks)
+            if (_isOwnElement)
             {
-                ApplyAttackSpeed(totalStacks);
-                _lastStacks = totalStacks;
+                if (totalStacks != _lastStacks)
+                {
+                    ApplyAttackSpeed(totalStacks);
+                    _lastStacks = totalStacks;
+                }
+            }
+            else if (_lastStacks != 0)
+            {
+                ApplyAttackSpeed(0);
+                _lastStacks = 0;
             }
 
             if (_isPleasurePoisoning)
@@ -238,9 +301,9 @@ public class CreeperPoisonAura : NetworkBehaviour
         int stacks = 0;
 
         if (state.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState) stacks += bindingPoisonState.CurrentStacks;
-        if (state.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState) stacks += poisonBoneState.CurrentStacks;
+        if (state.GetState(States.PoisonBone) is PoisonBoneStateStacking poisonBoneState) stacks += poisonBoneState.CurrentStacks;
         if (state.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState) stacks += empathicPoisonsState.CurrentStacks;
-        if (state.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState) stacks += witheringPoisonState.CurrentStacks;
+        if (state.GetState(States.WitheringPoison) is WitheringPoisonStateStacking witheringPoisonState) stacks += witheringPoisonState.CurrentStacksCount;
 
         return stacks;
     }
@@ -249,26 +312,18 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private void ApplyAttackSpeed(int stacks)
     {
-        float newBonus = stacks * _attackSpeedPerStack;
+        float newValue = stacks * _attackSpeedPerStack;
 
-        if (Mathf.Approximately(newBonus, _currentBonus)) return;
+        if (_owner == null) return;
 
-        float delta = newBonus - _currentBonus;
-
-        if (_owner == null || _owner.Abilities == null) return;
-
-        var skills = _owner.Abilities.Skills;
-
-        foreach (var skill in skills)
+        if (!_owner.AttributeSystem[CharacterAttributeName.CastSpeed].Modifiers.Contains(_castSpeedModifier))
         {
-            if (skill == null) continue;
-
-            if (skill.Info.DamageType != DamageType.Physical) continue;
-
-            if (delta > 0) skill.Buff.CastSpeed.IncreasePercentage(delta);
-            else skill.Buff.CastSpeed.ReductionPercentage(-delta);
+            _castSpeedModifier.Source = this;
+            _owner.AttributeSystem[CharacterAttributeName.CastSpeed].AddModifier(_castSpeedModifier);
         }
 
-        _currentBonus = newBonus;
+        if (Mathf.Approximately(newValue, _castSpeedModifier.Value)) return;
+
+        _castSpeedModifier.Value = newValue;
     }
 }

@@ -8,11 +8,13 @@ public class HuntressTalent_13 : Talent
 
     public override void Enter()
     {
-        terrifyingElfAura.ThirdShotRow(true);
+        //terrifyingElfAura.ThirdShotRow(true);
+        terrifyingElfAura.ElvenSkillPhysDamageHealthChance(true);
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.ThirdShotRow(false);
+        //terrifyingElfAura.ThirdShotRow(false);
+        terrifyingElfAura.ElvenSkillPhysDamageHealthChance(false);
     }
 }

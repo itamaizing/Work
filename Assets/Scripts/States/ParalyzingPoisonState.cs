@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParalyzingPoisonState : AbstractCharacterState
+public class ParalyzingPoisonState : StateBasic
 {
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
@@ -15,7 +15,7 @@ public class ParalyzingPoisonState : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 
 		if (character.TryGetComponent<Character>(out var ability))
@@ -31,7 +31,7 @@ public class ParalyzingPoisonState : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 		if (turnOff)
 		{
@@ -39,8 +39,9 @@ public class ParalyzingPoisonState : AbstractCharacterState
 		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
+		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}

@@ -13,7 +13,6 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private LayerMask obstecls;
     [SerializeField] private float basePsi = 1f;
     [SerializeField] private float grabDuration = 1.2f;
-    [SerializeField] private float lifeTentacle = 4f;
     [SerializeField] private LineRenderer tentacleLine;
     [SerializeField] private Transform tentaclePoint;
     [SerializeField] private SpikeTentacle _spike;
@@ -26,12 +25,18 @@ public class TentacleProjectile : NetworkBehaviour
 
     private float _maxPullDistance;
 
+    private const float PsiStepDistance = 1f;
+    private float _pullPsiDistanceAccumulator;
+    private BasePsionicEnergy _casterPsiEnergy;
+
     private bool _isAttackingPsiEnergyActive;
     private bool _isAttractionTentacleActive;
     private bool _isAttractionTentacle;
     private bool _isSpawnSpike;
     private float _spentAttackingPsiEnergy;
-
+    
+    private float lifeTentacle;
+    private float _remainingLifeTime;
     private float _radius = 4f;
     private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
@@ -40,6 +45,7 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isPsionicsTalentThree = false;
 
     private Coroutine _radiusUpdateCoroutine;
+    private Coroutine _lifeTimeCoroutine;
 
     private Skill _skill;
 
@@ -70,7 +76,7 @@ public class TentacleProjectile : NetworkBehaviour
         if (isServer && _target.CharacterState.CheckForState(States.TentacleGrip)) _target.CharacterState.RemoveState(States.TentacleGrip);
     }
 
-    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
+    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition, float lifetime,
         bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, bool isSpawnSpike, float currentDamage, Skill skill)
     {
         _isPsionicsTalentThree = isPsionicsTalentThree;
@@ -81,15 +87,43 @@ public class TentacleProjectile : NetworkBehaviour
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _isAttractionTentacleActive = isAttractionTentacleTalent;
         _spentAttackingPsiEnergy = currentDamage;
-        _isPsionicsTalentThree =
         _skill = skill;
         _isSpawnSpike = isSpawnSpike;
+
+        if (_player != null) _player.TryGetComponent(out _casterPsiEnergy);
 
         transform.position = startPosition;
 
         _maxPullDistance = Vector3.Distance(endPosition, target.transform.position);
 
-        Invoke(nameof(ReleaseTarget), lifeTentacle);
+        lifeTentacle = lifetime;
+        _remainingLifeTime = lifetime;
+        if (!isClient)
+        {
+            _lifeTimeCoroutine = StartCoroutine(LifeTimeRoutine());
+        }
+    }
+    
+    private IEnumerator LifeTimeRoutine()
+    {
+        while (_remainingLifeTime > 0f)
+        {
+            _remainingLifeTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        ReleaseTarget();
+        RpcReleaseTarget();
+    }
+    
+    [Server]
+    public void ExtendLifeTime(float damage)
+    {
+        if (damage <= 0) return;
+
+        float addTime = lifeTentacle * 0.01f * damage;
+
+        _remainingLifeTime += addTime;
     }
 
     private IEnumerator DrawAndPullTarget()
@@ -165,10 +199,6 @@ public class TentacleProjectile : NetworkBehaviour
         NetworkServer.Spawn(spike.gameObject);
     }
 
-    public void SetRadiusColor(Color color)
-    {
-        _drawCircle?.SetColor(color);
-    }
     private IEnumerator PullTarget()
     {
         if (_target == null || tentaclePoint == null) yield break;
@@ -180,6 +210,7 @@ public class TentacleProjectile : NetworkBehaviour
         if (agent != null && agent.enabled) agent.enabled = false;
 
         float timer = 0f;
+        Vector3 previousPos = start;
 
         if (isServer)
         {
@@ -199,6 +230,17 @@ public class TentacleProjectile : NetworkBehaviour
 
             Vector3 currentPos = Vector3.Lerp(start, end, t);
             targetTransform.position = currentPos;
+
+            if (isServer && _casterPsiEnergy != null)
+            {
+                float movedDelta = Vector3.Distance(currentPos, previousPos);
+                if (movedDelta > 0.001f)
+                {
+                    _casterPsiEnergy.AddPsiByDistance(movedDelta);
+                }
+            }
+
+            previousPos = currentPos;
 
             if (Vector3.Distance(currentPos, transform.position) <= _maxPullDistance)
             {
@@ -245,6 +287,12 @@ public class TentacleProjectile : NetworkBehaviour
                 if (_isPsionicsTalentThree) ApplyLowVoltageDebuff(attackingPsiValue);
             }
         }
+    }
+
+    [ClientRpc]
+    private void RpcReleaseTarget()
+    {
+        ReleaseTarget();
     }
 
     private void ReleaseTarget()

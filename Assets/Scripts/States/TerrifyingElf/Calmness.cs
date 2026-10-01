@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Calmness : RefreshingState
+public class Calmness : StateStackingRefreshing
 {
     private const float _manaRegenPercent = 0.005f;
     private const int _baseMaxStacks = 2;
     private int _lastTreesCount;
     private float _regenAmount;
+    private float _baseDuration;
     
     private Resource manaResource;
     private Coroutine _regenRoutine;
@@ -18,78 +19,86 @@ public class Calmness : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _baseDuration = durationToExit;
         health = character.Character.Health;
-        manaResource = character.Character.TryGetResource(ResourceType.Mana);
-        base.personWhoMadeBuff = personWhoMadeBuff;
-        MaxStacksCount = _baseMaxStacks;
-        currentStacksCount = 1;
-
-        RecalcRegenAmount();
-        if (character.isServer) _regenRoutine = character.StartCoroutine(RegenTick());
+        manaResource = character.Character.Resource;
+        
+        SetMaxStacks(_baseMaxStacks);
+        
+        if (!character.isServer)
+        {
+            manaResource.MaxValueChanged -= RecalcRegenAmount;
+            manaResource.MaxValueChanged += RecalcRegenAmount;
+            _regenRoutine = character.StartCoroutine(RegenTick());
+        }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
-    protected override void OnExitState()
+    public override void ReduceStack()
     {
-        currentStacksCount = 0;
+        RemainingDuration = _baseDuration;
+        CurrentStacksCount--;
+        RecalcRegenAmount(0, 0);
+        if (CurrentStacksCount == 0)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+        CurrentStacksCount = 0;
+        manaResource.MaxValueChanged -= RecalcRegenAmount;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
+        
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float newDuration)
     {
-        duration = Mathf.Max(duration, newDuration);
-
-        if (currentStacksCount < MaxStacksCount)
-        {
-            currentStacksCount++;
-
-            RecalcRegenAmount();
-        }
+        RemainingDuration = Mathf.Max(RemainingDuration, newDuration);
         return true;
     }
 
     public void UpdateTreesCount(int newTreesCount)
     {
         _lastTreesCount = newTreesCount;
-        MaxStacksCount = _baseMaxStacks + _lastTreesCount;
+        SetMaxStacks(_baseMaxStacks + _lastTreesCount);
 
-        if (currentStacksCount > MaxStacksCount) currentStacksCount = MaxStacksCount;
-
-        RecalcRegenAmount();
+        if (CurrentStacksCount > MaxStacksCount) CurrentStacksCount = MaxStacksCount;
     }
 
-    public void ApplyRegen()
+    private void RecalcRegenAmount(float oldValue, float newValue)
     {
-        if (manaResource != null && _regenAmount > 0) manaResource.Add(_regenAmount);
-    }
-
-    private void RecalcRegenAmount()
-    {
-        if (manaResource != null) _regenAmount = manaResource.MaxValue * _manaRegenPercent * currentStacksCount;
+        if (manaResource != null)
+        {
+            _regenAmount = manaResource.MaxValue * _manaRegenPercent * CurrentStacksCount;
+        }
     }
 
     private IEnumerator RegenTick()
     {
         var wait = new WaitForSeconds(1f);
 
-        while (duration > 0)
+        while (RemainingDuration > 0)
         {
             yield return wait;
 
             if (manaResource == null) continue;
-            if (!characterState.isServer) continue;
 
             float missing = manaResource.MaxValue - manaResource.CurrentValue;
             if (missing <= 0f) continue;
 
             float amount = Mathf.Min(_regenAmount, missing);
-            manaResource.Add(amount);
+            manaResource.CmdAdd(amount);
         }
     }
+    
+    
 
 }

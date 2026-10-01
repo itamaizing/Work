@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class DarknessTalent_9 : Talent
 {
-    [SerializeField] private RetributiveReckoning _retributiveReckoning;
-
     public override void Enter()
     {
-        _retributiveReckoning.MagicAbilityInstantly(true);
+        character.Abilities.GetSkill<Ghost>().PassingThroughGhost(true);
     }
 
     public override void Exit()
     {
-        _retributiveReckoning.MagicAbilityInstantly(false);
+        character.Abilities.GetSkill<Ghost>().PassingThroughGhost(false);
     }
 }

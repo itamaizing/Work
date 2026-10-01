@@ -18,7 +18,7 @@ public class AoeTalentBooster : SkillTalentHandler
 
     public Dictionary<GameObject,Damage> GetDamagebleTarget(Character mainTarget, float mainDamageValue, Skill skill)
     {
-        if (!_enabled || mainTarget == null) return null;
+        if (!_enabled || mainTarget == null) new Dictionary<GameObject, Damage>();
 
         float aoeDamage = mainDamageValue * AoeDamagePercent;
 
@@ -48,7 +48,7 @@ public class AoeTalentBooster : SkillTalentHandler
 
     public Dictionary<GameObject,Heal> GetHealableTargets(Character mainTarget, float mainHealValue, Skill skill)
     {
-        if (!_enabled || mainTarget == null) return null;
+        if (!_enabled || mainTarget == null) return new Dictionary<GameObject, Heal>();
 
         float aoeHeal = mainHealValue * AoeHealPercent;
 

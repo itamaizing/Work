@@ -1,44 +1,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrueSight : AbstractCharacterState
+public class TrueSight : StateBasic
 {
     public override States State => States.TrueSightState;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
     {
         characterState = character;
         abilities = character.Character.GetComponent<SkillManager>();
         health = character.Character.GetComponent<Health>();
-        personWhoMadeBuff = personMadeBuff;
+        sourceCaster = personMadeBuff;
 
-        duration = durationToExit;
-        //MaxStacksCount = 0;
+        RemainingDuration = durationToExit;
 
         CheckInvisibility();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
 
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         var character = characterState.GetComponent<Character>();
         if (characterState.CheckForState(States.Invisible) || characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        duration = Mathf.Max(duration, time);
-        CheckInvisibility();
-        return false;
-    }*/
 
     private void CheckInvisibility()
     {

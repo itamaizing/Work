@@ -83,6 +83,11 @@ public class Shield : Resource, IDamageable
         StartCoroutine(FollowToJob(target));
     }
 
+    public void StopFollowTo()
+    {
+        StopAllCoroutines();
+    }
+
     private IEnumerator FollowToJob(Transform target)
     {
         while (true)

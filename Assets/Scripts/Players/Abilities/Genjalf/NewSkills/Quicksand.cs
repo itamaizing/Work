@@ -14,7 +14,6 @@ public class Quicksand : Skill, IGodLightSpell
 
     private Vector3 _startPoint = Vector3.zero;
     private Vector3 _endPoint = Vector3.zero;
-    private QuicksandTile _quicksandTempTile;
     private float _tempCastDeley = 1;
     private float _longPressThreshold = 0.25f;
     private int _bonusLength = 0;
@@ -147,18 +146,21 @@ public class Quicksand : Skill, IGodLightSpell
         GameObject item = Instantiate(_quicksandTile.gameObject, startPoint, Quaternion.identity);
         NetworkServer.Spawn(item);
 
-        _quicksandTempTile = item.GetComponent<QuicksandTile>();
-        _quicksandTempTile.SetOwnerTeam(ownerTeamIndex, _isInvisibleQuickSand, _bonusLength, _bonusWidth);
-        _quicksandTempTile.SetStartPosition(startPoint);
-        _quicksandTempTile.SetEndPosition(endPoint);
-        _quicksandTempTile.Build();
+        QuicksandTile tile = item.GetComponent<QuicksandTile>();
 
-        StartCoroutine(DurationJob());
+        tile.SetOwnerTeam(ownerTeamIndex, _isInvisibleQuickSand, _bonusLength, _bonusWidth);
+        tile.SetStartPosition(startPoint);
+        tile.SetEndPosition(endPoint);
+        tile.Build();
+
+        StartCoroutine(DurationJob(tile));
     }
 
-    private IEnumerator DurationJob()
+    private IEnumerator DurationJob(QuicksandTile tile)
     {
         yield return new WaitForSecondsRealtime(_quicksandDuration);
-        NetworkServer.Destroy(_quicksandTempTile.gameObject);
+
+        if (tile != null && tile.gameObject != null)
+            NetworkServer.Destroy(tile.gameObject);
     }
 }

@@ -16,9 +16,11 @@ namespace Gangdollarff
         public void SortDamageablesByDistance(Vector3 position)
         {
             _damageables = _damageables
+                .Where(collider => collider != null)
                 .OrderBy(collider => Vector3.Distance(collider.transform.position, position))
                 .ToList();
         }
+
 
         private void OnDisable()
         {

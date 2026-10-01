@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifier
+public class DivineEnhancementState : StateBasic, IDamageGivenModifier
 {
     private float _duration;
     private float _manaCostModifierValue = 2f;
     private Character _character;
+    private AttributeModifier _modifier = new AttributeModifier(1, ModifierType.Multiplier);
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DivineEnhancement;
@@ -15,7 +16,7 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     private List<Skill> _costSkills = new();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _character = character.Character;
@@ -23,42 +24,26 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
         ModifyManaCost();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-
+        _duration -= Time.deltaTime;
+        if (_duration <= 0) ExitState();
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         ResetManaCost();
+        characterState.RemoveState(this);
     }
-
-   /* public override bool Stack(float time)
-    {
-        _duration = time;
-        return true;
-    }*/
 
     private void ModifyManaCost()
     {
-        foreach (var skill in _character.Abilities.Abilities)
-        {
-            if (skill.Damage > 0)
-            {
-                _costSkills.Add(skill);
-                skill.Buff.ManaCost.IncreasePercentage(_manaCostModifierValue);
-            }
-        }
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResourceCost].AddModifier(_modifier);
     }
 
     private void ResetManaCost()
     {
-        foreach (var skill in _costSkills)
-        {
-            skill.Buff.ManaCost.ReductionPercentage(_manaCostModifierValue);
-        }
-        
-        _costSkills.Clear();
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResourceCost].RemoveModifier(_modifier);
     }
 
     public float ModifyOutgoingDamage(Damage damage)

@@ -1,143 +1,135 @@
 using Mirror;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class WitheringPoisonState : StackableState
+public class WitheringPoisonStateStacking : StateStackingRefreshing
 {
-    private List<Skill> _skills = new();
-    private List<Talent> _talents = new();
+    private const int MaxPoisonStacks = 2;
+    private const float TickInterval = 2f;
+    private const float ResourceBurnPercent = 0.01f;
+
     private BindingPoison _bindingPoison;
     private Character _player;
 
-    private int _maxStacks = 3;
-
-    private float _timeBetweenTakeAwayMana;
-    private float _startTimeBetweenTakeAwayMana = 2f;
-
+    private float _tickTimer;
     private float _baseDuration;
 
-    private float _baseValueTakeAwayMana = 0.003f;
-    private float _endValueTakeAwayMana;
     private float _baseChanceOfApplyBindingPoison = 0.03f;
     private float _chanceOfApplyBindingPoison = 0.9f;
-
     private bool _isActiveTalentBindingPoison = false;
 
-    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => duration; }
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Poison };
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override States State => States.WitheringPoison;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(MaxPoisonStacks);
         _baseDuration = durationToExit;
+        RemainingDuration = durationToExit;
+        _tickTimer = TickInterval;
+        CurrentStacksCount = 1;
 
         _player = personWhoMadeBuff;
 
         if (_player != null)
         {
-            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
-
-            foreach (Talent talent in _talents)
+            var activeTalents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
+            foreach (var talent in activeTalents)
             {
                 if (talent is BindingPoison bindingPoison)
                 {
-                    if (_bindingPoison == null)
-                    {
-                        _bindingPoison = bindingPoison;
-                        _isActiveTalentBindingPoison = _bindingPoison.Data.IsOpen;
-                    }
+                    _bindingPoison = bindingPoison;
+                    _isActiveTalentBindingPoison = _bindingPoison.Data != null && _bindingPoison.Data.IsOpen;
+                    break;
                 }
             }
         }
-
-        if (currentStacksCount < MaxStacksCount)
-        {
-            AddStacks();
-        }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-        _timeBetweenTakeAwayMana -= Time.deltaTime;
-        if (_timeBetweenTakeAwayMana <= 0)
+        _tickTimer -= Time.deltaTime;
+        if (_tickTimer <= 0f)
         {
-            TakeAwayMana();
-            _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
+            if (characterState.isServer)
+            {
+                BurnMainResource();
+            }
+            _tickTimer = TickInterval;
         }
 
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
     }
-
-    protected override void OnExitState()
+    
+    public override void ReduceStack()
     {
-        ResetValues();
+        CurrentStacksCount = 0;
+        ExitState();
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        RemainingDuration = time;
+
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStacks();
-            return true;
+            CurrentStacksCount++;
         }
-        else
-        {
-            duration = _baseDuration;
-            return true;
-        }
+
+        return true;
     }
 
-    public void AddStacks()
+    public override void ExitState()
     {
-        if (currentStacksCount < MaxStacksCount)
-        {
-            currentStacksCount++;
-            duration = _baseDuration;
-        }
-        else
-        {
-            duration = _baseDuration;
-        }
+        CurrentStacksCount = 0;
+        ResetValues();
+        base.ExitState();
     }
 
     [Server]
-    private void TakeAwayMana()
+    private void BurnMainResource()
     {
-        float takeAwayMana = currentStacksCount * _baseValueTakeAwayMana;
+        if (characterState == null || characterState.Character == null) return;
 
-        _endValueTakeAwayMana = characterState.Character.Resources[ResourceType.Mana]!.CurrentValue * takeAwayMana;
-
-        _chanceOfApplyBindingPoison *= _baseChanceOfApplyBindingPoison;
-
-        if (_bindingPoison != null && _isActiveTalentBindingPoison)
+        var mainResource = characterState.Character.Resource;
+        if (mainResource != null && mainResource.CurrentValue > 0f)
         {
-            if (UnityEngine.Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
+            float burnAmount = mainResource.CurrentValue * (ResourceBurnPercent * CurrentStacksCount);
+
+            if (burnAmount > 0f)
             {
-                characterState.AddState(States.BindingPoison, 10f, 0, _player.gameObject, null);
+                mainResource.TryUse(burnAmount);
             }
         }
 
-        characterState.Character.Resources[ResourceType.Mana].Add(-_endValueTakeAwayMana);
+        if (_bindingPoison != null && _isActiveTalentBindingPoison)
+        {
+            _chanceOfApplyBindingPoison *= _baseChanceOfApplyBindingPoison;
+
+            if (Random.value <= _chanceOfApplyBindingPoison)
+            {
+                characterState.AddState(States.BindingPoison, 10f, 0f, _player != null ? _player.gameObject : null, null);
+            }
+        }
     }
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
-        _baseDuration = 0;
-        duration = 0;
-        _endValueTakeAwayMana = 0;
-        _baseValueTakeAwayMana = 1f;
-        _chanceOfApplyBindingPoison = 0f;
-        _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
+        CurrentStacksCount = 0;
+        _baseDuration = 0f;
+        RemainingDuration = 0f;
+        _tickTimer = TickInterval;
+        _chanceOfApplyBindingPoison = 0.9f;
+        _bindingPoison = null;
+        _player = null;
     }
+    
+    
 }

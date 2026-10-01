@@ -2,6 +2,15 @@
 using TMPro;
 using UnityEngine;
 
+[Flags]
+public enum CastBarObservers
+{
+    None    = 0,
+    Self    = 1 << 0,
+    Allies  = 1 << 1,
+    Enemies = 1 << 2
+}
+
 [Serializable]
 public class InformationRenderComponent : BaseSkillComponent
 {
@@ -10,10 +19,18 @@ public class InformationRenderComponent : BaseSkillComponent
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
     [SerializeField] protected bool _isDynamicRenderer = false;
+    [Header("Cast Bars")]
+    [SerializeField] protected CastBarObservers _prepareBarVisibility = CastBarObservers.Self;
+    [SerializeField] protected CastBarObservers _castBarVisibility = CastBarObservers.Self;
     #endregion
     
     #region RuntimeVariables
-
+    private float _lastRadius;
+    private object _lastArea;
+    private float _lastCastLength;
+    private float _lastCastWidth;
+    private float _lastDamageValue;
+    private bool _hasCachedValues = false;
     #endregion
 
     #region Properties
@@ -21,6 +38,9 @@ public class InformationRenderComponent : BaseSkillComponent
     public bool IsAutoAreaRender => _isAutoAreaRender;
     public bool IsAutoLineRender => _isAutoLineRender;
     public bool IsDynamicRenderer => _isDynamicRenderer;
+    
+    public CastBarObservers PrepareBarVisibility => _prepareBarVisibility;
+    public CastBarObservers CastBarVisibility => _castBarVisibility;
     #endregion
 
     #region Methods
@@ -56,6 +76,9 @@ public class InformationRenderComponent : BaseSkillComponent
 
     public void ShowSmartIndicator()
     {
+        if (!_skill.SkillRender.TryClaimIndicator(_skill))
+            return;
+        
         Damage damage = new Damage
         {
             Value = _skill.Damage,
@@ -88,10 +111,63 @@ public class InformationRenderComponent : BaseSkillComponent
                 _skill.SkillRender.StartDrawLineForZone(_skill);
                 break;
         }
+        
+        _lastRadius = _skill.AreaInfo.Radius;
+        _lastArea = _skill.AreaInfo.Area;
+        _lastCastLength = _skill.AreaInfo.CastLength;
+        _lastCastWidth = _skill.AreaInfo.CastWidth;
+        _lastDamageValue = _skill.Damage;
+        _hasCachedValues = true;
+    }
+    
+    public void UpdateSmartIndicator()
+    {
+        if (!_hasCachedValues) return;
+
+        bool changed = false;
+
+        if (!Mathf.Approximately(_lastRadius, _skill.AreaInfo.Radius)) changed = true;
+        if (!Mathf.Approximately(_lastCastLength, _skill.AreaInfo.CastLength)) changed = true;
+        if (!Mathf.Approximately(_lastCastWidth, _skill.AreaInfo.CastWidth)) changed = true;
+        if (!Mathf.Approximately(_lastDamageValue, _skill.Damage)) changed = true;
+        if (!object.Equals(_lastArea, _skill.AreaInfo.Area)) changed = true;
+
+        if (changed)
+        {
+            RefreshIndicators();
+        }
+    }
+    
+    private void RefreshIndicators()
+    {
+        _skill.SkillRender.ResetCursor();
+        _skill.SkillRender.StopDrawRadius();
+        _skill.SkillRender.StopDrawArea();
+        _skill.SkillRender.StopDrawLine();
+        _skill.SkillRender.StopDrawClosestTarget();
+        _skill.SkillRender.StopDynamicRadiusColor();
+        _skill.SkillRender.StopPreview();
+
+        if (_skill.Targeting.SkillType == SkillType.Zone)
+        {
+            _skill.SkillRender.StopDrawLineForZone();
+        }
+
+        ShowSmartIndicator();
+        
+        _skill.SkillRender.SetPrepareCursor();
     }
 
     public void HideSmartIndicator()
     {
+        if (_skill.SkillRender.IndicatorOwner != _skill)
+            return;
+
+        if (!_skill.IsPreparing && _hasCachedValues == false)
+        {
+            return;
+        }
+        
         _skill.SkillRender.ResetCursor();
         _skill.SkillRender.StopDrawRadius();
         _skill.SkillRender.StopDrawArea();
@@ -106,13 +182,14 @@ public class InformationRenderComponent : BaseSkillComponent
         {
             _skill.SkillRender.StopDrawLineForZone();
         }
-
-
         /*if (true)
 		{
 			Character enemy = GetCloserTargets(transform.position, AreaInfo.Radius)[0];
 			enemy.SelectedCircle.IsActive = false;
 		}*/
+        
+        _skill.SkillRender.ReleaseIndicator(_skill);
+        _hasCachedValues = false;
     }
 
     #endregion Methods

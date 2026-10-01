@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InAirState : AbstractCharacterState
+public class InAirState : StateBasic
 {
     public bool turnOff = false;
 
@@ -14,26 +14,21 @@ public class InAirState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState.Character.Move.SetCanMove(false);
         _baseDuration = durationToExit;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         characterState.Character.Move.SetCanMove(true);
         
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
 }

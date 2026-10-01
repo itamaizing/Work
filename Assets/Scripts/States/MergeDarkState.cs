@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MergeDarkState : AbstractCharacterState
+public class MergeDarkState : StateBasic
 {
     private float _duration;
     private Character _character;
@@ -15,16 +15,19 @@ public class MergeDarkState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void OnEnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = characterStateComp;
         _character     = characterStateComp.Character;
         _skillManager  = _character.Abilities;
         _duration      = durationToExit;
-        //MaxStacksCount = 1;
 
-        _character.Health.SetEvadeAll(_evadeBonus);
-        _character.Health.SetEvadeMagic(_character.Health.ResistMagDamage + _magResBonus);
+        var attrs = _character.AttributeSystem;
+        attrs[CharacterAttributeName.ResistancePhysical].AddModifier(new AttributeModifier(_evadeBonus, ModifierType.Flat, this));
+        attrs[CharacterAttributeName.ResistanceMagical].AddModifier(new AttributeModifier(_evadeBonus, ModifierType.Flat, this));
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(new AttributeModifier(_evadeBonus, ModifierType.Flat, this));
+        attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(new AttributeModifier(_evadeBonus, ModifierType.Flat, this));
+        attrs[CharacterAttributeName.EvasionMagical].AddModifier(new AttributeModifier(_magResBonus, ModifierType.Flat, this));
 
         foreach (var skill in _skillManager.Abilities)
         {
@@ -33,14 +36,17 @@ public class MergeDarkState : AbstractCharacterState
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _duration -= Time.deltaTime;
+        if (_duration <= 0f)
+            ExitState();
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        _character.Health.SetEvadeAll(-_evadeBonus);
-        _character.Health.SetEvadeMagic(_character.Health.ResistMagDamage - _magResBonus);
+        foreach (var attr in _character.AttributeSystem.Attributes.Values)
+            attr.RemoveBySource(this);
 
         foreach (var skill in _skillManager.Abilities)
         {
@@ -49,8 +55,9 @@ public class MergeDarkState : AbstractCharacterState
         }
 
         _character.IsInvisible = false;
-    }
 
+        characterState.RemoveState(this);
+    }
 
     private bool IsInstantSkill(Skill skill)
     {

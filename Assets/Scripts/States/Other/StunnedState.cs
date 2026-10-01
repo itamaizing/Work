@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StunnedState : RefreshingState
+public class StunnedStateStacking : StateStackingRefreshing
 {
-	public bool turnOff = false;
-	private float _baseDuration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -13,12 +11,14 @@ public class StunnedState : RefreshingState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
+	private float _maxDuration = 4f;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		MaxStacksCount = 1;
-		currentStacksCount = 1;
-		
+		SetMaxStacks(1);
+		CurrentStacksCount = 1;
+		RemainingDuration = Mathf.Min(durationToExit, _maxDuration);
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -28,34 +28,32 @@ public class StunnedState : RefreshingState
 
 		characterState.Character.Move.IsMoveBlocked = true;
 		characterState.Character.Move.StopMoveAndAnimationMove();
-
-		_baseDuration = durationToExit;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
-		_baseDuration -= Time.deltaTime;
-		if (_baseDuration < 0)
-		{
-			ExitState();
-			return;
-		}
-		if (turnOff)
+		if (RemainingDuration <= 0)
 		{
 			ExitState();
 		}
 	}
+	
+	
 
-	public override bool Stack(float time)
+	public override bool Stack(float newDuration)
 	{
-		_baseDuration += time;
-		return false;
+		if (newDuration > RemainingDuration)
+		{
+			RemainingDuration = newDuration -RemainingDuration;
+		}
+		return true;
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
-		characterState.Character.Move.IsMoveBlocked = false;
+		CurrentStacksCount = 0;
+		 characterState.Character.Move.IsMoveBlocked = false;
 		abilities.SetAbilitiesDisactive(false);
-		characterState.RemoveStateFromList(this);
+		characterState.RemoveState(this);
 	}
 }

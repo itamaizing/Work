@@ -12,7 +12,7 @@ public class MagicWaterAura : AuraStateHandler
     protected override void OnTargetEnter(Character target)
     {
         CmdApplyStateToTarget(target.gameObject, States.MagicWater, _buffDuration, Schools.Water, _owner.gameObject,
-            nameof(MagicWater));
+            nameof(MagicWater),0);
     }
 
     protected override void OnTargetExit(Character target)
@@ -26,58 +26,105 @@ public class MagicWaterAura : AuraStateHandler
     }
 }
 
-public class MagicWater : AbstractCharacterState
+public class MagicWater : StateBasic
 {
-    private Character _character;
-    private Resource _mana;
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    private float _manaRegenProcent = 0.003f;
-    private float _manaMaxProcent = 0.1f;
 
-    private float _originalRegenValue = 0;
-    private float _currentDelta = 0;
+    private const float ManaMaxPercent = 0.10f;
+    private const float ManaRegenPercent = 0.003f;
+    private const float TickInterval = 1f;
+
+    private readonly AttributeModifier _maxManaModifier =
+        new AttributeModifier(ManaMaxPercent, ModifierType.Percent);
+
+    private Coroutine _regenCoroutine;
+    private Resource _manaResource;
 
     public override States State => States.MagicWater;
-    public override StateType Type { get; }
+    public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState characterState, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
-        duration = durationToExit;
-        _character = character.Character;
-        if (_character.Resources.Count > 0)
+        RemainingDuration = durationToExit;
+        this.characterState = characterState;
+
+        _maxManaModifier.Source = this;
+
+        if (characterState.Character != null && 
+            characterState.Character.Resources.TryGetValue(ResourceType.Mana, out var mana))
         {
-            _character.Resources.TryGetValue(ResourceType.Mana, out _mana);
-            if (_mana != null)
+            _manaResource = mana;
+        }
+
+        ApplyBuffs();
+        StartRegenRoutine();
+    }
+
+    private void ApplyBuffs()
+    {
+        if (_manaResource != null)
+        {
+            _manaResource.AddModifier(ResourceAttributeName.MaxValue, _maxManaModifier);
+        }
+    }
+
+    private void RemoveBuffs()
+    {
+        if (_manaResource != null)
+        {
+            _manaResource.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
+        }
+    }
+
+    private void StartRegenRoutine()
+    {
+        if (characterState?.Character == null || _manaResource == null) return;
+        
+        if (characterState.Character.isServer || characterState.Character.isServerOnly)
+        {
+            _regenCoroutine = characterState.StartCoroutine(RegenRoutine());
+        }
+    }
+
+    private void StopRegenRoutine()
+    {
+        if (_regenCoroutine != null && characterState != null)
+        {
+            characterState.StopCoroutine(_regenCoroutine);
+            _regenCoroutine = null;
+        }
+    }
+
+    private IEnumerator RegenRoutine()
+    {
+        var waitForInterval = new WaitForSeconds(TickInterval);
+
+        while (true)
+        {
+            yield return waitForInterval;
+
+            if (_manaResource != null)
             {
-                _originalRegenValue = _mana.RegenerationValue;
-                _mana.RegenerationValue += _mana.MaxValue * _manaRegenProcent;
-                _currentDelta = _mana.MaxValue * _manaMaxProcent;
-                _mana.AddMax(_currentDelta, true);
+                float regenAmount = _manaResource.MaxValue * ManaRegenPercent;
+                if (regenAmount > 0)
+                {
+                    _manaResource.Add(regenAmount);
+                }
             }
         }
     }
 
-    private void RestoreMana()
+    public override void ExitState()
     {
-        if (_mana != null)
-        {
-            _mana.RegenerationValue = _originalRegenValue;
-            _mana.AddMax(-_currentDelta, true);
-        }
+        StopRegenRoutine();
+        RemoveBuffs();
+        base.ExitState();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-    }
-
-    protected override void OnExitState()
-    {
-        RestoreMana();
-
-        _mana = null;
-        _character = null;
     }
 }

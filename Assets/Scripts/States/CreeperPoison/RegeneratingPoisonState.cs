@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegeneratingPoisonState : StackableState
+public class RegeneratingPoisonState : StateStacking
 {
     /* For SpitPoison Ability */
 
@@ -26,21 +26,21 @@ public class RegeneratingPoisonState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
 
         _playerWithTalent = personWhoMadeBuff;
 
         _baseDuration = durationToExit;
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
@@ -50,22 +50,24 @@ public class RegeneratingPoisonState : StackableState
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         ResetValues();
+
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
-            duration = _baseDuration;
+            CurrentStacksCount++;
+            RemainingDuration = _baseDuration;
             return true;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
     }
@@ -73,7 +75,7 @@ public class RegeneratingPoisonState : StackableState
     [Server]
     private void MakeHeal()
     {
-        _endHealingValue = currentStacksCount * _baseHealingValue;
+        _endHealingValue = CurrentStacksCount * _baseHealingValue;
 
         Heal heal = new Heal
         {
@@ -87,9 +89,9 @@ public class RegeneratingPoisonState : StackableState
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
     }
 }

@@ -7,11 +7,11 @@ public class DeathSpiralBoostHpBodyTalent : Talent
 	[SerializeField] private DeathSpiral _deathSpiral;
 	public override void Enter()
 	{
-		_deathSpiral.TalentBoostHpCorpse(true);
+		//_deathSpiral.TalentBoostHpCorpse(true);
 	}
 
 	public override void Exit()
 	{
-		_deathSpiral.TalentBoostHpCorpse(false);
+		//_deathSpiral.TalentBoostHpCorpse(false);
 	}
 }

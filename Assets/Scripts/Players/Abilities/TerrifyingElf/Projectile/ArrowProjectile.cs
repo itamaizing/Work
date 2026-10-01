@@ -10,7 +10,6 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private bool _arrowDark;
     [SerializeField] private float _duration;
-    [SerializeField] private DamageType _damageTypePhysics;
     [SerializeField] private GameObject _arrow;
     [SerializeField] private SphereCollider _sphereCollider;
 
@@ -28,6 +27,8 @@ public class ArrowProjectile : Projectiles
 
     private float _magDamage;
     private float _damage;
+    
+    private float _maxTravelDistance = -1f;
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
 
@@ -41,10 +42,61 @@ public class ArrowProjectile : Projectiles
     private bool IsEnemy(GameObject target)
     {
         if (_dad == null) return IsEnemyByLayer(target);
-        if (!_dad.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
-        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
 
-        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+        if (target == _dad.gameObject) return false;
+
+        UserNetworkSettings ownerSettings = null;
+        if (_dad.TryGetComponent(out UserNetworkSettings foundOwnerSettings))
+        {
+            ownerSettings = foundOwnerSettings;
+        }
+        else if (_dad.NetworkSettings != null)
+        {
+            ownerSettings = _dad.NetworkSettings;
+        }
+
+        int ownerTeam = (ownerSettings != null) ? ownerSettings.TeamIndex : 0;
+
+        if (target.TryGetComponent<Object>(out var obj))
+        {
+            if (ownerTeam != 0)
+            {
+                return ownerTeam != obj.IndexTeam;
+            }
+
+            if (obj.IndexTeam != 0)
+            {
+                return true;
+            }
+        }
+
+        UserNetworkSettings targetSettings = null;
+        if (target.TryGetComponent(out UserNetworkSettings foundTargetSettings))
+        {
+            targetSettings = foundTargetSettings;
+        }
+        else if (target.TryGetComponent<Character>(out var targetChar) && targetChar.NetworkSettings != null)
+        {
+            targetSettings = targetChar.NetworkSettings;
+        }
+
+        if (ownerSettings != null && targetSettings != null)
+        {
+            bool isOwnerAssigned = IsTeamAssigned(ownerSettings);
+            bool isTargetAssigned = IsTeamAssigned(targetSettings);
+
+            if (isOwnerAssigned && isTargetAssigned)
+            {
+                return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+            }
+
+            if (isOwnerAssigned && !isTargetAssigned)
+            {
+                return true;
+            }
+        }
+
+        return IsEnemyByLayer(target);
     }
 
     private bool IsTeamAssigned(UserNetworkSettings settings)
@@ -68,7 +120,8 @@ public class ArrowProjectile : Projectiles
         if (_startPosition != Vector3.zero)
         {
             float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
-            if (distanceTravelled > _skill.AreaInfo.CastLength)
+            float limit = _maxTravelDistance > 0f ? _maxTravelDistance : _skill.AreaInfo.CastLength;
+            if (distanceTravelled > limit)
             {
                 Destroy(gameObject);
             }
@@ -124,12 +177,13 @@ public class ArrowProjectile : Projectiles
         StartCoroutine(FollowTargetCoroutine());
     }
 
-    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage, bool ElvenSkillCrit)
+    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage, bool ElvenSkillCrit, float maxTravelDistance)
     {
         base.Init(dad, energy, lastHit, skill);
         _damage = damage;
         _magDamage = energy;
         _isElvenSkillCrit = ElvenSkillCrit;
+        _maxTravelDistance = maxTravelDistance;
     }
 
     [Server]
@@ -137,10 +191,15 @@ public class ArrowProjectile : Projectiles
     {
         if (_dad == null) return;
 
-        if (!other.TryGetComponent<Character>(out var target))
-            return;
+        if (other.gameObject == _dad.gameObject) return;
 
-        if (target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
+        if (!other.TryGetComponent<IDamageable>(out _)) return;
+
+        if (!IsEnemy(other.gameObject)) return;
+
+        other.TryGetComponent<Character>(out var target);
+
+        if (target != null && target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
         {
             if (_isReflected) return;
 
@@ -149,20 +208,17 @@ public class ArrowProjectile : Projectiles
             return;
         }
 
-        if (other.gameObject == _dad?.gameObject) return;
-        if (!other.TryGetComponent<IDamageable>(out _)) return;
-
         if (_arrowDark && other.GetComponentInParent<ReconnaissanceFireAura>() != null)
         {
             Destroy(gameObject);
             return;
         }
 
-        if (!IsEnemy(other.gameObject)) return;
-
         if (other.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth) &&
             objectHealth.ResistMagicDamage >= ResistMagicDamageMaxValue && _arrowDark)
+        {
             return;
+        }
 
         ApplyEnemy(other);
         Destroy(gameObject);
@@ -181,11 +237,11 @@ public class ArrowProjectile : Projectiles
                 if (character != null)
                 {
                     float modifiedDamage = ApplyElvenCritModifier(_damage, character);
-                    ApplyDamage(modifiedDamage, _damageTypePhysics, collider.gameObject);
+                    ApplyDamage(modifiedDamage, DamageType.Physical, collider.gameObject);
                 }
 
-                else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
-                if (TryApplyDamage(_damageTypePhysics, _skill.Info.AttackRangeType, collider.gameObject)) return;
+                else ApplyDamage(_damage, DamageType.Physical, collider.gameObject);
+                if (TryApplyDamage(DamageType.Physical, _skill.Info.AttackRangeType, collider.gameObject)) return;
             }
 
             float totalMagDamage = _magDamage;
@@ -193,7 +249,7 @@ public class ArrowProjectile : Projectiles
 
             Debug.Log($"totalMagDamage: {totalMagDamage}");
 
-            ApplyDamage(totalMagDamage, _skill.Info.DamageType, collider.gameObject);
+            ApplyDamage(totalMagDamage, DamageType.Magical, collider.gameObject);
 
             if (character != null) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
         }
@@ -203,10 +259,10 @@ public class ArrowProjectile : Projectiles
             if (character != null)
             {
                 float modifiedDamage = ApplyElvenCritModifier(_damage, character);
-                ApplyDamage(modifiedDamage, _damageTypePhysics, collider.gameObject);
+                ApplyDamage(modifiedDamage, DamageType.Physical, collider.gameObject);
             }
 
-            else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
+            else ApplyDamage(_damage, DamageType.Physical, collider.gameObject);
         }
     }
     #endregion

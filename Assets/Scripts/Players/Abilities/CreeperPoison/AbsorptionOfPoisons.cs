@@ -19,9 +19,9 @@ public class AbsorptionOfPoisons : Skill
 
     private bool _isWorking = false;
 
-    private PoisonBoneState _poisonBone;
+    private PoisonBoneStateStacking _poisonBone;
     private EmpathicPoisonsState _empathicPoison;
-    private WitheringPoisonState _witheringPoison;
+    private WitheringPoisonStateStacking _witheringPoison;
     private BindingPoisonState _bindingPoison;
 
     private Coroutine _remainingTimeCoroutine;
@@ -97,7 +97,7 @@ public class AbsorptionOfPoisons : Skill
             {
                 AdvertisementStates(targetWithDebuffs.CharacterState);
 
-                Dictionary<AbstractCharacterState, float> poisonDurations = new();
+                Dictionary<StateBasic, float> poisonDurations = new();
 
                 if (_poisonBone != null && _poisonBone.CurrentStacks > 0)
                 {
@@ -107,9 +107,9 @@ public class AbsorptionOfPoisons : Skill
                 {
                     poisonDurations[_empathicPoison] = _empathicPoison.StacksDuration;
                 }
-                if (_witheringPoison != null && _witheringPoison.CurrentStacks > 0)
+                if (_witheringPoison != null && _witheringPoison.CurrentStacksCount > 0)
                 {
-                    poisonDurations[_witheringPoison] = _witheringPoison.StacksDuration;
+                    poisonDurations[_witheringPoison] = _witheringPoison.RemainingDuration;
                 }
                 if (_bindingPoison != null && _bindingPoison.CurrentStacks > 0)
                 {
@@ -120,7 +120,7 @@ public class AbsorptionOfPoisons : Skill
                 {
                     var stateWithMinDuration = GetStateWithMinDuration(poisonDurations);
 
-                    if (stateWithMinDuration is PoisonBoneState poisonBoneState)
+                    if (stateWithMinDuration is PoisonBoneStateStacking poisonBoneState)
                     {
                         poisonBoneState.CurrentStacks--;
                     }
@@ -128,9 +128,9 @@ public class AbsorptionOfPoisons : Skill
                     {
                         empathicPoisonsState.CurrentStacks--;
                     }
-                    else if (stateWithMinDuration is WitheringPoisonState witheringPoisonState)
+                    else if (stateWithMinDuration is WitheringPoisonStateStacking witheringPoisonState)
                     {
-                        witheringPoisonState.CurrentStacks--;
+                        witheringPoisonState.ReduceStack();
                     }
                     else if (stateWithMinDuration is BindingPoisonState bindingPoisonState)
                     {
@@ -142,9 +142,9 @@ public class AbsorptionOfPoisons : Skill
             }
          }
     }
-    private AbstractCharacterState GetStateWithMinDuration(Dictionary<AbstractCharacterState, float> poisonDurations)
+    private StateBasic GetStateWithMinDuration(Dictionary<StateBasic, float> poisonDurations)
     {
-        AbstractCharacterState stateWithMinDuration = null;
+        StateBasic stateWithMinDuration = null;
         float minDuration = float.MaxValue;
 
         foreach(var minValue in poisonDurations) 
@@ -162,9 +162,9 @@ public class AbsorptionOfPoisons : Skill
 
     private void AdvertisementStates(CharacterState targetWithDebuff)
     {
-        _poisonBone = (PoisonBoneState)targetWithDebuff.GetState(States.PoisonBone);
+        _poisonBone = (PoisonBoneStateStacking)targetWithDebuff.GetState(States.PoisonBone);
         _empathicPoison = (EmpathicPoisonsState)targetWithDebuff.GetState(States.EmpathicPoisons);
-        _witheringPoison = (WitheringPoisonState)targetWithDebuff.GetState(States.WitheringPoison);
+        _witheringPoison = (WitheringPoisonStateStacking)targetWithDebuff.GetState(States.WitheringPoison);
         _bindingPoison = (BindingPoisonState)targetWithDebuff.GetState(States.BindingPoison);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonCloudState : StackableState
+public class HealingPoisonCloudState : StateStackingRefreshing
 {
 
     private int _maxStacks = 5;
@@ -29,11 +29,11 @@ public class HealingPoisonCloudState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
 
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
         
         if (characterState != null)
         {
@@ -42,13 +42,13 @@ public class HealingPoisonCloudState : StackableState
             SearchAbilities();
         }
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
 
         _timeBetweenHeal -= Time.deltaTime;
@@ -59,47 +59,47 @@ public class HealingPoisonCloudState : StackableState
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         ResetValues();
 
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
 
         if (_explosion != null)
         {
-            _explosion.CurrentStacksHealingPoisonCloud(currentStacksCount, _radiusCloud);
+            _explosion.CurrentStacksHealingPoisonCloud(CurrentStacksCount, _radiusCloud);
         }
     }
 
     public void AddStacks()
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
-            duration = _baseDuration;
+            CurrentStacksCount++;
+            RemainingDuration = _baseDuration;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
 
         if (_explosion != null)
         {
-            _explosion.CurrentStacksHealingPoisonCloud(currentStacksCount, _radiusCloud);
+            _explosion.CurrentStacksHealingPoisonCloud(CurrentStacksCount, _radiusCloud);
         }
     }
 
@@ -147,7 +147,7 @@ public class HealingPoisonCloudState : StackableState
     {
         Character targetCharacter = target.GetComponent<Character>();
 
-        _increasedHeal = _baseHeal * currentStacksCount;
+        _increasedHeal = _baseHeal * CurrentStacksCount;
         _endHeal = targetCharacter.Health.MaxValue * _increasedHeal;
 
         Heal heal = new Heal
@@ -162,9 +162,9 @@ public class HealingPoisonCloudState : StackableState
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
         _endHeal = 0;
         _increasedHeal = 0;
         _baseHeal = 0.005f;

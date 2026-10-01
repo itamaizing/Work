@@ -23,8 +23,6 @@ public class TestGameRulesSingle : GameRules
 
     protected override void GameStartClient()
     {
-        _preparationAreaManager?.PreparationAreasDisable(5f);
-
         if (isLocalPlayer && TryGetComponent(out HeroComponent hero))
         {
             LevelCharacterManager.Instance.SetHero(hero);
@@ -98,9 +96,7 @@ public class TestGameRulesSingle : GameRules
     private IEnumerator HandleTeamsAndSpawns(HeroSpawnManager spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
-
-        _preparationAreaManager?.PreparationAreasDisable(5f);
-
+        
         foreach (var player in _players)
         {
             int spawnIndex = player.NetworkSettings.TeamIndex - 1;
@@ -111,6 +107,8 @@ public class TestGameRulesSingle : GameRules
         }
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
+        
+        RpcEnablePreparationAreas(5f); 
     }
 
     protected override void UnsubscribeFromAllEvents()

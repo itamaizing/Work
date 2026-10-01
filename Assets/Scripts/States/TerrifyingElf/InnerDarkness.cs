@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InnerDarkness : RefreshingState
+public class InnerDarkness : StateStackingRefreshing
 {
     private const float TimeDecreasePerStack = 2f;
     private float _durationRemaining;
@@ -17,17 +17,15 @@ public class InnerDarkness : RefreshingState
 
     public InnerDarkness()
     {
-        MaxStacksCount = 6;
-        currentStacksCount = 1;
+        SetMaxStacks(6);
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _durationRemaining = durationToExit;
         var terrifyingElfAura = personWhoMadeBuff.GetComponent<TerrifyingElfAura>();
-
 
         if (personWhoMadeBuff != null && terrifyingElfAura.IsReductionRecharge)
         {
@@ -46,22 +44,28 @@ public class InnerDarkness : RefreshingState
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        if (_durationRemaining <= 0) ExitState();
     }
 
+    public override void ExitState()
+    {
+        characterState.RemoveState(this);
+        CurrentStacksCount = 0;
+    }
 
     public override bool Stack(float time)
     {
-        Debug.Log($"CurrentStacksCount: {currentStacksCount}");
+        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
 
-        if(currentStacksCount < MaxStacksCount)
+        if(CurrentStacksCount < MaxStacksCount)
         {
             AddNewStack(time);
             return true;
         }
 
-        else if (currentStacksCount == MaxStacksCount)
+        else if (CurrentStacksCount == MaxStacksCount)
         {
             UpdateDurationForMaxStacks(time);
             return false;
@@ -72,20 +76,22 @@ public class InnerDarkness : RefreshingState
 
     private void AddNewStack(float time)
     {
-        currentStacksCount++;
+        CurrentStacksCount++;
 
-        if (currentStacksCount == MaxStacksCount) CmdStateFear();
+        if (CurrentStacksCount == MaxStacksCount) CmdStateFear();
 
-        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
+        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
     }
 
     private void UpdateDurationForMaxStacks(float time)
     {
-        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
+        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
         CmdStateFear();
         Debug.Log("обновление при максимальном стаке");
     }
+    
+    
 
     [Command] private void CmdStateFear() => ClientRpcStateFear();
-    [ClientRpc] private void ClientRpcStateFear() { characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, personWhoMadeBuff.gameObject, null); }
+    [ClientRpc] private void ClientRpcStateFear() { characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, sourceCaster.gameObject, null); }
 }

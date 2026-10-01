@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
+public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
 {
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
@@ -14,8 +14,6 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     [SerializeField] private float _duration = 3;
 
     [Header("Damage Settings")]
-    [SerializeField] private float _damage = 10f;
-    [SerializeField] private float _damageRate = 0.5f;
     [SerializeField] private float _damageScalePerTick = 2f;
 
     [Header("Range Settings")]
@@ -27,17 +25,26 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     private Dictionary<Health, int> _enemiesDict = new Dictionary<Health, int>();
     private WaitForSeconds _waitForApplyFireBreathDamage;
 
+    private readonly Dictionary<Health, int> _exposureTicks = new();
+    private readonly Dictionary<GameObject, int> _serverExposureTicks = new();
+    private readonly Dictionary<Health, int> _scorchedSoulProcCounts = new();
+    public bool IsAoe => true;
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
+
+    private bool _isIncreasedDamageExposure = false;
+    public event Action OnFireBreathStarted;
 
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+    
+    private Coroutine _fireBreathDamageCoroutine;
 
     #region Const
     private const float DebuffTickInterval = 0.3f;
     private const float ApplyFireBreathDamageTickInterval = 0.3f;
-    private const float BaseScorchedSoulChance = 10f;
+    private const float BaseScorchedSoulChance = 5f;
     private const float MaxScorchedSoulChance = 100f;
     private const float ScorchedSoulDuration = 3f;
     private const float MinRotationThresholdSqr = 0.01f;
@@ -48,15 +55,67 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     private const float MinDistanceMultiplier = 0.5f;
     private const float MaxDistanceRayCast = 100f;
     #endregion
+    
+    private float _lastEnergyTickPercent = 0f;
+    private float _energyCostPerPercent = 1f; 
+    
+    #region Combo Speed Bonus
+    [SerializeField] private float _speedBonusPerComboPoint = 0.20f;
+    [SerializeField] private float _speedBonusPerFullCombo = 0.20f;
+    private WaitForSeconds _currentWait;
+    private float _originalCastDuration;
+    private float _currentDurationReduction = 0f;
+    private float _initialSpeed = 1f;
+    private float _effectiveInterval;
+    #endregion
 
     private void Start()
     {
-        _waitForApplyFireBreathDamage = new WaitForSeconds(ApplyFireBreathDamageTickInterval);
+        _originalCastDuration = _channelComponent.CastDuration;
+        UpdateWaitInterval();
+    }
+
+
+    private void UpdateWaitInterval()
+    {
+        _effectiveInterval = ApplyFireBreathDamageTickInterval * _initialSpeed;
+        _currentWait = new WaitForSeconds(_effectiveInterval);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         return;
+    }
+    
+    public float GetExposureMultiplier(Health target)
+    {
+        if (target == null || !_exposureTicks.TryGetValue(target, out int ticks)) return 1f;
+        return 1f + ticks * 0.20f;
+    }
+
+    public void ClearExposureTicks()
+    {
+        _exposureTicks.Clear();
+    }
+
+    [Command]
+    private void CmdClearServerExposureTicks()
+    {
+        _serverExposureTicks.Clear();
+    }
+
+    public void SetIncreasedExposuredDamage(bool value)
+    {
+        if(_isIncreasedDamageExposure == value) return;
+        _isIncreasedDamageExposure = value;
+        if(isClient)
+            CmdSetIncreasedExposuredDamage(value);
+    }
+
+    [Command]
+    private void CmdSetIncreasedExposuredDamage(bool value)
+    {
+        _isIncreasedDamageExposure = value;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -66,12 +125,19 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             callbackDataSaved(new TargetInfo());
             yield return null;
         }
+        OnFireBreathStarted?.Invoke();
     }
 
     protected override IEnumerator CastJob()
     {
+        ClearExposureTicks();
+        if (isClient)
+            CmdClearServerExposureTicks();
+
         CmdSpawnFireBreath();
-        yield return StartCoroutine(ApplyFireBreathDamage());
+
+        _fireBreathDamageCoroutine = StartCoroutine(ApplyFireBreathDamage());
+        yield return _fireBreathDamageCoroutine;
     }
 
     [Command]
@@ -81,7 +147,6 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
         var fireObj = Instantiate(_prefab, spawnPosition, Quaternion.identity);
         _fireBreathInstance = fireObj.GetComponent<FireBreath_Prefab>();
-        SceneManager.MoveGameObjectToScene(fireObj, _hero.NetworkSettings.MyRoom);
         fireObj.transform.SetParent(transform);
 
         fireObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
@@ -103,11 +168,15 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             NetworkServer.Destroy(_fireBreathInstance.gameObject);
     }
 
-    private void TryApplyScorchedSoulDebuff(Health enemy, float elapsedTime)
+    private void TryApplyScorchedSoulDebuff(Health enemy, float distanceMultiplier)
     {
-        float baseChance = BaseScorchedSoulChance;
-        int tickIndex = Mathf.FloorToInt(elapsedTime / DebuffTickInterval);
-        float currentChance = baseChance * Mathf.Pow(2, tickIndex);
+        CmdOnDamageEnd(enemy.gameObject);
+
+        int procIndex = _scorchedSoulProcCounts.GetValueOrDefault(enemy, 0);
+        _scorchedSoulProcCounts[enemy] = procIndex + 1;
+
+        float baseChance = BaseScorchedSoulChance * Mathf.Pow(2, procIndex);
+        float currentChance = baseChance * distanceMultiplier;
 
         currentChance = Mathf.Clamp(currentChance, 0f, MaxScorchedSoulChance);
 
@@ -115,10 +184,19 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         if (roll <= currentChance)
         {
             if (enemy.TryGetComponent<CharacterState>(out var stateManager))
-            {
                 CmdApplyScorchedSoulDebuff(stateManager.netIdentity);
-            }
         }
+    }
+
+    [Command]
+    private void CmdOnDamageEnd(GameObject target)
+    {
+        //OnDamaged?.Invoke(target, this);
+        _serverExposureTicks[target] = _serverExposureTicks.GetValueOrDefault(target, 0) + 1;
+
+        var ignition = target.GetComponent<CharacterState>()?.GetState(States.Ignition) as IgnitionStateStacking;
+        if (ignition != null && _isIncreasedDamageExposure)
+            ignition.UpdateFireBreathBonus(_serverExposureTicks[target] * 0.20f);
     }
 
     private void ApplyDamageAndDebuff(float elapsedTime, int dummyTickIndex)
@@ -127,11 +205,11 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             transform.position,
             transform.position + transform.forward * _maxDistance,
             _coneAngle,
-            _targetsLayers);
+            Targeting.Layer);
 
         foreach (Collider collider in hitColliders)
         {
-            if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
+            if ((Targeting.Layer.value & (1 << collider.gameObject.layer)) == 0)
                 continue;
 
             if (collider.TryGetComponent<Health>(out Health enemy))
@@ -148,22 +226,26 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                 float distanceMultiplier = Mathf.Lerp(DamageLerpStart, DamageLerpEnd, (distance / _maxDistance));
                 int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
 
-                float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * damageScale * distanceMultiplier);
+                float finalDamageValue = Buff.Damage.GetBuffedValue(Damage * damageScale * distanceMultiplier);
 
                 Damage damage = new Damage
                 {
                     Value = finalDamageValue,
-                    Type = Info.DamageType
+                    Type = Info.DamageType,
+                    School = Schools.Fire
                 };
 
                 CmdApplyDamage(damage, enemy.gameObject);
+                
+                if(_isIncreasedDamageExposure)
+                    _exposureTicks[enemy] = _exposureTicks.GetValueOrDefault(enemy, 0) + 1;
 
                 if (_enemiesDict.ContainsKey(enemy))
                     _enemiesDict[enemy] *= (int)_damageScalePerTick;
                 else
                     _enemiesDict[enemy] = 2;
 
-                TryApplyScorchedSoulDebuff(enemy, elapsedTime);
+                TryApplyScorchedSoulDebuff(enemy, distanceMultiplier);
             }
         }
     }
@@ -179,15 +261,46 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         {
             ApplyDamageAndDebuff(elapsed, baseDamage);
 
-            elapsed += ApplyFireBreathDamageTickInterval;
+            elapsed += _effectiveInterval;
+                
+            TrySpendEnergy(elapsed);
 
-            yield return _waitForApplyFireBreathDamage;
+            yield return _currentWait;
 
             baseDamage *= 2;
         }
-
         Hero.Move.SetCanMove(true);
-        CmdDestroyFireBreath();
+        //CmdDestroyFireBreath();
+    }
+    
+    protected override void CommitUse()
+    {
+        UseCooldownOrCharges();
+    }
+
+    private void TrySpendEnergy(float elapsedTime)
+    {
+        if (_hero == null) return;
+
+        float progressPercent = (elapsedTime / CastStreamDuration) * 100f;
+        float current10PercentBlocks = Mathf.Floor(progressPercent / 10f);
+
+        int blocksToSpend = (int)(current10PercentBlocks - _lastEnergyTickPercent);
+
+        if (blocksToSpend > 0)
+        {
+            float energyToSpend = blocksToSpend * _energyCostPerPercent;
+
+            Cost.TryPaySingle(energyToSpend, ResourceType.Energy);
+            
+            if (_hero.Resources.TryGetValue(ResourceType.Energy, out var energyResource))
+            {
+                //energyResource.CmdUse(energyToSpend);
+                energyResource.CmdAddRegenModifier(energyToSpend,2,isFast:false);
+            }
+
+            _lastEnergyTickPercent = current10PercentBlocks;
+        }
     }
 
     private IEnumerator FollowMouseRoutine()
@@ -213,8 +326,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
         {
-            float duration = ScorchedSoulDuration;
-            stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+            stateManager.AddState(States.ScorchedSoul, 6, 0, _hero.gameObject, Name);
         }
     }
 
@@ -225,58 +337,34 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             _fireBreathInstance.transform.rotation = rotation;
     }
 
-    private void ApplyDamageToEnemiesInCone()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxDistance, _targetsLayers);
-
-        foreach (Collider collider in hitColliders)
-        {
-            if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
-                continue;
-
-            if (collider.TryGetComponent<Health>(out Health enemy))
-            {
-                Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
-                float angle = Vector3.Angle(transform.forward, dirToEnemy);
-
-                if (angle <= _coneAngle / 2 && !Physics.Linecast(transform.position, enemy.transform.position, _targetsLayers))
-                {
-                    float distanceMultiplier = CalculateDistanceMultiplier(enemy.transform.position);
-                    int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
-
-                    float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * distanceMultiplier * damageScale);
-
-                    Damage damage = new Damage
-                    {
-                        Value = finalDamageValue,
-                        Type = Info.DamageType,
-                    };
-
-                    CmdApplyDamage(damage, enemy.gameObject);
-
-                    if (_enemiesDict.ContainsKey(enemy))
-                        _enemiesDict[enemy] *= (int)_damageScalePerTick;
-                    else
-                        _enemiesDict[enemy] = (int)_damageScalePerTick;
-                }
-            }
-        }
-    }
-
-    private float CalculateDistanceMultiplier(Vector3 enemyPos)
-    {
-        float distance = Vector3.Distance(transform.position, enemyPos);
-        distance = Mathf.Clamp(distance, _minDistance, _maxDistance);
-
-        float normalized = (distance - _minDistance) / (_maxDistance - _minDistance);
-        return Mathf.Lerp(BaseDamageScale, MinDistanceMultiplier, normalized);
-    }
-
     protected override void ClearData()
     {
+        CmdClearData();
         _enemiesDict.Clear();
+        _scorchedSoulProcCounts.Clear();
+        _lastEnergyTickPercent = 0f;
+        _currentDurationReduction = 0f;
+        _initialSpeed = 1f;
+        _channelComponent.CastDuration = _originalCastDuration;
+        UpdateWaitInterval();
 
-        if (_fireBreathInstance != null) Destroy(_fireBreathInstance.gameObject);
+        if (_fireBreathDamageCoroutine != null)
+        {
+            StopCoroutine(_fireBreathDamageCoroutine);
+            _fireBreathDamageCoroutine = null;
+        }
+
+        if (_fireBreathInstance != null)
+            Destroy(_fireBreathInstance.gameObject);
+
+        if (isClient)
+            CmdDestroyFireBreath();
+    }
+
+    [Command]
+    private void CmdClearData()
+    {
+        _currentDurationReduction = 0f;
     }
 
     private Vector3 GetMouseWorldPosition()
@@ -287,14 +375,41 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
         return transform.position + transform.forward * FallbackMouseForwardDistance;
     }
+    
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        if (_currentDurationReduction <= 0)
+            _currentDurationReduction = comboPoints * _speedBonusPerComboPoint;
+        else
+            _currentDurationReduction += comboPoints * _speedBonusPerComboPoint;
 
-    //public void TryUpgradeByConsumingCombo(int amount)
-    //{
-    //    if (!Notifier.IsActive)
-    //    {
-    //        ConsumedAmount = 0;
-    //        return;
-    //    }
-    //    ConsumedAmount = Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
-    //}
+        _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
+        _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
+        
+        RpcApplyCastDuration(_currentDurationReduction, _channelComponent.CastDuration);
+    }
+    
+
+    public void OnFinalComboSkill(GameObject target)
+    {
+        if (_currentDurationReduction <= 0)
+            _currentDurationReduction = _speedBonusPerFullCombo;
+        else
+            _currentDurationReduction += _speedBonusPerFullCombo;
+        _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
+        _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
+
+
+        RpcApplyCastDuration(_currentDurationReduction, _channelComponent.CastDuration);
+    }
+    
+    [ClientRpc]
+    private void RpcApplyCastDuration(float newSpeedMultiplier, float newCastDuration)
+    {
+        _initialSpeed = 1f;
+        _initialSpeed -= newSpeedMultiplier;
+        _channelComponent.CastDuration = newCastDuration;
+        
+        UpdateWaitInterval();
+    }
 }

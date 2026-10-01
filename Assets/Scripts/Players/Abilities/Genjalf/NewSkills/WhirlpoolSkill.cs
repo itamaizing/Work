@@ -14,6 +14,7 @@ public class WhirlpoolSkill : Skill
     [SerializeField] private float _rate = 0.05f;
 
     private Vector3 _clickPoint;
+    private Vector3 _castPoint;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -24,7 +25,10 @@ public class WhirlpoolSkill : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Points.Count > 0)
+        {
             _clickPoint = (Vector3)targetInfo.Points[0];
+            _castPoint = _clickPoint;
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -41,7 +45,7 @@ public class WhirlpoolSkill : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdSpawnWhirlpool(_clickPoint, _hero.NetworkSettings.TeamIndex);
+        CmdSpawnWhirlpool(_castPoint, _hero.NetworkSettings.TeamIndex);
         yield return null;
     }
 

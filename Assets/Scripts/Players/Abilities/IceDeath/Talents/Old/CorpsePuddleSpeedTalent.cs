@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CorpsePuddleSpeedTalent : Talent
 {
-	[SerializeField] private MinionAttack _minoinAttact;
+	//[SerializeField] private MinionAttack _minoinAttact;
 
 	public override void Enter()
 	{

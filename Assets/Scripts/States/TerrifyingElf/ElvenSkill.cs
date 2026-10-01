@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ElvenSkill : RefreshingState
+public class ElvenSkill : StateStackingRefreshing
 {
-    //private float _duration;
     private MoveComponent _move;
     private GameObject _elvenSkillEffect;
     private TerrifyingElfAura _aura;
-    private SkillManager _skillManager;
+    private float _baseDuration;
 
     private const float PercentBonusPerStack = 0.1f;
+    private const float ElvenBoostWindowChance = 0.3f;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
@@ -20,25 +20,28 @@ public class ElvenSkill : RefreshingState
 
     public ElvenSkill()
     {
-        MaxStacksCount = 6;
-        currentStacksCount = 1;
+        SetMaxStacks(3);
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
-
+        AddStack();
         _move = character.GetComponent<MoveComponent>();
-        _skillManager = characterState.Character.Abilities;
-
         _move.SetCanMoveState(true);
 
-        AddStack();
-
-        if (_skillManager != null)
+        _aura = character.GetComponent<TerrifyingElfAura>();
+        if (_aura != null && _aura.ElvenSkillEffect != null)
         {
-            foreach (var skill in _skillManager.Abilities)
+            _elvenSkillEffect = _aura.ElvenSkillEffect;
+            _elvenSkillEffect.SetActive(true);
+        }
+
+        abilities.GetSkill<ElvenReflexes>().Disactive = false;
+        
+        if (abilities != null)
+        {
+            if (Random.value > ElvenBoostWindowChance) return;
+            foreach (var skill in abilities.Abilities)
             {
                 if (skill == null) continue;
 
@@ -47,80 +50,89 @@ public class ElvenSkill : RefreshingState
                 else
                     skill.CastStarted += NotPhysCastStarted;
 
-                if (skill is ReconnaissanceFire reconnaissanceFire) reconnaissanceFire.TryStartElvenBoostWindow();
-                if (skill is ShotIntoSky shotIntoSky) shotIntoSky.TryStartBoost();
-                if (skill is ShotsIntoSky shotsIntoSky) shotsIntoSky.TryStartBoost();
-                if (skill is GroundTrap groundTrap) groundTrap.TryStartBoost();
+                if (skill is ReconnaissanceFire rf) rf.TryStartElvenBoostWindow();
+                if (skill is ShotIntoSky si) si.TryStartBoost();
+                if (skill is GroundTrap gt) gt.TryStartBoost();
             }
-        }
-
-        _aura = character.GetComponent<TerrifyingElfAura>();
-        if (_aura != null && _aura.ElvenSkillEffect != null)
-        {
-            _elvenSkillEffect = _aura.ElvenSkillEffect;
-            _elvenSkillEffect.SetActive(true);
         }
     }
 
     public override bool Stack(float time)
     {
-        duration = time;
-
-        if (currentStacksCount >= MaxStacksCount)
-            return false;
-
+        RemainingDuration = time;
         AddStack();
+        if (abilities != null)
+        {
+            if (Random.value > ElvenBoostWindowChance) return true;
+            foreach (var skill in abilities.Abilities)
+            {
+                if (skill == null) continue;
+                if (skill is ReconnaissanceFire rf) rf.TryStartElvenBoostWindow();
+                if (skill is ShotIntoSky si) si.TryStartBoost();
+                if (skill is GroundTrap gt) gt.TryStartBoost();
+            }
+        }
+
         return true;
     }
 
     private void AddStack()
     {
-        currentStacksCount++;
-
-        if (_skillManager == null) return;
-
-        float multiplier = 1 + PercentBonusPerStack;
-
-        foreach (var skill in _skillManager.Abilities)
+        if (abilities == null) return;
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            if (skill == null) continue;
+            CurrentStacksCount++;
+            
+            foreach (var skill in abilities.Abilities)
+            {
+                if (skill == null) continue;
 
-            skill.Buff.Length.IncreasePercentage(multiplier);
-            skill.Buff.Radius.IncreasePercentage(multiplier);
+                skill.Attributes[SkillAttributeName.Length].AddModifier(
+                    new AttributeModifier(PercentBonusPerStack, ModifierType.Percent, source: this));
+                skill.Attributes[SkillAttributeName.Radius].AddModifier(
+                    new AttributeModifier(PercentBonusPerStack, ModifierType.Percent, source: this));
+            }
         }
+    }
+    
+    public override void ReduceStack()
+    {
+        base.ReduceStack();
+        RemoveOneStack();
+    }
+
+    public void ReduceStackExternal(bool isExternal = false)
+    {
+        ReduceStack();
     }
 
     private void RemoveOneStack()
     {
-        if (_skillManager == null) return;
+        if (abilities == null) return;
 
-        float multiplier = 1 + PercentBonusPerStack;
-
-        foreach (var skill in _skillManager.Abilities)
+        foreach (var skill in abilities.Abilities)
         {
             if (skill == null) continue;
 
-            skill.Buff.Length.ReductionPercentage(multiplier);
-            skill.Buff.Radius.ReductionPercentage(multiplier);
+            skill.Attributes[SkillAttributeName.Length].RemoveBySource(this, all: false);
+            skill.Attributes[SkillAttributeName.Radius].RemoveBySource(this, all: false);
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
+        CurrentStacksCount = 0;
+        
         if (_move) _move.SetCanMoveState(false);
 
-        for (int i = 0; i < currentStacksCount; i++)
+        if (abilities != null)
         {
-            RemoveOneStack();
-        }
-
-        currentStacksCount = 0;
-
-        if (_skillManager != null)
-        {
-            foreach (var skill in _skillManager.Abilities)
+            foreach (var skill in abilities.Abilities)
             {
                 if (skill == null) continue;
+
+                skill.Attributes[SkillAttributeName.Length].RemoveBySource(this, all: true);
+                skill.Attributes[SkillAttributeName.Radius].RemoveBySource(this, all: true);
 
                 if (skill.Info.DamageType == DamageType.Physical || skill.Info.DamageType == DamageType.Both)
                     skill.CastStarted -= OnPhysCastStarted;
@@ -131,11 +143,16 @@ public class ElvenSkill : RefreshingState
 
         if (_elvenSkillEffect != null)
             _elvenSkillEffect.SetActive(false);
+        
+        abilities.GetSkill<ElvenReflexes>().Disactive = true;
+        base.ExitState();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
+    
+    
 
     private void OnPhysCastStarted()
     {

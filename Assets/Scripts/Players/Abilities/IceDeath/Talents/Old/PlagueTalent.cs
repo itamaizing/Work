@@ -8,11 +8,11 @@ public class PlagueTalent : Talent
 
 	public override void Enter()
 	{
-		_deathSpiral.TalentPlague(true);
+		//_deathSpiral.TalentPlague(true);
 	}
 
 	public override void Exit()
 	{
-		_deathSpiral.TalentPlague(false);
+		//_deathSpiral.TalentPlague(false);
 	}
 }

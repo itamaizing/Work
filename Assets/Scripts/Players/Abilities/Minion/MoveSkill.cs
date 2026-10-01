@@ -11,7 +11,7 @@ public class MoveSkill : Skill
     private Coroutine _approachRoutine;
     public override void LoadTargetData(TargetInfo targetInfo) { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { throw new NotImplementedException(); }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield return TargetingBehaviour(targetDataSavedCallback); }
 
     protected override IEnumerator CastJob() { throw new NotImplementedException(); }
 

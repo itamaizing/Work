@@ -67,30 +67,33 @@ public class IceShowerProjectile : Projectiles
 
 				TargetRpcDamageMake(_curDamage);
 				//_skill.CmdApplyDamage(_damage, target.gameObject);
-				target.Health.TryTakeDamage(ref _damage, _skill);
+				_skill.ApplyDamage(_damage,target.gameObject);
+				//target.Health.TryTakeDamage(ref _damage, _skill);
 
 				//talents???
-				if (_dad.Health.ResistMagDamage >= 20)
+				var evasionMagical = _dad.AttributeSystem[CharacterAttributeName.EvasionMagical];
+				if (evasionMagical.GetValue() >= 20)
 				{
-					_dad.Health.SetEvadeMagic(5);
+					evasionMagical.SetBaseValue(5);
 				}
 				else
 				{
-					_dad.Health.SetEvadeMagic(20);
+					evasionMagical.SetBaseValue(20);
 				}
                 _energy = (Energy)_dad.Resources[ResourceType.Energy];
 
                 //_energy.TryUse(_energyDad);
                 _energy.UseAllEnergy();
 				//ClientUse(_energyDad, _energy.gameObject);
-				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 				//damage
 				GetComponent<Collider>().enabled = false;
 				Explode();
 			}
 			else
 			{
-				damageable.TryTakeDamage(ref _damage, _skill);
+				_skill.ApplyDamage(_damage,target.gameObject);
+				//damageable.TryTakeDamage(ref _damage, _skill);
 				if (_damage.Value <= 0)
 				{
 					Explode();

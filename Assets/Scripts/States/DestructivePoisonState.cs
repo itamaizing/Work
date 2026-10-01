@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructivePoisonState : RefreshingState
+public class DestructivePoisonStateStacking : StateStackingRefreshing
 {
     private Character _target;
     private Health _health;
@@ -20,24 +20,24 @@ public class DestructivePoisonState : RefreshingState
     public override List<StatusEffect> Effects => _effects;
     public override Schools Schools => Schools.Earth;
 
-    public DestructivePoisonState()
+    public DestructivePoisonStateStacking()
     {
-        MaxStacksCount = 3;
+        SetMaxStacks(3);
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
         _target = character.Character;
         _health = _target.Health;
 
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _tickTimer = TickInterval;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         _tickTimer -= Time.deltaTime;
 
@@ -47,7 +47,7 @@ public class DestructivePoisonState : RefreshingState
 
             if (_health == null || _target == null || _target.IsDead) return;
 
-            float damageValue = DamagePerTick * currentStacksCount;
+            float damageValue = DamagePerTick * CurrentStacksCount;
 
             if (NetworkServer.active) DestructiveDamage();
 
@@ -57,17 +57,19 @@ public class DestructivePoisonState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        RemainingDuration = time;
 
-        if (currentStacksCount >= MaxStacksCount)
+        if (CurrentStacksCount >= MaxStacksCount)
             return false;
 
+        CurrentStacksCount++;
         return true;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
+        characterState.RemoveState(this);
     }
 
 
@@ -76,7 +78,7 @@ public class DestructivePoisonState : RefreshingState
     {
         if (_target == null || _target.IsDead) return;
 
-        float damageValue = DamagePerTick * currentStacksCount;
+        float damageValue = DamagePerTick * CurrentStacksCount;
 
         Debug.Log($"damageValue: {damageValue}");
 

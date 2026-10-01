@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Curse : AbstractCharacterState
+public class Curse : StateBasic
 {
 	private Character _personWhoShooted;
 	private float _durationToExit = 0;
@@ -12,7 +12,7 @@ public class Curse : AbstractCharacterState
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		_durationToExit = durationToExit;
@@ -20,7 +20,7 @@ public class Curse : AbstractCharacterState
 		//_personWhoShooted = character.personWhoShoted;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 		_durationToExit -= Time.deltaTime;
 		if (_durationToExit < 0)
@@ -28,12 +28,9 @@ public class Curse : AbstractCharacterState
 			ExitState();
 		}
 	}
-	/*public override bool Stack(float time)
+
+	public override void ExitState()
 	{
-		/*if (characterState.personWhoShoted != null)
-		{
-			_personWhoShooted = characterState.personWhoShoted;
-		}
-		return true;
-	}*/
+		characterState.RemoveState(this);
+	}
 }

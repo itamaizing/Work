@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LastBreath : AbstractCharacterState
+public class LastBreath : StateBasic
 {
 	private Character _character;
 	private float _durationToExit = 0;
@@ -13,7 +13,7 @@ public class LastBreath : AbstractCharacterState
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif.Value = 1.2f;
 		_modif.Type = ModifierType.Multiplier;
@@ -32,12 +32,16 @@ public class LastBreath : AbstractCharacterState
 		//increase -regen
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
-
+		_durationToExit -= Time.deltaTime;
+		if (_durationToExit < 0)
+		{
+			ExitState();
+		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
         //decrease -regen
         //_character.Move.ChangeMoveSpeedBack(1.2f);
@@ -48,9 +52,4 @@ public class LastBreath : AbstractCharacterState
 		}
 		health.RegenerationValue /= 4;
 	}
-
-	/*public override bool Stack(float time)
-	{
-		return true;
-	}*/
 }

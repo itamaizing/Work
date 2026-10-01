@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 1196229705
       objectReference: {fileID: 0}
+    - target: {fileID: 8168311458375282070, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
+      propertyPath: _assetId
+      value: 1196229705
+      objectReference: {fileID: 0}
     - target: {fileID: 9048760837805960848, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1

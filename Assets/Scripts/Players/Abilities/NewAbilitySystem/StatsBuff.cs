@@ -41,7 +41,6 @@ public class StatBuff
     public void IncreasePercentage(float value)
     {
         _multiplier *= value;
-        Debug.LogError("multiplier is: " + _multiplier);
     }
 
     public void ReductionPercentage(float value)

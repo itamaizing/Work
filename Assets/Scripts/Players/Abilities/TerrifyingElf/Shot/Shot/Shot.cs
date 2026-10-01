@@ -43,6 +43,16 @@ public class Shot : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
+    protected override bool IsCanCast { get => CheckCanCast(); }
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+
+    private bool CheckCanCast()
+    {
+        return Targeting.CanCast(Targeting.GetTarget());
+        return true;
+        //if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        //return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+    }
 
     private void OnDisable()
     {
@@ -113,21 +123,67 @@ public class Shot : Skill
         _hero.Move.SetCanMove(false);
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo == null) return;
+
+        Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
+
+        if (targetInfo.Points != null && targetInfo.Points.Count > 0) _targetPoint = targetInfo.Points[0];
+        else if (Targeting.GetTarget() != null) _targetPoint = Targeting.GetTarget().Position;
+        else _targetPoint = Vector3.positiveInfinity;
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+		Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
+        {
+            if (GetMouseButton)
+            {
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
+                targetPoint = GetMousePoint(_groundLayerMask);
+
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                {
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
+
+                    else
+                    {
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
+            }
+			yield return null;
+        }
+        
+		TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
+    }
+
     protected override IEnumerator CastJob()
     {
         var targetData = Targeting.GetTarget();
 
-        if (targetData == null) yield break;
+        if (targetData == null && _targetPoint == Vector3.positiveInfinity) yield break;
+        if (targetData?.Transform != null && !IsTargetInRange()) yield break;
 
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
         HandleThirdShotRowOnCast();
 
-        if (targetData.Type ==  TargetType.Object) CmdCreateProjectileAtTarget(targetData.Object, Damage);
-        else CmdCreateProjectileAtPosition(targetData.Poisition, Damage);
+        float castLengthAtCast = AreaInfo.CastLength;
+
+        if (targetData?.Targetable is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage, castLengthAtCast);
+        else CmdCreateProjectileAtPosition(_targetPoint, Damage, castLengthAtCast);
         yield return null;
     }
 
+    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void ProcessGhostCooldownReduction()
     {
         if (!_ghostSkill || !_ghostSkill.CooldownGhostShotActive) return;
@@ -166,50 +222,53 @@ public class Shot : Skill
         _terrifyingElfAura.ProcessShot(targetData.Character);
     }
 
+    private Vector3 GetMousePoint(LayerMask mask)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, RayCastDistance, mask)) return hit.point;
+
+        return Vector3.positiveInfinity;
+    }
+
     [Command]
-    public void CmdCreateProjectileAtTarget(GameObject targetObject, float damage)
+    public void CmdCreateProjectileAtTarget(GameObject targetObject, float damage, float maxTravelDistance)
     {
         if (targetObject == null) return;
 
         Transform target = targetObject.transform;
-
         Vector3 direction = (target.transform.position - transform.position).normalized;
-
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetUp, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
-        //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
-        RpcInit(proj.gameObject, damage);
+        RpcInit(proj.gameObject, damage, maxTravelDistance);
         RpcPlayShotSound();
     }
 
     [Command]
-    public void CmdCreateProjectileAtPosition(Vector3 position, float damage)
+    public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float maxTravelDistance)
     {
         Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
         Vector3 direction = (flatTargetPoint - transform.position).normalized;
-
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
-        //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject, damage);
+        RpcInit(proj.gameObject, damage, maxTravelDistance);
         RpcPlayShotSound();
     }
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject, float damage)
+    protected void RpcInit(GameObject gameObject, float damage, float maxTravelDistance)
     {
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
     }
 
     [ClientRpc]

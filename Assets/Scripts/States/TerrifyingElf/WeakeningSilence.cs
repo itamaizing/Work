@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeakeningSilence : StackableState
+public class WeakeningSilence : StateBasic
 {
     private float _damagePerTick;
     private float _currentDamage;
@@ -16,9 +16,7 @@ public class WeakeningSilence : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Poison };
 
-    public WeakeningSilence() => MaxStacksCount = 6;
-
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         health = character.Character.Health;
         _damagePerTick = damageToExit;
@@ -33,27 +31,16 @@ public class WeakeningSilence : StackableState
 
         characterState.StartCoroutine(PeriodicDamageRoutine());
     }
-    
-    protected override void OnExitState()
+
+    public override void ExitState()
     {
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
         damageTick = false;
         characterState.StopCoroutine(PeriodicDamageRoutine());
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-    }
-
-    public override bool Stack(float addDuration)
-    {
-        if (currentStacksCount >= MaxStacksCount) return false;
-
-        currentStacksCount++;
-        _currentDamage += _damagePerTick;
-        base.duration = Mathf.Max(base.duration, addDuration);
-
-        return true;
     }
 
     private IEnumerator PeriodicDamageRoutine()

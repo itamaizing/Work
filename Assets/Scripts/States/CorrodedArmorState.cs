@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CorrodedArmorState : StackableState
+public class CorrodedArmorState : StateStackingRefreshing
 {
     private const float ReductionPerStack = 2f;
     private float _durationRemaining;
-    private float _appliedReduction = 0f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
@@ -17,11 +16,11 @@ public class CorrodedArmorState : StackableState
 
     public CorrodedArmorState()
     {
-        MaxStacksCount = 5;
-        currentStacksCount = 1;
+        SetMaxStacks(5);
+        CurrentStacksCount = 1;
     }
 
-    protected override void OnEnterState(CharacterState character,
+    public override void Apply(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -29,23 +28,22 @@ public class CorrodedArmorState : StackableState
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
         ApplyReduction();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         _durationRemaining = time;
@@ -56,24 +54,22 @@ public class CorrodedArmorState : StackableState
 
     private void ApplyReduction()
     {
-        if (health == null) return;
+        if (characterState == null) return;
 
-        float totalReduction = currentStacksCount * ReductionPerStack;
+        var attribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
 
-        health.DefPhysDamage -= _appliedReduction;
-
-        _appliedReduction = totalReduction;
-        health.DefPhysDamage -= _appliedReduction;
+        attribute.RemoveBySource(this);
+        float totalReduction = -(CurrentStacksCount * ReductionPerStack);
+        attribute.AddModifier(new AttributeModifier(totalReduction, ModifierType.Flat, this));
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        if (health != null)
-        {
-            health.DefPhysDamage += _appliedReduction;
-        }
-        
-        currentStacksCount = 1;
-        _appliedReduction = 0f;
+        var attribute = characterState?.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        attribute?.RemoveBySource(this);
+
+        CurrentStacksCount = 1;
+
+        characterState.RemoveState(this);
     }
 }

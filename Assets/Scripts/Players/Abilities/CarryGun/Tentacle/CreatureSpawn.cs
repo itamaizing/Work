@@ -1,7 +1,9 @@
+using System;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum SpawnType
 {
@@ -25,9 +27,42 @@ public class CreatureSpawn : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
+    
+    public override object GroupKey => (GetType(), SpawnType);
 
-    public SpawnType SpawnType { get => _spawnType; set => _spawnType = value; }
-    public WombSpawn WombSpawn { get => wombSpawn; set => wombSpawn = value; }
+    public SpawnType SpawnType
+    {
+        get => _spawnType;
+        set
+        {
+            Debug.Log($"[CreatureSpawn:{GetEntityId()}] SpawnType set attempt: {_spawnType} -> {value}");
+            if (_spawnType == value) return;
+            _spawnType = value;
+            Debug.Log($"[CreatureSpawn:{GetEntityId()}] SpawnType CHANGED, firing OnSpawnTypeChanged({value})");
+            OnSpawnTypeChanged?.Invoke(value);
+        }
+    }
+    public WombSpawn WombSpawn
+    {
+        get => wombSpawn;
+        set
+        {
+            if (wombSpawn == value) return;
+
+            if (wombSpawn != null)
+                wombSpawn.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
+
+            wombSpawn = value;
+
+            if (wombSpawn != null)
+            {
+                wombSpawn.OnSpawnGetomirChanged += HandleSpawnGetomirChanged;
+                HandleSpawnGetomirChanged(wombSpawn.IsSpawnGetomir);
+            }
+        }
+    }
+
+    public event Action<SpawnType> OnSpawnTypeChanged;
 
     private void OnEnable()
     {
@@ -36,10 +71,8 @@ public class CreatureSpawn : Skill
 
     private void OnDisable()
     {
-        if (_spawnType == SpawnType.Getomir && wombSpawn != null)
-        {
+        if (wombSpawn != null)
             wombSpawn.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
-        }
     }
 
     private void Start()
@@ -71,6 +104,7 @@ public class CreatureSpawn : Skill
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
     {
+
         TargetInfo info = new TargetInfo();
         info.Points.Add(transform.position);
         callback?.Invoke(info);
@@ -98,7 +132,7 @@ public class CreatureSpawn : Skill
 
             if (character.TryGetComponent<MinimapMarker>(out var minimap)) minimap.IsActive = false;
 
-            var states = new List<AbstractCharacterState>(character.CharacterState.CurrentStates);
+            var states = new List<StateBasic>(character.CharacterState.CurrentStates);
             foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 
@@ -106,41 +140,40 @@ public class CreatureSpawn : Skill
         {
             Vector3 spawnPos = GetRandomOffsetPosition(_spawnPoint, 1.6f);
 
-            spawnComponent.CmdSpawnAliesPoint(spawnPos, Quaternion.identity, minion, index, false, wombSpawn.Hero);
-
-            CmdTentacleCocoon(spawnComponent.netIdentity);
+            CmdSpawnAndTentacleCocoon(spawnComponent.netIdentity, spawnPos, index, wombSpawn.Hero);
         }
 
         yield return null;
     }
 
     [Command]
-    private void CmdTentacleCocoon(NetworkIdentity spawnIdentity)
-    {
-        RpcTentacleCocoon(spawnIdentity);
-    }
-
-    [ClientRpc]
-    private void RpcTentacleCocoon(NetworkIdentity spawnIdentity)
+    private void CmdSpawnAndTentacleCocoon(NetworkIdentity spawnIdentity, Vector3 position, int index, Character parentCharacter)
     {
         if (spawnIdentity == null) return;
 
-        var spawnComponent = spawnIdentity.GetComponent<SpawnComponent>();
-        if (spawnComponent == null) return;
+        var spawnComponentServer = spawnIdentity.GetComponent<SpawnComponent>();
+        if (spawnComponentServer == null) return;
 
-        foreach (var unit in spawnComponent.Units)
+        var spawned = spawnComponentServer.SpawnAliesPointServer(position, Quaternion.identity, minion, index, false, parentCharacter);
+        if (spawned == null) return;
+
+        RpcTentacleCocoon(spawned.netIdentity);
+    }
+
+    [ClientRpc]
+    private void RpcTentacleCocoon(NetworkIdentity spawnedUnitIdentity)
+    {
+        if (spawnedUnitIdentity == null) return;
+
+        foreach (var spawn in spawnedUnitIdentity.GetComponents<CreatureCarryGun>())
         {
-            if (unit == null) continue;
-
-            foreach (var spawn in unit.GetComponents<CreatureCarryGun>())
-            {
-                spawn.DadSkill = wombSpawn;
-            }
+            spawn.DadSkill = wombSpawn;
         }
     }
 
     protected override void ClearData()
     {
-        _spawnType = SpawnType.None;
+        Debug.Log($"[CreatureSpawn:{GetEntityId()}] ClearData called, current _spawnType={_spawnType}");
+        SpawnType = SpawnType.None;
     }
 }

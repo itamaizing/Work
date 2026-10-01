@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HardenedFlesh : StackableState
+public class HardenedFlesh : StateStackingRefreshing
 {
     private List<StatusEffect> _effects = new() { StatusEffect.Destruction };
 
@@ -11,46 +11,81 @@ public class HardenedFlesh : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    private float _buffPercent = 5;
+    private const float BuffPerStack = 5f;
+    private const int _maxStacks = 5;
 
-    private float _originalDefPhysDamage;
-
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    private AttributeModifier _resistanceModifier;
+    
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
         abilities = character.Character.Abilities;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
+        
+        CurrentStacksCount = 1;
+        SetMaxStacks(_maxStacks);
+        RemainingDuration = durationToExit;
 
-        if (currentStacksCount == 0) _originalDefPhysDamage = health.DefPhysDamage;
-
-        duration = durationToExit;
-
-        health.DefPhysDamage = _originalDefPhysDamage + _originalDefPhysDamage * _buffPercent;
-
-        Debug.Log("Def " + health.DefPhysDamage);
+        ApplyOrUpdateModifier();
     }
+    
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        health.DefPhysDamage = _originalDefPhysDamage;
+        base.ExitState();
+        RemoveModifier();
+        
+        CurrentStacksCount = 0;
     }
+
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < _maxStacks)
         {
-            duration = time;
-            currentStacksCount++;
-			health.DefPhysDamage = health.DefPhysDamage + _buffPercent;
-
-			Debug.Log("Def " + health.DefPhysDamage);
-			return false;
+            CurrentStacksCount++;
+            ApplyOrUpdateModifier();
         }
-        return false;
+
+        return true;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
+    
+    private void ApplyOrUpdateModifier()
+    {
+        if (characterState?.Character == null) return;
+
+        var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        float totalBonus = CurrentStacksCount * BuffPerStack;
+
+        if (_resistanceModifier == null)
+        {
+            _resistanceModifier = new AttributeModifier(totalBonus, ModifierType.Flat, this);
+            resistanceAttr.AddModifier(_resistanceModifier);
+        }
+        else
+        {
+            _resistanceModifier.Value = totalBonus;
+        }
+    }
+    
+    public override void ReduceStack()
+    {
+        ExitState();
+    }
+    
+    private void RemoveModifier()
+    {
+        if (characterState?.Character == null || _resistanceModifier == null) return;
+
+        var resistanceAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        resistanceAttr.RemoveModifier(_resistanceModifier);
+        _resistanceModifier = null;
+    }
+    
+    
 }

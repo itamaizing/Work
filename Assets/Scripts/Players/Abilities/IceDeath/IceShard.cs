@@ -3,11 +3,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IceShard : Skill
+public class IceShard : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceShardProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 	[SerializeField] private float _baseEnergyCost = 5f;
 	[SerializeField] private float _maxAdditionalCost = 0f;
@@ -24,9 +23,10 @@ public class IceShard : Skill
 
 	protected override int AnimTriggerCast => 0;
 
-    private void Start()
-	{
-        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    public override void Init(SkillRenderer render, Character hero)
+    {
+		base.Init(render, hero);
+		_energy = (Energy)hero.Resources[ResourceType.Energy];
     }
 
 	private void EnsureResources()
@@ -69,23 +69,26 @@ public class IceShard : Skill
 			TryCancel(true);
 			return;
 		}
-
+		_mousePos = Targeting.GetTarget().Position;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 5, 3);
+		lookDir.y = 0f;
+		lookDir.Normalize();
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague);
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+
+		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague, 4f);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague, float maxDistance)
 	{
-		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		projectile.Init(_playerLinks, manaValue, false, this);
+		IceShardProjectile projectile = Instantiate(_projectile, transform.position, Quaternion.Euler(0, -angle, 0));
+    
+		projectile.Init(_hero, manaValue, false, this);
 		projectile.Talents(talentPlague, talentChargesPlague);
+		projectile.SetMaxDistance(maxDistance);
 
 		NetworkServer.Spawn(projectile.gameObject);
-
 		RpcInit(projectile.gameObject, manaValue, talentPlague, talentChargesPlague);
 	}
 
@@ -103,36 +106,6 @@ public class IceShard : Skill
 	{
 		_talentChragesPlague = value;
 	}
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _mousePos = targetInfo.Points[0];
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
-        //Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
-        while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			if (GetMouseButton)
-			{
-				_mousePos = Targeting.GetMousePoint();
-				/*if (Targeting.GetTarget()?.Character == null)
-				{
-					_mousePos = Targeting.GetTarget().Position;
-				}
-				else
-				{
-					_mousePos = Targeting.GetTarget().Character.transform.position;
-				}*/
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new();
-		targetInfo.Points.Add( _mousePos );
-		callbackDataSaved( targetInfo );
-	}
 
 	protected override IEnumerator CastJob()
 	{
@@ -145,4 +118,7 @@ public class IceShard : Skill
 		Debug.Log("CLEARED");
 		_mousePos = Vector2.positiveInfinity;
 	}
+
+	public bool IsStreamSkill { get; }
+	public bool IsFrostEnergyApplied { get; }
 }

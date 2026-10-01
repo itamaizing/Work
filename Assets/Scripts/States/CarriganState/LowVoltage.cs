@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LowVoltage : StackableState
+public class LowVoltage : StateStackingRefreshing
 {
     private const float ReductionPerStack = 0.15f;
     private const int MaxStack = 6;
@@ -16,18 +16,18 @@ public class LowVoltage : StackableState
 
     public LowVoltage()
     {
-        currentStacksCount = 1;
-        MaxStacksCount = MaxStack;
+        CurrentStacksCount = 1;
+        SetMaxStacks(MaxStack);
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
 
         _duration = durationToExit;
         _remainingDuration = _duration;
-        currentStacksCount = 1;
+        CurrentStacksCount = 1;
 
         Debug.Log($"[LowVoltage] Applied! Max stacks: {MaxStacksCount}, duration: {_duration}s");
 
@@ -36,29 +36,41 @@ public class LowVoltage : StackableState
         ApplyDebuffToActiveMagicBuffs();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _remainingDuration -= Time.deltaTime;
+
+        if (_remainingDuration <= 0)
+        {
+            ExitState();
+            characterState.RemoveState(this);
+            return;
+        }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         Debug.Log("[LowVoltage] ExitState called");
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         characterState.OnStateAdded -= OnNewStateAdded;
+
+        
+
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
 
         _remainingDuration = time;
 
-        Debug.Log($"[LowVoltage] Stacked to {currentStacksCount}. Remaining duration: {_remainingDuration}");
+        Debug.Log($"[LowVoltage] Stacked to {CurrentStacksCount}. Remaining duration: {_remainingDuration}");
 
         ApplyDebuffToActiveMagicBuffs();
 
@@ -67,7 +79,7 @@ public class LowVoltage : StackableState
 
     private void ApplyDebuffToActiveMagicBuffs()
     {
-        List<AbstractCharacterState> currentStates = characterState.CurrentStates;
+        List<StateBasic> currentStates = characterState.CurrentStates;
 
         foreach (var state in currentStates)
         {
@@ -79,16 +91,16 @@ public class LowVoltage : StackableState
         }
     }
 
-    private void OnNewStateAdded(AbstractCharacterState newState)
+    private void OnNewStateAdded(StateBasic newState)
     {
         if (newState.Type != StateType.Magic || newState.BaffDebaff != BaffDebaff.Baff)
             return;
 
-        float totalReduction = ReductionPerStack * currentStacksCount;
+        float totalReduction = ReductionPerStack * CurrentStacksCount;
         ReduceStateDuration(newState, totalReduction);
     }
 
-    private void ReduceStateDuration(AbstractCharacterState state, float reductionPercent)
+    private void ReduceStateDuration(StateBasic state, float reductionPercent)
     {
         var stateExitDurationField = state.GetType().GetField("_durationToExit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 

@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class HuntressTalent_8 : Talent
 {
-    [SerializeField] private ShotIntoSky shotIntoSky;
-
     public override void Enter()
     {
-        shotIntoSky.ShotRadiusUpgradeActive(true);
+        character.Abilities.GetSkill<GrowTree>().GrowTreeArrowIntoSkyRadius(true);
+        character.Abilities.GetSkill<ReconnaissanceFire>().FireArrowIntoSkyRadius(true);
+        character.Abilities.GetSkill<GroundTrap>().TrapArrowIntoSkyRadius(true);
     }
 
     public override void Exit()
     {
-        shotIntoSky.ShotRadiusUpgradeActive(false);
+        character.Abilities.GetSkill<GrowTree>().GrowTreeArrowIntoSkyRadius(false);
+        character.Abilities.GetSkill<ReconnaissanceFire>().FireArrowIntoSkyRadius(false);
+        character.Abilities.GetSkill<GroundTrap>().TrapArrowIntoSkyRadius(false);
     }
 }

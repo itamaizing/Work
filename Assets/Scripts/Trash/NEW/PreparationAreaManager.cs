@@ -6,23 +6,33 @@ public class PreparationAreaManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _preparationAreas;
 
-    private Coroutine preparationAreasDisable;
+    private Coroutine _disableCoroutine;
     
     public void PreparationAreasDisable(float time)
     {
-        if (preparationAreasDisable != null)
+        if (_disableCoroutine != null)
         {
-            StopCoroutine(IPreparationAreasDisable(time));
-            preparationAreasDisable = null;
+            StopCoroutine(_disableCoroutine);
+            _disableCoroutine = null;
         }
 
-        preparationAreasDisable = StartCoroutine(IPreparationAreasDisable(time));
+        _disableCoroutine = StartCoroutine(IPreparationAreasDisable(time));
     }
 
     private IEnumerator IPreparationAreasDisable(float time)
     {
-        foreach (GameObject preparationArea in _preparationAreas) preparationArea.SetActive(true);
+        foreach (GameObject preparationArea in _preparationAreas) 
+        {
+            if (preparationArea != null) preparationArea.SetActive(true);
+        }
+
         yield return new WaitForSeconds(time);
-        foreach (GameObject preparationArea in _preparationAreas) preparationArea.SetActive(false);
+
+        foreach (GameObject preparationArea in _preparationAreas) 
+        {
+            if (preparationArea != null) preparationArea.SetActive(false);
+        }
+
+        _disableCoroutine = null;
     }
 }

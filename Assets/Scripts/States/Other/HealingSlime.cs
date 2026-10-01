@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingSlime : RefreshingState
+public class HealingSlime : StateStackingRefreshing
 {
     public override States State => States.HealingSlime;
     public override StateType Type => StateType.Magic;
@@ -11,42 +11,57 @@ public class HealingSlime : RefreshingState
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Healing };
 
     private const float PercentPerStack = 0.01f;
+    
+    public float NextStackDueTime { get; set; } = -1f;
 
     private float _timer;
     private float _remaining;
     private bool _infinite;
 
+    private AttributeModifier _maxHealthModifier = new AttributeModifier(0,ModifierType.Percent);
+    private AttributeModifier _regenModifier = new AttributeModifier(0,ModifierType.Percent);
+
     public override float RemainingDuration => _infinite ? 999f : _remaining;
 
     public HealingSlime()
     {
-        MaxStacksCount = 9;
+        SetMaxStacks(9);
     }
 
     public void SwitchToFinite()
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(currentStacksCount, 1, 999f);
+        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 999f);
     }
 
     public void SwitchToInfinite()
     {
         _infinite = true;
         _timer = 0f;
-        duration = 999f;
+        RemainingDuration = 999f;
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        health = character.Character.Health;
+        CurrentStacksCount = 1;
+        characterState = character;
 
-        currentStacksCount = 0;
         SwitchToInfinite();
-        Stack(0);
+        
+        _maxHealthModifier.Source = this;
+        _regenModifier.Source = this;
+
+        if (health != null)
+        {
+            health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
+            health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
+        }
+        
+        UpdateAttributeValues(CurrentStacksCount);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         if (_infinite) return;
 
@@ -55,35 +70,55 @@ public class HealingSlime : RefreshingState
         {
             _timer = 0f;
 
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount--;
-                float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack);
-                health.AddMax(-removeValue);
-                characterState.StateIcons.RemoveIconCount();
+                CurrentStacksCount--;
+
+                
             }
 
+            UpdateAttributeValues(CurrentStacksCount);
+            
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || CurrentStacksCount <= 0) ExitState();
         }
     }
-
+    
     public override bool Stack(float _)
     {
-        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
-        float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
-        health.AddMax(addValue);
+        if (CurrentStacksCount < MaxStacksCount)
+        {
+            CurrentStacksCount++;
+
+        }
+        UpdateAttributeValues(CurrentStacksCount);
 
         if (!_infinite) SwitchToInfinite();
+
         return true;
     }
 
-    protected override void OnExitState()
+    private void UpdateAttributeValues(int stacks)
     {
-        if (currentStacksCount > 0)
-        {
-            float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack * currentStacksCount);
-            health.AddMax(-removeValue);
-        }
+        float newValue = PercentPerStack * stacks;
+
+        _maxHealthModifier.Value = newValue;
+        _regenModifier.Value = newValue;
     }
+
+    public override void ExitState()
+    {
+        CurrentStacksCount = 0;
+        _infinite = false;
+
+        if (health != null && !characterState.isClient)
+        {
+            health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
+            health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
+        }
+
+        characterState.RemoveState(this);
+    }
+    
+    
 }

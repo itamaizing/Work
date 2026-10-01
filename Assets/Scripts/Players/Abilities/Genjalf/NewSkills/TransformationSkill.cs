@@ -24,10 +24,6 @@ public class TransformationSkill : Skill
         return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
     
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-    }
-
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget()?.Character != null)
@@ -79,11 +75,10 @@ public class TransformationSkill : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-        Targeting.ClearTempTarget();
 
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
+        Targeting.ClearTempTarget();
     }
 
     [Command]

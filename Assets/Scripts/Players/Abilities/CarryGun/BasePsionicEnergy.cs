@@ -6,28 +6,35 @@ using UnityEngine.UI;
 
 public class BasePsionicEnergy : Resource, IDamageable
 {
-    [SerializeField] private Character _player;
+    [SerializeField] protected Character _heroCharacter;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private Slider basePsionicsSlider;
     [SerializeField] private PsionicEnergySkill psionicEnergySkill;
+    [SerializeField] private float _psionicaDecayTime = 12f;
 
     private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
-    private const float DamageToPsiConversionRate = 0.1f;
+    private const float DamageToPsiConversionRate = 0.2f;
     private const float DistanceStep = 1f;
-    private const float PsiPercentPerStep = 0.01f;
 
-    private float _psionicaDecayTime;
+    private const float PsiDissipationPercent = 0.3f;
+    private const float PsiDissipationRadius = 3f;
+
+    private bool _isDissipatingPsi = false;
+    
     private Vector3 _lastPosition;
     private float _distanceAccumulator;
     private bool _isInternalPsiEnergy = false;
     private bool _isAccumulationPsionicRunning = false;
     private bool _isTakesAnyDamage = false;
     private Coroutine _energyDecayCoroutine;
+    private bool _isInitialized = false;
 
-    private float MaxPsi => _player.Health.MaxValue;
+    private float MaxPsi => _heroCharacter.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
+    
+    public static float PsiPerMeter => 1f;
     
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float> OnEnergyChanged;
@@ -38,7 +45,23 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void Start()
     {
-        _psionicaDecayTime = psionicEnergySkill.Cooldown.CooldownTime;
+        InitializePsionicResource();
+    }
+
+    private void InitializePsionicResource()
+    {
+        if (_isInitialized) return;
+        if (_heroCharacter == null || _heroCharacter.Health == null) return;
+
+        _maxValue = _heroCharacter.Health.MaxValue;
+        CurrentValue = 0f;
+
+        if (!_heroCharacter.Health.Shields.Contains(this))
+            _heroCharacter.Health.Shields.Add(this);
+
+        UpdatePsionicaBar();
+
+        _isInitialized = true;
     }
 
     public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
@@ -47,11 +70,28 @@ public class BasePsionicEnergy : Resource, IDamageable
     }
 
     public void TakesAnyDamage(bool value) => _isTakesAnyDamage = value;
-    public void AccumulationPsionicChanged(bool value) => OnAccumulationPsionicChanged?.Invoke(value);
+    
+    
+    private bool _isPsionicsTalentActive = false;
+    public bool IsPsionicsTalentActive => _isPsionicsTalentActive;
+
+    public void AccumulationPsionicChanged(bool value)
+    {
+        if (_isPsionicsTalentActive == value) return;
+
+        _isPsionicsTalentActive = value;
+        OnAccumulationPsionicChanged?.Invoke(value);
+    }
+
+    public void DissipatingPsi(bool value)
+    {
+        if(value == _isDissipatingPsi) return;
+        _isDissipatingPsi = value;
+    }
     public void AccumulationPsionicRunning(bool value)
     {
         _isAccumulationPsionicRunning = value;
-        _lastPosition = _player.transform.position;
+        _lastPosition = _heroCharacter.transform.position;
         _distanceAccumulator = 0f;
     }
 
@@ -59,11 +99,22 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         base.Init(resource);
 
-        if (_player != null)
+        if (_heroCharacter != null)
         {
-            _maxValue = _player.AttributeSystem.HPMax.GetValue();
-            _player.Health.Shields.Add(this);
+            _maxValue = _heroCharacter.AttributeSystem.HPMax.GetValue();
+
+            if (!_heroCharacter.Health.Shields.Contains(this))
+                _heroCharacter.Health.Shields.Add(this);
         }
+
+        CurrentValue = 0f;
+
+        if (isServer)
+            RpcOnEnergyChanged(CurrentValue);
+
+        UpdatePsionicaBar();
+
+        _isInitialized = true;
     }
 
     private void Update()
@@ -74,38 +125,65 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnEnable()
     {
-        if (_player.DamageTracker != null)
+        if (_heroCharacter.DamageTracker != null)
         {
-            _player.DamageTracker.OnDamageTracked += OnDamageDealt;
-        }
-        if (_player.Health != null) _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
-
-        if (_player.SpawnComponent != null)
-        {
-            _player.SpawnComponent.UnitAdded += OnMinionSpawned;
-            _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
+            _heroCharacter.DamageTracker.OnDamageTracked += OnDamageDealt;
         }
 
-        _player.Reset += PsiEnergyDecayServer;
+        if (_heroCharacter.SpawnComponent != null)
+        {
+            _heroCharacter.SpawnComponent.UnitAdded += OnMinionSpawned;
+            _heroCharacter.SpawnComponent.UnitRemoved += OnMinionRemoved;
+        }
+        
+        if (_heroCharacter.Health != null)
+        {
+            _heroCharacter.Health.MaxValueChanged += OnHealthMaxValueChanged;
+        }
+
+        _heroCharacter.Reset += PsiEnergyDecayServer;
     }
 
     private void OnDisable()
     {
-        if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
+        if (_heroCharacter != null && _heroCharacter.DamageTracker != null) _heroCharacter.DamageTracker.OnDamageTracked -= OnDamageDealt;
 
-        if (_player.SpawnComponent != null)
+        if (_heroCharacter.SpawnComponent != null)
         {
-            _player.SpawnComponent.UnitAdded -= OnMinionSpawned;
-            _player.SpawnComponent.UnitRemoved -= OnMinionRemoved;
+            _heroCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
+            _heroCharacter.SpawnComponent.UnitRemoved -= OnMinionRemoved;
 
-            foreach (var unit in _player.SpawnComponent.Units)
+            foreach (var unit in _heroCharacter.SpawnComponent.Units)
             {
                 if (unit != null && unit.DamageTracker != null) unit.DamageTracker.OnDamageTracked -= OnDamageDealt;
             }
         }
 
-        _player.Reset -= PsiEnergyDecayServer;
+        if (_heroCharacter.Health != null)
+        {
+            _heroCharacter.Health.MaxValueChanged -= OnHealthMaxValueChanged;
+        }
+
+        _heroCharacter.Reset -= PsiEnergyDecayServer;
+    }
+
+    private void OnHealthMaxValueChanged(float oldMax, float newMax)
+    {
+        _maxValue = newMax;
+
+        if (CurrentValue > _maxValue)
+        {
+            CurrentValue = _maxValue;
+            RpcOnEnergyChanged(CurrentValue);
+        }
+
+        UpdatePsionicaBar();
+    }
+    
+    public void AddPsiByDistance(float distance)
+    {
+        if (distance <= 0f) return;
+        AddPsiAndRestartDecay(distance * PsiPerMeter);
     }
 
     private void PsionicRunning()
@@ -113,19 +191,11 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (!_isAccumulationPsionicRunning) return;
         if (!_attackingPsionicEnergy.IsAttackingPsiEnergy) return;
 
-        Vector3 currentPos = _player.transform.position;
+        Vector3 currentPos = _heroCharacter.transform.position;
         float distanceDelta = Vector3.Distance(currentPos, _lastPosition);
         if (distanceDelta <= 0.001f) return;
 
-        _distanceAccumulator += distanceDelta;
-
-        if (_distanceAccumulator >= DistanceStep)
-        {
-            int steps = Mathf.FloorToInt(_distanceAccumulator / DistanceStep);
-            _distanceAccumulator -= steps * DistanceStep;
-            float psiGain = MaxPsi * PsiPercentPerStep * steps;
-            AddPsiAndRestartDecay(psiGain);
-        }
+        AddPsiByDistance(distanceDelta);
 
         _lastPosition = currentPos;
     }
@@ -207,6 +277,8 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void UpdatePsionicaBar()
     {
+        if (basePsionicsSlider == null || MaxPsi <= 0f) return;
+
         float normalizedValue = 0f;
 
         if (CurrentValue <= BasePsionicaThreshold)
@@ -257,10 +329,40 @@ public class BasePsionicEnergy : Resource, IDamageable
             RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
             UpdatePsionicaBar();
 
+            if (_isDissipatingPsi) DissipatePsiDamage(absorbingDamage, skill);
+
             return true;
         }
 
         return false;
+    }
+
+    private void DissipatePsiDamage(float absorbedAmount, Skill skill)
+    {
+        if (!isServer) return;
+
+        float splashDamageValue = absorbedAmount * PsiDissipationPercent;
+        if (splashDamageValue <= 0f) return;
+
+        Collider[] hits = Physics.OverlapSphere(_heroCharacter.transform.position, PsiDissipationRadius);
+
+        foreach (var hit in hits)
+        {
+            Character target = hit.GetComponent<Character>();
+            if (target == null) continue;
+            if (target == _heroCharacter) continue;
+            if (target.IsDead) continue;
+
+            Damage splashDamage = new Damage
+            {
+                Value = splashDamageValue,
+                Type = DamageType.Magical,
+                School = Schools.Air,
+                Form = AbilityForm.Magic,
+            };
+
+            target.Health.TryTakeDamage(ref splashDamage, skill);
+        }
     }
 
     public void ConvertToAttackingEnergy(float amount)
@@ -296,5 +398,10 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 
         base.Add(value);
+    }
+    
+    protected override IEnumerator RegenerateJob()
+    {
+        yield return null;
     }
 }

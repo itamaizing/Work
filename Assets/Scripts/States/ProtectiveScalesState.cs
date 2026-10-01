@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProtectiveScalesState : StackableState
+public class ProtectiveScalesStateStacking : StateStacking
 {
     private float _durationRemaining;
-    private float _appliedResist = 0f;
 
     private const float MagicResistValue = 90f;
 
@@ -19,7 +18,7 @@ public class ProtectiveScalesState : StackableState
     public override List<StatusEffect> Effects => _effects;
     public override float RemainingDuration => _durationRemaining;
 
-    protected override void OnEnterState(CharacterState character,
+    public override void Apply(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -27,7 +26,7 @@ public class ProtectiveScalesState : StackableState
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
@@ -35,9 +34,8 @@ public class ProtectiveScalesState : StackableState
         TryDispelMagicDebuffs();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-     
     }
 
     public override bool Stack(float time)
@@ -48,12 +46,11 @@ public class ProtectiveScalesState : StackableState
 
     private void ApplyMagicResist()
     {
-        if (health == null) return;
+        if (characterState == null) return;
 
-        health.ResistMagDamage -= _appliedResist;
-
-        _appliedResist = MagicResistValue;
-        health.ResistMagDamage += _appliedResist;
+        var attribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical];
+        attribute.RemoveBySource(this);
+        attribute.AddModifier(new AttributeModifier(MagicResistValue, ModifierType.Flat, this));
     }
 
     private void TryDispelMagicDebuffs()
@@ -63,13 +60,11 @@ public class ProtectiveScalesState : StackableState
         for (int i = states.Count - 1; i >= 0; i--)
         {
             var state = states[i];
-
             if (state == this) continue;
 
             if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff)
             {
                 float chance = Random.Range(0f, 100f);
-
                 if (chance <= 90f)
                 {
                     characterState.RemoveState(state.State);
@@ -78,13 +73,9 @@ public class ProtectiveScalesState : StackableState
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        if (health != null)
-        {
-            health.ResistMagDamage -= _appliedResist;
-        }
-
-        _appliedResist = 0f;
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
+        characterState.RemoveState(this);
     }
 }

@@ -9,14 +9,14 @@ public class SwarmTalent_3 : Talent
 
     public override void Enter()
     {
-        _swarmCapacity.AddCounter(true);
+        _swarmCapacity.IsAddCharges = true;
         _tentacles.AttractionTentacleTalent(true);
         AddingDescriptionSet(true);
     }
 
     public override void Exit()
     {
-        _swarmCapacity.AddCounter(false);
+        _swarmCapacity.IsAddCharges = false;
         _tentacles.AttractionTentacleTalent(false);
         AddingDescriptionSet(false);
     }

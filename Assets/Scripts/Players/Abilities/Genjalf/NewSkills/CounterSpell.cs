@@ -63,21 +63,54 @@ public class CounterSpell : Skill
 
             if (currentCharacter)
             {
-                var cancelledSkill = currentCharacter.Abilities.CurrentCastingSkill;
-                currentCharacter.CharacterState.CmdAddState(States.SchoolDebuff, 5, 0, Hero.gameObject, name);
+                CmdState(currentCharacter.gameObject);
 
-                if (cancelledSkill != null && _isApplyDamageTalent)
-                {
-                    _lastSkillManaCost = cancelledSkill.Cost.BaseCost;
-                    CmdApplyManaDamage(currentCharacter.gameObject,_lastSkillManaCost * _manaPercentDamage);
-                }
-
-                Schools school = cancelledSkill.Info.School;
-                _schoolSolvent.AddSchool(school);
-                OnSpellDispelled?.Invoke(school);
+                CmdApplyTalent(currentCharacter.gameObject,_isApplyDamageTalent);
             }
         }
         yield return null;
+    }
+
+    [Command]
+    private void CmdApplyTalent(GameObject target, bool isApplyDamageTalent)
+    {
+        Character currentCharacter = target.GetComponent<Character>();
+
+        RpcApplyTalent(currentCharacter.connectionToClient, target, isApplyDamageTalent);
+    }
+
+    [TargetRpc]
+    private void RpcApplyTalent(NetworkConnectionToClient targetConn, GameObject target, bool isApplyDamageTalent)
+    {
+        Character currentCharacter = target.GetComponent<Character>();
+        var cancelledSkill = currentCharacter.Abilities.CurrentCastingSkill;
+
+        if (cancelledSkill == null) return;
+
+        Schools school = cancelledSkill.Info.School;
+
+        if (school != Schools.None)
+        {
+            CmdReturnSchoolToCaster(school);
+        }
+
+        if (!isApplyDamageTalent) return;
+        
+        _lastSkillManaCost = cancelledSkill.Cost.BaseCost;
+        CmdApplyManaDamage(currentCharacter.gameObject, _lastSkillManaCost * _manaPercentDamage);
+    }
+    
+    [Command(requiresAuthority = false)]
+    private void CmdReturnSchoolToCaster(Schools school, NetworkConnectionToClient sender = null)
+    {
+        RpcAddSchoolToSolvent(connectionToClient, school);
+    }
+
+    [TargetRpc]
+    public void RpcAddSchoolToSolvent(NetworkConnectionToClient targetConn, Schools school)
+    {
+        _schoolSolvent.AddSchool(school);
+        OnSpellDispelled?.Invoke(school);
     }
 
     protected override void ClearData()
@@ -113,21 +146,12 @@ public class CounterSpell : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-        Targeting.ClearTempTarget();
 
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
+        Targeting.ClearTempTarget();
     }
 
-    private void CreateParticle(Vector3 position)
-    {
-        if (_particlePref != null)
-        {
-            GameObject item = Instantiate(_particlePref.gameObject, position, Quaternion.identity);
-        }
-    }
-    
     [Command]
     private void CmdApplyManaDamage(GameObject target, float damage)
     {
@@ -135,23 +159,11 @@ public class CounterSpell : Skill
         dmg.Value = damage;
         ApplyDamage(dmg, target);
     }
-
-    [Command]
-    protected void CmdCreateParticle(Vector3 position)
-    {
-        RpcCreateParticle(position);
-    }
-
-    [ClientRpc]
-    private void RpcCreateParticle(Vector3 position)
-    {
-        CreateParticle(position);
-    }
-
+    
     [Command]
     private void CmdState(GameObject enemy)
     {
         Character enemyChar = enemy.GetComponent<Character>();
-        enemyChar.CharacterState.CmdAddState(States.SchoolDebuff, 5, 0,Schools.None, Hero.gameObject, name);
+        enemyChar.CharacterState.AddState(States.SchoolDebuff, 5, 0,Schools.None, Hero.gameObject, name);
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SparkTalentHealthState : AbstractCharacterState
+public class SparkTalentHealthState : StateBasic
 {
     private Skill _skill;
     private float _healthBuffActiveTime = 2f;
@@ -14,7 +14,7 @@ public class SparkTalentHealthState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _skill = personWhoMadeBuff.Abilities.Abilities.FirstOrDefault(o => o.Name == skillName);
         
@@ -24,7 +24,7 @@ public class SparkTalentHealthState : AbstractCharacterState
         ApplyBuff();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         _healthBuffActiveTime -= Time.deltaTime;
 
@@ -34,16 +34,11 @@ public class SparkTalentHealthState : AbstractCharacterState
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         RemoveBuff();
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
 
     private void ApplyBuff()
     {

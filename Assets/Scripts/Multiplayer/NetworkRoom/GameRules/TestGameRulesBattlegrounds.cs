@@ -30,7 +30,6 @@ public class TestGameRulesBattlegrounds : GameRules
 
     protected override void GameStartClient()
     {
-        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
     protected override void OnPlayerDied(Character player)
@@ -229,7 +228,7 @@ public class TestGameRulesBattlegrounds : GameRules
         var characterState = playerSettings.CharacterState;
         if (characterState != null)
         {
-            var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
+            var statesCopy = new List<StateBasic>(characterState.CurrentStates);
             foreach (var state in statesCopy)
             {
                 characterState.RemoveState(state.State);
@@ -292,6 +291,8 @@ public class TestGameRulesBattlegrounds : GameRules
         }
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
+        
+        RpcEnablePreparationAreas(5f); 
     }
 
     private IEnumerator CloseJob()
@@ -364,6 +365,4 @@ public class TestGameRulesBattlegrounds : GameRules
             RestartRound();
         }
     }
-
-    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 }

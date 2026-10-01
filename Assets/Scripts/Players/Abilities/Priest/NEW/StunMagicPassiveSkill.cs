@@ -58,7 +58,7 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
     private void HandleDamageDealt(Damage damage, GameObject targetObject)
     {
         if(!_isDamageDarkLightStun) return;
-        if ((damage.School == Schools.Light || damage.School == Schools.Dark) && damage.Type == DamageType.Magical)
+        if ((damage.School == Schools.Light || damage.School == Schools.Dark) && damage.Type == DamageType.Magical && damage.Value >= 5)
         {
             if (targetObject.TryGetComponent<Character>(out var target))
             {

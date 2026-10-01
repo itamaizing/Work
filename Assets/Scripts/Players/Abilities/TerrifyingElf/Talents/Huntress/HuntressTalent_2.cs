@@ -9,12 +9,12 @@ public class HuntressTalent_2 : Talent
     public override void Enter()
     {
         ability.ActivateSkill(reconnaissanceFire); 
-        terrifyingElfAura.FireWorshipperTalentActive(true);
+        //terrifyingElfAura.FireWorshipperTalentActive(true);
     }
 
     public override void Exit()
     {
         ability.DeactivateSkill(reconnaissanceFire);
-        terrifyingElfAura.FireWorshipperTalentActive(false);
+        //terrifyingElfAura.FireWorshipperTalentActive(false);
     }
 }

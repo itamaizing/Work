@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImmaterialityState : AbstractCharacterState
+public class ImmaterialityState : StateBasic
 {
     private int _defualtPlayerLayer;
     private int _newPlayerLayer;
@@ -13,7 +13,7 @@ public class ImmaterialityState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _defualtPlayerLayer = characterState.gameObject.layer;
@@ -23,22 +23,17 @@ public class ImmaterialityState : AbstractCharacterState
         DisabledCollider();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
 
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         TargetRpcResetPlayerComponents();
-        duration = 0;
-        characterState.RemoveStateFromList(this);
+        RemainingDuration = 0;
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
 
     private void DisabledCollider()
     {

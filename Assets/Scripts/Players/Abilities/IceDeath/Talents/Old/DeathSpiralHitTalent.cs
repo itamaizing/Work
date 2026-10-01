@@ -8,11 +8,11 @@ public class DeathSpiralHitTalent : Talent
 
 	public override void Enter()
 	{
-		_deathSpiral.TalentHitState(true);
+		//_deathSpiral.TalentHitState(true);
 	}
 
 	public override void Exit()
 	{
-		_deathSpiral.TalentHitState(false);
+		//_deathSpiral.TalentHitState(false);
 	}
 }

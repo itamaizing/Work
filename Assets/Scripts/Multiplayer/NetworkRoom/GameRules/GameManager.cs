@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private MonoBehaviour _sourceUI;
     [SerializeField] private TeamsPanel _teamsPanel;
     [SerializeField] private TeamSource _sourceTabl;
+    [SerializeField] private ChatController _chatController;
 
     private IGameSourceUI _gameSourceUI;
 
@@ -38,4 +39,5 @@ public class GameManager : MonoBehaviour
     public TeamSource Source { get => _sourceTabl; }
     public RestartRound RestartRound { get => restartRound; }
     public NpcSpawn NpcSpawn { get => _npcSpawn; }
+    public ChatController ChatController { get => _chatController; }
 }

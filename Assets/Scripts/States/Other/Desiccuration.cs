@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Desiccuration : AbstractCharacterState
+public class Desiccuration : StateBasic
 {
 	public bool turnOff = false;
 	private float _baseDuration;
@@ -15,7 +15,7 @@ public class Desiccuration : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 	//	Debug.Log("Entering Desiccuration State");
 
@@ -37,32 +37,21 @@ public class Desiccuration : AbstractCharacterState
 		_damageToExit = 0.01f;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 	//	Debug.Log("Updating Desiccuration State");
+		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff || characterState.Character.Health.SumDamageTaken >= _damageToExit)
 		{
 			ExitState();
 		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
 	//	Debug.Log("Exiting Desiccuration State");
+		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.SetCanMove(true);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}
-
-	/*public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			_duration = time;
-			return true;
-		}
-	}*/
 }

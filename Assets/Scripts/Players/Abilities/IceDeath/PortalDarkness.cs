@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -12,6 +12,42 @@ public class PortalDarkness : Skill
     [SerializeField] private float _energyCost = 20f;
 
     private Energy _energy;
+
+    #region ExplodingCorpseTalent
+
+    private bool _isCorpseExploding;
+    public bool IsCorpseExploding => _isCorpseExploding;
+
+    public void EnableExplodingCorpse(bool value)
+    {
+        if(value == _isCorpseExploding) return;
+        _isCorpseExploding = value;
+        CmdEnableExplodingCorpse(_isCorpseExploding);
+        if (_isCorpseExploding)
+        {
+            _hero.SpawnComponent.UnitAdded -= OnUnitSpawned;
+            _hero.SpawnComponent.UnitAdded += OnUnitSpawned;
+        }
+        else
+        {
+            _hero.SpawnComponent.UnitAdded -= OnUnitSpawned;
+        }
+    }
+
+    [Command]
+    private void CmdEnableExplodingCorpse(bool value)
+    {
+        _isCorpseExploding = value;
+
+    }
+
+    private void OnUnitSpawned(Character minionCharacter)
+    {
+        if(minionCharacter == null) return;
+        minionCharacter.Abilities.GetSkill<ExplodingCorpse>().OnCreatureSpawned();
+    }
+
+    #endregion
 
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
@@ -35,9 +71,13 @@ public class PortalDarkness : Skill
 
                 var temp = Targeting.GetTempTarget()?.Targetable as Character;
 
-                if (temp != null)
+                if (temp is IceDeadMinion)
                 {
-                    Targeting.SetTarget(temp);
+                    Targeting.ClearTempTarget();
+                }
+                else if(temp != null)
+                {
+                    Targeting.SetTempTarget(temp);
                     break;
                 }
             }
@@ -45,11 +85,9 @@ public class PortalDarkness : Skill
             yield return null;
         }
 
-        var target = Targeting.GetTarget()?.Character;
-
-        if (target != null)
+        if (Targeting.GetTempTarget()?.Character != null)
         {
-            targetInfo.AddTarget(target);
+            targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
             callbackDataSaved(targetInfo);
         }
     }
@@ -84,10 +122,20 @@ public class PortalDarkness : Skill
     {
         var target = targetObject.GetComponent<Character>();
         if (target == null) return;
-
-        target.CharacterState.AddState(States.PortalDarkness, _duration, 0, _playerLinks.gameObject, name);
+        
+        target.CharacterState.AddState(States.PortalDarkness, _duration, 0, _playerLinks.gameObject, nameof(PortalDarkness));
     }
 
+
+    [Command]
+    public void CmdApplyPlague(GameObject targetObject,float duration)
+    {
+        var target = targetObject.GetComponent<Character>();
+        if (target == null) return;
+        
+        target.CharacterState.AddState(States.Plague, duration, 0, _hero.gameObject, nameof(PortalDarkness));
+    }
+    
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)

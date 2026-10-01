@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ public class UIPlayerComponents : MonoBehaviour
     [SerializeField] private SkillRenderer skillRenderer;
 
     [SerializeField] private DamageTracker _damageTracker;
+    [SerializeField] private Canvas _UICanvas;
 
     public Transform DamageSpawn;
     public Transform RegenSpawn;
@@ -31,10 +33,16 @@ public class UIPlayerComponents : MonoBehaviour
 
     public SelectedCircle CircleSelect1 { get => CircleSelect; set => CircleSelect = value; }
     public SkillRenderer Renderer { get => skillRenderer; set => skillRenderer = value; }
+    
+    private Dictionary<Skill, Action<float>> _castDeleyHandlers = new();
+    private Dictionary<Skill, Action> _castDeleyEndHandlers = new();
+    private Dictionary<Skill, Action<float>> _castStreamHandlers = new();
+    private Dictionary<Skill, Action> _castStreamEndHandlers = new();
 
     private void Awake()
     {
         _damageTracker = _character.DamageTracker;
+        _UICanvas.worldCamera = Camera.main;
     }
 
     private void OnEnable()
@@ -46,14 +54,26 @@ public class UIPlayerComponents : MonoBehaviour
 
         foreach (var ability in _character.Abilities.Abilities)
         {
-            ability.CastStreamStarted += OnStartStreaming;
-            ability.Canceled += OnStopStreaming;
+            Action<float> onDeley = time => OnStartCastDeley(time, ability);
+            Action onDeleyEnd = () => OnStopCastDeley(ability);
+            Action<float> onStream = time => OnStartStreaming(time, ability);
+            Action onStreamEnd = () => OnStopStreaming(ability);
 
-            ability.CastDeleyStarted += OnStartCastDeley;
-            ability.Canceled += OnStopCastDeley;
+            _castDeleyHandlers[ability] = onDeley;
+            _castDeleyEndHandlers[ability] = onDeleyEnd;
+            _castStreamHandlers[ability] = onStream;
+            _castStreamEndHandlers[ability] = onStreamEnd;
+
+            ability.CastDeleyStarted += onDeley;
+            ability.CastDeleyEnded += onDeleyEnd;
+            ability.Canceled += onDeleyEnd;
+
+            ability.CastStreamStarted += onStream;
+            ability.CastStreamEnded += onStreamEnd;
+            ability.Canceled += onStreamEnd;
         }
     }
-
+    
     private void OnDisable()
     {
         _character.Health.DamageTaken -= OnDamageTaken;
@@ -63,12 +83,29 @@ public class UIPlayerComponents : MonoBehaviour
 
         foreach (var ability in _character.Abilities.Abilities)
         {
-            ability.CastStreamStarted -= OnStartStreaming;
-            ability.Canceled -= OnStopStreaming;
+            if (_castDeleyHandlers.TryGetValue(ability, out var onDeley))
+                ability.CastDeleyStarted -= onDeley;
+            if (_castDeleyEndHandlers.TryGetValue(ability, out var onDeleyEnd))
+            {
+                ability.CastDeleyEnded -= onDeleyEnd;
+                ability.Canceled -= onDeleyEnd;
+            }
+            if (_castStreamHandlers.TryGetValue(ability, out var onStream))
+                ability.CastStreamStarted -= onStream;
+            if (_castStreamEndHandlers.TryGetValue(ability, out var onStreamEnd))
+            {
+                ability.CastStreamEnded -= onStreamEnd;
+                ability.Canceled -= onStreamEnd;
+            }
 
-            ability.CastDeleyStarted -= OnStartCastDeley;
-            ability.Canceled -= OnStopCastDeley;
+            ability.CastStreamProgressApplied -= OnCastStreamRollback;
+            ability.CastTimeRolledBack -= OnCastTimeRollback;
         }
+
+        _castDeleyHandlers.Clear();
+        _castDeleyEndHandlers.Clear();
+        _castStreamHandlers.Clear();
+        _castStreamEndHandlers.Clear();
     }
 
     public void ChangeSelection(bool isSelect)
@@ -155,6 +192,7 @@ public class UIPlayerComponents : MonoBehaviour
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
+        if (damage.Value <= 0) return;
         ShowPopupValue(-damage.Value, _physDamageColor, _physDamageColor);
     }
 
@@ -168,26 +206,66 @@ public class UIPlayerComponents : MonoBehaviour
         ShowPopupValue(shieldValue, _shieldColor, _shieldColor);
     }
 
-    private void OnStartStreaming(float time)
+    private void OnStartStreaming(float time, Skill skill)
     {
+        if (!ShouldShow(skill.Renderer.CastBarVisibility)) return;
+
         _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time + _fixDuration, 1, 0);
+        _castLine.StartFill(time, 1, 0);
+
+        skill.CastStreamProgressApplied -= OnCastStreamRollback;
+        skill.CastStreamProgressApplied += OnCastStreamRollback;
     }
 
-    private void OnStopStreaming()
+    private void OnStopStreaming(Skill skill)
     {
+        skill.CastStreamProgressApplied -= OnCastStreamRollback;
+
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
     }
-
-    private void OnStartCastDeley(float time)
+    
+    private bool ShouldShow(CastBarObservers flags)
     {
-        _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time);
+        if (Character.Local == null) return false;
+
+        var relation = Character.Local.RelationTo(_character);
+        return relation switch
+        {
+            CharacterRelation.Self   => flags.HasFlag(CastBarObservers.Self),
+            CharacterRelation.Ally   => flags.HasFlag(CastBarObservers.Allies),
+            CharacterRelation.Enemy  => flags.HasFlag(CastBarObservers.Enemies),
+            _ => false
+        };
+    }
+    
+    private void OnCastStreamRollback(float rollbackAmount)
+    {
+        if (_castLine != null)
+            _castLine.SkipForward(rollbackAmount);
+    }
+    
+    private void OnCastTimeRollback(float rollbackAmount)
+    {
+        if (_castLine != null)
+            _castLine.Rollback(rollbackAmount);
     }
 
-    private void OnStopCastDeley()
+    private void OnStartCastDeley(float time, Skill skill)
     {
+        if (!ShouldShow(skill.Renderer.PrepareBarVisibility)) return;
+
+        _castLine.gameObject.SetActive(true);
+        _castLine.StartFill(time, 0, 1);
+
+        skill.CastTimeRolledBack -= OnCastTimeRollback;
+        skill.CastTimeRolledBack += OnCastTimeRollback;
+    }
+
+    private void OnStopCastDeley(Skill skill)
+    {
+        skill.CastTimeRolledBack -= OnCastTimeRollback;
+
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
     }

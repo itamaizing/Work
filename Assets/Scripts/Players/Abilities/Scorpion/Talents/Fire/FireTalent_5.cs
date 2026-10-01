@@ -6,11 +6,11 @@ public class FireTalent_5 : Talent
 {
     public override void Enter()
     {
-     
+        character.Abilities.GetSkill<Teleportation_Scorpion>().EnableScorchedSoulDiscount(true);
     }
 
     public override void Exit()
     {
-     
+        character.Abilities.GetSkill<Teleportation_Scorpion>().EnableScorchedSoulDiscount(false);
     }
 }

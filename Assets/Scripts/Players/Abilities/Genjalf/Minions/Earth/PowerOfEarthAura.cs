@@ -7,7 +7,7 @@ public class PowerOfEarthAura : AuraStateHandler
 
     protected override void OnTargetEnter(Character target)
     {
-        CmdApplyStateToTarget(target.gameObject, States.PowerOfEarth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(PowerOfEarthAura));
+        CmdApplyStateToTarget(target.gameObject, States.PowerOfEarth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(PowerOfEarthAura),0);
     }
 
     protected override void OnTargetExit(Character target)
@@ -21,7 +21,7 @@ public class PowerOfEarthAura : AuraStateHandler
     }
 }
 
-public class PowerOfEarth : AbstractCharacterState
+public class PowerOfEarth : StateBasic
 {
     private Character _character;
     
@@ -34,18 +34,20 @@ public class PowerOfEarth : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff,
         string skillName)
     {
         _character = characterState.Character;
         _character.Health.DamageTaken += OnDamageGeted;
     }
 
-    public override void OnUpdateState() { }
+    public override void UpdateState() { }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         _character.Health.DamageTaken -= OnDamageGeted;
+        
+        base.ExitState();
     }
 
     private void OnDamageGeted(Damage damage, Skill skill)

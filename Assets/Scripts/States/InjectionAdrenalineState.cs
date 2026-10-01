@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InjectionAdrenalineState : AbstractCharacterState
+public class InjectionAdrenalineState : StateBasic
 {
     private float _damageTickTimer;
 
@@ -22,12 +22,12 @@ public class InjectionAdrenalineState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
 
-        duration = durationToExit;
+        RemainingDuration = durationToExit;
 
         _animator = character.GetComponent<Animator>();
         _moveCreature = character.GetComponent<MoveCreature>();
@@ -47,7 +47,7 @@ public class InjectionAdrenalineState : AbstractCharacterState
         _damageTickTimer = 1f;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         _damageTickTimer -= Time.deltaTime;
 
@@ -68,7 +68,7 @@ public class InjectionAdrenalineState : AbstractCharacterState
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (_animator != null)
         {
@@ -79,5 +79,7 @@ public class InjectionAdrenalineState : AbstractCharacterState
         {
             _moveCreature.MoveDurationPerUnit = _originalMoveDuration;
         }
+
+        base.ExitState();
     }
 }

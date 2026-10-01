@@ -10,7 +10,7 @@ public class HotBloodAura : AuraStateHandler
 
     protected override void OnTargetEnter(Character target)
     {
-        CmdApplyStateToTarget(target.gameObject, States.HotBloodBuff, _buffDuration, Schools.Fire, _owner.gameObject, nameof(HotBloodAura));
+        CmdApplyStateToTarget(target.gameObject, States.HotBloodBuff, _buffDuration, Schools.Fire, _owner.gameObject, nameof(HotBloodAura),0);
     }
 
     protected override void OnTargetExit(Character target)
@@ -24,48 +24,56 @@ public class HotBloodAura : AuraStateHandler
     }
 }
 
-public class HotAuraBuff : AbstractCharacterState
+public class HotAuraBuff : StateBasic
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    private float _percentage = 0.1f;
-    private Character _character;
+    
+    private const float CastSpeedBonusPercent = 0.10f;
+    
+    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(CastSpeedBonusPercent, ModifierType.Percent);
 
     public override States State => States.HotBloodBuff;
-
     public override StateType Type => StateType.Magic;
-
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _character = character.Character;
-        foreach (var skill in character.Character.Abilities.Abilities)
+        characterState = character;
+        _castSpeedModifier.Source = this;
+
+        ApplyCastSpeedBuff();
+    }
+
+    private void ApplyCastSpeedBuff()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (castSpeedAttr != null && !castSpeedAttr.Modifiers.Contains(_castSpeedModifier))
         {
-            skill.Buff.CastSpeed.IncreasePercentage(1 - _percentage);
-            skill.Buff.AttackSpeed.IncreasePercentage(1 - _percentage);
+            castSpeedAttr.AddModifier(_castSpeedModifier);
         }
     }
 
-    protected override void OnExitState()
+    private void RemoveCastSpeedBuff()
     {
-        if (_character != null)
+        if (characterState == null || characterState.Character == null) return;
+
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (castSpeedAttr != null)
         {
-            foreach (var skill in _character.Abilities.Abilities)
-            {
-                skill.Buff.CastSpeed.Reset();
-                skill.Buff.AttackSpeed.Reset();
-            }
+            castSpeedAttr.RemoveModifier(_castSpeedModifier);
         }
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        return false;
-    }*/
-
-    public override void OnUpdateState()
-    {
+        RemoveCastSpeedBuff();
+        base.ExitState();
     }
+
+    public override void UpdateState() { }
 }

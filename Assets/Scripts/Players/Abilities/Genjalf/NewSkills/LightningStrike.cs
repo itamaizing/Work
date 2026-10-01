@@ -233,9 +233,10 @@ public class LightningStrike : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
+        Targeting.ClearTempTarget();
     }
 
     private void CreateParticle(Vector3 position)

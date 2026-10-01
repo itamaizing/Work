@@ -1,25 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisappointmentState : AbstractCharacterState
+public class DisappointmentStateStacking : StateStackingRefreshing
 {
     private float _baseDuration;
-    private float _damageToExit;
-    private float _damageOnStart = 0;
     private Animator _animator;
     private AnimatorStateInfo _currentState;
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Move, StatusEffect.Ability };
-    
+    public override DiminishingReturnGroup DrGroup => DiminishingReturnGroup.FearAndDisappointment;
+
     public override States State => States.DisappointmentState;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
+    
+    private bool _isBleedingUpgrade = false;
+    private bool _isAdditionalTime = false;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _baseDuration = durationToExit;
-        _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
-        _damageOnStart = characterState.Character.Health.SumDamageTaken;
+        characterState.Character.Health.DamageTaken -= OnDamaged;
+        RemainingDuration = durationToExit;
+        characterState.Character.Health.DamageTaken += OnDamaged;
 
         characterState.Character.Move.SetCanMove(false);
         characterState.Character.Move.LookAtTransform(characterState.transform);
@@ -32,38 +34,60 @@ public class DisappointmentState : AbstractCharacterState
                 skill.Disactive = true;
             }
         }
+
+        SetMaxStacks(1);
+        CurrentStacksCount = 1;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
+        if (RemainingDuration <= 0)
         {
             ExitState();
         }
     }
 
-    protected override void OnExitState()
+    private void OnDamaged(Damage dmg, Skill skill)
     {
-        characterState.RemoveStateFromList(this);
-
-        if (!characterState.Check(StatusEffect.Move))
+        if (_isBleedingUpgrade && dmg.DamageKey == "bleeding")
         {
-            characterState.Character.Move.SetCanMove(true);
-            characterState.Character.Move.StopLookAt();
+            return;
         }
 
-        if (!characterState.Check(StatusEffect.Ability) && abilities != null)
-        {
-            foreach (var skill in abilities.Abilities)
-            {
-                skill.Disactive = false;
-            }
-        }
+        characterState.Character.Health.DamageTaken -= OnDamaged;
+        ExitState();
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        duration = _baseDuration;
+        characterState.Character.Move.SetCanMove(true);
+        characterState.Character.Move.StopLookAt();
+        foreach (var skill in abilities.Abilities)
+        {
+            skill.Disactive = false;
+        }
+
+        if (characterState != null)
+        {
+            DiminishingReturnsTracker tracker;
+            if (sourceCaster == null)
+                tracker = characterState.Character.GetComponent<DiminishingReturnsTracker>();
+            else
+                tracker = sourceCaster.GetComponent<DiminishingReturnsTracker>();
+            tracker?.OnEffectEnded(DrGroup);
+        }
+        
+        CurrentStacksCount = 0;
+        characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_isAdditionalTime) RemainingDuration = time;
+        else
+            RemainingDuration = _baseDuration;
         return true;
-    }*/
+    }
+
+    
 }

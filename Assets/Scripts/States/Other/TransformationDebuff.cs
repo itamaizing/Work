@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class TransformationDebuff : StackableState
+public class TransformationDebuff : StateStacking
 {
+	private float _duration;
 	private float _damageOnStart;
 	private float _damageToExit;
 
@@ -13,11 +14,12 @@ public class TransformationDebuff : StackableState
 	public override List<StatusEffect> Effects { get; }
 
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		//CanStack = true;
 		_damageToExit = 1;
+		_duration = durationToExit;
 
 		characterState.Character.Move.AddModifier(_modifier);
 
@@ -27,17 +29,18 @@ public class TransformationDebuff : StackableState
 		}
 	}
 
-    public override void OnUpdateState()
+    public override void UpdateState()
 	{
-		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
+		_duration -= Time.deltaTime;
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0)
 		{
 			ExitState();
 		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
-		
+		characterState.RemoveState(this);
 		characterState.Character.TransformationComponent.ReturnToInitial();
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{

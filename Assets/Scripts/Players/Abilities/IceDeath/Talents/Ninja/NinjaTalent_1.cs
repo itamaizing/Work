@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class NinjaTalent_1 : Talent
 {
-    [SerializeField] private IceRolling _iceRolling;
-    [SerializeField] private SkillManager _manager;
+    [SerializeField] private IceRolling iceRolling;
+    [SerializeField] private SkillManager manager;
 
     public override void Enter()
     {
-        _manager.ActivateSkill(_iceRolling);
-        _iceRolling.RollingWithEnemyTalentActive(true, Data.Level);
+        manager.ActivateSkill(iceRolling);
     }
 
     public override void Exit()
     {
-        _manager.DeactivateSkill(_iceRolling);
-        _iceRolling.RollingWithEnemyTalentActive(false, 0);
+        manager.DeactivateSkill(iceRolling);
     }
 }

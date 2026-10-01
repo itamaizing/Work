@@ -2,237 +2,136 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonCloudState : StackableState
+public class PoisonCloudStateStacking : StateStackingRefreshing
 {
-    private List<Skill> _skills = new();
-    private List<Talent> _talents = new();
-
-    private CapaciousPoisonCloud _capaciousPoisonCloud;
-    private ToxiqueCloud _toxiqueCloud;
-    private ExplosionPoisonCloud _cloudExplosion;
-
     private PoisonBall _poisonBall;
-
-    private Character _player;
-    private LayerMask _enemiesLayer;
+    private Character _caster;
 
     private int _maxStacks = 5;
+    private float _baseDamagePercent = 0.005f;
+    private float _auraRadius = 5f;
 
-    private float _radiusCloud = 2.5f;
-
-    private float _baseDamage = 0.005f;
-    private float _increasedDamage;
-    private float _endDamage;
-
-    private float _timeBetweenAttack;
-    private float _startTimeBetweenAttack = 1f;
-
-    private float _timeBetweenApplyEmpathicPoisons;
-    private float _startTimeBetweenApplyEmpathicPoisons = 2f;
+    private float _tickRate = 1f;
+    private float _timeToNextTick;
 
     private float _baseDuration;
-    private float _durationEmpathicPoisons = 5f;
 
-    private Dictionary<GameObject, float> _damageTimers = new();
     private float _timeToApplyPoisonBone = 3f;
+    private float _poisonBoneTimer;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public float RadiusCloud { get => _radiusCloud; }
+    private LayerMask _enemyLayer;
+
+    private List<StatusEffect> _effects = new List<StatusEffect>();
+
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        MaxStacksCount = _maxStacks;
-        _poisonBall = personWhoMadeBuff.GetComponent<PoisonBall>();
+    
 
-        _player = personWhoMadeBuff;
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        characterState = character;
+        health = character.Character.Health;
+        this.sourceCaster = personWhoMadeBuff;
+
+        _enemyLayer = LayerMask.GetMask("Enemy");
+
+        _caster = character.Character;
+        _poisonBall = _caster != null ? _caster.GetComponent<PoisonBall>() : null;
 
         _baseDuration = durationToExit;
+        RemainingDuration = durationToExit;
 
-        _timeBetweenAttack = _startTimeBetweenAttack;
-        _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
+        _timeToNextTick = _tickRate;
+        _poisonBoneTimer = 0f;
+    }
 
-        if (_player != null)
+    public override void UpdateState()
+    {
+        if (!characterState.isServer) return;
+
+        _timeToNextTick -= Time.deltaTime;
+
+        if (_timeToNextTick <= 0f)
         {
-            _skills = _player.CharacterState.Character.Abilities.Abilities;
-            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
-
-            SearchAbilities();
-
-            SearchTalent();
-        }
-
-        if (currentStacksCount < MaxStacksCount)
-        {
-            AddStacks();
+            DealAuraDamage();
+            _timeToNextTick = _tickRate;
         }
     }
 
-    public override void OnUpdateState()
+    public override void ReduceStack()
     {
-        _timeBetweenAttack -= Time.deltaTime;
-
-        _timeBetweenApplyEmpathicPoisons -= Time.deltaTime;
-
-        if (_timeBetweenAttack <= 0)
-        {
-            RpcSearchingEnemies(_enemiesLayer, characterState.gameObject);
-
-            _timeBetweenAttack = _startTimeBetweenAttack;
-        }
+        CurrentStacksCount = 0;
+        ExitState();
     }
-
-    /*public override void ExitState()
-    {
-        ResetValues();
-
-        characterState.RemoveStateFromList(this);
-    }*/
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        RemainingDuration = _baseDuration;
+
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStacks(); 
-            return true;
+            CurrentStacksCount++;
         }
-        else
-        {
-            duration = _baseDuration;
-            if (_cloudExplosion != null)
-            {
-                _cloudExplosion.CurrentStacksPoisonCloud(currentStacksCount, _radiusCloud);
-            }
-            return true;
-        }
+
+        return true;
     }
 
-    public void AddStacks()
+    private void DealAuraDamage()
     {
-        if (currentStacksCount < MaxStacksCount)
-        {
-            currentStacksCount++;
-            duration = _baseDuration;
-            if (_cloudExplosion != null)
-            {
-                _cloudExplosion.CurrentStacksPoisonCloud(currentStacksCount, _radiusCloud);
-            }
-        }
-    }
+        if (_caster == null || _caster.IsDead) return;
 
-    private void SearchAbilities()
-    {
-        foreach (Skill ability in _skills)
+        Collider[] targets = Physics.OverlapSphere(_caster.transform.position, _auraRadius, _enemyLayer);
+
+        bool dealtDamageThisTick = false;
+
+        foreach (var col in targets)
         {
-            if (ability is ExplosionPoisonCloud cloudExplosion)
-            {
-                if (_cloudExplosion == null)
-                {
-                    _cloudExplosion = cloudExplosion;
-                }
-            }
-            if (ability is CreeperStrike creeperStrike)
-            {
-                _enemiesLayer = creeperStrike.Targeting.Layer;
-            }
+            if (col == null) continue;
+
+            Character target = col.GetComponent<Character>();
+            if (target == null || target == _caster || target.IsDead) continue;
             
-        }
-    }
-
-    private void SearchTalent()
-    {
-        foreach (Talent talent in _talents)
-        {
-            if (talent is CapaciousPoisonCloud capaciousCloud)
-            {
-                if (_capaciousPoisonCloud == null)
-                {
-                    _capaciousPoisonCloud = capaciousCloud;
-
-                    if (_capaciousPoisonCloud.Data.IsOpen)
-                    {
-                        float multiplierRadiusCloud = 1.5f;
-
-                        _radiusCloud += multiplierRadiusCloud;
-                    }
-                }
-            }
-            if (talent is ToxiqueCloud toxiqueCloud)
-            {
-                if (_toxiqueCloud == null)
-                {
-                    _toxiqueCloud = toxiqueCloud;
-                }
-            }
-        }
-    }
-
-    [ClientRpc]
-    private void RpcSearchingEnemies(LayerMask enemyLayer, GameObject player)
-    {
-        Collider[] hitEnemies = Physics.OverlapSphere(player.transform.position, _radiusCloud, enemyLayer);
-
-        foreach (Collider enemy in hitEnemies)
-        {
-            if (enemy.transform != player.transform)
-            {
-                Debug.Log("PoisonCloudState / enemy = " + enemy.name);
-                CmdDamageDeal(enemy.gameObject);
-            }
-        }
-    }
-
-    [Command]
-    private void CmdDamageDeal(GameObject target)
-    {
-        if (target != null)
-        {
-            var targetHealth = target.GetComponent<Character>();
-            if (targetHealth == null || targetHealth.Health == null) return;
-
-            _increasedDamage = _baseDamage * currentStacksCount;
-            _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
+            float percentDamage = _baseDamagePercent * CurrentStacksCount;
+            float endDamageValue = target.Health.MaxValue * percentDamage;
 
             Damage damage = new Damage()
             {
-                Value = _endDamage,
+                Value = endDamageValue,
                 Type = DamageType.Physical,
             };
 
-            targetHealth.Health.CmdTryTakeDamage(damage, null);
-            //targetHealth.DamageTracker.AddDamage(damage, true);
+            target.Health.TryTakeDamage(ref damage, _poisonBall);
+            dealtDamageThisTick = true;
 
-            //if (_toxiqueCloud != null && _toxiqueCloud.Data.IsOpen)
-            //{
-            //    if (_timeBetweenApplyEmpathicPoisons <= 0)
-            //    {
-            //        targetHealth.CharacterState.AddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
-            //        _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
-            //    }
-            //}
-
-            if (!_damageTimers.ContainsKey(target)) _damageTimers[target] = 0f;
-
-            _damageTimers[target] += _startTimeBetweenAttack; 
-
-            if (_damageTimers[target] >= _timeToApplyPoisonBone)
+            if (_poisonBoneTimer >= _timeToApplyPoisonBone && _poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone)
             {
-                if (_poisonBall.IsPoisonCloudAddPoisonBone) targetHealth.CharacterState.AddState(States.PoisonBone, 6, 0, _player.gameObject, null);
-                _damageTimers[target] = 0f;
+                target.CharacterState.AddState(States.PoisonBone, 6f, 0, _caster.gameObject, null);
             }
         }
+
+        if (dealtDamageThisTick)
+        {
+            _poisonBoneTimer += _tickRate;
+            if (_poisonBoneTimer >= _timeToApplyPoisonBone)
+            {
+                _poisonBoneTimer = 0f;
+            }
+        }
+    }
+
+    public override void ExitState()
+    {
+        ResetValues();
+        base.ExitState();
     }
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
-        _endDamage = 0;
-        _increasedDamage = 0;
-        _baseDamage = 0.005f;
+        RemainingDuration = 0;
     }
 }

@@ -126,6 +126,8 @@ public class FlashOfLight : Skill,IPolaritySwitchable
             ? LayerMask.GetMask("Allies", "Player")
             : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
+
+        Cooldown.OnForceRefreshUI();
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -193,6 +195,8 @@ public class FlashOfLight : Skill,IPolaritySwitchable
             _reversePolarity.RemoveReversePolarityEffect();
             _reversePolarity.SetCooldownFromSpell();
         }
+        
+        DisableSkillBoost();
         //}
 
         yield return null;
@@ -238,7 +242,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         var characterState = target.GetComponent<CharacterState>();
         if (characterState == null) return 0f;
 
-        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyStateStacking;
         if (spiritEnergyState == null) return 0f;
 
         return spiritEnergyState.GetHealBonus();
@@ -249,7 +253,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         var damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageAmount),
-            Type = DamageType.Physical,
+            Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.RangeAttack,
             School = this.Info.School,
         };

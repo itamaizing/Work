@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisciplineAuraState : RefreshingState
+public class DisciplineAuraStateStacking : StateStackingRefreshing
 {
     public override States State      => States.DisciplineAura;
     public override StateType Type { get; }
@@ -21,20 +21,19 @@ public class DisciplineAuraState : RefreshingState
     private Character  _priest;
     private float      _checkTimer;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState     = character;
         _priest            = personWhoMadeBuff;
-        duration           = _auraDuration;
-        MaxStacksCount     = _maxStacks;
-        currentStacksCount = 0;
+        RemainingDuration           = _auraDuration;
+        CurrentStacksCount = 0;
         _checkTimer        = 0f;
 
         AddModifierToCharacter(_priest, isPriest: true);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         if (characterState == null || !characterState.isOwned) return;
         _checkTimer += Time.deltaTime;
@@ -56,7 +55,7 @@ public class DisciplineAuraState : RefreshingState
         {
             if (_charactersInRadius.Contains(ally)) continue;
             _charactersInRadius.Add(ally);
-            for (int i = 0; i < currentStacksCount; i++)
+            for (int i = 0; i < CurrentStacksCount; i++)
                 AddModifierToCharacter(ally, isPriest: false);
         }
 
@@ -74,10 +73,10 @@ public class DisciplineAuraState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration          = _auraDuration;
+        RemainingDuration          = _auraDuration;
         RemainingDuration = _auraDuration;
         
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             foreach (var ally in _charactersInRadius)
                 AddModifierToCharacter(ally, isPriest: false);
@@ -89,17 +88,17 @@ public class DisciplineAuraState : RefreshingState
         return true;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         foreach (var character in new List<Character>(_modifiers.Keys))
             RemoveAllModifiersFromCharacter(character);
 
         _modifiers.Clear();
         _charactersInRadius.Clear();
-        currentStacksCount = 0;
-        duration           = 0f;
+        CurrentStacksCount = 0;
+        RemainingDuration           = 0f;
 
-        characterState?.RemoveStateFromList(this);
+        characterState?.RemoveState(this);
         characterState = null;
         _priest        = null;
     }

@@ -1,48 +1,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefenceReductionState : AbstractCharacterState
+public class DefenceReductionState : StateBasic
 {
+    private float _healthBuffActiveTime = 2f;
     private float _healthBoostPercentage = 0.25f;
-    private float _defaultPhysDef = 0;
 
-    private List<StatusEffect> _effects = new ();
+    private List<StatusEffect> _effects = new();
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DefenseReduction;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        duration = durationToExit;
+        _healthBuffActiveTime = durationToExit;
         _healthBoostPercentage = damageToExit;
         ApplyBuff();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _healthBuffActiveTime -= Time.deltaTime;
 
+        if (_healthBuffActiveTime <= 0)
+        {
+            ExitState();
+        }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         RemoveBuff();
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
 
     private void ApplyBuff()
     {
-        _defaultPhysDef = characterState.Character.Health.DefPhysDamage;
-        characterState.Character.Health.SetPhysicDef(_defaultPhysDef * _healthBoostPercentage);
-    } 
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical]
+            .AddModifier(new AttributeModifier(_healthBoostPercentage, ModifierType.Multiplier, this));
+    }
 
     private void RemoveBuff()
     {
-        characterState.Character.Health.SetPhysicDef(_defaultPhysDef);
+        characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical].RemoveBySource(this);
     }
 }

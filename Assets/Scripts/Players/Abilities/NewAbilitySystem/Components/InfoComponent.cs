@@ -43,8 +43,9 @@ public enum SkillType
 
 public enum Moving
 {
-    Static,
-    NonStatic
+    UntilFinish,
+    UntilCast,
+    Free
 }
 
 public enum AutoAttack
@@ -78,7 +79,6 @@ public class InfoComponent : BaseSkillComponent
     [SerializeField] protected AbilityForm _form;
     [SerializeField] protected DamageType _damageType;
     [SerializeField] protected AttackRangeType _rangeType;
-    [SerializeField] protected SkillType _skillType; // будет удален отсюда. берем из TargetingComponent
     [SerializeField] protected Moving _whileMoving;
     [SerializeField] protected AutoAttack _autoAttack;
     #endregion

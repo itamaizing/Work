@@ -1,3 +1,5 @@
+using System.Collections;
+using Mirror;
 using UnityEngine;
 
 public class Energy : Resource
@@ -5,6 +7,8 @@ public class Energy : Resource
 	[SerializeField] private float _sumDamageGiven = 0;
 
 	private float _regenValue = 1;
+	
+	private float _lastUsingTime = -999f;
 
 /*	public override void Add(float EnergyValue)
 	{
@@ -42,6 +46,65 @@ public class Energy : Resource
 			}
 		}
 	}*/
+
+	#region override
+
+	protected override IEnumerator RegenerateJob()
+	{
+		while (true)
+		{
+			if (!isServer) { yield return null; continue; }
+			if (_attr_regenValue.GetValue() <= 0) { yield return null; continue; }
+
+			if (_currentValue < _maxValue)
+			{
+				float delayValue = _attr_regenDelay != null
+					? _attr_regenDelay.GetValue()
+					: _regenerationDelay;
+
+				while ((float)NetworkTime.time - _lastUsingTime < delayValue)
+					yield return null;
+
+				while (_currentValue < _maxValue)
+				{
+					if ((float)NetworkTime.time - _lastUsingTime < delayValue)
+						break;
+                    
+					Add(_attr_regenValue.GetValue());
+					yield return new WaitForSeconds(RegenerationPeriod);
+				}
+			}
+
+			yield return null;
+		}
+	}
+	
+	[Command]
+	private void CmdServerSetLastUseTime(float time)
+	{
+		_lastUsingTime = time;
+	}
+	
+	public override bool TryUse(float value)
+	{
+		_lastUsingTime = isServer ? (float)NetworkTime.time : Time.time;
+    
+		if (!isServer)
+			CmdServerSetLastUseTime(_lastUsingTime);
+
+		if (_currentValue - value >= 0)
+		{
+			_currentValue -= value;
+			return true;
+		}
+		else
+		{
+			_currentValue = 0;
+			return false;
+		}
+	}
+
+	#endregion
 
 	public float UseAllEnergy()
 	{

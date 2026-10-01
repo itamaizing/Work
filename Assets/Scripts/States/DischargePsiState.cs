@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DischargePsiState : AbstractCharacterState
+public class DischargePsiState : StateBasic
 {
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DischargePsi;
@@ -11,16 +11,17 @@ public class DischargePsiState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        return false;
-    }*/
+        
+        characterState.RemoveState(this);
+    }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 }

@@ -32,6 +32,8 @@ public abstract class GameRules : NetworkBehaviour
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
     private int _currentPlayers = 0;
+    
+    private float? _pendingPreparationAreaDuration;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
@@ -190,9 +192,15 @@ public abstract class GameRules : NetworkBehaviour
         _npcSpawn = _gameManager.NpcSpawn;
         _gameManager.RestartRound.GameRules = this;
 
+        if (_preparationAreaManager != null && _pendingPreparationAreaDuration.HasValue)
+        {
+            _preparationAreaManager.PreparationAreasDisable(_pendingPreparationAreaDuration.Value);
+            _pendingPreparationAreaDuration = null;
+        }
+
         if (_gameManager.TeamsPanel == null) return;
     }
-
+    
     protected virtual IEnumerator SplitTeams(HeroSpawnManager spawnPoints)
     {
         int team1Count = 0;
@@ -392,16 +400,19 @@ public abstract class GameRules : NetworkBehaviour
                     _players.Add(playerSettings);
                 }
 
-                if (playerSettings.NetworkSettings.TeamIndex == 1)
-                {
-                    _gameManager.Source.AddInFirstTeam(playerSettings);
-                }
-                else
-                {
-                    _gameManager.Source.AddInSecondTeam(playerSettings);
-                }
+                _gameManager.Source.AddInTeam(playerSettings);
+            
+            /*if (playerSettings.NetworkSettings.TeamIndex == 1)
+            {
+                _gameManager.Source.AddInFirstTeam(playerSettings);
             }
-        }
+            else
+            {
+                _gameManager.Source.AddInSecondTeam(playerSettings);
+            }*/
+            }
+
+        InitializeChat();
 
         //UnityEngine.Debug.Log("this");
         //foreach (var playerSettings in _players)
@@ -420,6 +431,21 @@ public abstract class GameRules : NetworkBehaviour
         //}
 
         GameStartClient();
+    }
+    
+    protected void InitializeChat()
+    {
+        if (_gameManager == null || _gameManager.ChatController == null) return;
+
+        foreach (var player in _players)
+        {
+            var networkIdentity = player.GetComponent<NetworkIdentity>();
+            if (networkIdentity != null && player.isOwned)
+            {
+                _gameManager.ChatController.Initialize(player);
+                break;
+            }
+        }
     }
 
     [ClientRpc]
@@ -465,7 +491,19 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
-    [ClientRpc] public void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
+    [ClientRpc]
+    public void RpcEnablePreparationAreas(float duration)
+    {
+        if (_preparationAreaManager != null)
+        {
+            _preparationAreaManager.PreparationAreasDisable(duration);
+        }
+        else
+        {
+            _pendingPreparationAreaDuration = duration;
+            Debug.LogWarning("RpcEnablePreparationAreas received, but _preparationAreaManager is NULL. Delaying execution...");
+        }
+    }
 
     [Command(requiresAuthority = false)]
     public void CmdRestart()

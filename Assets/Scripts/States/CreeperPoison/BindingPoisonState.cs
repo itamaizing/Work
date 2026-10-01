@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BindingPoisonState : StackableState
+public class BindingPoisonState : StateStackingRefreshing
 {
     private SkillManager _skillManager;
 
@@ -11,8 +11,8 @@ public class BindingPoisonState : StackableState
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => duration; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
+    public float StacksDuration { get => RemainingDuration; }
 
     public override States State => States.BindingPoison;
     public override StateType Type => StateType.Physical;
@@ -20,14 +20,14 @@ public class BindingPoisonState : StackableState
 
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _skillManager = characterState.Character.Abilities;
 
         _baseDuration = durationToExit;
-        MaxStacksCount = _maxStacks;
+        SetMaxStacks(_maxStacks);
 
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -35,9 +35,9 @@ public class BindingPoisonState : StackableState
         BlockingOrCancleingAbility();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-        if (currentStacksCount <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -46,41 +46,41 @@ public class BindingPoisonState : StackableState
 
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
 
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
         //Debug.Log($"BindingPoisonState / Stack / CharacterManager = {_skillManager}");
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
         }
         else
         {
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             return true;
         }
     }
 
     public void AddStacks()
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
         else
         {
             //Debug.Log("else / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
-            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
         }
     }
 
@@ -105,8 +105,8 @@ public class BindingPoisonState : StackableState
 
     private void ResetValues()
     {
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
-        duration = 0;
+        RemainingDuration = 0;
     }
 }

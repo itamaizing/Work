@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class BlindnessState : RefreshingState
+public class BlindnessStateStacking : StateStackingRefreshing
 {
     public bool turnOff = false;
 
+    private float _duration;
     private float _baseDuration;
     private VolumeProfile _volumeProfile;
     private Bloom _bloom;
@@ -20,13 +21,14 @@ public class BlindnessState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
+        _duration = durationToExit;
         _baseDuration = durationToExit;
         characterState = character;
-        MaxStacksCount = 1;
-        currentStacksCount = 1;
+        SetMaxStacks(1);
+        CurrentStacksCount = 1;
 
         if (characterState.isOwned) ApplyEffectToLocalCamera();
 
@@ -40,11 +42,13 @@ public class BlindnessState : RefreshingState
     }
 
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff) ExitState();
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         if (characterState.isOwned) RemoveEffectFromLocalCamera();
 
@@ -53,12 +57,14 @@ public class BlindnessState : RefreshingState
             abilities = ability.Abilities;
             foreach (var abil in abilities.Abilities) if (abil.Targeting.SkillType == SkillType.Target) abil.Disactive = false;
         }
+
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        duration += time;
-        RemainingDuration = duration;
+        _duration += time;
+        RemainingDuration = _duration;
         return false;
     }
 

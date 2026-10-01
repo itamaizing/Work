@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionState : StackableState, IDamageable
+public class AbsorptionState : StateStackingRefreshing, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -18,7 +18,7 @@ public class AbsorptionState : StackableState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
@@ -29,12 +29,14 @@ public class AbsorptionState : StackableState, IDamageable
         UpdateShieldValues();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
+        Debug.Log("Absorption state exited.");
+        characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }
 
@@ -42,13 +44,13 @@ public class AbsorptionState : StackableState, IDamageable
     {
         //_duration = time;
         //_damageAbsorbed = 0;
-        currentStacksCount += 1;
+        CurrentStacksCount += 1;
         return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        Debug.Log($"Урон по стостоянию: {_damageAbsorbed}");
+        Debug.Log($"пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {_damageAbsorbed}");
         float damageToAbsorb = Mathf.Min(characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
@@ -97,6 +99,6 @@ public class AbsorptionState : StackableState, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        
+        throw new NotImplementedException();
     }
 }

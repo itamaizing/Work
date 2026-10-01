@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Silent : AbstractCharacterState
+public class Silent : StateBasic
 {
     private float _baseDuration;
-    private float _duration;
     private Silence _silence;
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
 
@@ -15,83 +14,36 @@ public class Silent : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering Silent State");
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
 
-        Debug.Log($"_duration: {_duration}");
+        RemainingDuration = _baseDuration; 
 
-        if (base.personWhoMadeBuff.TryGetComponent<Silence>(out var silence))
-        {
-            _isSilenceAddAllCharacterWithDeabaffElf = silence.IsSilenceAddAllCharacterWithDeabaffElf;
-            _silence = silence;
-        }
-
-        if (_silence != null && _isSilenceAddAllCharacterWithDeabaffElf)
-        {
-            HashSet<States> targetDebuffsFromCaster = new();
-
-            foreach (var state in characterState.CurrentStates) 
-                if (state.BaffDebaff == BaffDebaff.Debaff && state.PersonWhoMadeBuff == base.personWhoMadeBuff) targetDebuffsFromCaster.Add(state.State);
-
-            if (targetDebuffsFromCaster.Count == 0) return;
-
-            foreach (var target in GameObject.FindObjectsOfType<Character>())
-            {
-                if (target == characterState.Character)
-                    continue;
-
-                var state = target.CharacterState;
-                if (state == null) continue;
-
-                foreach (var targetState in state.CurrentStates)
-                {
-                    if (targetState.BaffDebaff == BaffDebaff.Debaff && targetState.PersonWhoMadeBuff == base.personWhoMadeBuff && targetDebuffsFromCaster.Contains(targetState.State))
-                    {
-                        CmdStateSilent(target);
-                        break;
-                    }
-                }
-            }
-
-        }
+        Debug.Log($"duration: {RemainingDuration}");
 
         BlockMagicAbilities();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        if (RemainingDuration <= 0)
+        {
+            ExitState();
+        }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         Debug.Log("Exiting Silent State");
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveStateFromList(this);
+        
+        characterState.RemoveState(this);
 
         UnblockMagicAbilities();
     }
-
-   /* public override bool Stack(float time)
-    {
-        if (_currentStacks < _maxStacks)
-        {
-            _currentStacks++;
-            _duration = _baseDuration;
-            Debug.Log($"Stacking Silent. Current stacks: {_currentStacks}, New duration: {_duration}s");
-            return true;
-        }
-        else
-        {
-            _duration = _baseDuration;
-            Debug.Log($"Max stacks reached. Refreshing Silent duration: {_duration}s");
-            return false;
-        }
-    }*/
 
     private void BlockMagicAbilities()
     {
@@ -121,6 +73,12 @@ public class Silent : AbstractCharacterState
         }
     }
 
-    [Command] private void CmdStateSilent(Character target) => ClientRpcStateSilent(target);
-    [ClientRpc] private void ClientRpcStateSilent(Character target) { target.CharacterState.AddStateLogic(States.Silent, _duration, 0f, Schools.None, characterState.gameObject, null); }
+    [Command] 
+    private void CmdStateSilent(Character target, float dur, GameObject caster) => ClientRpcStateSilent(target, dur, caster);
+    
+    [ClientRpc] 
+    private void ClientRpcStateSilent(Character target, float dur, GameObject caster) 
+    { 
+        target.CharacterState.AddStateLogic(States.Silent, dur, 0f, Schools.None, caster, null); 
+    }
 }

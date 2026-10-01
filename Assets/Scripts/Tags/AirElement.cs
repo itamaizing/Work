@@ -6,7 +6,7 @@ public class AirElement : AuraStateHandler
 
     protected override void OnTargetEnter(Character target)
     {
-        CmdApplyStateToTarget(target.gameObject, States.PushingWindAura, _buffDuration, Schools.Air, _owner.gameObject, nameof(AirElement));
+        CmdApplyStateToTarget(target.gameObject, States.PushingWindAura, _buffDuration, Schools.Air, _owner.gameObject, nameof(AirElement),0);
     }
 
     protected override void OnTargetExit(Character target)

@@ -6,6 +6,13 @@ using UnityEngine.AI;
 
 public class MinionComponent : Character
 {
+    public enum MinionOrder
+    {
+        None,
+        Move,
+        AutoAttack
+    }
+    
     [SerializeField] protected int _expForDieKill = 5;
     [SerializeField] private float _costCall;
     [SerializeField] protected NavMeshAgent _navMeshAgent;
@@ -13,9 +20,14 @@ public class MinionComponent : Character
     protected HeroComponent _myHeroParent;
     [SyncVar] private bool _isIntercepted = false;
 
+    private MinionOrder _lastOrder = MinionOrder.None;
+    public MinionOrder LastOrder { get => _lastOrder; set => _lastOrder = value; }
+
     public int ExpForDieKill { get => _expForDieKill; }
     public bool IsIntercepted { get => _isIntercepted; }
     public float CostCall => _costCall;
+
+    private bool _destroyedNotified;
 
     public event Action<MinionComponent> Destroyed;
     public event Action<MinionComponent> Intercepted;
@@ -32,7 +44,7 @@ public class MinionComponent : Character
 
     private void OnDestroy()
     {
-        Destroyed?.Invoke(this);
+        RaiseDestroyed();
     }
 
     protected override void OnDied()
@@ -40,7 +52,14 @@ public class MinionComponent : Character
         base.OnDied();
         if (_navMeshAgent != null) _navMeshAgent.enabled = false;
 
-        if (isServer) Destroyed?.Invoke(this);
+        if (isServer) RaiseDestroyed();
+    }
+
+    private void RaiseDestroyed()
+    {
+        if (_destroyedNotified) return;
+        _destroyedNotified = true;
+        Destroyed?.Invoke(this);
     }
 
     protected override void ResetAll()

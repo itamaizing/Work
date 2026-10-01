@@ -8,12 +8,9 @@ public class CheliceraStrike : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private RechargeGlands _rechargeGlands;
-    [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
-    [SerializeField] private ClawStrike _clawStrike;
     [SerializeField] private CooldownEnergy _cooldownEnergy;
-    [SerializeField] private float _animSpeed = 1.4f;
     [SerializeField] private float _chanceCritDamageEvolutionTwo = 0.05f;
     [SerializeField] private float _chanceCritDamageEvolutionFour = 0.15f;
     [SerializeField] private float _chanceApplyBleeding = 0.15f;
@@ -26,6 +23,8 @@ public class CheliceraStrike : Skill
     [SerializeField] private float _minDamage = 11f;
     [SerializeField] private float _maxDamage = 16f;
 
+    public bool IsTriggeredByJump { get; set; }
+
     #region Constants
 
     private const float CriticalDamageMultiplierDefault = 1.6f;
@@ -37,12 +36,9 @@ public class CheliceraStrike : Skill
     private const float MagicDamagePerPsiNearby = 0.5f;
 
     private const float RadiusLow = 1.5f;
-    private const float RadiusMid = 2.0f;
-    private const float RadiusHigh = 2.5f;
+    private const float RadiusStepIncrease = 1f;
 
-    private const float AttackingPsiThresholdLow = 10f;
-    private const float AttackingPsiThresholdMid = 20f;
-    private const float AttackingPsiThresholdHigh = 30f;
+    private const float PsiPerStack = 10f;
 
     private const float TargetSearchRadius = 0.5f;
 
@@ -69,7 +65,7 @@ public class CheliceraStrike : Skill
 
     public float ChanceCritDamageEvolutionFour { get => _chanceCritDamageEvolutionFour; set => _chanceCritDamageEvolutionFour = value; }
 
-    public event Action OnCheliceraStrikeEnd;
+    public event Action OnCriticalHit;
 
     private void Start()
     {
@@ -112,38 +108,6 @@ public class CheliceraStrike : Skill
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTempTarget()?.Targetable == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
-
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
-                {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-
-                    else
-                    {
-                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-                        break;
-                    }
-                }
-            }
-            yield return null;
-        }
-
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
-        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
-        callbackDataSaved.Invoke(targetInfo);
-    }
-
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield break;
@@ -154,11 +118,9 @@ public class CheliceraStrike : Skill
         IDamageable damageable = Targeting.GetTarget()?.Damageable;
 
         if (_jumpWithChelicera.IsJumpDone)
-        {
             _cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.CooldownJump, _jumpWithChelicera);
-        }
-
-        else _cooldownEnergy.CastCooldownEnergySkill(_cooldownEnergyCost, this);
+        else
+            _cooldownEnergy.CastCooldownEnergySkill(_cooldownEnergyCost, this);
 
         DamageDealChelicera(damageable);
         _jumpWithChelicera.IsJumpDone = false;
@@ -166,9 +128,18 @@ public class CheliceraStrike : Skill
 
         Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
 
-        JumpBackComboContext.LastTarget = currentTarget;
-        JumpBackComboContext.LastSkill = typeof(CheliceraStrike);
-        JumpBackComboContext.LastTime = Time.time;
+        ComboContext.JumpBack.LastTarget = currentTarget;
+        ComboContext.JumpBack.LastSkill = typeof(CheliceraStrike);
+        ComboContext.JumpBack.LastTime = Time.time;
+
+        if (!IsTriggeredByJump)
+        {
+            ComboContext.Bleeding.Set(typeof(CheliceraStrike));
+        }
+
+        ComboContext.ClawStrikeContext.Set(typeof(CheliceraStrike));
+
+        IsTriggeredByJump = false;
 
         yield return null;
     }
@@ -202,8 +173,8 @@ public class CheliceraStrike : Skill
             _totalChanceApplyBleeding = _chanceApplyBleeding;
             _totalchanceCritDamage = _chanceCritDamageEvolutionTwo;
 
-            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(targetCharacter)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
-            if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
+            if (_isChanceApplyBleedingIncrease && CheckStateForCrit(targetCharacter)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
             if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, CriticalDamageMultiplierDefault);
 
@@ -217,7 +188,7 @@ public class CheliceraStrike : Skill
 
             _totalchanceCritDamage = _chanceCritDamageEvolutionFour;
 
-            if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
             if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
         }
@@ -229,9 +200,17 @@ public class CheliceraStrike : Skill
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && targetCharacter != null) DamageDealWithAttackingPsionicEnergy(targetCharacter);
-
+        if (_criticalDamage > 0)
+        {
+            OnCriticalHit?.Invoke();
+        }
+        
         CmdApplyDamage(_dealDamage, target.gameObject);
+        
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && targetCharacter != null)
+        {
+            DamageDealWithAttackingPsionicEnergy(targetCharacter);
+        }
 
         if (_rechargeGlands != null && targetCharacter != null) _rechargeGlands.TryApplyDestructivePoison(targetCharacter, TryApplyDestructivePoisonChance, _player);
 
@@ -245,7 +224,7 @@ public class CheliceraStrike : Skill
         return criticalDamage * multiplierCrit;
     }
 
-    private bool CheckStateForBleeding(Character character)
+    private bool CheckStateForCrit(Character character)
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
         return character != null && blockingStates.Any(state => character.CharacterState.CheckForState(state));
@@ -257,80 +236,65 @@ public class CheliceraStrike : Skill
 
         float psiValue = _attackingPsionicEnergy.CurrentValue;
 
-        // 1. ? ���������� ���� �� ����
-        float bonusMagicDamage = _attackingPsionicEnergy.GetBonusDamage(psiValue);
+        float baseMagicDamage = psiValue;
+        float mainTargetDamage = baseMagicDamage * (1f + MagicDamagePerPsiMainTarget);
 
         var magicDamageToMain = new Damage
         {
-            Value = bonusMagicDamage,
+            Value = mainTargetDamage,
             Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
         CmdApplyDamage(magicDamageToMain, targetCharacter.gameObject);
-        TotalMagicDamageEnemy(targetCharacter, psiValue, 1f);
 
-        int dispelCount = _attackingPsionicEnergy.GetDispelCount(psiValue);
-        CmdDispel(targetCharacter, dispelCount);
+        int psiStacks = Mathf.FloorToInt(psiValue / PsiPerStack);
 
-        if (psiValue >= AttackingPsiThresholdLow)
+        float radius;
+        if (psiStacks == 0)
         {
-            float radius =
-                psiValue >= AttackingPsiThresholdHigh ? RadiusHigh :
-                psiValue >= AttackingPsiThresholdMid ? RadiusMid :
-                RadiusLow;
+            radius = 0.5f;
+        }
+        else
+        {
+            radius = (psiStacks - 1) + 1.0f;
+        }
 
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, radius, _targetsLayers);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, radius, Targeting.Layer);
 
-            foreach (var enemyCollider in nearbyEnemies)
+        foreach (var enemyCollider in nearbyEnemies)
+        {
+            if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
+                enemy != targetCharacter && enemy != _player)
             {
-                if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
-                    enemy != targetCharacter && enemy != _player)
+                float nearbyDamage = baseMagicDamage * MagicDamagePerPsiNearby;
+
+                var magicDamageToEnemy = new Damage
                 {
-                    float aoeDamage = psiValue * MagicDamagePerPsiNearby;
+                    Value = nearbyDamage,
+                    Type = DamageType.Magical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                };
 
-                    var magicDamageToEnemy = new Damage
-                    {
-                        Value = aoeDamage,
-                        Type = DamageType.Magical,
-                        PhysicAttackType = AttackRangeType.MeleeAttack,
-                    };
+                CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);
 
-                    CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);
-                    TotalMagicDamageEnemy(enemy, psiValue, MagicDamagePerPsiNearby);
+                if (psiStacks > 0)
+                {
+                    CmdDispel(enemy, 1);
                 }
             }
         }
-    }
 
-    private void ApplyDamage(float attackingPsi, float magicDamagePerPsiNearby, Character enemy)
-    {
-        if (enemy != _player)
+        if (psiStacks > 0)
         {
-            TotalMagicDamageEnemy(enemy, attackingPsi, magicDamagePerPsiNearby);
+            CmdDispel(targetCharacter, 1);
         }
-    }
-
-    private void TotalMagicDamageEnemy(Character enemy, float attackingPsi, float magicDamage)
-    {
-        float totalMagicDamageEnemy = attackingPsi * magicDamage;
-
-        var magicDamageNearby = new Damage
-        {
-            Value = totalMagicDamageEnemy,
-            Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
-        };
-
-        CmdApplyDamage(magicDamageNearby, enemy.gameObject);
     }
 
     public void CheliceraStrikePreparingForAnim()
     {
         _player.Move.SetCanMove(false);
         _hero.Move.StopMoveAndAnimationMove();
-        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
-        else _spentAttackingPsiEnergy = 0;
     }
 
     public void SetAdditionalDamage(float value)
@@ -345,7 +309,6 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeEnded()
     {
-        OnCheliceraStrikeEnd?.Invoke();
         _player.Move.StopLookAt();
         _player.Move.SetCanMove(true);
         AnimCastEnded();
@@ -357,18 +320,6 @@ public class CheliceraStrike : Skill
         Renderer.HideSmartIndicator();
     }
 
-    public void TrySpendAttackingPsi()
-    {
-        _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
-        CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
-    }
-
-    [Command]
-    private void CmdUseAttackingEnergy(float value)
-    {
-        _attackingPsionicEnergy.CurrentValue -= value;
-    }
-
     [Command]
     private void CmdAddState(Character character)
     {
@@ -378,7 +329,7 @@ public class CheliceraStrike : Skill
     [Command]
     private void CmdDispel(Character targetCharacter, int count)
     {
-        for (int i = 0; i < count; i++) targetCharacter.CharacterState.DispelStates(StateType.Magic, true, isDispelOneState: true);
+        for (int i = 0; i < count; i++) targetCharacter.CharacterState.DispelStates(StateType.Magic, true, out int howMuchDispelled, isDispelOneState: true);
     }
     protected override void ClearData()
     {

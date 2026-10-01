@@ -3,7 +3,7 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class RetributionState : RefreshingState
+public class RetributionStateStacking : StateStackingRefreshing
 {
     private Character _hero;
     private List<Skill> _baseLightSkills = new();
@@ -16,21 +16,20 @@ public class RetributionState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _hero = characterState.Character;
         _baseDuration = durationToExit;
-        duration = durationToExit;
-        MaxStacksCount = 3;
-        currentStacksCount = 1;
+        RemainingDuration = durationToExit;
+        SetMaxStacks(3);
+        CurrentStacksCount = 1;
         GetLightSkills();
         IncreaseLightSkillDamage();
 
         foreach (var castingSkill in GetCastingSkills())
         {
-            castingSkill.CastSuccess += CastingSkillOnCastEnded;
+            castingSkill.CastFinished += CastingSkillOnCastEnded;
         }
     }
 
@@ -39,7 +38,7 @@ public class RetributionState : RefreshingState
         ExitState();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
@@ -81,41 +80,23 @@ public class RetributionState : RefreshingState
     
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
-            currentStacksCount++;
+        if (CurrentStacksCount < MaxStacksCount)
+            CurrentStacksCount++;
 
-        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         RemainingDuration = _baseDuration;
 
         return true;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        duration = 0f;
-        currentStacksCount = 0;
+        RemainingDuration = 0f;
+        CurrentStacksCount = 0;
         ReturnToBaseDamage();
-        characterState?.RemoveStateFromList(this);
+        characterState?.RemoveState(this);
         characterState = null;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
-        if (currentStacksCount == 0)
-        {
-            OnEnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-            currentStacksCount = 1;
-        }
-        else
-        {
-            Stack(durationToExit);
-        }
-
-        return this;
-    }
+    
 }

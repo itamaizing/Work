@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilitySchoolDebuff : AbstractCharacterState
+public class AbilitySchoolDebuff : StateStackingRefreshing
 {
 	public bool turnOff = false;
 	private float _baseDuration;
@@ -16,55 +16,48 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
-
-
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		
 		_character = character.GetComponent<Character>();
-		
-		var abilities = _character.Abilities;
-		
-		Debug.LogError(abilities.CurrentCastingSkill);
-		
-		if (abilities.CurrentCastingSkill != null)
-		{
-			Debug.LogError("Casting not null");
-			abilities.CurrentCastingSkill.CmdCancelActiveSkill();
-		}
-
-		if (character.TryGetComponent<Character>(out var ability))
-		{
-			abilities = ability.Abilities;
-			abilities.SwitchAvaliable(canceledSchoool, false);
-		}
-		else
-		{
-			Debug.Log("no ability at " + character.gameObject.name);
-		}
-		_baseDuration = durationToExit;
 	}
 
-	public override void OnUpdateState()
-	{
-		if (turnOff)
-		{
-			ExitState();
-		}
-	}
+	public override void UpdateState() { }
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
+		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledSchoool, true);
 		}
 	}
 
-	/*public override bool Stack(float time)
+	public override bool Stack(float time)
 	{
-		duration = time;
+		RemainingDuration = time;
 		return true;
-	}*/
+	}
+	
+	
+	private void TryCancel(CharacterState character)
+	{
+		var targetAbilities = character.Character?.Abilities;
+		if (targetAbilities?.CurrentCastingSkill == null) return;
+
+		var school = targetAbilities.CurrentCastingSkill.Info.School;
+
+		targetAbilities.CurrentCastingSkill.CmdCancelActiveSkill();
+
+		if (school != Schools.None)
+		{
+			canceledSchoool = school;
+			if (character.TryGetComponent<Character>(out var ability))
+			{
+				abilities = ability.Abilities;
+				abilities.SwitchAvaliable(canceledSchoool, false);
+			}
+		}
+	}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvisibleState : AbstractCharacterState
+public class InvisibleState : StateBasic
 {
 	public bool turnOff = false;
 	private float _baseDuration;
@@ -13,7 +13,7 @@ public class InvisibleState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 	//	Debug.Log("Entering Invisible State");
 		//effects.Add(StatusEffect.Others);
@@ -25,31 +25,24 @@ public class InvisibleState : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
+		//Debug.Log("Updating Invisible State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
 		//Debug.Log("Exiting Invisible State");
-		characterState.RemoveStateFromList(this);
+		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Others))
 		{
 			//characterState.Health.SetInvincible(false);
 			characterState.invinsible = false;
 		}
 	}
-
-	/*public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			_duration = time;
-			return true;
-		}
-	}*/
 }

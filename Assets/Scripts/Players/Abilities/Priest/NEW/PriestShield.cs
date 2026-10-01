@@ -27,6 +27,16 @@ public class PriestShield : Skill
     public override bool IsPayCostStartCooldown => false;
 
     private readonly Dictionary<PriestShieldBoosterType, SkillTalentHandler> _boosters = new();
+    
+    protected override bool IsCanCast => CheckCanCast();
+
+    private bool CheckCanCast()
+    {
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null) return false;
+        if (target.CharacterState.CheckForState(States.TiredSoul)) return false;
+        return true;
+    }
 
     #region Boosters
 

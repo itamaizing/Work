@@ -175,7 +175,7 @@ public class LightningStrikes : Skill
     {
         if (_animTime > 0)
         {
-            float multiplier = _lightningMovement.DurationLeap - 4.9f; // �������� �������� (���������� - 0.1)
+            float multiplier = _lightningMovement.DurationLeap - 4.9f;
             float animTimeMultiplier = _animTime / multiplier;
             Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);

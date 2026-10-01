@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Sleep : AbstractCharacterState
+public class Sleep : StateBasic
 {
     public bool turnOff = false;
-    private float _duration;
     private float _baseDuration;
     private bool _previousIsSelect;
     private int _initialLayer;
+    private int _lastTickedSecond;
     private bool _giveInnerDarkness;
     private float _tickTimer;
     private const float _tickInterval = 1f;
@@ -27,17 +27,16 @@ public class Sleep : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("������ ��������� � ���");
-
         characterState = character;
         _source = personWhoMadeBuff;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         _giveInnerDarkness = false;
 
         _tickTimer = 0f;
+        
+        _lastTickedSecond = Mathf.CeilToInt(durationToExit); 
 
         _initialLayer = character.gameObject.layer;
         character.gameObject.layer = LayerMask.NameToLayer(_enemyLayerName);
@@ -85,24 +84,49 @@ public class Sleep : AbstractCharacterState
         }
     }
 
-    public override void OnUpdateState()
+    private void SubscribeOnDamage()
     {
-        if (_giveInnerDarkness)
-        {
-            _tickTimer += Time.deltaTime;
-            if (_tickTimer >= _tickInterval)
-            {
-                _tickTimer = 0f;
-                CmdStateInnerDarkness();
-            }
-        }
-
+        characterState.Character.Health.DamageTaken += OnDamaged;
+        characterState.Character.Health.OnBeforeTakeDamage += OnDamaged;
     }
 
-    protected override void OnExitState()
+    private void UnSubscribeOnDamage()
     {
-        Debug.Log("������ ��� ����������");
+        characterState.Character.Health.DamageTaken -= OnDamaged;
+        characterState.Character.Health.OnBeforeTakeDamage -= OnDamaged;
+    }
 
+    private void OnDamaged(Damage damage, Skill ability)
+    {
+        ExitState();
+    }
+    
+    public override void UpdateState()
+    {
+        if(RemainingDuration >= 0 && RemainingDuration != -1)
+        {
+            RemainingDuration -= Time.deltaTime;
+
+            if (_giveInnerDarkness)
+            {
+                int currentSecond = Mathf.CeilToInt(RemainingDuration);
+                
+                if (currentSecond < _lastTickedSecond)
+                {
+                    CmdStateInnerDarkness();
+                    _lastTickedSecond = currentSecond;
+                }
+            }
+
+            if(RemainingDuration <= 0)
+            {
+                ExitState();
+            }
+        }
+    }
+
+    public override void ExitState()
+    {
         characterState.gameObject.layer = _initialLayer;
 
         //if (_giveInnerDarkness) for (int i = 0; i < 3; i++) CmdStateInnerDarkness();
@@ -121,8 +145,8 @@ public class Sleep : AbstractCharacterState
         characterState.Character.Health.DamageTaken -= OnAnyDamage;
 
         _disabledSkills.Clear();
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveStateFromList(this);
+        
+        characterState.RemoveState(this);
 
         var networkSettings = characterState.Character.NetworkSettings;
 
@@ -133,17 +157,13 @@ public class Sleep : AbstractCharacterState
         }
     }
 
-    /*public override bool Stack(float time)
-    {
-        _duration = _baseDuration;
-        return false;
-    }*/
-
     private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 
     [Command] private void CmdStateInnerDarkness() => ClientRpcStateInnerDarkness();
     [ClientRpc] private void ClientRpcStateInnerDarkness() { characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
 
+    
+    
 
     //private bool ShouldApplyInnerDarkness()
     //{

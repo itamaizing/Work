@@ -31,12 +31,16 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void CmdSpawnCharacter(int prefabIndex, Vector3 position, Quaternion rotation, byte teamId)
     {
-        if (prefabIndex < 0 || prefabIndex >= _enemyPrefabs.Count)
+        var list = _enemyPrefabs;
+        if (teamId == 0)
+            list = _allyPrefabs;
+
+        if (prefabIndex < 0 || prefabIndex >= list.Count)
         {
             Debug.LogError($"Invalid prefab index {prefabIndex}");
             return;
         }
-        var prefab = _enemyPrefabs[prefabIndex];
+        var prefab = list[prefabIndex];
         var spawned = Instantiate(prefab, position, rotation);
         spawned.Initialize();
         
@@ -108,12 +112,7 @@ public class SpawnComponent : NetworkBehaviour
     public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove,
         Character parenCharacter)
     {
-        var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parenCharacter);
-
-        if (toReplace != null && remove == true)
-        {
-            RemoveUnitServer(toReplace);
-        }
+        SpawnAliesPointServer(position, rotation, toReplace, index, remove, parenCharacter);
     }
 
     [Command]
@@ -174,33 +173,55 @@ public class SpawnComponent : NetworkBehaviour
 
     #region Test
 
-    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove,
-        Character parenCharacter)
+    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove, Character parentCharacter)
     {
         if (prefab == null) return null;
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
-        spawnedCharacter.CharacterParent = parenCharacter;
+        spawnedCharacter.CharacterParent = parentCharacter;
         spawnedCharacter.Initialize();
 
-        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
-
-        if (_hero == null || _hero.NetworkSettings == null)
-        {
-            Destroy(spawnedCharacter.gameObject);
-            return null;
-        }
-
-        if (connectionToClient == null)
+        if (_hero == null || _hero.NetworkSettings == null || connectionToClient == null)
         {
             Destroy(spawnedCharacter.gameObject);
             return null;
         }
 
         NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
+
+        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
+        spawnedCharacter.NetworkSettings.TeamIndex = _hero.NetworkSettings.TeamIndex;
+
+        Debug.LogError($"spawned character team {spawnedCharacter.NetworkSettings.TeamIndex}");
+        Debug.LogError($"hero team {_hero.NetworkSettings.TeamIndex}");
+
         AddUnit(spawnedCharacter);
 
         return spawnedCharacter;
+    }
+    
+    public Character SpawnAliesPointServer(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parentCharacter)
+    {
+        var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parentCharacter);
+
+        if (toReplace != null && remove == true)
+        {
+            RemoveUnitServer(toReplace);
+        }
+
+        return spawned;
+    }
+    
+    public Character SpawnEnemyPointServer(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parentCharacter)
+    {
+        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parentCharacter);
+
+        if (toReplace != null && remove == true)
+        {
+            RemoveUnitServer(toReplace);
+        }
+
+        return spawned;
     }
 
     public void RemoveUnitServer(Character character)
@@ -330,6 +351,8 @@ public class SpawnComponent : NetworkBehaviour
     [ClientRpc]
     private void ClientRpcUnitAdded(GameObject characterObject)
     {
+        if (isServer) return;
+
         if (characterObject == null)
         {
             Debug.LogWarning("Character is null in ClientRpcUnitAdded.");
@@ -343,7 +366,7 @@ public class SpawnComponent : NetworkBehaviour
             return;
         }
 
-        characterObject.layer = gameObject.layer;
+        //characterObject.layer = gameObject.layer;
 
         _units.Add(character);
         _units.RemoveAll(unit => unit == null);
@@ -356,6 +379,8 @@ public class SpawnComponent : NetworkBehaviour
     [ClientRpc]
     private void ClientRpcOnUnitDestroyed(GameObject characterObject)
     {
+        if (isServer) return;
+
         if (characterObject != null)
         {
             var character = characterObject.GetComponent<Character>();

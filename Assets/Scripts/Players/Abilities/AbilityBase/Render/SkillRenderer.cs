@@ -64,6 +64,9 @@ public class SkillRenderer : NetworkBehaviour
 
     private Vector2 _cursorPrepareHotspot = Vector2.zero;
     private Vector2 _cursorDefaultHotspot = Vector2.zero;
+    
+    private Skill _indicatorOwner;
+    public Skill IndicatorOwner => _indicatorOwner;
 
     private void Awake()
     {
@@ -121,6 +124,21 @@ public class SkillRenderer : NetworkBehaviour
         if (_previewDamageCoroutine != null) StopCoroutine(_previewDamageCoroutine);
         _previewSet.Clear();
         _previewDamageCoroutine = StartCoroutine(PreviewDamageJob(radius, damage, layerMask));
+    }
+    
+    public bool TryClaimIndicator(Skill owner)
+    {
+        if (_indicatorOwner != null && _indicatorOwner != owner)
+            return false;
+    
+        _indicatorOwner = owner;
+        return true;
+    }
+    
+    public void ReleaseIndicator(Skill owner)
+    {
+        if (_indicatorOwner == owner)
+            _indicatorOwner = null;
     }
 
     [ClientRpc]

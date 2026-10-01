@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cooling : RefreshingState
+public class Cooling : StateStackingRefreshing
 {
 	public bool turnOff = false;
 	private float _damageOnStart;
@@ -19,54 +19,51 @@ public class Cooling : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
 		characterState = character;
-		MaxStacksCount = 6;
+		SetMaxStacks(6);
 		_damageToExit = damageToExit == 0 ? 10000 : damageToExit;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
-		if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
 
 		characterState.Character.Move.AddModifier(_modif);
-		currentStacksCount = 1;
+		CurrentStacksCount = 1;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || turnOff)
 		{
 			ExitState();
 		}
+		if(RemainingDuration <= 0) ExitState();
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
+		CurrentStacksCount = 0;
+		turnOff = false;
+		_damageOnStart = 0;
+		_damageToExit = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
+		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)
     {
-        duration = time;
-		if(currentStacksCount < MaxStacksCount)
+        RemainingDuration = time;
+		if(CurrentStacksCount < MaxStacksCount)
 		{
             characterState.Character.Move.RemoveModifier(_modif);
-            currentStacksCount++;
-			_modif.Value = currentStacksCount * _speedDebuf;
+            CurrentStacksCount++;
+			_modif.Value = CurrentStacksCount * _speedDebuf;
 			characterState.Character.Move.AddModifier(_modif);
-
-			if (currentStacksCount == MaxStacksCount) TryApplyFrosting();
 		}
-        return true;
+		return true;
     }
-
-	private void TryApplyFrosting()
-    {
-		if (!characterState.CheckForState(States.Frosting)) AddFrostingCmd();
-	}
-
-	[Command] private void AddFrostingCmd() => AddFrostingRpc();
-	[ClientRpc] private void AddFrostingRpc() => characterState.AddStateLogic(States.Frosting, 2, 0f, Schools.None, characterState.Character.gameObject, "Frosting");
+    
+    
 }

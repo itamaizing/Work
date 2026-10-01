@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdealEvade : AbstractCharacterState
+public class IdealEvade : StateBasic
 {
     private float _baseDuration;
     private float _duration;
@@ -13,7 +13,7 @@ public class IdealEvade : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering IdealEvadeBuff State");
         characterState = character;
@@ -25,13 +25,26 @@ public class IdealEvade : AbstractCharacterState
         _baseDuration = durationToExit;
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        _duration = _baseDuration;
-        return true;
-    }*/
+        Debug.Log("Exiting IdealEvadeBuff State");
 
-    public override void OnUpdateState()
+        if (!characterState.Check(StatusEffect.Others))
+        {
+            //return evade chance
+        }
+
+        characterState.RemoveState(this);
+    }
+
+    public override void UpdateState()
     {
+        Debug.Log("Updating IdealEvadeBuff State");
+        _duration -= Time.deltaTime;
+
+        if (_duration < 0 /*|| turnOff*/)
+        {
+            ExitState();
+        }
     }
 }

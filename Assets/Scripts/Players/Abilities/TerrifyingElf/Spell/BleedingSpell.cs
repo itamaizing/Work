@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class BleedingSpell : Skill
+public class BleedingSpell : Skill, IMultiMagicSkill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
@@ -42,18 +42,7 @@ public class BleedingSpell : Skill
     {
         Damage = _baseDamage;
         if (Targeting.GetTarget()?.Character != null) CmdApplyAbsorptionState(Targeting.GetTarget()?.Character.gameObject);
-
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdApplyAbsorptionState(character.gameObject);
-            }
-        }
-
+        
         AfterCastJob();
 
         yield return null;
@@ -79,6 +68,12 @@ public class BleedingSpell : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+    }
+
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdApplyAbsorptionState(target.gameObject);
     }
 }
 

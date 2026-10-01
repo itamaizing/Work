@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Impatica : Skill
@@ -17,9 +18,6 @@ public class Impatica : Skill
             if (target == null)
                 return false;
 
-            if (!Charges.HasCharges)
-                return false;
-
             if (!IsAllyTarget(target))
                 return false;
 
@@ -31,6 +29,10 @@ public class Impatica : Skill
             return distance <= AreaInfo.Radius;
         }
     }
+    
+    public override bool IsHaveResources =>
+        IsHaveResourceOnSkill &&
+        (Charges.UsesCharges ? Charges.RemainingCharges > 0 : !Cooldown.IsActive);
 
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -45,13 +47,71 @@ public class Impatica : Skill
     private bool _isExtendDamageAbsorption = false;
 
     public void ExtendDamageAbsorption(bool value) => _isExtendDamageAbsorption = value;
+    
+
+    private bool _secondChargeActive;
+    private double? _pendingSecondChargeEndTime;
 
     public void SecondCharge(bool value)
     {
-        //if (value) AddMaxChargeCount();
-        if (value) Charges.ModifyMax(1);
-        else Charges.ModifyMax(-1);
-        //else DeductMaxChargeCount();
+        if (_secondChargeActive == value) return;
+        _secondChargeActive = value;
+
+        if (value)
+        {
+            Charges.EnableChargers(true, 2, Cooldown.BaseCooldownTime);
+
+            double slot1End = NetworkTime.time;
+
+            if (Cooldown.IsActive)
+            {
+                float remaining1 = Cooldown.RemainingTime;
+                slot1End = NetworkTime.time + remaining1;
+
+                Charges.StartRecharge(remaining1);
+                Cooldown.ForceEnd();
+            }
+
+            if (_pendingSecondChargeEndTime.HasValue)
+            {
+                double duration2 = _pendingSecondChargeEndTime.Value - slot1End;
+
+                if (duration2 > 0)
+                    Charges.StartRecharge((float)duration2);
+
+                _pendingSecondChargeEndTime = null;
+            }
+        }
+        else
+        {
+            if (RechargeTimers.Count > 0)
+            {
+                double firstEnd = RechargeTimers[0];
+
+                _pendingSecondChargeEndTime = RechargeTimers.Count > 1
+                    ? RechargeTimers[RechargeTimers.Count - 1]
+                    : null;
+
+                for (int i = RechargeTimers.Count - 1; i >= 0; i--)
+                    Charges.RestoreCharge(i);
+
+                double remainingFirst = firstEnd - NetworkTime.time;
+                if (remainingFirst > 0)
+                    Cooldown.StartCustom((float)remainingFirst);
+            }
+            else
+            {
+                _pendingSecondChargeEndTime = null;
+            }
+
+            Charges.EnableChargers(false, 0, Cooldown.BaseCooldownTime);
+        }
+    }
+
+    protected override void UseCooldownOrCharges()
+    {
+        if (Charges.UsesCharges) Charges.TryUse();
+        else Cooldown.Start();
     }
 
     #endregion
@@ -68,7 +128,7 @@ public class Impatica : Skill
                 {
                     Character tempTarget = Targeting.GetTempTarget().Character;
 
-                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero || Vector3.Distance(Hero.transform.position, tempTarget.transform.position) > AreaInfo.Radius)
+                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero)
                     {
                         Targeting.ClearTempTarget();
                     }
@@ -84,11 +144,10 @@ public class Impatica : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        Character selectedTarget = Targeting.GetTempTarget()?.Character;
         Targeting.ClearTempTarget();
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(selectedTarget);
         callbackDataSaved(targetInfo);
     }
 
@@ -107,7 +166,6 @@ public class Impatica : Skill
     {
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
-        //_target = null;
     }
 
     [Command]

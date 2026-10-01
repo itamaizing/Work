@@ -11,12 +11,12 @@ public class NatureTalent_4 : Talent
     public override void Enter()
     {
         _ability.ActivateSkill(shotsIntoSky);
-        growTree.ShotTreeCooldownTalent(true);
+        //growTree.ShotTreeCooldownTalent(true);
     }
 
     public override void Exit()
     {
         _ability.DeactivateSkill(shotsIntoSky);
-        growTree.ShotTreeCooldownTalent(false);
+        //growTree.ShotTreeCooldownTalent(false);
     }
 }

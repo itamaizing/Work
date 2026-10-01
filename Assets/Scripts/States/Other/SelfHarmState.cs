@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SelfHarmState : AbstractCharacterState
+public class SelfHarmState : StateBasic
 {
     private const float CastTimeReductionMultiplier = 0.5f;
     private const float StackIncreasePerHit = 50f;
@@ -15,7 +15,7 @@ public class SelfHarmState : AbstractCharacterState
 
     private Health _healthComponent;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {        
         _healthComponent = characterState.GetComponent<Health>();
 
@@ -36,11 +36,11 @@ public class SelfHarmState : AbstractCharacterState
         Debug.Log("SelfHarm enter");
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
@@ -56,15 +56,10 @@ public class SelfHarmState : AbstractCharacterState
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
         
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
         
         Debug.Log("SelfHarm exit");
     }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {

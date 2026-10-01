@@ -23,7 +23,16 @@ public class CooldownComponent : BaseSkillComponent
     #endregion
 
     #region Properties
-    public float BaseCooldownTime => _baseCooldown;
+    public float BaseCooldownTime
+    {
+        get => (_skillAttributes != null) ? _skillAttributes[SkillAttributeName.Cooldown].BaseValue : _baseCooldown;
+        set {
+            if (_skillAttributes != null)
+                _skillAttributes[SkillAttributeName.Cooldown].SetBaseValue(value);
+            else
+                _baseCooldown = value;
+        }
+    }
     public float CooldownTime {
         get { return _skillAttributes != null ? _skillAttributes.Cooldown : _baseCooldown; }
         set { _skillAttributes[SkillAttributeName.Cooldown].SetBaseValue(value); }
@@ -190,6 +199,13 @@ public class CooldownComponent : BaseSkillComponent
     public void OnServerCooldownChanged(double oldValue, double newValue)
     {
         isSyncronized = true;
+    }
+    
+    public void OnForceRefreshUI()
+    {
+        if (!IsActive) return;
+        OnStart?.Invoke((float)_currentMax);
+        OnModify?.Invoke(RemainingTime, _currentMax);
     }
     #endregion Methods
 }

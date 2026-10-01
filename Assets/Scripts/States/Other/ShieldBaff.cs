@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShieldBaff : AbstractCharacterState, IDamageable
+public class ShieldBaff : StateStackingRefreshing, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -17,7 +17,7 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
@@ -28,24 +28,24 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
         UpdateShieldValues();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         Debug.Log("LightShield state exited.");
-        characterState.RemoveStateFromList(this);
+        characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }
 
-    /*public override bool Stack(float time)
+    public override bool Stack(float time)
     {
         //_duration = time;
         //_damageAbsorbed = 0;
-        currentStacksCount += 1;
+        CurrentStacksCount += 1;
         return false;
-    }*/
+    }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
@@ -73,7 +73,7 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            OnExitState();
+            ExitState();
             return true;
         }
 

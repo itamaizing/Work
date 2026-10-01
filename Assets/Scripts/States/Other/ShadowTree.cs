@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShadowTree : StackableState
+public class ShadowTree : StateStackingRefreshing
 {
     public override States State => States.ShadowTree;
     public override StateType Type => StateType.Physical;
@@ -21,34 +21,34 @@ public class ShadowTree : StackableState
 
     public ShadowTree()
     {
-        MaxStacksCount = 60;
+        SetMaxStacks(60);
     }
 
     public void SwitchToFinite()
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(currentStacksCount, 1, 9999);
+        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 9999);
     }
 
     public void SwitchToInfinite()
     {
         _infinite = true;
         _timer = 0f;
-        duration = 9999;
+        RemainingDuration = 9999;
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
-        personWhoMadeBuff = caster;
+        sourceCaster = caster;
         _infinite = true;
-        duration = 9999;
-        currentStacksCount = 0;
+        RemainingDuration = 9999;
+        CurrentStacksCount = 0;
         Stack(0);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         if (_infinite) return;
 
@@ -57,22 +57,22 @@ public class ShadowTree : StackableState
         {
             _timer = 0f;
 
-            if (currentStacksCount > 0)
+            if (CurrentStacksCount > 0)
             {
-                currentStacksCount--;
+                CurrentStacksCount--;
                 characterState.Character.Health.AddMax(-BonusPerStack);
-                characterState.StateIcons.RemoveIconCount();
+                
             }
             
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || CurrentStacksCount <= 0) ExitState();
         }
     }
 
     public override bool Stack(float _)
     {
-        if (currentStacksCount >= MaxStacksCount) return false;
-        currentStacksCount++;
+        if (CurrentStacksCount >= MaxStacksCount) return false;
+        CurrentStacksCount++;
         characterState.Character.Health.AddMax(BonusPerStack);
 
 
@@ -80,9 +80,9 @@ public class ShadowTree : StackableState
         return true;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        if (currentStacksCount > 0)  characterState.Character.Health.AddMax(-currentStacksCount * BonusPerStack);
-        characterState.RemoveStateFromList(this);
+        if (CurrentStacksCount > 0)  characterState.Character.Health.AddMax(-CurrentStacksCount * BonusPerStack);
+        characterState.RemoveState(this);
     }
 }

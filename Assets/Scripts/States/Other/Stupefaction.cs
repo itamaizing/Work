@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Stupefaction : AbstractCharacterState
+public class Stupefaction : StateBasic
 {
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
@@ -15,7 +15,7 @@ public class Stupefaction : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 
@@ -33,7 +33,7 @@ public class Stupefaction : AbstractCharacterState
 		characterState.Character.Health.DamageTaken += OnAnyDamage;
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 		if (turnOff)
 		{
@@ -41,27 +41,14 @@ public class Stupefaction : AbstractCharacterState
 		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
 		characterState.Character.Health.DamageTaken -= OnAnyDamage;
-		characterState.RemoveStateFromList(this);
+		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 		turnOff = false;
 	}
-
-	/*public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			duration = time;
-			return true;
-		}
-	}*/
 
 	private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 

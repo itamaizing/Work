@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ImmortalityState : AbstractCharacterState
+public class ImmortalityState : StateBasic
 {
     private float _duration;
     private Character _player;
-    private float _savedBlockChance;
-    private float _savedEvadeMelee;
-    private float _savedEvadeRange;
-    private float _savedResistMag;
 
     private List<StatusEffect> _effects = new();
     public override States State => States.ImmortalityState;
@@ -16,42 +12,47 @@ public class ImmortalityState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _player = characterState.Character;
         _duration = durationToExit;
 
-        _savedBlockChance = _player.Health.BlockChance;
-        _savedEvadeMelee  = _player.Health.EvadeMeleeDamage;
-        _savedEvadeRange  = _player.Health.EvadeRangeDamage;
-        _savedResistMag   = _player.Health.ResistMagDamage;
+        var attrs = _player.AttributeSystem;
+        var evadeMelee = attrs[CharacterAttributeName.EvasionPhysicalMelee];
+        var evadeRange = attrs[CharacterAttributeName.EvasionPhysicalRange];
+        var evadeMagic = attrs[CharacterAttributeName.EvasionMagical];
 
-        _player.Health.BlockChance       = 100f;
-        _player.Health.EvadeMeleeDamage  = 100f;
-        _player.Health.EvadeRangeDamage  = 100f;
-        _player.Health.ResistMagDamage   = 100f;
+        evadeMelee.AddModifier(new AttributeModifier(100f - evadeMelee.GetValue(), ModifierType.Flat, this));
+        evadeRange.AddModifier(new AttributeModifier(100f - evadeRange.GetValue(), ModifierType.Flat, this));
+        evadeMagic.AddModifier(new AttributeModifier(100f - evadeMagic.GetValue(), ModifierType.Flat, this));
+
+        _player.Health.OnTryResist += NegateAllDamage;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-
+        _duration -= Time.deltaTime;
+        if (_duration <= 0)
+            ExitState();
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
-        if (_player != null && _player.Health != null)
+        _duration = 0;
+
+        if (_player != null && _player.AttributeSystem != null)
         {
-            _player.Health.BlockChance       = _savedBlockChance;
-            _player.Health.EvadeMeleeDamage  = _savedEvadeMelee;
-            _player.Health.EvadeRangeDamage  = _savedEvadeRange;
-            _player.Health.ResistMagDamage   = _savedResistMag;
+            var attrs = _player.AttributeSystem;
+            attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveBySource(this);
+            attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveBySource(this);
+            attrs[CharacterAttributeName.EvasionMagical].RemoveBySource(this);
+
+            _player.Health.OnTryResist -= NegateAllDamage;
         }
+
+        characterState.RemoveState(this);
     }
 
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
+    private bool NegateAllDamage(Damage damage, Skill skill) => true;
 }
-

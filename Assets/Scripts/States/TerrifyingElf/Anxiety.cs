@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Anxiety : StackableState
+public class Anxiety : StateStacking
 {
     private float spellSpeedReduction = 0.1f;
     private float manaCostIncrease = 0.1f;
@@ -13,33 +13,33 @@ public class Anxiety : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         abilities = character.Character.Abilities;
         health = character.Character.Health;
-        MaxStacksCount = maxStacks;
+        SetMaxStacks(maxStacks);
 
         ApplyEffects();
-        Debug.Log($"Anxiety state applied: {currentStacksCount}/{MaxStacksCount} stacks, duration {duration}s");
+        Debug.Log($"Anxiety state applied: {CurrentStacksCount}/{MaxStacksCount} stacks, duration {RemainingDuration}s");
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         RemoveEffects();
-        Debug.Log($"Anxiety state removed: {currentStacksCount}/{MaxStacksCount} stacks");
+        Debug.Log($"Anxiety state removed: {CurrentStacksCount}/{MaxStacksCount} stacks");
     }
 
     public override bool Stack(float newDuration)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
         }
-        duration = Mathf.Max(duration, newDuration);
+        RemainingDuration = Mathf.Max(RemainingDuration, newDuration);
         ApplyEffects();
         return true;
     }
@@ -51,13 +51,13 @@ public class Anxiety : StackableState
         {
             foreach (var skill in abilities.Abilities)
             {
-                skill.CastDeley *= 1f + (spellSpeedReduction * currentStacksCount);
+                skill.CastDeley *= 1f + (spellSpeedReduction * CurrentStacksCount);
 
-                if (currentStacksCount < MaxStacksCount)
+                if (CurrentStacksCount < MaxStacksCount)
                     skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(new AttributeModifier(manaCostIncrease, ModifierType.Flat, source: this));
                 //foreach (var cost in skill.SkillEnergyCosts)
                 //{
-                //    cost.ModifyResourceCost(1f + (manaCostIncrease * currentStacksCount));
+                //    cost.ModifyResourceCost(1f + (manaCostIncrease * CurrentStacksCount));
                 //}
                 Debug.Log(skill.Attributes[SkillAttributeName.ResourceCost].GetValue());
             }
@@ -71,12 +71,12 @@ public class Anxiety : StackableState
         {
             foreach (var skill in abilities.Abilities)
             {
-                skill.CastDeley /= 1f + (spellSpeedReduction * currentStacksCount);
+                skill.CastDeley /= 1f + (spellSpeedReduction * CurrentStacksCount);
 
                 skill.Attributes[SkillAttributeName.ResourceCost].RemoveBySource(this, all: true);
                 //foreach (var cost in skill.SkillEnergyCosts)
                 //{
-                //    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * currentStacksCount)));
+                //    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * CurrentStacksCount)));
                 //}
             }
         }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HuntressMark : AbstractCharacterState
+public class HuntressMark : StateBasic
 {
     private float _duration;
 
@@ -13,19 +13,23 @@ public class HuntressMark : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        return false;
-    }*/
+        
+        characterState.RemoveState(this);
+    }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _duration -= Time.deltaTime;
+
+        if (_duration <= 0) ExitState();
     }
 }

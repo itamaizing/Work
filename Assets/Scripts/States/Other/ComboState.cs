@@ -1,42 +1,80 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComboState : StackableState
+public class ComboStateStacking : StateStackingRefreshing
 {
+    private float _durationRemaining;
+    private string _skillName;
+    public int InitialStackCount = 3;
+
     public override States State => States.ComboState;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
     public override List<StatusEffect> Effects => new List<StatusEffect>() { StatusEffect.Strengthening };
 
-    public ComboState()
+    public ComboStateStacking()
     {
-        MaxStacksCount = 3;
-        currentStacksCount = 1;
+        CurrentStacksCount = 0;
     }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        SetMaxStacks(3);
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
-        //this.s = skillName;
+        
+        _durationRemaining = durationToExit;
+        _skillName = skillName;
+        if (skillName == "ComboIncreaseStacks")
+        {
+            SetMaxStacks(MaxStacksCount + 1);
+        }
+        CurrentStacksCount = 1;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        if (_durationRemaining <= 0f)
+        {
+            //ExitState();
+            return;
+        }
+        //_durationRemaining -= Time.deltaTime;
+    }
+
+    public override void ExitState()
+    {
+        CurrentStacksCount = 0;
+        characterState.RemoveState(this);
+    }
+    
+    public override void ReduceStack()
+    {
+        CurrentStacksCount--;
+
+        if (CurrentStacksCount <= 0)
+        {
+            
+            ExitState();
+        }
+        else
+        {
+
+        }
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
-            duration = time;
-
-            return false;
+            CurrentStacksCount++;
+            return true;
         }
 
-        return false;
+        return true;
     }
+    
+    
 }

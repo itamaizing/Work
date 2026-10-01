@@ -159,7 +159,7 @@ public class ShadowMinion : NetworkBehaviour
         {
             float chance = Random.Range(0f, 100f);
             if (chance <= 15)
-                _target.CharacterState.CmdAddState(States.SpiritHealth, 18, 0, _target.gameObject, nameof(SpiritHealthState));
+                _target.CharacterState.CmdAddState(States.SpiritHealth, 18, 0, _target.gameObject, nameof(SpiritHealthStateStacking));
         }
     }
 

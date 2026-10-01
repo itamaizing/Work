@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarkFormState : StackableState
+public class DarkFormState : StateBasic
 {
     private Character _character;
     private SkillManager _skillManager;
@@ -14,12 +14,11 @@ public class DarkFormState : StackableState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void OnEnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = characterStateComp;
         _character     = characterStateComp.Character;
         _skillManager  = _character.Abilities;
-        MaxStacksCount = 1;
 
         _speedModifier.Value = _speedBonus;
         _character.Move.AddModifier(_speedModifier);
@@ -27,18 +26,18 @@ public class DarkFormState : StackableState
         SetShadowSkillActive(true);
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         _character.Move.RemoveModifier(_speedModifier);
 
         SetShadowSkillActive(false);
-    }
 
-    public override bool Stack(float time) => false;
+        characterState.RemoveState(this);
+    }
 
     private void SetShadowSkillActive(bool value)
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicBuff : AbstractCharacterState, IDamageable
+public class MagicBuff : StateBasic, IDamageable
 {
 	private Character _character;
 	private float _shieldCapacity;
@@ -17,7 +17,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_character = character.Character;
 		_shieldCapacity = damageToExit;
@@ -25,7 +25,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 		//_character.Health.SetMagAbsorb(_shieldCapacity);
 	}
 
-	public override void OnUpdateState()
+	public override void UpdateState()
 	{
 		if (_shieldCapacity <= 0)
 		{
@@ -33,18 +33,12 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 		}
 	}
 
-	protected override void OnExitState()
+	public override void ExitState()
 	{
 		_character.Health.Shields.Remove(this);
-		characterState.RemoveStateFromList(this);
+		characterState.RemoveState(this);
 		//_character.Health.SetMagAbsorb(0);
 	}
-
-	/*public override bool Stack(float time)
-	{
-		duration = time;
-		return true;
-	}*/
 
 	public bool TryTakeDamage(ref Damage damage, Skill skill)
 	{

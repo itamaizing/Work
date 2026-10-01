@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionOfPoisonsState : StackableState
+public class AbsorptionOfPoisonsState : StateStackingRefreshing
 {
     private Character _player;
 
@@ -20,7 +20,7 @@ public class AbsorptionOfPoisonsState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _attributeModifiers = new AttributeModifier(0, ModifierType.Flat);
         characterState = character;
@@ -34,33 +34,30 @@ public class AbsorptionOfPoisonsState : StackableState
         IncreaseHealth();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _duration -= Time.deltaTime;
+
+        if (_duration <= 0)
+        {
+            ExitState();
+        }
     }
 
-    public override bool Stack(float time)
-    {
-        currentStacksCount++;
-
-        _duration = _baseDuration;
-
-        IncreaseHealth();
-
-        return true;
-    }
-
-    protected override void OnExitState()
+    public override void ExitState()
     {
         _player.Health.RemoveModifier(_attributeModifiers);
         //_player.Health.ChangedMaxValue(-_allIncreasedHealth);
 
         ResetValues();
+
+        characterState.RemoveState(this);
     }
 
     private void IncreaseHealth()
     {
         _player.Health.RemoveModifier(_attributeModifiers);
-        float increasingValue = currentStacksCount * _baseHealthIncrease;
+        float increasingValue = CurrentStacksCount * _baseHealthIncrease;
 
         _increasedHealth = _maxHealth * increasingValue;
 
@@ -78,7 +75,7 @@ public class AbsorptionOfPoisonsState : StackableState
         _player.Health.RemoveModifier(_attributeModifiers);
         _allIncreasedHealth = 0;
 
-        currentStacksCount = 0;
+        CurrentStacksCount = 0;
 
         _duration = 0;
 

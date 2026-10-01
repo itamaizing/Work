@@ -45,10 +45,10 @@ MonoBehaviour:
       value: 2
     - nameToShow: RegenDelay
       type: 2
-      value: 0.5
+      value: 3
     - nameToShow: RegenInterval
       type: 3
-      value: 0.5
+      value: 0.1
   _extraResources:
   - nameToShow: Rune
     type: 3
@@ -80,8 +80,8 @@ MonoBehaviour:
       type: 3
       value: 6
     - nameToShow: MoveSpeed
-      type: 4
-      value: 5
+      type: 6
+      value: 6
     - nameToShow: VisionRadius
-      type: 5
-      value: 2
+      type: 7
+      value: 0

@@ -4,11 +4,11 @@ public class RestorationHealBoosterTalent : Talent
 {
     public override void Enter()
     {
-        character.Abilities.GetSkill<Restoration>()?.CmdEnableRestorationHealBooster(true);
+        character.Abilities.GetSkill<Restoration>()?.EnableRestorationHealBooster(true);
     }
 
     public override void Exit()
     {
-        character.Abilities.GetSkill<Restoration>()?.CmdEnableRestorationHealBooster(false);
+        character.Abilities.GetSkill<Restoration>()?.EnableRestorationHealBooster(false);
     }
 }

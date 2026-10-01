@@ -11,7 +11,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override void OnTargetEnter(Character target)
         {
-            CmdApplyStateToTarget(target.gameObject, States.EarthsHealth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(EarthElementalHealthAura));
+            CmdApplyStateToTarget(target.gameObject, States.EarthsHealth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(EarthElementalHealthAura),0);
         }
 
         protected override void OnTargetExit(Character target)
@@ -25,68 +25,102 @@ namespace Gangdollarff.EarthElemental
         }
     }
 
-    public class EarthsHealthBuff : AbstractCharacterState
+    public class EarthsHealthBuff : StateBasic
     {
         private List<StatusEffect> _effects = new();
 
-        private readonly Dictionary<Character, float> _charactersMaxHealth = new();
+        private const float HealthMaxPercent = 0.10f;
+        private const float HealthRegenPercent = 0.002f;
+        private const float TickInterval = 1f;
         
-        private float _healthRegenProcent = 0.002f;
-        private float _healthMaxProcent = 0.1f;
-        private float _originalRegenValue = 0;
-        private float _currentDelta = 0;
-
-        private Character _character;
-        private Resource _health;
+        private readonly AttributeModifier _maxHealthModifier =
+            new AttributeModifier(HealthMaxPercent, ModifierType.Percent);
+        
+        private Coroutine _regenCoroutine;
 
         public override States State => States.EarthsHealth;
         public override StateType Type => StateType.Magic;
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
 
-        protected override void OnEnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+        public override void Apply(CharacterState characterState, float durationToExit, float damageToExit,
+            Character personWhoMadeBuff, string skillName)
         {
-            _character = characterState.Character;
+            this.characterState = characterState;
+            health = characterState.Character?.Health;
 
-            float initialMaxHealth = _character.Health.MaxValue;
-            _charactersMaxHealth[_character] = initialMaxHealth;
+            _maxHealthModifier.Source = this;
 
-            if (_character.Resources.Count > 0)
+            ApplyBuffs();
+            StartRegenRoutine();
+        }
+
+        private void ApplyBuffs()
+        {
+            if (characterState == null || characterState.Character == null) return;
+
+            if (health != null)
             {
-                _character.Resources.TryGetValue(ResourceType.Health, out _health);
-                if (_health != null)
-                {
-                    _originalRegenValue = _health.RegenerationValue;
-                    _health.RegenerationValue += _health.MaxValue * _healthRegenProcent;
-                    _currentDelta = _health.MaxValue * _healthMaxProcent;
-                    _health.AddMax(_currentDelta,true);
-                }
+                health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
+            }
+        }
+
+        private void RemoveBuffs()
+        {
+            if (characterState == null || characterState.Character == null) return;
+
+            if (health != null)
+            {
+                health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
             }
         }
         
-        private void RestoreHealth()
+        private void StartRegenRoutine()
         {
-            if (_health != null)
+            if (characterState?.Character == null) return;
+            
+            if (characterState.Character.isServer || characterState.Character.isServerOnly)
             {
-                _health.RegenerationValue = _originalRegenValue;
-                _health.AddMax(-_currentDelta,true);
+                _regenCoroutine = characterState.StartCoroutine(RegenRoutine());
             }
         }
 
-        protected override void OnExitState()
-        {           
-            RestoreHealth();
-
-            _health = null;
-            _character = null;
+        private void StopRegenRoutine()
+        {
+            if (_regenCoroutine != null && characterState != null)
+            {
+                characterState.StopCoroutine(_regenCoroutine);
+                _regenCoroutine = null;
+            }
         }
 
-       /* public override bool Stack(float time)
+        private IEnumerator RegenRoutine()
         {
-            return false;
-        }*/
+            var waitForInterval = new WaitForSeconds(TickInterval);
 
-        public override void OnUpdateState()
+            while (true)
+            {
+                yield return waitForInterval;
+
+                if (health != null)
+                {
+                    float regenAmount = health.MaxValue * HealthRegenPercent;
+                    if (regenAmount > 0)
+                    {
+                        health.Add(regenAmount);
+                    }
+                }
+            }
+        }
+
+        public override void ExitState()
+        {
+            StopRegenRoutine();
+            RemoveBuffs();
+            base.ExitState();
+        }
+
+        public override void UpdateState()
         {
         }
     }

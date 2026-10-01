@@ -9,31 +9,27 @@ public class Health : Resource, IDamageable, IHealable
     [SerializeField] private NetworkAnimator _netAnimator;
     [SerializeField] private Bar bar;
 
-    [SyncVar(hook = nameof(HookEvadeMeleeDamageChanged))] protected float _evadeMeleeDamage;
-    [SyncVar(hook = nameof(HookEvadeRangeDamageChanged))] protected float _evadeRangeDamage;
-    [SyncVar(hook = nameof(HookEvadeMagDamageChanged))] protected float _resistMagDamage;
-    [SyncVar(hook = nameof(HookDefPhysDamageChanged))] protected float _defPhysDamage;
-    [SyncVar(hook = nameof(HookDefMagDamageChanged))] protected float _defMagDamage;
-
     private List<IDamageable> _shields = new List<IDamageable>();
     [SyncVar] private float _sumDamageTaken = 0;
     private float _totalMaxAbsorption = 0;
-    private float _blockChance;
     private bool _isDot = false;
 
     public Bar barCharacter { get => bar; }
-    public float BlockChance { get => _blockChance; set => _blockChance = value; }
     //public float SumDamageTaken { get { Debug.Log("Sum dmg " + _sumDamageTaken); return _sumDamageTaken; }} //=> _sumDamageTaken; }
     public float SumDamageTaken { get => _sumDamageTaken; }
-    public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
-    public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
-    public float ResistMagDamage { get => _resistMagDamage; set => _resistMagDamage = value; }
-    public float DefPhysDamage { get => _defPhysDamage; set => _defPhysDamage = value; }
-    public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
     public float TotalMaxAbsorption { get => _totalMaxAbsorption; set => _totalMaxAbsorption = value; }
     public List<IDamageable> Shields { get => _shields; }
+    
+    private Character _character;
+    private Character CharacterRef => _character ??= GetComponent<Character>();
 
-    public event Action Evaded;
+    private float ResistancePhysical => CharacterRef?.AttributeSystem[CharacterAttributeName.ResistancePhysical]?.GetValue() ?? 0f;
+    private float ResistanceMagical => CharacterRef?.AttributeSystem[CharacterAttributeName.ResistanceMagical]?.GetValue() ?? 0f;
+    private float EvasionMelee => CharacterRef?.AttributeSystem[CharacterAttributeName.EvasionPhysicalMelee]?.GetValue() ?? 0f;
+    private float EvasionRange => CharacterRef?.AttributeSystem[CharacterAttributeName.EvasionPhysicalRange]?.GetValue() ?? 0f;
+    private float EvasionMagical => CharacterRef?.AttributeSystem[CharacterAttributeName.EvasionMagical]?.GetValue() ?? 0f;
+    
+    public event Action<Skill> Evaded;
     public event Action Block;
     public event Action<float , Skill , string> HealTaked;
     public event Action<float, Skill, string> HealTakedServer;
@@ -45,18 +41,14 @@ public class Health : Resource, IDamageable, IHealable
 
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
     public event Action<Damage, Skill> OnBeforeTakeDamage; //Test
-
-    public delegate bool TryResistDelegate(Damage damage);
+    
+    public delegate bool TryResistDelegate(Damage damage, Skill skill);
     public event TryResistDelegate OnTryResist;
 
     public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
     public event BeforeDamageDelegate OnBeforeDamage;
-
-    public event Action<float, float> EvadeMeleeDamageChanged;
-    public event Action<float, float> EvadeRangeDamageChanged;
-    public event Action<float, float> EvadeMagDamageChanged;
-    public event Action<float, float> DefPhysDamageChanged;
-    public event Action<float, float> DefMagDamageChanged;
+    public delegate void BeforeHealDelegate(ref Heal heal, Skill skill);
+    public event BeforeHealDelegate OnBeforeHeal;
 
     public bool IsDot { get => _isDot; set => _isDot = value; }
 
@@ -90,8 +82,7 @@ public class Health : Resource, IDamageable, IHealable
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
-            //Debug.Log($"Evade");
-            Evaded?.Invoke();
+            Evaded?.Invoke(skill);
             ClientRpcEvade();
             return false;
         }
@@ -100,38 +91,28 @@ public class Health : Resource, IDamageable, IHealable
         {
             foreach (TryResistDelegate resist in OnTryResist.GetInvocationList())
             {
-                if (resist.Invoke(damage))
-                {
+                if (resist.Invoke(damage, skill))
                     return false;
-                }
             }
-        }
-
-        else if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
-        {
-            //Debug.Log($"Block");
-            Block?.Invoke();
-            return false;
         }
 
         Defence(ref damage);
 
-        // Test: If the state has a damage modification, it increases the damage.
-        //Or if skill has IDamageGivenModifier interface, it increases the damage.
         if (skill != null && skill.Hero != null)
         {
             foreach (var state in skill.Hero.CharacterState.CurrentStates)
-            {
                 if (state is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
-            }
 
             foreach (var ability in skill.Hero.Abilities.Abilities)
-            {
                 if (ability is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
-            }
         }
 
+        float preShieldValue = damage.Value;
         UseShields(ref damage, skill);
+        damage.FullyAbsorbed = damage.Value == 0 && preShieldValue > 0;
+
+        ClientRpcDamage(damage, skill);
+        _sumDamageTaken += damage.Value;
 
         if (damage.Value == 0)
             return true;
@@ -145,9 +126,7 @@ public class Health : Resource, IDamageable, IHealable
             }
             return true;
         }
-        ClientRpcDamage(damage, skill);
-        _sumDamageTaken += damage.Value;
-        //Debug.Log("Sum damage update " + _sumDamageTaken);
+
         return true;
     }
 
@@ -159,141 +138,35 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
+        OnBeforeHeal?.Invoke(ref heal,skill);
+        heal.Value = ApplyIncomingModifiers(heal.Value);
         HealTakedServer?.Invoke(heal.Value, skill, sourceName);
         ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
     }
 
-    public void SetEvadeMagic(float value)
-    {
-        _resistMagDamage = value;
-    }
+    public void InvokeEvade(Skill skill = null) => Evaded?.Invoke(skill);
 
-    public void InvokeEvade() => Evaded?.Invoke();
-
-    public void SetEvadeMagicDecrease(float value)
-    {
-        _resistMagDamage *= 1 - (value / 100);
-    }
-
-    public void SetPhysicDef(float value)
-    {
-        _defPhysDamage = value;
-    }
-
-    public void SetMagicDef(float value)
-    {
-        _defMagDamage = value;
-    }
-
-    public void SetEvadeAll(float value)
-    {
-		//Debug.Log("EVADEBOOST " + value);
-		_defPhysDamage += value;
-        _defMagDamage += value;
-        _resistMagDamage += value;
-        _evadeMeleeDamage += value;
-        _evadeRangeDamage += value;
-    }
-
-    public void SetEvadePhys(float value)
-    {
-        _evadeMeleeDamage = value;
-        _evadeRangeDamage = value;
-    }
-
-    public void AddEvade(float value)
-    {
-        _evadeMeleeDamage += value;
-        _evadeRangeDamage += value;
-        _resistMagDamage += value;
-    }
-
-    public void RemoveEvade(float value)
-    {
-        _evadeMeleeDamage -= value;
-        _evadeRangeDamage -= value;
-        _resistMagDamage -= value;
-    }
-
-    #region HookMethods
-
-    protected virtual void HookEvadeMeleeDamageChanged(float oldValue, float newValue)
-    {
-        EvadeMeleeDamageChanged?.Invoke(oldValue, newValue);
-    }
-
-    protected virtual void HookEvadeRangeDamageChanged(float oldValue, float newValue)
-    {
-        EvadeRangeDamageChanged?.Invoke(oldValue, newValue);
-    }
-
-    protected virtual void HookEvadeMagDamageChanged(float oldValue, float newValue)
-    {
-        EvadeMagDamageChanged?.Invoke(oldValue, newValue);
-    }
-
-    protected virtual void HookDefPhysDamageChanged(float oldValue, float newValue)
-    {
-        DefPhysDamageChanged?.Invoke(oldValue, newValue);
-    }
-
-    protected virtual void HookDefMagDamageChanged(float oldValue, float newValue)
-    {
-        DefMagDamageChanged?.Invoke(oldValue, newValue);
-    }
-
-    #endregion
+    public void InvokeBlock() => Block?.Invoke();
 
     public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)
         {
             case DamageType.Magical:
-
-                if (UnityEngine.Random.Range(0, 100) <= _resistMagDamage)
-                    return true;
-                else
-                    return false;
-
-                break;
+                return UnityEngine.Random.Range(0, 100) <= EvasionMagical;
 
             case DamageType.Physical:
-                switch (attackRangeType)
+                return attackRangeType switch
                 {
-                    case AttackRangeType.MeleeAttack:
-
-                        if (UnityEngine.Random.Range(0, 100) <= _evadeMeleeDamage)
-                            return true;
-
-                        else
-                            return false;
-
-                        break;
-
-                    case AttackRangeType.RangeAttack:
-
-                        if (UnityEngine.Random.Range(0, 100) <= _evadeRangeDamage)
-                            return true;
-                        else
-                            return false;
-
-                        break;
-
-                    default:
-                        break;
-                }
-                break;
-
-            case DamageType.Both:
-                break;
+                    AttackRangeType.MeleeAttack => UnityEngine.Random.Range(0, 100) <= EvasionMelee,
+                    AttackRangeType.RangeAttack => UnityEngine.Random.Range(0, 100) <= EvasionRange,
+                    _ => false
+                };
 
             default:
                 return false;
-                break;
         }
-
-        return false;
     }
 
     protected void UseShields(ref Damage damage, Skill skill)
@@ -321,13 +194,9 @@ public class Health : Resource, IDamageable, IHealable
     private void Defence(ref Damage damage)
     {
         if (damage.Type == DamageType.Physical)
-        {
-            damage.Value *= 1 - (_defPhysDamage / 100.0f);
-        }
+            damage.Value *= 1 - (ResistancePhysical / 100.0f);
         else if (damage.Type == DamageType.Magical)
-        {
-            damage.Value *= 1 - (_defMagDamage / 100.0f);
-        }
+            damage.Value *= 1 - (ResistanceMagical / 100.0f);
     }
 
     public void UpdateShieldValues(float absorbed, float maxAbsorption)
@@ -389,25 +258,16 @@ public class Health : Resource, IDamageable, IHealable
         _animator.SetBool(HashAnimPlayer.IsDead, true);
     }
 
-	public void ShowPhantomValue(Damage phantomValue)
-	{
+    public void ShowPhantomValue(Damage phantomValue)
+    {
         float curDamage = phantomValue.Value;
-        if(phantomValue.Type == DamageType.Physical)
-        {
-            curDamage *= 1 - (_defPhysDamage / 100.0f);
-        }
-        if(phantomValue.Type == DamageType.Magical)
-        {
-            curDamage *= 1 - (_defMagDamage / 100.0f);
-        }
+        if (phantomValue.Type == DamageType.Physical)
+            curDamage *= 1 - (ResistancePhysical / 100.0f);
+        if (phantomValue.Type == DamageType.Magical)
+            curDamage *= 1 - (ResistanceMagical / 100.0f);
 
-		PhantomValueShow(curDamage);
-	}
-
-    [Command] public void CmdSetBlockChance(float chance) => _blockChance = chance;
-    [Command] public void CmdResetBlockChance() => ResetBlockChance();
-
-    public void ResetBlockChance() => _blockChance = 0;
+        PhantomValueShow(curDamage);
+    }
 
     public void IncreaseRegen(float percentValue)
     {

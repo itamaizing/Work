@@ -3,7 +3,7 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class MagicInstantaneityState : StackableState
+public class MagicInstantaneityStateStacking : StateStacking
 {
     private List<StatusEffect> _effects = new();
     private List<Skill> _buffedSkills = new();
@@ -19,13 +19,13 @@ public class MagicInstantaneityState : StackableState
 
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         //CanStack = true;
         _time = durationToExit;
         _character = character.Character;
-        MaxStacksCount = 5;
-        currentStacksCount = 1;
+        SetMaxStacks(5);
+        CurrentStacksCount = 1;
 
         var skillsWithDelay = _character.Abilities.Abilities
             .Where(s => s.CastDeley > 0 && s.IsSkillActive)
@@ -37,19 +37,19 @@ public class MagicInstantaneityState : StackableState
             skill.Buff.CastSpeed.IncreasePercentage(1 - (_percent * CurrentStacksCount)); ;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         foreach (var skill in _buffedSkills)
             skill.Buff.CastSpeed.Reset();
         _buffedSkills.Clear();
-        _character.CharacterState.RemoveStateFromList(this);
+        _character.CharacterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
+            CurrentStacksCount++;
             foreach (var skill in _buffedSkills)
             {
                 skill.Buff.CastSpeed.Reset();
@@ -60,7 +60,12 @@ public class MagicInstantaneityState : StackableState
         return true;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
+        _time -= Time.deltaTime;
+        if (_time <= 0)
+        {
+            ExitState();
+        }
     }
 }

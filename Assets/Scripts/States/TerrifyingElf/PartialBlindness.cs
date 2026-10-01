@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartialBlindness : StackableState
+public class PartialBlindness : StateStackingRefreshing
 {
     private float _baseDuration;
-    private float _duration;
     
     #region Const
     private const int MaxStacks = 3;
@@ -13,6 +12,10 @@ public class PartialBlindness : StackableState
     private const float EffectivenessDecayPerSecond = 2f;
     private const float MinEffectiveness = 0f;
     #endregion
+    
+    private bool _isDoubleMissChance;
+    private const float DoubleMissChanceMultiplier = 2f;
+    private const string PartialBlindnessTalentSkillName = "partialBlindnessTalent";
 
     private float _effectivenessLoss = 0f;
 
@@ -25,39 +28,41 @@ public class PartialBlindness : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    
+
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
 
-        //_talentPartialBlindnessActive = skillName;
+        SetMaxStacks(MaxStacks);
+        CurrentStacksCount = 1;
 
-        MaxStacksCount = MaxStacks;
-        currentStacksCount = 1;
+        _isDoubleMissChance = skillName == PartialBlindnessTalentSkillName;
 
         _character = character.GetComponent<Character>();
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         _character.Abilities.OnSkillPreparedSuccessfully -= HandleSkillPrepared;
-        currentStacksCount = 0;
+        characterState.RemoveState(this);
+        CurrentStacksCount = 0;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
     }
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
-
-        if (CurrentStacksCount < MaxStacksCount) currentStacksCount++;
-
         return true;
+    }
+    
+    public override void ReduceStack()
+    {
+        ExitState();
     }
 
     private void HandleSkillPrepared(Skill skill)
@@ -66,13 +71,18 @@ public class PartialBlindness : StackableState
         if (skill.Info.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != characterState.Character) return;
 
-        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - _duration) * EffectivenessDecayPerSecond); //* CurrentStacksCount)?
-        float totalMissChance = CurrentStacksCount * BaseMissChancePerStack - _effectivenessLoss;
+        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - RemainingDuration) * EffectivenessDecayPerSecond);
 
-        if (UnityEngine.Random.Range(0f, 100f) < 100)
+        float missChancePerStack = _isDoubleMissChance
+            ? BaseMissChancePerStack * DoubleMissChanceMultiplier
+            : BaseMissChancePerStack;
+
+        float totalMissChance = CurrentStacksCount * missChancePerStack - _effectivenessLoss;
+
+        if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
-            Debug.Log("сброс способности");
-            skill.CmdForceFailCastJobOnce();
+            if(_character.isClient)
+                skill.CmdForceFailCastJobOnce();
         }
     }
 }

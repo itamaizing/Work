@@ -1,97 +1,139 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WarmingUpState : StackableState
+public class WarmingUpStateStacking : StateStackingRefreshing
 {
-	private const float BonusPerStack = 1f;
+	private const float BonusPerStack = 0.1f;
+	private const float RegenBonusPercent = 1.0f;
+	private float _savedRegenValue = 0f;
+	private const float RegenMultiplier = 2f;
+	
+	private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(0f, ModifierType.Percent);
+	
+	private readonly AttributeModifier _incomingHealModifier = new AttributeModifier(0.1f, ModifierType.Percent);
+	private readonly AttributeModifier _healthRegenModifier = new AttributeModifier(RegenBonusPercent, ModifierType.Percent);
 
-	public AbilityForm canceledForm;
-	public bool canCancel = false;
-	public bool turnOff = false;
-
+    private float _baseDuration;
+    
 	private List<Skill> _affectedSkills = new();
 	private SkillManager _skills;
-
-	private List<StatusEffect> _effects = new() { StatusEffect.AbilitySchool };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.WarmingUpState;
 	public override StateType Type => StateType.Physical;
-	public override List<StatusEffect> Effects => _effects;
+	public override List<StatusEffect> Effects => new List<StatusEffect>() { StatusEffect.Strengthening };
 
-	public WarmingUpState()
-	{
-		MaxStacksCount = 3;
-		currentStacksCount = 1;
-	}
+	private float baseDuration;
 
+	    public WarmingUpStateStacking()
+    {
+        SetMaxStacks(3);
+        CurrentStacksCount = 0;
+    }
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		if (character.TryGetComponent<Character>(out var ability))
-		{
-			abilities = ability.Abilities;
-			abilities.SwitchAvaliable(canceledForm, false);
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
+    {
+        characterState = character;
+        _baseDuration = durationToExit;
+        CurrentStacksCount = 1;
 
-			foreach (var skill in abilities.Abilities)
-			{
-				if (skill.Info.AbilityForm == AbilityForm.Physical && skill.AnimTriggerCastPublic != 0)
-				{
-					_affectedSkills.Add(skill);
-					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * currentStacksCount;
-				}
-			}
-		}
-		else
-		{
-			Debug.LogWarning($"[WarmingUpState] Character {character.name} doesn't have abilities.");
-		}
+        _castSpeedModifier.Source = this;
+        _incomingHealModifier.Source = this;
+        _healthRegenModifier.Source = this;
 
-		currentStacksCount = 1;
-	}
+        UpdateCastSpeedBonus();
 
-	public override void OnUpdateState()
-	{
-		if (turnOff)
-		{
-			ExitState();
-		}
-	}
+        if (skillName != null && skillName.Contains("HealingIncrease") && characterState.isServer)
+        {
+            if (health != null)
+            {
+                health.AddIncomingModifier(_incomingHealModifier);
+            }
+            
+            if (health != null)
+            {
+                health.AddModifier(ResourceAttributeName.Regen, _healthRegenModifier);
+            }
+        }
+    }
 
-	protected override void OnExitState()
-	{
-		foreach (var skill in _affectedSkills)
-		{
-			if (skill != null)
-			{
-				skill.ExtraAnimationSpeedMultiplier = 1;
-			}
-		}
+    public override bool Stack(float time)
+    {
+        RemainingDuration = time;
+        if (CurrentStacksCount < MaxStacksCount)
+        {
+            CurrentStacksCount++;
+            UpdateCastSpeedBonus();
+            return true;
+        }
 
-		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
-		{
-			abilities.SwitchAvaliable(canceledForm, true);
-		}
+        return false;
+    }
 
-		currentStacksCount = 1;
-	}
+    public override void ReduceStack()
+    {
+        CurrentStacksCount--;
 
-	public override bool Stack(float time)
-	{
-		duration = time;
+        if (CurrentStacksCount <= 0)
+        {
+            
+            ExitState();
+        }
+        else
+        {
 
-		if (currentStacksCount < MaxStacksCount)
-		{
-			currentStacksCount++;
+            RemainingDuration = _baseDuration;
+            UpdateCastSpeedBonus();
+        }
+    }
 
-			foreach (var skill in _affectedSkills)
-			{
-				if (skill != null)
-				{
-					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * currentStacksCount;
-				}
-			}
-		}
+    private void UpdateCastSpeedBonus()
+    {
+        if (characterState == null || characterState.Character == null) return;
 
-		return true;
-	}
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+        if (castSpeedAttr == null) return;
+
+        _castSpeedModifier.Value = BonusPerStack * CurrentStacksCount;
+
+        if (!castSpeedAttr.Modifiers.Contains(_castSpeedModifier))
+        {
+            castSpeedAttr.AddModifier(_castSpeedModifier);
+        }
+    }
+
+    private void RemoveBuffs()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        // Снимаем бонус скорости каста
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+        if (castSpeedAttr != null)
+        {
+            castSpeedAttr.RemoveModifier(_castSpeedModifier);
+        }
+
+        if (health != null)
+        {
+            health.RemoveModifierBySource(ResourceAttributeName.Regen, _healthRegenModifier);
+        }
+
+        if (characterState.isServer && characterState.Character.Health != null)
+        {
+            characterState.Character.Health.RemoveIncomingModifier(_incomingHealModifier);
+        }
+    }
+
+    public override void ExitState()
+    {
+        CurrentStacksCount = 0;
+        RemoveBuffs();
+        
+        base.ExitState();
+        characterState.RemoveState(this);
+    }
+
+    public override void UpdateState() { }
+
+    
 }

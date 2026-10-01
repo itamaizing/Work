@@ -54,12 +54,16 @@ public class SneakySpit : Skill
     private void OnEnable()
     {
         TrySubscribe();
+        
+        isAnimStart = false;
+        isAbilityQueue = false;
     }
 
     private void OnDisable()
     {
         Hero.Health.OnBeforeTakeDamage -= HandleBeforeTakeDamage;
         Hero.Health.Evaded -= OnHeroEvade;
+        CastStarted -= HandleCastStarted;
     }
 
     private void TrySubscribe()
@@ -69,6 +73,7 @@ public class SneakySpit : Skill
 
         Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
         Hero.Health.Evaded += OnHeroEvade;
+        CastStarted += HandleCastStarted;
     }
 
     public void TryStartSneakySpitBoostWindow(Character target)
@@ -98,9 +103,38 @@ public class SneakySpit : Skill
 
         yield return new WaitForSeconds(windowDuration);
 
+        _boostWindow = null;
+        FinishBoostWindow();
+    }
+    
+    private void FinishBoostWindow()
+    {
         DisableSkillBoost();
 
-        _boostWindow = null;
+        if (!isAnimStart)
+        {
+            CancelQueuedCast();
+        }
+    }
+
+    private void CancelQueuedCast()
+    {
+        if (!isAbilityQueue) return;
+        
+        TryCancel(true);
+
+        if (_hero.Abilities != null)
+            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(this);
+
+        ClearQueueTarget();
+        isAbilityQueue = false;
+    }
+
+    private void HandleCastStarted()
+    {
+        isAnimStart = true;
+        CancelBoostWindow();
+        LockControlDuringCast();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -124,7 +158,7 @@ public class SneakySpit : Skill
                Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
     }
 
-    private void OnHeroEvade()
+    private void OnHeroEvade(Skill skill)
     {
         Debug.Log($"_attacker: {_attacker}");
         if (_attacker == null || _boostWindow != null) return;
@@ -175,14 +209,10 @@ public class SneakySpit : Skill
         Targeting.FindTempTarget();
 
         isAbilityQueue = true;
-        isAnimStart = true;
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
-
-        CancelBoostWindow();
-        LockControlDuringCast();
     }
 
     protected override IEnumerator CastJob()
@@ -196,6 +226,7 @@ public class SneakySpit : Skill
         Targeting.ClearTarget();
         Hero.Move.StopLookAt();
         isAbilityQueue = false;
+        isAnimStart = false;
         //_target = null;
     }
 
@@ -205,7 +236,7 @@ public class SneakySpit : Skill
         {
             StopCoroutine(_boostWindow);
             _boostWindow = null;
-            DisableSkillBoost();
+            FinishBoostWindow();
         }
     }
 
@@ -271,10 +302,15 @@ public class SneakySpit : Skill
         UnlockControlAfterCast();
     }
 
-    [Command] private void CmdAddState(Character target)
+    [Command] 
+    private void CmdAddState(Character target)
     {
-        if (_isErodedArmorState) target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, _playerLinks.gameObject, name);
-        target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
+        GameObject casterObj = Hero != null ? Hero.gameObject : (_playerLinks != null ? _playerLinks.gameObject : gameObject);
+
+        if (_isErodedArmorState) 
+            target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, casterObj, Name);
+
+        target.CharacterState.AddState(States.Blind, duration, 0, casterObj, Name);
     }
 
     [TargetRpc]

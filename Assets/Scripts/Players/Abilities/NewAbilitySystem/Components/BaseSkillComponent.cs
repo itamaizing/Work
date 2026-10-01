@@ -1,4 +1,5 @@
-﻿public abstract class BaseSkillComponent
+﻿[System.Serializable]
+public abstract class BaseSkillComponent
 {
     #region Dependencies and Init
     // Обратные ссылки на контекст.

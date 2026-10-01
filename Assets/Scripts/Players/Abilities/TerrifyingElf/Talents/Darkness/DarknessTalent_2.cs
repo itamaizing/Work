@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class DarknessTalent_2 : Talent
 {
-    [SerializeField] private PullingHealth pullingHealth;
     [SerializeField] private Silence silence;
     [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        ability.ActivateSkill(pullingHealth);
         ability.ActivateSkill(silence);
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(pullingHealth);
         ability.DeactivateSkill(silence);
     }
 }

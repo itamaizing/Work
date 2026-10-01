@@ -89,6 +89,11 @@ public class SkillManager : MonoBehaviour
             AddToSkillLists(item);
             SkillInit(item);
         }
+        
+        if (_hero != null && _hero.Health != null)
+        {
+            _hero.Health.DamageTaken += HandleHeroDirectDamage;
+        }
     }
 
     #region Test
@@ -138,6 +143,17 @@ public class SkillManager : MonoBehaviour
             if (CurrentCastingSkill == skill)
                 CurrentCastingSkill = null;
         }
+    }
+    
+    private void HandleHeroDirectDamage(Damage damage, Skill skill)
+    {
+        if (damage.Type == DamageType.DOTPhys || damage.Type == DamageType.DOTMag)
+            return;
+
+        if (!_hero.isOwned) return;
+
+        if (CurrentCastingSkill != null)
+            CurrentCastingSkill.HandleDirectDamageDuringCast(damage.Value, damage.Type, damage.FullyAbsorbed);
     }
 
     public void CancleAllSkills()
@@ -189,6 +205,19 @@ public class SkillManager : MonoBehaviour
     {
         _simpleSkills.Add(skill);
         skill.CastStarted += GlobalCooldown;
+        skill.CastStarted += () => InterruptMinionOrdersIfNeeded(skill);
+    }
+    
+    private void InterruptMinionOrdersIfNeeded(Skill startedSkill)
+    {
+        if (_hero is not MinionComponent) return;
+        if (startedSkill is SpellMoveTo or MinionAutoAttackSkill) return;
+
+        if (_hero.TryGetComponent<SpellMoveTo>(out var moveSkill) && moveSkill.IsCasting)
+            moveSkill.TryCancel(true);
+
+        if (_hero.TryGetComponent<MinionAutoAttackSkill>(out var autoAttack))
+            autoAttack.SuspendForExternalOrder();
     }
 
     private void SkillInit(Skill skill)
@@ -394,6 +423,23 @@ public class SkillManager : MonoBehaviour
         }
         return true;
     }
+    
+    public void SelectAndPrepareSkill(Skill skill)
+    {
+        if (skill == null || skill.Disactive) 
+            return;
+
+        if (_selectedSkill != skill)
+        {
+            if (_selectedSkill != null && _selectedSkill.IsPreparing)
+                _selectedSkill.TryCancel(true);
+
+            DeselectSkill();
+            SetSelectSkill(skill);
+        }
+
+        PrepereSkill();
+    }
 
     private void SetSelectSkill(Skill skill)
     {
@@ -526,6 +572,11 @@ public class SkillManager : MonoBehaviour
         /*
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
         */
+        
+        if (_hero != null && _hero.Health != null)
+        {
+            _hero.Health.DamageTaken -= HandleHeroDirectDamage;
+        }
     }
 
     public void SetAbilitiesPanelSelect(bool isSelect)
@@ -568,4 +619,43 @@ public class SkillManager : MonoBehaviour
         */
     }
     #endregion
+
+    #region Animation Cache Tool
+
+#if UNITY_EDITOR
+[ContextMenu("Cache Animation Trigger Durations")]
+private void CacheAnimationTriggerDurations()
+{
+    var animator = GetComponentInChildren<Animator>();
+    if (animator == null)
+    {
+        Debug.LogWarning($"[SkillManager] No Animator found on {gameObject.name}.");
+        return;
+    }
+
+    bool anyChanged = false;
+    foreach (var skill in _skills)
+    {
+        if (skill == null) continue;
+
+        bool changed = skill.Animation.CacheAnimationTriggersEditor(animator);
+        changed |= skill.Animation.CacheIntHashTriggersEditor(animator, skill.AnimTriggerCastPublic, skill.AnimTriggerCastDelayPublic);
+
+        if (changed) { UnityEditor.EditorUtility.SetDirty(skill); anyChanged = true; }
+    }
+
+    if (anyChanged)
+    {
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.AssetDatabase.SaveAssets();
+        Debug.Log($"[SkillManager] Cached animation trigger durations for {gameObject.name}.");
+    }
+    else
+    {
+        Debug.Log($"[SkillManager] Nothing to update for {gameObject.name}.");
+    }
+}
+#endif
+
+    #endregion 
 }

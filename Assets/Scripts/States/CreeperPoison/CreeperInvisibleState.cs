@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class CreeperInvisibleState : AbstractCharacterState
+public class CreeperInvisibleState : StateBasic
 {
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
@@ -21,8 +21,8 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _player = characterState.Character;
@@ -44,7 +44,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         if (_creeperInvisible == null) return;
 
@@ -63,16 +63,12 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
     }
 
-    protected override void OnExitState()
+    public override void ExitState()
     {
         _playerInInvisible = false;
         ResetValues();
+        characterState.RemoveState(this);
     }
-
-    /*public override bool Stack(float time)
-    {
-        return false;
-    }*/
 
     private void ApplyInvisible()
     {

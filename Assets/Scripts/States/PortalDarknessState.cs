@@ -2,11 +2,14 @@
 using UnityEngine;
 using Mirror;
 
-public class PortalDarknessState : RefreshingState
+public class PortalDarknessStateStacking : StateStackingRefreshing
 {
-    public override States State => throw new System.Exception("none");
+    public override States State => States.PortalDarkness;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+
+    private int _maxToSpawn = 1;
+    private int _spawnedCount = 0;
 
     public override List<StatusEffect> Effects => new List<StatusEffect>
     {
@@ -24,7 +27,7 @@ public class PortalDarknessState : RefreshingState
     private Character _caster;
     private MoveComponent _moveComponent;
 
-    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _caster = personWhoMadeBuff;
@@ -35,9 +38,9 @@ public class PortalDarknessState : RefreshingState
         _currentSpawnChance = BaseSpawnChance;
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
-        if (!NetworkServer.active) return;
+        if (_caster.isServer) return;
         if (_caster == null || _caster.SpawnComponent == null) return;
 
         _timer += Time.deltaTime;
@@ -70,16 +73,23 @@ public class PortalDarknessState : RefreshingState
 
     private void SpawnEnemyMinion()
     {
+        if (_spawnedCount >= _maxToSpawn) return;
+        _spawnedCount++;
         int enemyIndex = 0;
 
         Vector3 spawnPos = characterState.transform.position + Random.insideUnitSphere * 2f;
         spawnPos.y = characterState.transform.position.y;
 
-        _caster.SpawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, enemyIndex);
+        _caster.SpawnComponent.CmdSpawnAliesPoint(spawnPos, Quaternion.identity, enemyIndex);
+        /*if (_spawnedCount >= _maxToSpawn)
+        {
+            ExitState();
+        }*/
     }
 
     public override void ExitState()
     {
         base.ExitState();
+        _spawnedCount = 0;
     }
 }

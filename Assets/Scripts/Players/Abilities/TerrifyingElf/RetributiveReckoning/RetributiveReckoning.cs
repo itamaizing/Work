@@ -2,22 +2,23 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class RetributiveReckoning : AutoAttackSkill
+public class RetributiveReckoning : Skill
 {
+    [Header("Retributive Reckoning Settings")]
     [SerializeField] private Health health;
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private float disactiveResetTime = 1f;
-    [SerializeField] private float durationState = 3f;
 
     private Character _lastAttacker;
     private Coroutine _disactiveResetCoroutine;
     private Coroutine _magicBoostCoroutine;
-    private bool _isTeleporting;
 
-    protected override bool IsCanCast => _lastAttacker != null && Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform);
-    protected override int AnimTriggerAutoAttack => 0;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("RetributiveReckoningCastDelay");
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
+
+    protected override bool IsCanCast => _lastAttacker != null && !Disactive;
 
     #region Talent
     private bool _isMagicAbilityInstantly;
@@ -27,120 +28,49 @@ public class RetributiveReckoning : AutoAttackSkill
 
     private void Start()
     {
-        health.DamageTaken += OnDamageTaken;
+        Disactive = true;
+        if (health != null)
+        {
+            health.DamageTaken += OnDamageTaken;
+        }
     }
 
     private void OnDestroy()
     {
-        health.DamageTaken -= OnDamageTaken;
+        if (health != null)
+        {
+            health.DamageTaken -= OnDamageTaken;
+        }
     }
-
+    
     private void OnDamageTaken(Damage damage, Skill skill)
     {
+        if (damage.Type != DamageType.Physical) return;
         if (skill == null || skill.Hero == null) return;
 
         Character attacker = skill.Hero as Character;
-        if (attacker == null || !IsBackAttack(attacker)) return;
+        if (attacker == null || !IsMeleeBackAttack(attacker)) return;
 
         CmdOnDamageTaken(attacker);
     }
 
-    private bool IsBackAttack(Character attacker)
+    private bool IsMeleeBackAttack(Character attacker)
     {
+        float distance = Vector3.Distance(attacker.transform.position, transform.position);
+        if (distance > AreaInfo.Radius) return false;
+
         Vector3 directionToAttacker = (attacker.transform.position - transform.position).normalized;
         Vector3 forwardDirection = moveComponent.transform.forward.normalized;
         float angle = Vector3.Angle(forwardDirection, directionToAttacker);
 
-        return angle > 120 && Vector3.Distance(attacker.transform.position, transform.position) <= AreaInfo.Radius;
+        return angle > 120f;
     }
 
-    private IEnumerator ResetDisactiveAfterDelay()
+    [Command]
+    private void CmdOnDamageTaken(Character attacker)
     {
-        yield return new WaitForSeconds(disactiveResetTime);
-        _lastAttacker = null;
-        Disactive = true;
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        while (!Disactive)
-        {
-            if (_lastAttacker != null && Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
-            {
-                if (IsAutoattackMode)
-                {
-                    CastAction();
-                }
-                else if (GetMouseButton)
-                {
-                    CmdTeleportPlayer(GetBehindPosition(_lastAttacker));
-                    PayTeleportCost();
-                }
-            }
-            yield return null;
-        }
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        if (_lastAttacker == null)
-        {
-            yield break;
-        }
-
-        if (!Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
-        {
-            yield break;
-        }
-
-        _isTeleporting = true;
-
-        Vector3 behindPosition = GetBehindPosition(_lastAttacker);
-        CmdTeleportPlayer(behindPosition);
-
-        yield return new WaitForSeconds(AttackDelay / 2);
-
-        if (_lastAttacker != null && _lastAttacker.TryGetComponent<CharacterState>(out var state)) state.CmdAddState(States.Fear, durationState, 0, gameObject, "RetributiveReckoning");
-
-        yield return new WaitForSeconds(AttackDelay / 2);
-
-        _isTeleporting = false;
-
-        if (_isMagicAbilityInstantly) ActivateMagicBoostForAll();
-    }
-
-    protected override void CastAction()
-    {
-
-    }
-
-    private Vector3 GetBehindPosition(Character enemy)
-    {
-        Vector3 directionToEnemy = (transform.position - enemy.transform.position).normalized;
-        return enemy.transform.position - directionToEnemy * AreaInfo.Radius;
-    }
-
-    private void PayTeleportCost()
-    {
-        TryPayCost();
-    }
-
-    private void ActivateMagicBoostForAll()
-    {
-        if (_magicBoostCoroutine != null)
-            StopCoroutine(_magicBoostCoroutine);
-
-        _magicBoostCoroutine = StartCoroutine(MagicBoostWindow());
-    }
-
-    private IEnumerator MagicBoostWindow()
-    {
-        var skills = _hero.Abilities.Skills;
-
-        foreach (var skill in skills) if (skill.Info.AbilityForm == AbilityForm.Magic) skill.EnableSkillBoost();
-        yield return new WaitForSeconds(1f);
-
-        foreach (var skill in skills) if (skill.Info.AbilityForm == AbilityForm.Magic) skill.DisableSkillBoost();
+        if (attacker == null) return;
+        RpcActivateSkillOnClients(attacker);
     }
 
     [ClientRpc]
@@ -155,34 +85,124 @@ public class RetributiveReckoning : AutoAttackSkill
         _disactiveResetCoroutine = StartCoroutine(ResetDisactiveAfterDelay());
     }
 
-    [Command]
-    private void CmdTeleportPlayer(Vector3 position)
+    private IEnumerator ResetDisactiveAfterDelay()
     {
-        RpcTeleportPlayer(position);
-        moveComponent.TeleportToPositionSmooth(position, AttackDelay);
+        yield return new WaitForSeconds(disactiveResetTime);
+        _lastAttacker = null;
+        Disactive = true;
+    }
+    
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    {
+        if (_lastAttacker != null)
+        {
+            TargetInfo targetInfo = new TargetInfo();
+            targetInfo.AddTarget(_lastAttacker);
+            targetDataSavedCallback?.Invoke(targetInfo);
+        }
+        yield break;
+    }
+    
+    protected override IEnumerator CastJob()
+    {
+        if (Targeting.GetTarget() == null) yield break;
+
+        var target = Targeting.GetTarget().Character;
+
+        Vector3 behindPosition = GetBehindPosition(target);
+        
+        CmdTeleportPlayer(behindPosition, target.transform.position);
+
+        float fearDuration = Random.Range(2f, 3f);
+
+        CmdAddFear(target, fearDuration);
+
+        if (_isMagicAbilityInstantly)
+        {
+            ActivateMagicBoostForAll();
+        }
+        
+        Disactive = true;
+        _lastAttacker = null;
+
+        yield return null;
     }
 
     [Command]
-    private void CmdOnDamageTaken(Character attacker)
+    private void CmdAddFear(Character target, float duration)
     {
-        if (attacker == null || !IsBackAttack(attacker)) return;
+        target.CharacterState.AddState(States.Fear, duration, 0, Schools.Dark, _hero.gameObject, "RetributiveReckoning");
+    }
 
-        RpcActivateSkillOnClients(attacker);
+    private Vector3 GetBehindPosition(Character enemy)
+    {
+        Vector3 enemyForward = enemy.Move != null ? enemy.Move.transform.forward : enemy.transform.forward;
+
+        Vector3 behindPos = enemy.transform.position - (enemyForward * 1.5f);
+
+        behindPos.y = transform.position.y;
+    
+        return behindPos;
+    }
+
+    private void ActivateMagicBoostForAll()
+    {
+        if (_magicBoostCoroutine != null)
+            StopCoroutine(_magicBoostCoroutine);
+
+        _magicBoostCoroutine = StartCoroutine(MagicBoostWindow());
+    }
+
+    private IEnumerator MagicBoostWindow()
+    {
+        var skills = _hero.Abilities.Skills;
+
+        foreach (var skill in skills)
+        {
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
+                skill.EnableSkillBoost();
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        foreach (var skill in skills)
+        {
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
+                skill.DisableSkillBoost();
+        }
+    }
+
+    [Command]
+    private void CmdTeleportPlayer(Vector3 position, Vector3 targetPosition)
+    {
+        moveComponent.Rigidbody.position = position;
+
+        moveComponent.LookAtPosition(targetPosition);
+
+        RpcTeleportPlayer(position, targetPosition);
     }
 
     [ClientRpc]
-    private void RpcTeleportPlayer(Vector3 position)
+    private void RpcTeleportPlayer(Vector3 position, Vector3 targetPosition)
     {
-        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
-    }
+        if (moveComponent != null)
+        {
+            moveComponent.Rigidbody.position = position;
+            transform.position = position;
+            moveComponent.LookAtPosition(targetPosition);
+        }
 
-    protected override void ClearData()
-    {
-        _isTeleporting = false;
+        if (AnimTriggerCast != 0)
+        {
+            _hero.Animator.SetTrigger(AnimTriggerCast);
+        }
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        if (targetInfo != null && targetInfo.GetTargets().Count > 0)
+        {
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);;
+        }
     }
 }

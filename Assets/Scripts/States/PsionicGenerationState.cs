@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class PsionicGenerationState : AbstractCharacterState
+public class PsionicGenerationState : StateBasic
 {
     private const float PsiPerTick = 10f;
     private const float TickInterval = 1f;
@@ -18,7 +18,7 @@ public class PsionicGenerationState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override System.Collections.Generic.List<StatusEffect> Effects => _effects;
 
-    protected override void OnEnterState(CharacterState character,
+    public override void Apply(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -26,7 +26,7 @@ public class PsionicGenerationState : AbstractCharacterState
     {
         characterState = character;
         health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        this.sourceCaster = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
 
@@ -35,7 +35,7 @@ public class PsionicGenerationState : AbstractCharacterState
         _psionicEnergy = character.GetComponent<BasePsionicEnergy>();
     }
 
-    public override void OnUpdateState()
+    public override void UpdateState()
     {
         if (!characterState.Character.isServer) return;
 
@@ -48,9 +48,8 @@ public class PsionicGenerationState : AbstractCharacterState
         }
     }
 
-    /*public override bool Stack(float time)
+    public override void ExitState()
     {
-        _durationRemaining = time;
-        return false;
-    }*/
+        characterState.RemoveState(this);
+    }
 }

@@ -45,10 +45,6 @@ public class IceShadowObject : Projectiles
 	private const float DamageRadius = 4f;
 
 	private const float HitEffectLifetime = 5f;
-
-	private const float FrostEnergyCoolingBonusPerStack = 1f;
-	private const float FrostEnergyFrostingBonusPerStack = 5f;
-	private const float FrostEnergyFrozenBonusPerStack = 10f;
 	#endregion
 	/*
 	 * timer to destroy
@@ -151,7 +147,7 @@ public class IceShadowObject : Projectiles
 			float finalDuration = remainingLifetime + _bonusDuration;
 			//float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
 
-			ApplyStateWithFrostEnergyBonus(target, States.Frozen, remainingLifetime);
+			ApplyState(target, States.Frozen, remainingLifetime);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if (_lastHit)
@@ -161,7 +157,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						ApplyStateWithFrostEnergyBonus(newTatget, States.Frozen, finalDuration);
+						ApplyState(newTatget, States.Frozen, finalDuration);
 					}
 				}
 			}
@@ -170,44 +166,14 @@ public class IceShadowObject : Projectiles
 		//Explode();
 	}
 
-	private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
+	private void ApplyState(Character target, States state, float duration)
 	{
-		bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+		if (target == null || target.CharacterState == null) return;
 
-		int currentStacks = target.CharacterState.CheckStateStacks(state);
-		int stacksAfterApply = currentStacks + 1;
+		target.CharacterState.AddState(state, duration,
+			target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 
-		float bonusPerStack = 0f;
-
-		switch (state)
-		{
-			case States.Cooling:
-				bonusPerStack = FrostEnergyCoolingBonusPerStack;
-				break;
-
-			case States.Frosting:
-				bonusPerStack = FrostEnergyFrostingBonusPerStack;
-				break;
-
-			case States.Frozen:
-				bonusPerStack = FrostEnergyFrozenBonusPerStack;
-				break;
-		}
-
-		if (hasFrostEnergy && bonusPerStack > 0f)
-		{
-			float bonusDamage = stacksAfterApply * bonusPerStack;
-
-			Damage bonus = new Damage
-			{
-				Value = bonusDamage,
-				Type = DamageType.Magical
-			};
-
-			target.Health.TryTakeDamage(ref bonus, _skill);
-		}
-
-		target.CharacterState.AddState(state, duration,	target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+		_dad.Abilities.GetSkill<FrostEnergy>()?.ApplyFrostEnergyStateBonus(target, state, _skill);
 	}
 
 	public void Explode()
