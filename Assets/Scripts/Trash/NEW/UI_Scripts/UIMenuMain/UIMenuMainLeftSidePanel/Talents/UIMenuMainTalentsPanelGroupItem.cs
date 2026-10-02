@@ -48,9 +48,11 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     public void RefreshLockState()
     {
-        bool rowLocked = _talentComponent != null && _talentComponent.IsRowLocked();
+        bool locked = _talentComponent != null &&
+                      (_talentComponent.IsRowLocked() || !_talent.condition.CanOpen);
+
         if (_rowLockedOverlay != null)
-            _rowLockedOverlay.SetActive(rowLocked && !_talent.IsOpen);
+            _rowLockedOverlay.SetActive(locked && !_talent.IsOpen);
     }
 
     private void RefreshVisuals()
@@ -66,8 +68,8 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        string rowCondition = _talentComponent != null ? _talentComponent.GetRowConditionDescriptionIfLocked() : "";
-        PointerEntered?.Invoke(_talent, rowCondition);
+        string lockDescription = _talentComponent != null ? _talentComponent.GetLockDescription() : "";
+        PointerEntered?.Invoke(_talent, lockDescription);
         _frameImage.sprite = _iconState.On;
         _lightingFrameImage.gameObject.SetActive(true);
     }

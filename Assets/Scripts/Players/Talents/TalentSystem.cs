@@ -16,6 +16,8 @@ public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<TalentsGroup> _talents;
     [SerializeField] private List<Talent> _allTalents;
+    
+    public bool IsPreview { get; set; }
 
     private Level _lvl;
     private int _points = 1;
