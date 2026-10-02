@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class FireShield : MoveSkill
 {
     [SerializeField] private Shield _shieldPref;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FireShield");
     protected override bool IsCanCast => CheckCanCast();
 
@@ -54,7 +54,7 @@ public class FireShield : MoveSkill
         Canceled -= CancelMove;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         while (Targeting.GetTempTarget() == null)

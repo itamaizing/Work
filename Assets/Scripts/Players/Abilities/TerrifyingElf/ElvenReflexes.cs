@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ElvenReflexes : Skill
 {
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast =>
@@ -18,7 +18,7 @@ public class ElvenReflexes : Skill
         Disactive = true;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

@@ -51,7 +51,7 @@ public class PortalDarkness : Skill
 
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private void EnsureEnergy()
@@ -59,7 +59,7 @@ public class PortalDarkness : Skill
         if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

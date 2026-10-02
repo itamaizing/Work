@@ -25,7 +25,7 @@ public class ElementalSpawn : Skill
     #endregion
 
     protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= AreaInfo.Radius;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private Action OnCurrentElemantalDestroy;
@@ -112,7 +112,7 @@ public class ElementalSpawn : Skill
         _position = Vector2.zero;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         _previousElemental = _selectedElemental;
         _selectedElemental = Elementals.None;

@@ -62,8 +62,8 @@ public class PullingHealth : Skill, IMultiMagicSkill
     
     private Coroutine _streamCoroutine;
     private float _streamAccumulatedRollback = 0f;
-    protected override bool IsCustomStreamActive => _isStreaming;
-    protected override bool SkipLegacyCastStreamJob => true;
+    protected override bool IsCustomChannelingActive => _isStreaming;
+    protected override bool SkipLegacyChannelingJob => true;
 
     #region Talent
     private bool _pullingHealthThroughGhosts;
@@ -71,7 +71,7 @@ public class PullingHealth : Skill, IMultiMagicSkill
     private bool _pullingHealthSpeedWithFearTalent;
     #endregion
 
-    protected override int AnimTriggerCastDelay => _pullingHealthCastDelayHash;
+    protected override int AnimTriggerPrepare => _pullingHealthCastDelayHash;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast
@@ -107,7 +107,7 @@ public class PullingHealth : Skill, IMultiMagicSkill
     {
         base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
-        _baseCastStreamDuration = CastStreamDuration;
+        _baseCastStreamDuration = ChannelingDuration;
         _baseTickInterval = _tickInterval;
     }
 
@@ -115,14 +115,14 @@ public class PullingHealth : Skill, IMultiMagicSkill
     {
         _ghostSkill.Teleported -= OnGhostTeleport;
         OnSkillCanceled -= HandleSkillCanceled;
-        CastStreamRolledBack -= OnStreamRollbackReceived;
+        ChannelingRolledBack -= OnStreamRollbackReceived;
     }
 
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
         _ghostSkill.Teleported += OnGhostTeleport;
-        CastStreamRolledBack += OnStreamRollbackReceived;
+        ChannelingRolledBack += OnStreamRollbackReceived;
     }
     
     protected override void PlayPrepareAnim()
@@ -148,7 +148,7 @@ public class PullingHealth : Skill, IMultiMagicSkill
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (true)
         {
@@ -478,7 +478,7 @@ public class PullingHealth : Skill, IMultiMagicSkill
             yield break;
         }
         
-        InvokeCastStreamStarted(CastStreamDuration);
+        InvokeChannelingStarted(ChannelingDuration);
         Vector3 initialPosition = transform.position;
         PlayShotSound();
 
@@ -506,14 +506,14 @@ public class PullingHealth : Skill, IMultiMagicSkill
         }
         #endregion
 
-        while (elapsed < CastStreamDuration)
+        while (elapsed < ChannelingDuration)
         {
             if (_streamAccumulatedRollback > 0f)
             {
                 float consumed = _streamAccumulatedRollback;
                 elapsed += consumed;
                 _streamAccumulatedRollback = 0f;
-                RaiseCastStreamProgressApplied(consumed);
+                RaiseChannelingProgressApplied(consumed);
             }
             
             var target = Targeting.GetTarget()?.Character;

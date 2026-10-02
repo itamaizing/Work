@@ -18,7 +18,7 @@ public class GrabTongue : Skill
     private const float SearchMouseRadius = 0.2f;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     public override void Init(SkillRenderer render, Character hero)
     {

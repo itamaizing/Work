@@ -21,7 +21,7 @@ public class StingingHitsPassive : Skill, IPassiveSkill
         yield return null;
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     public void EnableStingingHits(bool value)

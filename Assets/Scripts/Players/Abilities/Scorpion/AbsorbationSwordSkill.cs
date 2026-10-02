@@ -34,7 +34,7 @@ public class AbsorbationSwordSkill : Skill
         $"Поглощает 1 снарядное заклинание.\n" +
         $"Заряды: {_currentCharges}/{Charges.MaxCharges} (накопление за 30 маг. урона)";
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _currentCharges > 0;
 
@@ -190,7 +190,7 @@ public class AbsorbationSwordSkill : Skill
     #endregion
 
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo info = new TargetInfo();
         info.AddTarget(Hero);

@@ -15,7 +15,7 @@ public class BurningMatter : Skill
         $"Радиус: {AbilityNameBox.ColorOpen}{_radius * 2f}м{AbilityNameBox.ColorEnd}\n" +
         $"Длительность: {AbilityNameBox.ColorOpen}{_duration} сек{AbilityNameBox.ColorEnd}";
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => CanCast();
@@ -25,7 +25,7 @@ public class BurningMatter : Skill
         return Vector3.Distance(Targeting.GetMousePoint(), transform.position) < AreaInfo.Radius;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo info = new TargetInfo();
 

@@ -12,7 +12,7 @@ public class Blindness : Skill, IMultiMagicSkill
 
     protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
     protected override int AnimTriggerCast => 0;
 
@@ -22,7 +22,7 @@ public class Blindness : Skill, IMultiMagicSkill
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 

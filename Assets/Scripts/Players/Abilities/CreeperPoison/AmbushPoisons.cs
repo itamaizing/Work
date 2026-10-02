@@ -16,7 +16,7 @@ public class AmbushPoisons : Skill
     private Coroutine _stackRoutine;
     private Coroutine _clearRoutine;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
 
@@ -136,7 +136,7 @@ public class AmbushPoisons : Skill
 
     public int GetStacks() => _currentStacks;
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback) => null;
+    protected override IEnumerator TargetingJob(System.Action<TargetInfo> callback) => null;
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
     public override void LoadTargetData(TargetInfo targetInfo) { }

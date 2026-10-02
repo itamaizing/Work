@@ -15,7 +15,7 @@ public class FocusingOnReflexes : Skill
     private readonly AttributeModifier _evadeMeleeModifier = new(EvadeMeleeBonus, ModifierType.Flat);
     private readonly AttributeModifier _evadeRangeModifier = new(EvadeRangeBonus, ModifierType.Flat);
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -37,7 +37,7 @@ public class FocusingOnReflexes : Skill
 
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);

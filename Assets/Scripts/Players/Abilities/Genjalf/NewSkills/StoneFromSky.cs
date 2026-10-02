@@ -10,7 +10,7 @@ public class StoneFromSky : Skill
     [SerializeField] private float _aoeRadius = 2;
     protected override bool IsCanCast { get => CheckCanCast(); }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => Animator.StringToHash("StoneFromSky");
 
@@ -51,7 +51,7 @@ public class StoneFromSky : Skill
         _clickPoint = Vector3.zero;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new();
 

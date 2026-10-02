@@ -27,7 +27,7 @@ public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 	private AudioSource _audioSource;
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IceSword");
 
 	private bool IsCanCastCheck()

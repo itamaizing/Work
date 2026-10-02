@@ -116,7 +116,7 @@ public class Tentacles : Skill
 
     private LayerMask _alliesMask;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
 
     protected override bool IsCanCast =>
@@ -204,7 +204,7 @@ public class Tentacles : Skill
     public void AnimTentaclesCast()
     {
         if(isClient)
-            CommitUse();
+            SpendResources();
         AnimStartCastCoroutine();
     }
 
@@ -244,7 +244,7 @@ public class Tentacles : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Character lockedTarget = null;
         Vector3 targetPoint = Vector3.positiveInfinity;

@@ -38,7 +38,7 @@ public class Impatica : Skill
 
     private const float TargetSearchRadius = 0.5f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     public bool IsExtendDamageAbsorption { get => _isExtendDamageAbsorption; set => _isExtendDamageAbsorption = value; }
@@ -116,7 +116,7 @@ public class Impatica : Skill
 
     #endregion
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

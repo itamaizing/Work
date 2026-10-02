@@ -92,6 +92,6 @@ public class FireMagicActivationBooster : Skill, IPassiveSkill
         throw new System.NotImplementedException();
     }
 
-    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerPrepare { get; }
     protected override int AnimTriggerCast { get; }
 }

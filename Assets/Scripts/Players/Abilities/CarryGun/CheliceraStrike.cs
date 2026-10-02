@@ -58,7 +58,7 @@ public class CheliceraStrike : Skill
     private static readonly int LeftClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Left");
 
     protected override int AnimTriggerCast => _isClawStrike_Right ? RightClawStrikeTrigger : LeftClawStrikeTrigger;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override bool IsCanCast => CheckIsCanCast() && _cooldownEnergy.CurrentValue >= _cooldownEnergyCost;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");

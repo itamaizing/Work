@@ -100,7 +100,7 @@ public abstract class AutoAttackSkill : Skill
         _hero.Move.StopLookAt();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {
@@ -170,7 +170,7 @@ public abstract class AutoAttackSkill : Skill
                     LastTarget = Targeting.GetTarget()?.Character;
 
                     if (_chargeAttackDelay > 0)
-                        yield return StartCastDeleyCoroutine(_chargeAttackDelay);
+                        yield return StartPreparingCoroutine(_chargeAttackDelay);
 
                     //yield return new WaitForSeconds(AttackSpeed);
 

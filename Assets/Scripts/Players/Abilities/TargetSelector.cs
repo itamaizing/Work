@@ -65,7 +65,7 @@ public class TargetSelector : MonoBehaviour
 
         foreach (var skill in hero.Abilities.Skills)
         {
-            if (skill.IsPreparing)
+            if (skill.IsTargeting)
                 return true;
         }
         return false;

@@ -11,7 +11,7 @@ public class StreamOfIcyWater : MoveSkill
 
     //private Character _target;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
     
@@ -94,7 +94,7 @@ public class StreamOfIcyWater : MoveSkill
         Targeting.ClearTarget();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         //Character target = null;
 

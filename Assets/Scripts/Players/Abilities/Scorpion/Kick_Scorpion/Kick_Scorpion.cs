@@ -63,7 +63,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
@@ -131,7 +131,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         Hero.Move.StopLookAt();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Targetable == null)
         {

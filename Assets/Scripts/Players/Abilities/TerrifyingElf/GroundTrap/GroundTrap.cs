@@ -82,19 +82,19 @@ public class GroundTrap : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
 
     private void OnEnable()
     {
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
         OnSkillCanceled += HandleSkillCanceled;
     }
 
-    protected override void SkillEnableBoostLogic() => CastDeley = 0;
-    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
+    protected override void SkillEnableBoostLogic() => PreparingDuration = 0;
+    protected override void SkillDisableBoostLogic() => PreparingDuration = _baseCastDelay;
 
     public void AnimationTrapMove()
     {
@@ -208,7 +208,7 @@ public class GroundTrap : Skill
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
 
         _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
         if (_extendedRadiusCircle != null)
@@ -227,11 +227,11 @@ public class GroundTrap : Skill
         string trigger = _castFromExtendedRadius ? "ShotSkyCastDelay" : "Shot";
         Animation.PlayTrigger(trigger);
         
-        if (CastDeley > 0f)
-            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (PreparingDuration > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / PreparingDuration;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         if (isGroundHealthTalent) SetGroundNewHealth();
         else SetGroundBaseHealth();
@@ -318,7 +318,7 @@ public class GroundTrap : Skill
     private void ResetData()
     {
         _castFromExtendedRadius = false;
-        CastDeley = _baseCastDelay;
+        PreparingDuration = _baseCastDelay;
     }
 
     protected override void ClearData()
@@ -496,7 +496,7 @@ public class GroundTrap : Skill
             HideExtendedRadius();
         }
 
-        if (_isTrapArrowIntoSkyRadiusTalent && IsPreparing)
+        if (_isTrapArrowIntoSkyRadiusTalent && IsTargeting)
         {
             ShowExtendedRadius();
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);

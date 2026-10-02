@@ -19,7 +19,7 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
     [SerializeField] private AbilityInfo lightInfo;
     [SerializeField] private AbilityInfo darkInfo;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -63,7 +63,7 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
 
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(_hero);

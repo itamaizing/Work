@@ -78,7 +78,7 @@ public class GrowTree : Skill
     private int _growHash = Animator.StringToHash(GrowTreeCastDelay);
     private int _shotHash = Animator.StringToHash(ShotSkyWithTreeCastDelay);
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     public void ArrowIntoSkyWithTreeEffectPlay() => _arrowIntoSkyEffect.Play();
@@ -97,7 +97,7 @@ public class GrowTree : Skill
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
         _baseHealth = _treeData.MaxHealth;
         _waitForExtendedRadiusInterval = new WaitForSeconds(ExtendedRadiusCheckInterval);
         
@@ -129,11 +129,11 @@ public class GrowTree : Skill
 
         if (_castFromExtendedRadius)
         {
-            CastDeley = 0f;
+            PreparingDuration = 0f;
         }
         else
         {
-            CastDeley = (nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount));
+            PreparingDuration = (nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount));
         }
 
         string trigger = _castFromExtendedRadius ? ShotSkyWithTreeCastDelay : GrowTreeCastDelay;
@@ -181,7 +181,7 @@ public class GrowTree : Skill
         _isSpawnHero = false;
         _currentTree = null;
         _castFromExtendedRadius = false;
-        CastDeley = _baseCastDelay;
+        PreparingDuration = _baseCastDelay;
 
         if (_arrowFxRoutine != null)
         {
@@ -220,7 +220,7 @@ public class GrowTree : Skill
         }
     }
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TreeHealthTalentEnter();
         _activeTrees.RemoveAll(tree => tree == null);
@@ -277,7 +277,7 @@ public class GrowTree : Skill
 
         if (_castFromExtendedRadius && isBoostActive)
         {
-            CastDeley = 0f;
+            PreparingDuration = 0f;
         }
         
         Renderer.ShowAOEIndicator(targetPoint, isCommand: false);
@@ -541,7 +541,7 @@ public class GrowTree : Skill
             HideExtendedRadius();
         }
 
-        if (_isGrowTreeArrowIntoSkyRadiusTalent && IsPreparing)
+        if (_isGrowTreeArrowIntoSkyRadiusTalent && IsTargeting)
         {
             ShowExtendedRadius();
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);

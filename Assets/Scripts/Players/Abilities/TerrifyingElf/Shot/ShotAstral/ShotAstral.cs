@@ -14,7 +14,7 @@ public class ShotAstral : Skill, IMultiMagicSkill
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
+    protected override int AnimTriggerPrepare => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast =>
         Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius &&
@@ -24,12 +24,12 @@ public class ShotAstral : Skill, IMultiMagicSkill
     
     protected override void PlayPrepareAnim()
     {
-        if (CastDeley > 0f)
-            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (PreparingDuration > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / PreparingDuration;
         base.PlayPrepareAnim();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callback)
     {
         OnSkillCanceled += HandleSkillCanceled;
 

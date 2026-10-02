@@ -11,7 +11,7 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
     protected override bool IsCanCast => Targeting.GetTarget() != null &&
                                        Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Undercut");
 
     public void AnimUndercut() => AnimStartCastCoroutine();
@@ -38,7 +38,7 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
 
     #endregion
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {
@@ -75,8 +75,6 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
         CmdApplyDamage(damage, target.gameObject);
 
         CmdApplyDisappointment(target.gameObject);
-
-        CommitUse();
 
         yield return null;
     }

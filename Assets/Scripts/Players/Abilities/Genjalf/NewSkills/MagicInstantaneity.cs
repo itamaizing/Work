@@ -15,20 +15,20 @@ public class MagicInstantaneity : Skill, IPassiveSkill, IDamageGivenModifier
     private List<GameObject> _damagedTargets = new();
     private Coroutine _chainBreakCoroutine;
     private bool _nextSkillFromInvisible = false;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private GameObject _lastDamagedTarget;
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield break; }
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) { yield break; }
     protected override IEnumerator CastJob() { yield break; }
     protected override void ClearData() { }
 
     public void OnActive()
     {
         _instantSkills = _hero.Abilities.Abilities
-            .Where(s => s != this && s.CastDeley == 0)
+            .Where(s => s != this && s.PreparingDuration == 0)
             .ToList();
 
         foreach (var skill in _instantSkills)

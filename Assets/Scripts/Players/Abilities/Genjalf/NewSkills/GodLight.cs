@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GodLight : Skill
 {
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => Animator.StringToHash("GodLight");
     
@@ -36,5 +36,5 @@ public class GodLight : Skill
 
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield return null; }
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) { yield return null; }
 }

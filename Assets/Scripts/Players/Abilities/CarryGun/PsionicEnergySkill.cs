@@ -6,7 +6,7 @@ using UnityEngine;
 public class PsionicEnergySkill : Skill, IPassiveSkill
 {
     #region Skill
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new NotImplementedException();
     protected override int AnimTriggerCast => throw new NotImplementedException();
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
 
@@ -16,7 +16,7 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
     }
 
     protected override void ClearData() { }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
     #endregion
 
     [SerializeField] private BasePsionicEnergy basePsionicEnergy;

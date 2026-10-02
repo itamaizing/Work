@@ -81,12 +81,12 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         base.Init(render,hero);
         _energy = _hero.Resources[ResourceType.Energy];
         _radiusAttribute = Attributes[SkillAttributeName.Radius];
-        PreparingStarted += SetRadius;
+        TargetingStarted += SetRadius;
     }
 
     private void OnDestroy()
     {
-        PreparingStarted -= SetRadius;
+        TargetingStarted -= SetRadius;
     }
 
     private void SetRadius(Skill skill)
@@ -97,7 +97,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         _radiusAttribute.AddModifier(_radiusModifierAttribute);
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -184,7 +184,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

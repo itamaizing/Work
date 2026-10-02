@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RestorativeAttacks_Scorpion : Skill
 {
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
     
@@ -119,7 +119,7 @@ public class RestorativeAttacks_Scorpion : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         callbackDataSaved(new TargetInfo());
         yield return null;

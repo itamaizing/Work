@@ -20,7 +20,7 @@ public class MetabolismReptile : Skill
     private float _increaseCooldownTime = 2f;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override bool IsCanCast => true;
 
@@ -29,7 +29,7 @@ public class MetabolismReptile : Skill
         
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         yield return null;
     }

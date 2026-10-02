@@ -61,6 +61,6 @@ public class MergeDarkState : StateBasic
 
     private bool IsInstantSkill(Skill skill)
     {
-        return skill.CastDeley <= 0f && skill.Channeling.CastDuration <= 0f;
+        return skill.PreparingDuration <= 0f && skill.Channeling.CastDuration <= 0f;
     }
 }

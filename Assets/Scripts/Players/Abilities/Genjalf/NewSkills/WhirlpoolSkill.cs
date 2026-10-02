@@ -16,7 +16,7 @@ public class WhirlpoolSkill : Skill
     private Vector3 _clickPoint;
     private Vector3 _castPoint;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast =>
@@ -31,7 +31,7 @@ public class WhirlpoolSkill : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

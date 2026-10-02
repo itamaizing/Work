@@ -8,7 +8,7 @@ public class ScratchClaws : MoveSkill
     [SerializeField] private float maxDamage = 4f;
     [SerializeField] private float bleedingDuration = 3f;
     [SerializeField, Range(0, 1f)] private float bleedingChance = 1f;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("AttackScared");
 
     protected override bool IsCanCast

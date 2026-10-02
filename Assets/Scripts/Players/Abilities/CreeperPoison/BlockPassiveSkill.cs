@@ -18,12 +18,12 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private HashSet<Character> _validAttackers = new();
 
     #region Skill
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => null;
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) => null;
     #endregion
 
     #region Talent

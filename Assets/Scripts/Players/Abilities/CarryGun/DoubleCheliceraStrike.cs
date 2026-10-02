@@ -17,7 +17,7 @@ public class DoubleCheliceraStrike : Skill
     private static readonly int DoubleCheliceraStrikeAnimTrigger = Animator.StringToHash("DoubleCheliceraStrikeAnimation");
 
     protected override int AnimTriggerCast => DoubleCheliceraStrikeAnimTrigger;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override bool IsCanCast => IsTargetInRange() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 

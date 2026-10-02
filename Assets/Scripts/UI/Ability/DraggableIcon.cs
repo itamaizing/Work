@@ -92,7 +92,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            if (_skill.IsPreparing)
+            if (_skill.IsTargeting)
                 _skill.TryCancel();
             return;
         }
@@ -106,7 +106,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (!EnableClickToCast)
             return;
 
-        if (_skill.IsPreparing)
+        if (_skill.IsTargeting)
         {
             _skill.TryCancel();
         }

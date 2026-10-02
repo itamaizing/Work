@@ -13,7 +13,7 @@ public class CloneSelfSkill : Skill
     
     private Character _activeClone;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -119,7 +119,7 @@ public class CloneSelfSkill : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(System.Action<TargetInfo> callbackDataSaved)
     {
         callbackDataSaved(new TargetInfo());
         yield return null;

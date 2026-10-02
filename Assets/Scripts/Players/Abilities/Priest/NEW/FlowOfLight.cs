@@ -29,7 +29,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     
     private float _clickRadius = 0.5f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
     #region Talents
@@ -148,7 +148,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Cooldown.OnForceRefreshUI();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

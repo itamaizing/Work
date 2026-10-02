@@ -10,7 +10,7 @@ public class MinionInterceptor : Skill
 
     protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -33,7 +33,7 @@ public class MinionInterceptor : Skill
         //_target = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTarget()?.Character == null)
         {

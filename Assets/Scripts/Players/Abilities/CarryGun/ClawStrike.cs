@@ -59,7 +59,7 @@ public class ClawStrike : Skill
 
     private const float JumpBackWindow = 1.5f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
     protected override bool IsCanCast => CheckIsCanCast();
     private AttributeModifier _speedBonusModifier;

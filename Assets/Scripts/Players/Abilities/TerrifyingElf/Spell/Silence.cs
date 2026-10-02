@@ -84,7 +84,7 @@ public class Silence : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellSilence");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("SpellSilence");
     protected override int AnimTriggerCast => 0;
     private void Start()
     {
@@ -95,7 +95,7 @@ public class Silence : Skill
     {
         _targetPoint = targetInfo.Points[0];
     }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
 

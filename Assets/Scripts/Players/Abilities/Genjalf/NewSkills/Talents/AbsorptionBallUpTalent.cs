@@ -16,7 +16,7 @@ public class AbsorptionBallUpTalent : Talent
         _time = Time.time + _timeDel;
         _currentTime = Time.time;
 
-        _absorptionBall.PreparingStarted += OnPreparingStarted;
+        _absorptionBall.TargetingStarted += OnTargetingStarted;
     }
 
     public override void Exit()
@@ -24,7 +24,7 @@ public class AbsorptionBallUpTalent : Talent
         _absorptionBall.ShieldDuration = 2;
     }
 
-    private void OnPreparingStarted(Skill skill)
+    private void OnTargetingStarted(Skill skill)
     {
         if (_time < _currentTime)
         {

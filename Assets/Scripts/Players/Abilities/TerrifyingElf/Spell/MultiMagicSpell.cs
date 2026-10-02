@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MultiMagicSpell : Skill
 {
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -17,7 +17,7 @@ public class MultiMagicSpell : Skill
 
     protected override void ClearData() { }                
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);

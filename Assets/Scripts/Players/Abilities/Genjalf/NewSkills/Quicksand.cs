@@ -26,7 +26,7 @@ public class Quicksand : Skill, IGodLightSpell
     public override string AdditionalDescription =>
         $"Длительность: {AbilityNameBox.ColorOpen}{_quicksandDuration} сек{AbilityNameBox.ColorEnd}";
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -56,7 +56,7 @@ public class Quicksand : Skill, IGodLightSpell
         {
             IsEnabled = false;
 
-            _castDeley = _tempCastDeley;
+            _preparingDuration = _tempCastDeley;
         }
         else
         {
@@ -89,7 +89,7 @@ public class Quicksand : Skill, IGodLightSpell
         return end;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

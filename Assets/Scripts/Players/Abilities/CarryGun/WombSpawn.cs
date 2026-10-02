@@ -85,7 +85,7 @@ public class WombSpawn : Skill
 
     private LayerMask _alliesMask;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
 
     private bool IsValidVector(Vector3 vector)
@@ -124,8 +124,6 @@ public class WombSpawn : Skill
 
     public void AnimTentaclesCast()
     {
-        if (isClient)
-            CommitUse();
         AnimStartCastCoroutine();
     }
 

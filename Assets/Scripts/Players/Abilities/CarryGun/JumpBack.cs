@@ -17,7 +17,7 @@ public class JumpBack : Skill
     private static readonly int jumpStart = Animator.StringToHash("JumpBackStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpBackEnd");
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => jumpStart;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
@@ -77,7 +77,7 @@ public class JumpBack : Skill
         _jumpWindowCoroutine = StartCoroutine(JumpWindowCoroutine());
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
         while (float.IsPositiveInfinity(targetPoint.x))

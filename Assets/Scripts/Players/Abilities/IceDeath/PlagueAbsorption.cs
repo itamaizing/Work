@@ -18,7 +18,7 @@ public class PlagueAbsorption : Skill
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
@@ -38,7 +38,7 @@ public class PlagueAbsorption : Skill
 		}
 	}
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (Targeting.GetTarget()?.Character == null && _charges <= 0)
 		{

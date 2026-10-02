@@ -10,7 +10,7 @@ public class ReversePolarity : Skill
 
     [SerializeField] private AudioClip audioClip;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -46,7 +46,7 @@ public class ReversePolarity : Skill
         //Debug.LogError("DataError");
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_hero == null) yield break;
         Targeting.SetTarget(_hero);

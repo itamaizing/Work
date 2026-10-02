@@ -33,12 +33,12 @@ public class ComboPointTransferSkill : Skill
 
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private CharacterState fromCharacter;
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(System.Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null || Targeting.GetTempTarget().Character == Hero || IsAllyTarget(Targeting.GetTempTarget().Character))
         {

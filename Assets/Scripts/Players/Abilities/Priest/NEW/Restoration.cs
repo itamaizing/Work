@@ -47,7 +47,7 @@ public class Restoration : Skill,IPolaritySwitchable
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
     
     #region SpiritHealthOnShadow
@@ -149,7 +149,7 @@ public class Restoration : Skill,IPolaritySwitchable
     {
         AreaInfo.Radius = isLightMode ? lightRange : darkRange;
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
-        CastDeley = isLightMode ? lightCastTime : darkCastTime;
+        PreparingDuration = isLightMode ? lightCastTime : darkCastTime;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
@@ -214,7 +214,7 @@ public class Restoration : Skill,IPolaritySwitchable
     }
 
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

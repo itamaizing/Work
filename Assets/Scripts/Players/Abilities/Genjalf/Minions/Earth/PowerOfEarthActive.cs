@@ -9,7 +9,7 @@ public class PowerOfEarthActive : Skill
     [SerializeField] private PowerOfEarthAura _powerOfEarthAura;
     
     [SerializeField]private float _auraDuration = 6f;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("PowerOfEarth");
     protected override bool IsCanCast => CheckCanCast();
 
@@ -35,7 +35,7 @@ public class PowerOfEarthActive : Skill
     {
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

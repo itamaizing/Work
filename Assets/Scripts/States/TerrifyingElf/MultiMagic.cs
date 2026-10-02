@@ -38,9 +38,9 @@ public class MultiMagic : StateStackingRefreshing
             if (skill is not IMultiMagicSkill) continue;
             if (_castSuccessHandlers.ContainsKey(skill)) continue;
 
-            if (skill.CastStreamDuration > 0)
+            if (skill.ChannelingDuration > 0)
             {
-                skill.PreparingSuccess += OnTargetSkillCast;
+                skill.TargetingSuccess += OnTargetSkillCast;
                 _castSuccessHandlers[skill] = null;
             }
             else
@@ -61,8 +61,8 @@ public class MultiMagic : StateStackingRefreshing
             {
                 if (skill is not IMultiMagicSkill) continue;
 
-                if (skill.CastStreamDuration > 0)
-                    skill.PreparingSuccess -= OnTargetSkillCast;
+                if (skill.ChannelingDuration > 0)
+                    skill.TargetingSuccess -= OnTargetSkillCast;
                 else if (_castSuccessHandlers.TryGetValue(skill, out var handler) && handler != null)
                     skill.CastFinished -= handler;
             }

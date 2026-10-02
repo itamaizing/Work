@@ -225,7 +225,7 @@ public class MinionSkillPanelController
         {
             foreach (var skill in group.Instances)
             {
-                if (skill != null && skill.IsPreparing)
+                if (skill != null && skill.IsTargeting)
                     skill.TryCancel();
             }
         }

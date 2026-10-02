@@ -25,7 +25,7 @@ namespace Gangdollarff
         private float _blindingDuration = 2f;
 
         private float _clickRadius = 0.5f;
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
 
         protected override int AnimTriggerCast => 0;
 
@@ -66,11 +66,11 @@ namespace Gangdollarff
             Hero.Move.RotateModifier = 0.05f;
             StartAnim();
             
-            var streamStarted = new WaitUntil(() => _castStreamCoroutine != null);
+            var streamStarted = new WaitUntil(() => _channelingCoroutine != null);
             
             yield return streamStarted;
 
-            while (_castStreamCoroutine != null)
+            while (_channelingCoroutine != null)
             {
                 float delta = Time.deltaTime;
 
@@ -161,7 +161,7 @@ namespace Gangdollarff
             _targetPoint = Vector3.positiveInfinity;
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             TargetInfo targetInfo = new();
             while (!Input.GetMouseButtonDown(0))

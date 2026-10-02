@@ -32,7 +32,7 @@ public class SneakySpitCombo : Skill
     public Character CurrentComboTarget => _currentComboTarget;
 
     protected override bool IsCanCast => true;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     public override void Init(SkillRenderer render, Character hero)
@@ -301,7 +301,7 @@ public class SneakySpitCombo : Skill
         Debug.Log("[SneakySpitCombo] Combo cleared");
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved) => null;
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
     public override void LoadTargetData(TargetInfo targetInfo) { }

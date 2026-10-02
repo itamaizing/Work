@@ -13,7 +13,7 @@ public class EmeraldSkin : Skill
 
     protected override bool IsCanCast => CanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -26,7 +26,7 @@ public class EmeraldSkin : Skill
         return !Hero.CharacterState.CheckForState(States.ReversePolarity);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

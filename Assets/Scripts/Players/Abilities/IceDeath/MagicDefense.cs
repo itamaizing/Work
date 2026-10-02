@@ -20,7 +20,7 @@ public class MagicDefense : Skill
 
 	protected override bool IsCanCast => CheckCanCast();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
@@ -76,7 +76,7 @@ public class MagicDefense : Skill
 		//magArea.Init(_playerLinks, _energy.CurrentValue, false, this);
 	}*/
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while(_target == null && Vector2.Distance(_position, transform.position) > AreaInfo.Radius)
 		{

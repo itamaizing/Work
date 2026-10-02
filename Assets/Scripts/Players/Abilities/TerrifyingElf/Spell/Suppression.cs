@@ -9,7 +9,7 @@ public class Suppression : Skill, IMultiMagicSkill
     [SerializeField] private float duration = 6f;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("SpellCastDelayAnimTrigger");
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     protected override int AnimTriggerCast => 0;
 
@@ -19,7 +19,7 @@ public class Suppression : Skill, IMultiMagicSkill
     public void SuppressionManaAbsorbtion(bool value) => _isSuppressionManaAbsorbtion = value;
     #endregion
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
         TargetInfo targetInfo = new TargetInfo();

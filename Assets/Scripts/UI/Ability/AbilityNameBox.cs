@@ -18,7 +18,7 @@ public class AbilityNameBox : MonoBehaviour
     {
         _name.text = skill.Name;
         _text.text = $"{skill.Description}";
-        if (!string.IsNullOrEmpty(skill.State)) _text.text += $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
+        if (!string.IsNullOrEmpty(skill.State.ToString())) _text.text += $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
         _descriptionWithNumbers.text = "";
 
         if (!(skill is ICounterSkill))
@@ -60,11 +60,11 @@ public class AbilityNameBox : MonoBehaviour
             //WriteTypeDamage(skill);
             //WriteTypeAbityForm(skill);
 
-            if (skill.CastDeley > 0)
-                _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
+            if (skill.PreparingDuration > 0)
+                _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.PreparingDuration} сек{ColorEnd}";
 
-            if (skill.CastStreamDuration > 0)
-                _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
+            if (skill.ChannelingDuration > 0)
+                _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.ChannelingDuration} сек{ColorEnd}";
 
             if (skill.Cooldown.CooldownTime > 0)
                 _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.Cooldown.CooldownTime} сек{ColorEnd}";

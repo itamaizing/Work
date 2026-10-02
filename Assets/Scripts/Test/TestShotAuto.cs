@@ -10,7 +10,7 @@ public class TestShootAuto : Skill
     private Coroutine _damageCoroutine;
     private readonly List<Character> _targetsInRange = new();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
 
@@ -29,7 +29,7 @@ public class TestShootAuto : Skill
 
     private IEnumerator DamageTickRoutine()
     {
-        var wait = new WaitForSeconds(CastDeley);
+        var wait = new WaitForSeconds(PreparingDuration);
         while (true)
         {
             UpdateTargets();
@@ -67,5 +67,5 @@ public class TestShootAuto : Skill
     public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override IEnumerator CastJob() { yield break; }
     protected override void ClearData() { }
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> targetDataSavedCallback) { yield break; }
+    protected override IEnumerator TargetingJob(System.Action<TargetInfo> targetDataSavedCallback) { yield break; }
 }

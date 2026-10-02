@@ -85,7 +85,7 @@ public class CreeperInvisible : Skill
     #endregion
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => true;
 
     public event Action<bool> OnInvisibleChanged;
@@ -253,7 +253,7 @@ public class CreeperInvisible : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         ResetAltAbility();
         yield break;

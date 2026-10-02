@@ -19,7 +19,7 @@ public class IceShower : Skill,IEnergyDamagable
 
 	protected override bool IsCanCast => true;
 
-	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerPrepare => 0;
 
 	protected override int AnimTriggerCast => 0;
 
@@ -33,7 +33,7 @@ public class IceShower : Skill,IEnergyDamagable
         _targetPoint = targetInfo.Points[0];
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		if (_energy == null)
 			_energy = (Energy)Hero.Resources[ResourceType.Energy];

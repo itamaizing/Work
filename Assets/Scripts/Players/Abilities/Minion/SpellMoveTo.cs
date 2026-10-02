@@ -19,7 +19,7 @@ public class SpellMoveTo : Skill
     private Vector3 _tempPoint;
     private Character _tempTarget;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -92,7 +92,7 @@ public class SpellMoveTo : Skill
         _currentDamageDeley = 0;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
 

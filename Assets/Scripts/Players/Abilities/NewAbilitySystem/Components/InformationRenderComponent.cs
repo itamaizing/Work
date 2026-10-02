@@ -163,7 +163,7 @@ public class InformationRenderComponent : BaseSkillComponent
         if (_skill.SkillRender.IndicatorOwner != _skill)
             return;
 
-        if (!_skill.IsPreparing && _hasCachedValues == false)
+        if (!_skill.IsTargeting && _hasCachedValues == false)
         {
             return;
         }

@@ -17,7 +17,7 @@ public class IceShield : Skill
 
 	protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
@@ -98,7 +98,7 @@ public class IceShield : Skill
 		}
 	}*/
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		yield return null;
 	}

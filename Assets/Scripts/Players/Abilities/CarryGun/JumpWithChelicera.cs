@@ -45,7 +45,7 @@ public class JumpWithChelicera : Skill
 
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
     public float CooldownJump { get => _cooldownJump; set => _cooldownJump = value; }
@@ -62,12 +62,12 @@ public class JumpWithChelicera : Skill
     private void OnDisable()
     {
         Canceled -= HandleJumpWithCheliceraEnd;
-        CastDeleyStarted -= CanMoveJumpWithCheilcera;
+        PreparingStarted -= CanMoveJumpWithCheilcera;
     }
 
     private void OnEnable()
     {
-        CastDeleyStarted += CanMoveJumpWithCheilcera;
+        PreparingStarted += CanMoveJumpWithCheilcera;
         Canceled += HandleJumpWithCheliceraEnd;
     }
 

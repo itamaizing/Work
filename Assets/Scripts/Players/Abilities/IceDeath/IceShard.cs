@@ -19,7 +19,7 @@ public class IceShard : Skill,IEnergyDamagable
 
 	protected override bool IsCanCast => true;
 
-	protected override int AnimTriggerCastDelay => Animator.StringToHash("Throw");
+	protected override int AnimTriggerPrepare => Animator.StringToHash("Throw");
 
 	protected override int AnimTriggerCast => 0;
 

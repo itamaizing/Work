@@ -20,7 +20,7 @@ public class HellTeleportSkill : Skill
     private GameObject _spawnedHell;
     private Coroutine  _hellRoutine;
 
-    protected override int  AnimTriggerCastDelay => 0;
+    protected override int  AnimTriggerPrepare => 0;
     protected override int  AnimTriggerCast      => 0;
 
     protected override bool IsCanCast =>
@@ -93,7 +93,7 @@ public class HellTeleportSkill : Skill
         Hero.DamageTracker.OnDamageTracked -= TrackFireDamage;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

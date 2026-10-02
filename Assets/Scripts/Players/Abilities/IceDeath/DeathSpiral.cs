@@ -31,7 +31,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 
     protected override bool IsCanCast => _currentCharges > 0 && _rune.CurrentValue >= 1f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     
     #region SecondaryDeathSpiral
@@ -124,7 +124,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
             Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

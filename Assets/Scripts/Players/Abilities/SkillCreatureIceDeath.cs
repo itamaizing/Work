@@ -29,7 +29,7 @@ public abstract class SkillCreatureIceDeath : Skill
     protected abstract string AnimationTrigger { get; }
     protected abstract void ApplySkillEffect(Character target);
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => Targeting.GetTarget() != null;
@@ -43,7 +43,7 @@ public abstract class SkillCreatureIceDeath : Skill
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callback)
     {
         while (Targeting.GetTempTarget() == null)
         {

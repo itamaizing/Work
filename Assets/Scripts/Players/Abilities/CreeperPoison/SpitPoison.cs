@@ -99,7 +99,7 @@ public class SpitPoison : Skill, IAltAbility
     private static readonly int spitPoisonTrigger = Animator.StringToHash("SpitPoisonCastAnimTrigger");
 
     protected override int AnimTriggerCast => spitPoisonTrigger;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => CheckCanCast();
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -124,7 +124,7 @@ public class SpitPoison : Skill, IAltAbility
         _mousePos = targetInfo.Points[0];
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
         Vector3 targetPoint = Vector3.positiveInfinity;

@@ -28,7 +28,7 @@ public class LightningStrikes : Skill
     public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("LightningStrikesAttacking");
 
     protected override bool IsCanCast
@@ -91,7 +91,7 @@ public class LightningStrikes : Skill
         Hero.Move.LookAtTransform(_currentTarget.transform);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

@@ -101,6 +101,6 @@ public class EnergyFirstHitDamageBooster : Skill,IPassiveSkill
         throw new NotImplementedException();
     }
 
-    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerPrepare { get; }
     protected override int AnimTriggerCast { get; }
 }

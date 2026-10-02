@@ -7,7 +7,7 @@ public class EarthPetrificationSkill : MoveSkill
 {
     [SerializeField] private float _debuffDuration = 4;
     protected override bool IsCanCast { get => CheckCanCast(); }
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     protected override int AnimTriggerCast => Animator.StringToHash("Petrification");
@@ -64,7 +64,7 @@ public class EarthPetrificationSkill : MoveSkill
         Targeting.ClearTarget();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
         while (Targeting.GetTempTarget() == null)

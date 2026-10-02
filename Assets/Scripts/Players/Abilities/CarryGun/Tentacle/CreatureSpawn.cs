@@ -24,7 +24,7 @@ public class CreatureSpawn : Skill
 
     private SpawnType _spawnType = SpawnType.None;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
     
@@ -102,7 +102,7 @@ public class CreatureSpawn : Skill
         return center + offset;
     }
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
+    protected override IEnumerator TargetingJob(System.Action<TargetInfo> callback)
     {
 
         TargetInfo info = new TargetInfo();

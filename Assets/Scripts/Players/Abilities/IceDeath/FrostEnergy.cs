@@ -19,7 +19,7 @@ public class FrostEnergy : Skill
     private const float FrostEnergyPhysicalCoolingChance = 60f;
     private const float SelfCastingThreshold = 0.2f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
     public bool HeroHasFrostEnergy => Hero.CharacterState.CheckForState(States.FrostEnergy);
@@ -93,7 +93,7 @@ public class FrostEnergy : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);

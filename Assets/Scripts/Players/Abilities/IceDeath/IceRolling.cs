@@ -27,7 +27,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
     private static readonly int IceRollingStartHash = Animator.StringToHash("IceRollingStart");
     private static readonly int IceRollingEndHash = Animator.StringToHash("IceRollingEnd");
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => IceRollingStartHash;
 
     public void IceRollingCast() => AnimStartCastCoroutine();
@@ -82,7 +82,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         return result;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 candidatePoint = Vector3.positiveInfinity;
         Character enemyTarget = null;
@@ -153,7 +153,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
     public override IEnumerator CustomDrawJob(float time = DynamicRendererJobTime)
     {
-        while (IsPreparing)
+        while (IsTargeting)
         {
             _skillRender.SetSizeBox(1, GetFinalJumpRange());
             yield return new WaitForSeconds(time);

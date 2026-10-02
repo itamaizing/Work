@@ -7,7 +7,7 @@ public class MergeWithDarknessSkill : Skill
 {
     [SerializeField] private float _duration = 4f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
     public override bool IsPayCostStartCooldown => false;
@@ -19,7 +19,7 @@ public class MergeWithDarknessSkill : Skill
     public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(_hero);

@@ -25,7 +25,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     [SerializeField][ColorUsage(true, true)] private Color _darkColor  = Color.yellow;
 
     private float _baseDamage = 5f;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
 
@@ -78,7 +78,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

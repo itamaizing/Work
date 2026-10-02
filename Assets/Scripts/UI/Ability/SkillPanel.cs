@@ -338,7 +338,7 @@ public class SkillPanel : MonoBehaviour
             slot.ClearData();
         }
         
-        if (skill.IsPreparing)
+        if (skill.IsTargeting)
             skill.TryCancel(true);
 
         icon.BeginDrag -= OnBeginDrag;

@@ -36,7 +36,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 
 	private Character _castTarget;
 	
-	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerPrepare => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
 	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
@@ -70,7 +70,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 		AnimCastEnded();
 	}
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		TargetInfo targetInfo = new TargetInfo();
 

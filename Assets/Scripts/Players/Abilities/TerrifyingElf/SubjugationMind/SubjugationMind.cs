@@ -40,7 +40,7 @@ public class SubjugationMind : Skill
 
     private void HandleCancel() => EndAnim();
 
-    protected override int AnimTriggerCastDelay => _castDelayHash;
+    protected override int AnimTriggerPrepare => _castDelayHash;
     protected override int AnimTriggerCast => 0;
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -115,7 +115,7 @@ public class SubjugationMind : Skill
         while (!_streamFinished) yield return null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -171,7 +171,7 @@ public class SubjugationMind : Skill
         dir.y = 0;
         transform.rotation = Quaternion.LookRotation(dir);
 
-        while (elapsed < CastStreamDuration)
+        while (elapsed < ChannelingDuration)
         {
             if (_cachedTarget == null || _cachedTarget.IsDead)
             {

@@ -132,7 +132,7 @@ public class PoisonBall : Skill, IAltAbility
     private Vector3 _firstClickPlayerPos;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("PoisonBallCastDelayAnimTrigger");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("PoisonBallCastDelayAnimTrigger");
     //protected override bool IsCanCast => CheckCanCast();
 
     public event Action ResetAbilityParameters;
@@ -297,7 +297,7 @@ public class PoisonBall : Skill, IAltAbility
     {
         ResetAnimatorTriggers();
 
-        if (!IsPreparing)
+        if (!IsTargeting)
         {
             Targeting.ClearTarget();
             Targeting.ClearTempTarget();
@@ -312,13 +312,13 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_player != null && _player.Animator != null)
         {
-            _player.Animator.ResetTrigger(AnimTriggerCastDelay);
+            _player.Animator.ResetTrigger(AnimTriggerPrepare);
             _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
             _player.Animator.SetFloat("CastSpeed", 1f);
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
         Vector3 targetPoint = Vector3.positiveInfinity;
@@ -535,7 +535,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private bool CheckCanCast()
     {
-        if (Charges != null && Charges.RemainingCharges <= 1 && (IsPreparing || IsCasting))
+        if (Charges != null && Charges.RemainingCharges <= 1 && (IsTargeting || IsCasting))
         {
             return false;
         }
@@ -1029,12 +1029,12 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_isFast)
         {
-            _castDeley = _fastTimeCast;
+            _preparingDuration = _fastTimeCast;
         }
         else
         {
-            _castDeley = _slowTimeCast;
+            _preparingDuration = _slowTimeCast;
         }
-        _player.Animator.SetFloat("CastSpeed", _castDeley);
+        _player.Animator.SetFloat("CastSpeed", _preparingDuration);
     }
 }

@@ -17,7 +17,7 @@ public class IgnitionSkill : Skill,IFireComboParticipatingSkill
         Targeting.GetTarget() != null &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("CastDelay");
     protected override int AnimTriggerCast => 0;
 
     private float _clickRadius = 0.5f;
@@ -28,7 +28,7 @@ public class IgnitionSkill : Skill,IFireComboParticipatingSkill
         _spreadInRingOfFire = value;
     }
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

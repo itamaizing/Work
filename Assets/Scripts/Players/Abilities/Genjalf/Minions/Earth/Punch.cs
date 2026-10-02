@@ -11,7 +11,7 @@ namespace Gangdollarff.EarthElemental
         [SerializeField] private float _stunDuration = 1.5f;
         [SerializeField] private float _stunChance = 0.15f;
         
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
         
         private float _clickRadius = 0.5f;
@@ -89,7 +89,7 @@ namespace Gangdollarff.EarthElemental
             //_target = null;
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
         {
             Character target = null;
 

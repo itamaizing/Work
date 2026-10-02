@@ -47,7 +47,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     private static readonly int chainBladeEnd = Animator.StringToHash("ChainEnd");
     private static readonly int chainBladeDestroy = Animator.StringToHash("ChainBladeDestroy");
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => chainBladeStart;
     
     private float _pendingFireDamageBonus = 0f;
@@ -98,7 +98,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     }
 
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
 

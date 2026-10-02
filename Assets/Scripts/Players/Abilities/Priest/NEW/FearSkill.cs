@@ -9,7 +9,7 @@ public class FearSkill : Skill
     [SerializeField] private float _aoeRadius = 1.5f;
     [SerializeField] private float _fearDuration = 6f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Fear");
     protected override bool IsCanCast => true;
 
@@ -25,7 +25,7 @@ public class FearSkill : Skill
     {
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
         while (!GetMouseButton)

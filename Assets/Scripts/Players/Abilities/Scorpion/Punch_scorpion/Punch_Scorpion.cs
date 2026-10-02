@@ -14,7 +14,7 @@ public class Punch_Scorpion : AutoAttackSkill,IComboParticipatingSkill
     public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
 

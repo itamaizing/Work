@@ -91,7 +91,7 @@ public class ShotIntoSky : Skill
 
     #endregion
     
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
@@ -100,7 +100,7 @@ public class ShotIntoSky : Skill
     {
         base.Init(render, hero);
         _baseRadius = AreaInfo.Radius;
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
         Canceled += HandleSkillCanceled;
     }
 
@@ -108,22 +108,22 @@ public class ShotIntoSky : Skill
 
     protected override void SkillEnableBoostLogic()
     {
-        CastDeley = 0;
-        CmdSetDelay(CastDeley);
+        PreparingDuration = 0;
+        CmdSetDelay(PreparingDuration);
         _isSkillBoostEnabled = true;
     }
 
     protected override void SkillDisableBoostLogic()
     {
-        CastDeley = _baseCastDelay;
-        CmdSetDelay(CastDeley);
+        PreparingDuration = _baseCastDelay;
+        CmdSetDelay(PreparingDuration);
         _isSkillBoostEnabled = false;
     }
 
     [Command]
     private void CmdSetDelay(float newValue)
     {
-        CastDeley = newValue;
+        PreparingDuration = newValue;
     }
 
     public void TryStartBoost()
@@ -176,12 +176,12 @@ public class ShotIntoSky : Skill
     
     protected override void PlayPrepareAnim()
     {
-        if (CastDeley > 0f)
-            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (PreparingDuration > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / PreparingDuration;
         base.PlayPrepareAnim();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
 

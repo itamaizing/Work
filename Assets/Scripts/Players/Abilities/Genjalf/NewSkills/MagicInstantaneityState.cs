@@ -28,7 +28,7 @@ public class MagicInstantaneityStateStacking : StateStacking
         CurrentStacksCount = 1;
 
         var skillsWithDelay = _character.Abilities.Abilities
-            .Where(s => s.CastDeley > 0 && s.IsSkillActive)
+            .Where(s => s.PreparingDuration > 0 && s.IsSkillActive)
             .ToList();
 
         _buffedSkills = skillsWithDelay;

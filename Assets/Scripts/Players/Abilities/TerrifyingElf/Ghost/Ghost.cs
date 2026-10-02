@@ -67,7 +67,7 @@ public class Ghost : Skill
 
     public event Action<Character, Vector3> Teleported;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("GhostCastDelay");
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast
@@ -170,14 +170,14 @@ public class Ghost : Skill
 
     private void OnEnable()
     {
-        PreparingSuccess += OnPreparingConcluded;
-        PreparingCanceled += OnPreparingConcludedNoArgs;
+        TargetingSuccess += OnTargetingConcluded;
+        TargetingCanceled += OnTargetingConcludedNoArgs;
     }
 
     private void OnDisable()
     {
-        PreparingSuccess -= OnPreparingConcluded;
-        PreparingCanceled -= OnPreparingConcludedNoArgs;
+        TargetingSuccess -= OnTargetingConcluded;
+        TargetingCanceled -= OnTargetingConcludedNoArgs;
 
         UnregisterSpawnEvents();
         if (_checkExtendedRadiusCoroutine != null)
@@ -187,8 +187,8 @@ public class Ghost : Skill
         }
     }
     
-    private void OnPreparingConcluded(Skill skill) => HideExtendedRadiusAndStopWatch();
-    private void OnPreparingConcludedNoArgs() => HideExtendedRadiusAndStopWatch();
+    private void OnTargetingConcluded(Skill skill) => HideExtendedRadiusAndStopWatch();
+    private void OnTargetingConcludedNoArgs() => HideExtendedRadiusAndStopWatch();
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -208,7 +208,7 @@ public class Ghost : Skill
             {
                 _teleportGhost = true;
                 _ghostToTeleport = target;
-                _castDeley = 0f;
+                _preparingDuration = 0f;
             }
             else
             {
@@ -245,7 +245,7 @@ public class Ghost : Skill
 
     private void InitializeFields()
     {
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
         _ghosts = new List<Character>();
         _spawnComponent = GetComponent<SpawnComponent>();
     }
@@ -275,7 +275,7 @@ public class Ghost : Skill
         _boostWindow = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
         if (!_isGhostSpawnInRadiusTree) _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
@@ -465,12 +465,12 @@ public class Ghost : Skill
     {
         if (_teleportGhost)
         {
-            _castDeley = 0f;
+            _preparingDuration = 0f;
             return;
         }
 
-        if (_ghostPrepearCount <= 1) _castDeley = _baseCastDelay;
-        else _castDeley = _baseCastDelay * Mathf.Pow(2, _ghostPrepearCount - 1);
+        if (_ghostPrepearCount <= 1) _preparingDuration = _baseCastDelay;
+        else _preparingDuration = _baseCastDelay * Mathf.Pow(2, _ghostPrepearCount - 1);
     }
 
     private void TeleportToGhost(Character ghost)
@@ -484,14 +484,16 @@ public class Ghost : Skill
         if (manaTeleportToGhost() || !_movingToGhostWithZeroMana) RemoveGhost(ghost);
     }
     
-    protected override void CommitUse()
+    protected override void SpendResources()
     {
-        if (_teleportGhost)
-        {
-            return;
-        }
-        
-        base.CommitUse();
+        if (_teleportGhost) return;
+        base.SpendResources();
+    }
+
+    protected override void UseCooldownOrCharges()
+    {
+        if (_teleportGhost) return;
+        base.UseCooldownOrCharges();
     }
 
     private void ActivateWayIndicator() => way.SetActive(true);
@@ -711,7 +713,7 @@ public class Ghost : Skill
     {
         base.ClearData(); 
 
-        _castDeley = _baseCastDelay;
+        _preparingDuration = _baseCastDelay;
         _targetCharacter = null;
         _spawnPosition = Vector3.positiveInfinity;
         _ghostToTeleport = null;

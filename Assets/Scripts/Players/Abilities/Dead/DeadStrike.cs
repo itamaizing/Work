@@ -9,7 +9,7 @@ public class DeadStrike : MoveSkill
     private float _plagueDuration = 4f;
     private float _plagueChance = 0.3f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Attack");
 
     private float _clickRadius = 0.5f;
@@ -91,7 +91,7 @@ public class DeadStrike : MoveSkill
         //_target = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         Character target = null;
 

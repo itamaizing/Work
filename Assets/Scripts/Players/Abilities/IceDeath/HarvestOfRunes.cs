@@ -11,7 +11,7 @@ public class HarvestOfRunes : Skill,IComboSeriesParticipatingSkill
     
     private bool _isSeriesComplete;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -44,7 +44,7 @@ public class HarvestOfRunes : Skill,IComboSeriesParticipatingSkill
 
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);
@@ -59,17 +59,15 @@ public class HarvestOfRunes : Skill,IComboSeriesParticipatingSkill
         AddEnergy();
     }
     
-    protected override void CommitUse()
+    protected override void UseCooldownOrCharges()
     {
         if (_isSeriesComplete)
         {
             _isSeriesComplete = false;
-            SpendResources();
             return;
         }
-        base.CommitUse();
+        base.UseCooldownOrCharges();
     }
-
 
     private void AddEnergy()
     {

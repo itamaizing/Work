@@ -22,7 +22,7 @@ public class WaveParalyzingPoison : Skill
     private HashSet<Character> _affectedTargets = new();
 
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override bool IsCanCast => true;
 
@@ -42,7 +42,7 @@ public class WaveParalyzingPoison : Skill
         AnimCastEnded();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callback)
     {
         while (!GetMouseButton) yield return null;
 

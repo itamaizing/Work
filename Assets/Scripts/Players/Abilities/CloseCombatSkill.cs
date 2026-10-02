@@ -6,7 +6,7 @@ public abstract class CloseCombatSkill : Skill
 {
 	//TEST CLASS FOR OVERRIDE PREPARE
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

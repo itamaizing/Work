@@ -30,7 +30,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
     [SerializeField][ColorUsage(true, true)] private Color _darkVoronoiColor  = Color.white;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("RetributionLight");
 
     private Vector3 _clickPoint;
@@ -113,7 +113,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
         instance = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
@@ -131,8 +131,6 @@ public class RetributionLight : Skill,IPolaritySwitchable
 
     protected override IEnumerator CastJob()
     {
-        CommitUse();
-
         Vector3 localClickPoint  = _clickPoint;
         Vector3 localOriginPoint = _castOriginPoint;
 

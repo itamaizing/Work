@@ -14,7 +14,7 @@ public class FireBallSkill : Skill
     private float _clickRadius = 0.5f;
 
     protected override bool IsCanCast => CheckCanCast();
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -29,7 +29,7 @@ public class FireBallSkill : Skill
         Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

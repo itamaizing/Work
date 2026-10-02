@@ -13,7 +13,7 @@ public class CocoonSpawn : Skill
     [SerializeField] private MinionComponent minion;
     [SerializeField] private WombSpawn wombSpawn;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
@@ -25,7 +25,7 @@ public class CocoonSpawn : Skill
         minionMove.SetCanMove(false);
     }
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
+    protected override IEnumerator TargetingJob(System.Action<TargetInfo> callback)
     {
         TargetInfo info = new TargetInfo();
         info.Points.Add(transform.position);

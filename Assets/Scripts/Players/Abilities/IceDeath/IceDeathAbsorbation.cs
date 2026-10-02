@@ -24,7 +24,7 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     
     private int AbsorbationTrigger => Animator.StringToHash("Throw");
 
@@ -97,7 +97,7 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
         return _rune.CurrentValue >= _baseRuneCost;
     }
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         

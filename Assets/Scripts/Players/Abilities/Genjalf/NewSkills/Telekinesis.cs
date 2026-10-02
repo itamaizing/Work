@@ -21,7 +21,7 @@ namespace Gangdollarff
         private float _clickRadius = 0.5f;
         private float _secPerMeter = 0.4f;
 
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
 
         protected override int AnimTriggerCast => Animator.StringToHash("TelekinesSkill");
 
@@ -78,7 +78,7 @@ namespace Gangdollarff
                 _secondClickPoint = Vector3.zero;
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             _skillRender.DrawRadius(AreaInfo.Radius);
             while (Targeting.GetTempTarget()?.Character == null)

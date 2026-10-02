@@ -8,7 +8,7 @@ public class TemplateSkill : Skill
 
     #endregion
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
@@ -40,9 +40,9 @@ public class TemplateSkill : Skill
     protected override bool IsCanCast => base.IsCanCast;
 
     #region Preparing
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        return base.PrepareJob(targetDataSavedCallback);
+        return base.TargetingJob(targetDataSavedCallback);
     }
 
     protected override IEnumerator TargetingBehaviour(Action<TargetInfo> callbackDataSaved)

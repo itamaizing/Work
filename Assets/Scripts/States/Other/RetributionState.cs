@@ -58,7 +58,7 @@ public class RetributionStateStacking : StateStackingRefreshing
 
     private List<Skill> GetCastingSkills()
     {
-        return _hero.Abilities.Abilities.Where(c => c.CastDeley > 0).ToList();
+        return _hero.Abilities.Abilities.Where(c => c.PreparingDuration > 0).ToList();
     }
 
     private void IncreaseLightSkillDamage()

@@ -14,7 +14,7 @@ public class GangInvisibleSkill : Skill
     private Coroutine _exitFromInvisibleCoroutine;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("GangInvisible");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("GangInvisible");
     protected override bool IsCanCast => true;
 
     private Resource _mana;
@@ -36,7 +36,7 @@ public class GangInvisibleSkill : Skill
         AnimCastEnded();
     }   
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

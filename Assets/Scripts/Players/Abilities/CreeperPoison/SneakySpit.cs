@@ -31,7 +31,7 @@ public class SneakySpit : Skill
 
     protected override bool IsCanCast => CheckCanCast();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SneakySpitTrigger");
 
     protected override void SkillEnableBoostLogic()
@@ -200,7 +200,7 @@ public class SneakySpit : Skill
         else Disactive = true;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (isAbilityQueue) yield return null;
 

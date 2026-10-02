@@ -48,7 +48,7 @@ public class LightningMovement : Skill
     public float DurationLeap => _durationLeap;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => !HasObstaclesBetween(_hero.transform.position, _leapPoint);
 
     private void OnEnable()
@@ -163,7 +163,7 @@ public class LightningMovement : Skill
         base.ClearData();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 firstPoint = Vector3.positiveInfinity;
         Vector3 secondPoint = Vector3.positiveInfinity;
@@ -419,8 +419,8 @@ public class LightningMovement : Skill
 
             if (targets != null && targets.Count > 0)
             {
-                bool isLightningPreparing = _hero.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing;
-                bool isPoisonPreparing = _hero.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing;
+                bool isLightningPreparing = _hero.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsTargeting;
+                bool isPoisonPreparing = _hero.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsTargeting;
 
                 foreach (TargetData targetData in targets)
                 {

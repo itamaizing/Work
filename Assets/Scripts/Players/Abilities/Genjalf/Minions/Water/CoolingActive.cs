@@ -7,7 +7,7 @@ public class CoolingActive : Skill
 {
     [SerializeField] private ParticleSystem _effectObject;
     [SerializeField] private CoolingAura _coolingAura;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
     
@@ -27,7 +27,7 @@ public class CoolingActive : Skill
     {
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         while (_clickPoint == Vector3.zero)
