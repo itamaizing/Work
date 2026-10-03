@@ -171,22 +171,38 @@ private static AnimationClip FindClipForHashEditor(AnimatorController controller
         }
     }
 
-    public void PlayPreparing()
+    public void PlayPreparing(int? id = null, float? castSpeed = null)
     {
-        var anim = GetRandom(_prepareTriggers);
+        if (PrepareTriggers.Count <= 0)
+            return;
+
+        string anim = null;
+        if (id.HasValue)
+            anim = _prepareTriggers[Math.Clamp(id.Value, 0, _prepareTriggers.Count-1)];
+        else
+            anim = GetRandom(_prepareTriggers);
+
         if (anim == null)
             return;
 
-        PlayTrigger(anim);
+        PlayTrigger(anim, castSpeed.HasValue ? castSpeed.Value : float.MinValue);
     }
 
-    public void PlayCasting()
+    public void PlayCasting(int? id=null, float? castSpeed = null)
     {
-        var anim = GetRandom(_castTriggers);
+        if (CastTriggers.Count <= 0)
+            return;
+
+        string anim = null;
+        if (id.HasValue)
+            anim = _castTriggers[Math.Clamp(id.Value, 0, _castTriggers.Count - 1)];
+        else
+            anim = GetRandom(_castTriggers);
+
         if (anim == null)
             return;
 
-        PlayTrigger(anim);
+        PlayTrigger(anim, castSpeed.HasValue ? castSpeed.Value : float.MinValue);
     }
 
     public void Cancel()

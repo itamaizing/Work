@@ -997,10 +997,10 @@ public class PoisonBall : Skill, IAltAbility
         ChooseDirectionPush(thirdPoint, anchorPlayerPos);
         CheckWhoTarget(Targeting.Target);
 
+        ApplyCastTimingForSpeed();
+
         _activeCastIsFast = _isFast;
         _activeCastIsPushTarget = _isPushTarget;
-
-        ApplyCastTimingForSpeed();
     }
 
     private void ChooseSpeed(Vector3 secondPoint, Vector3 anchorPlayerPos)
@@ -1025,6 +1025,10 @@ public class PoisonBall : Skill, IAltAbility
         _isPushTarget = Vector3.Dot(castDirection.normalized, thirdVector.normalized) > 0f;
     }
 
+    protected override void PlayPrepareAnim()
+    {
+        Animation.PlayPreparing(castSpeed: (1 / _castDeley * 1.8f));
+    }
     private void ApplyCastTimingForSpeed()
     {
         if (_isFast)
@@ -1035,6 +1039,5 @@ public class PoisonBall : Skill, IAltAbility
         {
             _castDeley = _slowTimeCast;
         }
-        _player.Animator.SetFloat("CastSpeed", _castDeley);
     }
 }

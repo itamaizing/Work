@@ -7228,7 +7228,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - SparkOfLights
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0
@@ -7345,7 +7346,8 @@ MonoBehaviour:
     mobility: 0
     control: 0
   _animationComponent:
-    _prepareTriggers: []
+    _prepareTriggers:
+    - Spell
     _castTriggers: []
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
@@ -7454,7 +7456,8 @@ MonoBehaviour:
     mobility: 0
     control: 0
   _animationComponent:
-    _prepareTriggers: []
+    _prepareTriggers:
+    - Cast
     _castTriggers: []
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
@@ -7571,7 +7574,8 @@ MonoBehaviour:
     mobility: 0
     control: 0
   _animationComponent:
-    _prepareTriggers: []
+    _prepareTriggers:
+    - PriestShield
     _castTriggers: []
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
@@ -7675,7 +7679,8 @@ MonoBehaviour:
     mobility: 0
     control: 0
   _animationComponent:
-    _prepareTriggers: []
+    _prepareTriggers:
+    - Cast
     _castTriggers: []
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
@@ -8194,7 +8199,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - FlowSpellStart
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0
@@ -8397,7 +8403,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - RetributionLight
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0
@@ -8512,7 +8519,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - DomeOfLight
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0
@@ -8949,7 +8957,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - Fear
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0
@@ -9248,7 +9257,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - Shadow
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0
@@ -9636,7 +9646,8 @@ MonoBehaviour:
     control: 0
   _animationComponent:
     _prepareTriggers: []
-    _castTriggers: []
+    _castTriggers:
+    - DispelMagic
     _castAnimatorLayer: 0
     _cachedCastClip: {fileID: 0}
     _cachedCastClipDuration: 0

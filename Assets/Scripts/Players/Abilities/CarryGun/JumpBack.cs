@@ -57,6 +57,12 @@ public class JumpBack : Skill
         _isCanCancel = true;
     }
 
+    protected override void PlayCastAnim()
+    {
+        _isPlayCastAnim = true;
+        Animation.PlayCasting(0);
+    }
+
     public void JumpBackCast() => AnimStartCastCoroutine();
     public void JumpBackEnd()
     {
@@ -153,8 +159,9 @@ public class JumpBack : Skill
     {
         if (Hero == null || Hero.Animator == null) return;
 
-        Hero.Animator.SetTrigger(jumpEnd);
-        Hero.NetworkAnimator.SetTrigger(jumpEnd);
+        Animation.PlayCasting(1);
+        //Hero.Animator.SetTrigger(jumpEnd);
+        //Hero.NetworkAnimator.SetTrigger(jumpEnd);
 
         HandleJumpBackEnd();
     }

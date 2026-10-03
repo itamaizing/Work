@@ -89,6 +89,7 @@ public abstract class Skill : NetworkBehaviour
     protected bool _isCanCancel = true;
     protected bool _isPlayCastAnim;
     bool hasCastAnim => AnimTriggerCast != 0 || Animation.CastTriggers.Count > 0;
+    bool hasPrepareAnim => AnimTriggerCastDelay != 0 || Animation.PrepareTriggers.Count > 0;
     protected bool _forceFailCastEarly;
     //test counter
     protected float _currentCounter;
@@ -823,12 +824,12 @@ public abstract class Skill : NetworkBehaviour
 
         HandleMovementLock(MovementLockPhase.CastStarted);
 
-        if (!noCast && hasCastAnim)
+        if (!noCast && hasPrepareAnim)
             yield return StartCastDeleyCoroutine();
 
         if (TryAbortIfForceFailed()) yield break;
 
-        if (!noCast && AnimTriggerCast != 0)
+        if (!noCast && hasCastAnim)
         {
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;

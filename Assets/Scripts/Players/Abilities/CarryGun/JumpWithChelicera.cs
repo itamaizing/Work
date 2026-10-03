@@ -96,6 +96,11 @@ public class JumpWithChelicera : Skill
         if (Targeting.GetTarget()?.Character is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
     }
 
+    protected override void PlayPrepareAnim()
+    {
+        Animation.PlayPreparing(0, castSpeed: 1);
+    }
+
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null)
@@ -106,10 +111,6 @@ public class JumpWithChelicera : Skill
 
         _jumpSequenceFinished = false;
         
-        _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
-        _hero.Animator.SetTrigger(jumpStart);
-        _hero.NetworkAnimator.SetTrigger(jumpStart);
-
         ExecuteJump(Targeting.GetTarget().Targetable);
 
         while (!_jumpSequenceFinished)
@@ -118,6 +119,7 @@ public class JumpWithChelicera : Skill
 
     private void ExecuteJump(ITargetable target)
     {
+        JumpEndSpeedAnim();
         if (target == null) return;
 
         _isJumpDone = true;
@@ -260,6 +262,7 @@ public class JumpWithChelicera : Skill
     {
         float timeDelay = AreaInfo.Radius / JumpSpeedDivider;
         _player.Animator.SetFloat("JumpEndSpeed", 1f / timeDelay);
+        Animation.PlayPreparing(1, castSpeed: 1f / timeDelay);
     }
 
     private bool CheckCanCast()

@@ -64,9 +64,9 @@ MonoBehaviour:
     - nameToShow: EvasionMagical
       type: 3
       value: 0
-    - nameToShow: CastSpeed
+    - nameToShow: MoveSpeed
       type: 6
       value: 4
-    - nameToShow: CastSpeedPhysical
+    - nameToShow: VisionRadius
       type: 7
       value: 0
