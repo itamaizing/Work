@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
- using SkillSystem.States;
  using UnityEngine.Serialization;
 
  public abstract partial class Skill : NetworkBehaviour
@@ -14,15 +13,12 @@ using UnityEngine;
     [Header("[Talent State]")]
     [SerializeField] protected bool _isTalentSpell = false;
     [SerializeField] protected bool _isSkillActive = true;
-    [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
+    [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f;
 
     [Header("[Skill Info]")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [SerializeField] protected InfoComponent _infoComponent;
     [SerializeField] TargetingComponent _targetingComponent;
-    #region TargetingToDelete
-    [SerializeField] protected LayerMask _obstacle;
-    #endregion
     [SerializeField] CostComponent _costComponent;
     [SerializeField] protected float _damageValue;
     [Header("[Cooldown]")]
@@ -34,11 +30,6 @@ using UnityEngine;
     [SerializeField] protected float _autoAttackDelay;
     [FormerlySerializedAs("_castDeley")] [SerializeField] protected float _preparingDuration;
     [SerializeField] protected ChannelComponent _channelComponent;
-    #region ChannelToDelete
-    [SerializeField] protected float _castDuration;
-    [SerializeField] protected float _manaCostRate;
-    [SerializeField] protected List<SkillResourceCost> _manaCostPerTick;
-    #endregion
     [Header("[Area settings]")]
     [SerializeField] protected AreaComponent _areaComponent;
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
@@ -77,7 +68,6 @@ using UnityEngine;
     #region Coroutines
     //COOLDOWNS
     //protected Coroutine _cooldownJob;
-    protected Coroutine _rechargeJob;
     //COOLDOWNS
     protected Coroutine _targetingCoroutine;
     protected Coroutine _castCoroutine;
@@ -85,12 +75,11 @@ using UnityEngine;
     protected Coroutine _channelingCoroutine;
     protected Coroutine _dynamicRendererJob;
     private Coroutine _targetingWrapperCoroutine;
-    private Coroutine _actionWrapperForCastCoroutine;
     #endregion
 
     protected bool _isCanCancel = true;
     protected bool _isPlayCastAnim;
-    bool hasCastAnim => AnimTriggerCast != 0 || Animation.CastTriggers.Count > 0;
+
     protected bool _forceFailCastEarly;
     //test counter
     protected float _currentCounter;
@@ -318,14 +307,6 @@ using UnityEngine;
 
     protected virtual void Awake()
     {
-        if (Charges.UsesCharges)
-        {
-            _currentChargers = Charges.MaxCharges;
-            _remainingCooldownTimeChargers = new List<float>(new float[Charges.MaxCharges]);
-            _currentChargeCooldownJob = new List<Coroutine>(new Coroutine[Charges.MaxCharges]);
-        }
-        else
-            _currentChargers = 1;
     }
     #endregion
 
@@ -508,111 +489,7 @@ using UnityEngine;
         }
     }
     #endregion Skill Execution Loop
-
-
-    #region Cast Related
     
-    private void CancelCastEarly()
-    {
-        SetState(SkillState.Inactive, canceled: true);
-        _isPlayCastAnim = false;
-
-        CancelAnim();
-
-        _hero.Move.StopLookAt();
-
-        Hero.Abilities.NotifySkillIsTargeting(this, false);
-
-        ClearData();
-
-        try { CastEnded?.Invoke(); }
-        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] CastEnded subscriber threw: {ex}"); }
-
-        try { OnSkillCanceled?.Invoke(); }
-        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] OnSkillCanceled subscriber threw: {ex}"); }
-
-        try { Canceled?.Invoke(); }
-        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] Canceled subscriber threw: {ex}"); }
-
-        Hero.UIComponent.Miss();
-    }
-
-    private IEnumerator ActionWrapperForCastingJob()
-    {
-        if (TryAbortIfForceFailed()) yield break;
-
-        bool noCast = Hero.Abilities.TryConsumeNoCast();
-        bool hasPreparing = !noCast && hasCastAnim;
-        SetState(hasPreparing ? SkillState.Preparing : SkillState.Casting);
-
-        Hero.Abilities.NotifySkillPrepared(this);
-        Hero.Abilities.NotifySkillIsTargeting(this, true);
-        CastStarted?.Invoke();
-
-        if (hasPreparing)
-            yield return StartPreparingCoroutine();
-
-        if (TryAbortIfForceFailed()) yield break;
-
-        if (!noCast && AnimTriggerCast != 0)
-        {
-            SetState(SkillState.Casting);
-            _isPlayCastAnim = true;
-            PlayCastAnim();
-
-            if (TryAbortIfForceFailed()) yield break;
-
-            while (_isPlayCastAnim)
-            {
-                if (State == SkillState.Casting)
-                {
-                    if (Targeting.ForDamage?.Damageable != null && !IsValidTarget(Targeting.ForDamage?.Damageable))
-                    {
-                        TryCancel(true);
-                        yield break;
-                    }
-
-                    if (!IsCanCast)
-                    {
-                        TryCancel(true);
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-        }
-        else
-        {
-            if (TryAbortIfForceFailed()) yield break;
-
-            CancelAnim();
-            SetState(SkillState.Casting);
-            TriggerCast();
-
-            HandleMovementLock(MovementLockPhase.CastTriggered);
-        }
-
-        while (_castTriggered && !_cooldownCommitted)
-            yield return null;
-        CastFinished?.Invoke();
-        CastEnded?.Invoke();
-        Hero.Abilities.NotifySkillIsTargeting(this, false);
-        ClearData();
-
-        if (Targeting.ForDamage != null && Targeting.ForDamage.Character != null)
-        {
-            Targeting.ForDamage.Character.SelectedCircle.IsActive = false;
-            Targeting.ForDamage.Character.SelectedCircle.SwitchSelectCircle(false);
-        }
-
-        _hero.Move.StopLookAt();
-        SetState(SkillState.Inactive);
-        _castCoroutine = null;
-        _castTriggered = false;
-        _cooldownCommitted = false; 
-    }
-    #endregion
 
     #region LockMovementPhase
 
@@ -621,8 +498,7 @@ using UnityEngine;
         CastStarted,
         CastTriggered,
         CastFinished,
-        CastCanceled,
-        CastFailedEarly
+        CastCanceled
     }
     
     protected virtual void HandleMovementLock(MovementLockPhase phase)
@@ -633,6 +509,7 @@ using UnityEngine;
         switch (phase)
         {
             case MovementLockPhase.CastStarted:
+                _hero.Move.StopMoveAndAnimationMove();
                 _hero.Move.SetCanMove(false);
                 break;
 
@@ -643,7 +520,6 @@ using UnityEngine;
 
             case MovementLockPhase.CastFinished:
             case MovementLockPhase.CastCanceled:
-            case MovementLockPhase.CastFailedEarly:
                 _hero.Move.SetCanMove(true);
                 break;
         }
@@ -652,109 +528,15 @@ using UnityEngine;
     #endregion
     
     #region Charges
-    // Пока не вырезал, есть скиллы завязанные на ручном управлении зарядами
-    // Для переписывания, добавил в новую систему тип Infinite (не тикающие)
-    #region Old
-    protected int _currentChargers;
-    private List<float> _remainingCooldownTimeChargers = new();
-    private List<Coroutine> _currentChargeCooldownJob;
-
-    #region ChargeRelatedProperties
-    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public List<float> RemainingCooldownTimeCharge => _remainingCooldownTimeChargers;
-    #endregion
-
-    #region Charge Events
-    public event Action<int> CurrentChargeChanged;
-    public event Action<float> ChargeStartCooldown;
-    public event Action<int> ChargeCooldownEnded;
-    public event Action MassageHaventCharge;
-    #endregion
-
-    #region Methods
-    public virtual bool TryUseCharge()
-    {
-        if (Charges.UsesCharges == false)
-            return true;
-
-        Charges.TryUse();
-
-        if (_currentChargers > 0)
-        {
-            _currentChargers--;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-
-            if (_rechargeJob == null && Charges.CooldownType == ChargeCooldownType.Sequential)
-            {
-                _rechargeJob = StartCoroutine(RechargeCoroutine());
-            }
-            else if (_rechargeJob == null && Charges.CooldownType == ChargeCooldownType.Independant)
-            {
-                for (int i = 0; i < Charges.MaxCharges; i++)
-                {
-                    if (_remainingCooldownTimeChargers[i] <= 0)
-                    {
-                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, Charges.CooldownTime));
-
-                        ChargeStartCooldown?.Invoke(Charges.CooldownTime);
-                        break;
-                    }
-                }
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
-    {
-        _remainingCooldownTimeChargers[chargeIndex] = time;
-
-        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
-        {
-            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
-
-            yield return null;
-        }
-
-        if (_currentChargers < Charges.MaxCharges)
-        {
-            _currentChargers++;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
-    }
-
-    protected virtual IEnumerator RechargeCoroutine()
-    {
-        while (_currentChargers < Charges.MaxCharges)
-        {
-            ChargeStartCooldown?.Invoke(Charges.CooldownTime);
-            float time = 0;
-            while (time < Charges.CooldownTime)
-            {
-                time += Time.deltaTime;
-                yield return null;
-            }
-            if (_currentChargers < Charges.MaxCharges)
-            {
-                _currentChargers++;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
-        _rechargeJob = null;
-    }
-    #endregion Coroutines
-    #endregion Old
-
     #region NewSystem
     //[SyncVar] private int _maxCharges;
     private SyncList<double> _rechargeEndTime = new();
     public SyncList<double> RechargeTimers => _rechargeEndTime;
 
+    public virtual bool TryUseCharge()
+    {
+        return Charges.TryUse();
+    }
 
     [Command]
     public void CmdStartRecharge(float duration)
@@ -906,8 +688,8 @@ using UnityEngine;
     #region Channeling
 
     #region Properties
-    public float ChannelingDuration => Channeling.CastDuration; // Ctrl+R
-    public float ManaCostRate { get => _manaCostRate; }
+    public float ChannelingDuration => Channeling.CastDuration;
+    public float ManaCostRate { get => Channeling.TickInterval; }
     public List<SkillResourceCost> ManaCostPerTick { get => Channeling.Costs; }
     #endregion
 
@@ -928,17 +710,7 @@ using UnityEngine;
     #endregion
 
     #region Resource Related
-    
-    private bool TryAbortIfForceFailed()
-    {
-        if (!_forceFailCastEarly)
-            return false;
 
-        _forceFailCastEarly = false;
-        CancelCastEarly();
-        return true;
-    }
-    
     protected virtual bool CheckResourcesOnSkill()
     {
         return Cost.EnoughResources();
@@ -958,7 +730,7 @@ using UnityEngine;
             {
                 Cooldown.Start();
             }
-            if (!Charges.IsComboPart) TryUseCharge();
+            if (!Charges.IsComboPart) Charges.TryUse();
             return true;
         }
         else
@@ -1071,14 +843,6 @@ using UnityEngine;
             StopCoroutine(_dynamicRendererJob);
     }
     #endregion
-
-    protected void CancelCoroutine(Coroutine coroutine)
-    {
-        if (coroutine != null)
-        {
-            StopCoroutine(coroutine);
-        }
-    }
 
     #region ScoreBoard?
     private void AddAssist(Character character)

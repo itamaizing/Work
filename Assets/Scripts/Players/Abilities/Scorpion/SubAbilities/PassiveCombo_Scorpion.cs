@@ -200,7 +200,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         var grouped = lastThreeHits.GroupBy(s => s)
             .ToDictionary(g => g.Key, g => g.Count());
 
-        bool hasEnoughCharges = grouped.All(pair => pair.Key.Chargers >= pair.Value);
+        bool hasEnoughCharges = grouped.All(pair => pair.Key.Charges.RemainingCharges >= pair.Value);
 
         if (hasEnoughCharges)
         {

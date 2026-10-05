@@ -100,7 +100,7 @@ public class CheliceraStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, Targeting.AdditionalObstacle);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

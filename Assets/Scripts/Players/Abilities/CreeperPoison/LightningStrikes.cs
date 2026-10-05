@@ -37,7 +37,7 @@ public class LightningStrikes : Skill
         {
             Character target = _currentTarget != null ? _currentTarget : Targeting.GetTarget()?.Character;
             if (target == null) return false;
-            return Targeting.NoObstacles(target.transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, target.transform);
+            return Targeting.NoObstacles(target.transform.position, Targeting.AdditionalObstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, target.transform);
         }
     }
 

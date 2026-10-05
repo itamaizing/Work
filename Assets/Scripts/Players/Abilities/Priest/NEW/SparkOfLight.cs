@@ -71,7 +71,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
-    protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle);
 
     public void SetStackingRestorationTalent(bool value) => _stackingRestorationTalent = value;
     public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;

@@ -6307,9 +6307,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -6406,9 +6406,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 70
     _costs: []
@@ -6502,9 +6502,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -6608,9 +6608,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -6713,9 +6713,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 10
     _costs: []
@@ -6818,9 +6818,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -6913,9 +6913,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7009,9 +7009,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7109,9 +7109,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -7213,9 +7213,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7317,9 +7317,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7415,9 +7415,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7513,9 +7513,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7610,9 +7610,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -7705,9 +7705,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 70
     _costs:
@@ -7807,9 +7807,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 1
     _costs:
@@ -7909,9 +7909,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -8004,9 +8004,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -8101,9 +8101,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -8195,9 +8195,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -8310,9 +8310,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -9886,9 +9886,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []

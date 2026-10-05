@@ -108,8 +108,7 @@ public class SkillQueue : MonoBehaviour
 
 
                 if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
-
-                _targetInfo = targetInfo;
+                    _targetInfo = targetInfo;
                 foreach (var item in _targetInfo.GetTargets())
                 {
                     if (item is Character character)

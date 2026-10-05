@@ -69,7 +69,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (_skill.Charges.UsesCharges == true)
         {
             _chargeCounter.gameObject.SetActive(true);
-            OnCurrentChargeChanged(_skill.Chargers);
+            OnCurrentChargeChanged(_skill.Charges.RemainingCharges);
         }
 
         SubscribingSkillOnEvents(_skill);
@@ -138,7 +138,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (_skill.Charges.UsesCharges)
         {
             _chargeCounter.gameObject.SetActive(true);
-            OnCurrentChargeChanged(_skill.Chargers);
+            OnCurrentChargeChanged(_skill.Charges.RemainingCharges);
         }
 
         SubscribingSkillOnEvents(_skill);
@@ -428,7 +428,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         while (dutarion > 0)
         {
-            if (_skill.Charges.UsesCharges == false || _skill.Chargers <= 0)
+            if (_skill.Charges.UsesCharges == false || _skill.Charges.RemainingCharges <= 0)
                 _cooldownNum.gameObject.SetActive(true);
             else
                 _cooldownNum.gameObject.SetActive(false);

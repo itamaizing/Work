@@ -18,7 +18,7 @@ public class ShotAstral : Skill, IMultiMagicSkill
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast =>
         Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius &&
-        Targeting.NoObstacles(_targetPoint, transform.position, _obstacle);
+        Targeting.NoObstacles(_targetPoint, transform.position, Targeting.AdditionalObstacle);
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
     
@@ -39,7 +39,7 @@ public class ShotAstral : Skill, IMultiMagicSkill
             {
                 Vector3 click = Targeting.GetMousePoint();
 
-                if (Targeting.NoObstacles(click, transform.position, _obstacle))
+                if (Targeting.NoObstacles(click, transform.position, Targeting.AdditionalObstacle))
                 {
                     _targetPoint = click;
                     Targeting.FindTempTarget();

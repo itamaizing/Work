@@ -38,7 +38,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 	
 	protected override int AnimTriggerPrepare => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
-	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle);
 
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -122,7 +122,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 	{
 		if (Targeting.GetTarget()?.Character == null ||
 			Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) > AreaInfo.Radius ||
-			!Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle))
+			!Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle))
 		{
 			TryCancel();
 			return;

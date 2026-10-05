@@ -252,7 +252,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
 
         float distance = Vector3.Distance(transform.position, _target.transform.position);
         bool inAttackRange = distance <= AreaInfo.Radius;
-        bool hasLineOfSight = Targeting.NoObstacles(_target.transform.position, _obstacle);
+        bool hasLineOfSight = Targeting.NoObstacles(_target.transform.position, Targeting.AdditionalObstacle);
 
         if (inAttackRange && hasLineOfSight)
         {

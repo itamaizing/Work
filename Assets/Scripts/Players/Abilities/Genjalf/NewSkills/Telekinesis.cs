@@ -149,7 +149,7 @@ namespace Gangdollarff
             _originalGroundPosition = _tempChar.transform.position.y;
             Vector3 startPos = _tempChar.transform.position;
 
-            float castEndTime = Time.time + _castDuration;
+            float castEndTime = Time.time + ChannelingDuration;
 
             CmdMoveTaget(targetGO, startPos + new Vector3(0, _amountOfLift, 0), _deleyTelekines);
             yield return new WaitForSeconds(_deleyTelekines);
@@ -254,7 +254,7 @@ namespace Gangdollarff
 
         [Command]
         private void CmdAddState(Character target) =>
-            target.CharacterState.AddState(States.Stun, _castDuration, 0, Hero.gameObject, name);
+            target.CharacterState.AddState(States.Stun, ChannelingDuration, 0, Hero.gameObject, name);
 
         [Command]
         private void CmdRemoveState(Character target) => target.CharacterState.RemoveState(States.Stun);

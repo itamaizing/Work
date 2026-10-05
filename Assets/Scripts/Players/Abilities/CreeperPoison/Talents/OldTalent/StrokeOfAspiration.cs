@@ -27,25 +27,4 @@ public class StrokesOfAspiration : Talent
             //Debug.Log("StrokeOfAspiration / Reduction AttackSpeed = " + _creeperStrike.Buff.AttackSpeed.Multiplier);
         }
     }
-
-    public void UseTalentStrokesOfAspiration()
-    {
-        //Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
-        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.Cooldown.RemainingTime - _decreaseCooldownTime;
-        _spitPoison.Cooldown.SetReduced(updateRemainingCooldownTimeForSpitPoison, shouldModify: false);
-        //Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
-
-        for (int i = 0; i < _poisonBall.RemainingCooldownTimeCharge.Count; i++)
-        {
-            if (_poisonBall.RemainingCooldownTimeCharge[i] > 0)
-            {
-                //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownTimeCharge[i] - _decreaseCooldownTime;
-                float updateRemainingCooldownTimeForPoisonBall = 5f;
-                //_poisonBall.ReductionCooldownTimeCharge(updateRemainingCooldownTimeForPoisonBall);
-
-                Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_poisonBall.RemainingCooldownTimeCharge[i]}");
-                break;
-            }
-        }
-    }
 }

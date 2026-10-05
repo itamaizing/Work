@@ -53,7 +53,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     private float _pendingFireDamageBonus = 0f;
     private float _pendingScorchedSoulChance = 0f;
 
-    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_clickPoint, transform.position, _obstacle);
+    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_clickPoint, transform.position, Targeting.AdditionalObstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);

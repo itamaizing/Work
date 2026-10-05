@@ -71,7 +71,7 @@ public class ClawStrike : Skill
     {
         return Targeting.GetTarget() != null &&
             Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
-            Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+            Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, Targeting.AdditionalObstacle);
     }
 
     private void OnDisable()

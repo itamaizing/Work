@@ -357,7 +357,7 @@ public class Tentacles : Skill
 
                 if (GetMouseButton)
                 {
-                    if (Targeting.NoObstacles(potentialSpawnPoint, targetCenter, _obstacle) &&
+                    if (Targeting.NoObstacles(potentialSpawnPoint, targetCenter, Targeting.AdditionalObstacle) &&
                         IsValidVector(potentialSpawnPoint))
                     {
                         targetPoint = potentialSpawnPoint;

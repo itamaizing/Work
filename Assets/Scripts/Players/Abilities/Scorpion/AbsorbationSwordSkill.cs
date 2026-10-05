@@ -15,8 +15,6 @@ public class AbsorbationSwordSkill : Skill
     private float _absorbEnergyReturn = 10f;
     private float _chargeGainPerMagicDamage = 30f;
     private float _absorbedDamage = 0f;
-
-    private int _currentCharges = 2;
     
     private bool _isAbsorbing = false;
 
@@ -32,18 +30,17 @@ public class AbsorbationSwordSkill : Skill
 
     public override string AdditionalDescription =>
         $"Поглощает 1 снарядное заклинание.\n" +
-        $"Заряды: {_currentCharges}/{Charges.MaxCharges} (накопление за 30 маг. урона)";
+        $"Заряды: {Charges.RemainingCharges}/{Charges.MaxCharges} (накопление за 30 маг. урона)";
 
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => _currentCharges > 0;
+    protected override bool IsCanCast => Charges.HasCharges;
 
     #region Накопление зарядов
     
     protected override void Awake()
     {
         base.Awake();
-        CheckChargers();
     }
 
     public override void Init(SkillRenderer render, Character hero)
@@ -51,6 +48,8 @@ public class AbsorbationSwordSkill : Skill
         base.Init(render, hero);
         _energy = hero.Resources[ResourceType.Energy];
         _hero.Health.DamageTaken += OnHeroDamageTaken;
+        
+        Charges.OnCurrentChange += OnChargesChanged;
         
         _swordSkills = _hero.Abilities.Abilities.Where(s => s is ISwordSkill).ToList();
         foreach (var swordSkill in _swordSkills)
@@ -68,12 +67,16 @@ public class AbsorbationSwordSkill : Skill
     {
         OnSkillCanceled -= HandleSkillCanceled;
 
+        Charges.OnCurrentChange -= OnChargesChanged;
+        
         _hero.Health.DamageTaken -= OnHeroDamageTaken;
         foreach (var swordSkill in _swordSkills)
         {
             swordSkill.CastFinished -= () => ApplyAbsorbedDamage(swordSkill);
         }
     }
+    
+    private void OnChargesChanged(int remaining) => UpdateDisactiveFromCharges();
     
     private void HandleSkillCanceled()
     {
@@ -127,7 +130,7 @@ public class AbsorbationSwordSkill : Skill
                 _absorbedDamage -= _chargeGainPerMagicDamage;
                 AddCharge();
                 
-                if (Chargers > 0)
+                if (Charges.RemainingCharges > 0)
                 {
                     Disactive = false;
                 }
@@ -159,32 +162,23 @@ public class AbsorbationSwordSkill : Skill
 
     private void AddCharge()
     {
-        if (_currentChargers < Charges.MaxCharges)
-            Chargers = _currentChargers + 1;
-
-        CheckChargers();
+        if (Charges.RemainingCharges >= Charges.MaxCharges) return;
+        if (Charges.RechargeTimers.Count > 0)
+            Charges.RestoreCharge(0);
+        UpdateDisactiveFromCharges();
     }
 
-    private void CheckChargers()
+    private void UpdateDisactiveFromCharges()
     {
-        if (_currentChargers > 0)
-        {
-            Disactive = false;
-        }
-        else
-        {
-            Disactive = true;
-        }
-
-        Charges.SendCurrentChange(_currentChargers);
+        Disactive = !Charges.HasCharges;
+        Charges.SendCurrentChange(Charges.RemainingCharges);
     }
 
     protected override void UseCooldownOrCharges()
     {
-        if (_currentChargers <= 0) return;
-        Chargers = _currentChargers - 1;
-
-        CheckChargers();
+        if (!Charges.HasCharges) return;
+        Charges.TryUse();
+        UpdateDisactiveFromCharges();
     }
 
     #endregion
@@ -200,7 +194,7 @@ public class AbsorbationSwordSkill : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_currentCharges <= 0) yield break;
+        if (Charges.RemainingCharges <= 0) yield break;
         _isAbsorbing = true;
         CmdSetAbsorbing(true);
         ControlMovement(false);
@@ -242,7 +236,7 @@ public class AbsorbationSwordSkill : Skill
         }
 
         OnSkillEnded();
-        CheckChargers();
+        UpdateDisactiveFromCharges();
     }
 
     private bool IsProjectileSkill(Skill skill)

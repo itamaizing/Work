@@ -46,7 +46,7 @@ public class DoubleCheliceraStrike : Skill
     {
         return Targeting.GetTarget()?.Character != null &&
             Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
-            Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+            Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle);
     }
 
     private void HandleSkillCanceled()

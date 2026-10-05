@@ -62,7 +62,6 @@ public class PullingHealth : Skill, IMultiMagicSkill
     
     private Coroutine _streamCoroutine;
     private float _streamAccumulatedRollback = 0f;
-    protected override bool IsCustomChannelingActive => _isStreaming;
     protected override bool SkipLegacyChannelingJob => true;
 
     #region Talent
@@ -597,6 +596,8 @@ public class PullingHealth : Skill, IMultiMagicSkill
         Hero.Move.StopLookAt();
         Hero.Animator.speed = 1;
 
+        EndChanneling();
+        
         CmdDestroyEffect();
     }
 

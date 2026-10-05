@@ -66,7 +66,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
-    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, Targeting.AdditionalObstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);

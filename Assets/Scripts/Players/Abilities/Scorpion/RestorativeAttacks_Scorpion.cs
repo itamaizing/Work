@@ -7,7 +7,7 @@ public class RestorativeAttacks_Scorpion : Skill
 {
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => CheckCanCast();
+    protected override bool IsCanCast => CheckCanCast() && Charges.HasCharges;
     
     private float _accumulatedPhysDamage = 0f;
     
@@ -22,7 +22,6 @@ public class RestorativeAttacks_Scorpion : Skill
     protected override void Awake()
     {
         base.Awake();
-        CheckChargers();
     }
 
     public override void Init(SkillRenderer render, Character hero)
@@ -37,6 +36,7 @@ public class RestorativeAttacks_Scorpion : Skill
             }
         }
         hero.Health.DamageTaken += TrackPhysDamage;
+        UpdateDisactiveFromCharges();
     }
 
     private void OnDisable()
@@ -62,7 +62,7 @@ public class RestorativeAttacks_Scorpion : Skill
             _accumulatedPhysDamage -= _physDamageThreshold;
             AddCharge();
 
-            if (Chargers > 0)
+            if (Charges.RemainingCharges > 0)
             {
                 Disactive = false;
             }
@@ -71,32 +71,23 @@ public class RestorativeAttacks_Scorpion : Skill
     
     private void AddCharge()
     {
-        if (_currentChargers < Charges.MaxCharges)
-            Chargers = _currentChargers + 1;
-        
-        CheckChargers();
+        if (Charges.RemainingCharges >= Charges.MaxCharges) return;
+        if (Charges.RechargeTimers.Count > 0)
+            Charges.RestoreCharge(0);
+        UpdateDisactiveFromCharges();
     }
 
-    private void CheckChargers()
+    private void UpdateDisactiveFromCharges()
     {
-        if (_currentChargers > 0)
-        {
-            Disactive = false;
-        }
-        else
-        {
-            Disactive = true;
-        }
-
-        Charges.SendCurrentChange(_currentChargers);
+        Disactive = !Charges.HasCharges;
+        Charges.SendCurrentChange(Charges.RemainingCharges);
     }
 
     protected override void UseCooldownOrCharges()
     {
-        if (_currentChargers <= 0) return;
-        Chargers = _currentChargers - 1;
+        Charges.TryUse();
 
-        CheckChargers();
+        UpdateDisactiveFromCharges();
     }
     
     private void OnAttackApplied(GameObject target, Skill sourceSkill)

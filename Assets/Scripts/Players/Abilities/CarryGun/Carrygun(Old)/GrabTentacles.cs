@@ -119,17 +119,17 @@
 //    {
 //        if (_target == null)
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, Targeting.AdditionalObstacle);
 //        }
 //        else if (_target != null)
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle) 
-//                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_secondTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, Targeting.AdditionalObstacle) 
+//                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_secondTentaclesPoint, Targeting.AdditionalObstacle);
 //        }
 //        else
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle) 
-//                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, Targeting.AdditionalObstacle) 
+//                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, Targeting.AdditionalObstacle);
 
 //        }
 //    }

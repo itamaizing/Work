@@ -173,7 +173,7 @@ namespace Gangdollarff
             RpcControlMovement(false);
             _shield.DamageTaken += OnAbsorb;
 
-            yield return new WaitForSeconds(_castDuration);
+            yield return new WaitForSeconds(ChannelingDuration);
 
             if (_isAoeShieldActive)
                 TargetRpcStopAoeScan(connectionToClient);

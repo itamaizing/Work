@@ -21,7 +21,7 @@ namespace SkillSystem.States
         Completed,
         Canceled,
         Interrupted,
-        FailedEarly
+        ForcedMiss
     }
 }
 
@@ -38,10 +38,6 @@ public abstract partial class Skill
     private bool _cooldownCommitted;
 
     private Coroutine _pipeline;
-    private bool _runActive;
-    private int _runId;
-    private bool _preparingActive;
-    private bool _channelingActive;
 
     public SkillState State => _state;
     public SkillEndReason LastEndReason { get; private set; } = SkillEndReason.Completed;
@@ -49,17 +45,13 @@ public abstract partial class Skill
 
     protected virtual bool StartsCooldownOnInterruptedCast => true;
     public bool IsTargeting => _isTargeting;
-    public bool IsExecuting => _runActive || _state != SkillState.Inactive;
+    private bool IsIdle => _state == SkillState.Inactive;
+    public bool IsExecuting => !IsIdle;
     public bool HasQueuedTargets => _targetInfoQueue.Count > 0;
-    
-    protected bool IsChannelingRunning => _channelingActive || IsCustomChannelingActive;
 
     public event Action<SkillState, SkillState> StateChanged;
     public event Action<SkillState> StateExited;
     public event Action<SkillState> StateEntered;
-    
-    protected void SetState(SkillState to, bool canceled)
-        => SetState(to, canceled ? SkillEndReason.Canceled : SkillEndReason.Completed);
 
     protected void SetState(SkillState to, SkillEndReason reason = SkillEndReason.Completed)
     {
@@ -127,106 +119,111 @@ public abstract partial class Skill
     
     #region Transition handler
 
-    protected virtual void HandleStateTransition(SkillState from, SkillState to)
+    private void HandleStateTransition(SkillState from, SkillState to)
     {
         if (_hero == null) return;
 
-        if (from == SkillState.Inactive)
+        switch (to)
         {
-            PlaySound(Sfx_Skill.CastStart);
-            HandleMovementLock(MovementLockPhase.CastStarted);
-        }
-        else if ((to == SkillState.Channeling || to == SkillState.PostCast)
-                 && (from == SkillState.Preparing || from == SkillState.Casting))
-        {
-            HandleMovementLock(MovementLockPhase.CastTriggered);
-        }
+            case SkillState.Preparing:
+                PlaySound(Sfx_Skill.CastStart);
+                HandleMovementLock(MovementLockPhase.CastStarted);
+                OnPreparingEntered();
+                break;
 
-        if (to == SkillState.Inactive)
-        {
-            switch (LastEndReason)
-            {
-                case SkillEndReason.Completed:
+            case SkillState.Casting:
+                if (from == SkillState.Inactive)
+                {
+                    PlaySound(Sfx_Skill.CastStart);
+                    HandleMovementLock(MovementLockPhase.CastStarted);
+                }
+                OnCastingEntered();
+                break;
+
+            case SkillState.Channeling:
+                HandleMovementLock(MovementLockPhase.CastTriggered);
+                OnChannelingEntered();
+                break;
+
+            case SkillState.PostCast:
+                HandleMovementLock(MovementLockPhase.CastTriggered);
+                OnPostCastEntered();
+                break;
+
+            case SkillState.Inactive:
+                StopLoopSound(Sfx_Skill.CastLoop);
+                if (LastEndReason == SkillEndReason.Completed)
+                {
                     PlaySound(Sfx_Skill.CastEnd);
                     if (!_isAutoMode) HandleMovementLock(MovementLockPhase.CastFinished);
-                    break;
-
-                case SkillEndReason.FailedEarly:
-                    StopLoopSound(Sfx_Skill.CastLoop);
-                    HandleMovementLock(MovementLockPhase.CastFailedEarly);
-                    break;
-
-                default:
-                    StopLoopSound(Sfx_Skill.CastLoop);
+                }
+                else
+                {
                     HandleMovementLock(MovementLockPhase.CastCanceled);
-                    break;
-            }
+                }
+                OnInactiveEntered(LastEndReason);
+                break;
         }
     }
+    
+    protected virtual void OnPreparingEntered() { }
+    protected virtual void OnCastingEntered() { }
+    protected virtual void OnChannelingEntered() { }
+    protected virtual void OnPostCastEntered() { }
+    protected virtual void OnInactiveEntered(SkillEndReason reason) { }
 
     #endregion
 
     #region Single exit point
     
-    public void Interrupt(SkillEndReason reason)
+    private void EndExecution(SkillEndReason reason)
     {
-        FinishExecution(reason, stopPipeline: true);
-    }
-    
-    private void FinishExecution(SkillEndReason reason, bool stopPipeline)
-    {
-        if (!_runActive) return;
+        if (IsIdle) return;
+        bool completed = reason == SkillEndReason.Completed;
 
-        _runActive = false;
-        _runId++;
-
-        if (stopPipeline) StopCoro(ref _pipeline);
-        else _pipeline = null;
+        StopCoro(ref _pipeline);
         StopCoro(ref _castCoroutine);
         StopCoro(ref _preparingCoroutine);
         StopCoro(ref _channelingCoroutine);
-        _preparingActive = false;
-        _channelingActive = false;
+
+        if (completed || StartsCooldownOnInterruptedCast) CommitCooldown();
 
         SetState(SkillState.Inactive, reason);
-        OnExecutionFinished(reason);
-    }
 
-    private void OnExecutionFinished(SkillEndReason reason)
-    {
-        bool completed = reason == SkillEndReason.Completed;
-        
-        if (completed) CommitCooldown();
-        else CommitCooldownOnInterrupt();
         _castTriggered = false;
         _cooldownCommitted = false;
         _castTimeRollback = 0f;
         _isPlayCastAnim = false;
-
-        if (!completed) ResetPhantomCosts();
-
-        Hero.Abilities.NotifySkillIsTargeting(this, false);
         _hero.Move.StopLookAt();
-
-        if (completed && Targeting.ForDamage != null && Targeting.ForDamage.Character != null)
-        {
-            Targeting.ForDamage.Character.SelectedCircle.IsActive = false;
-            Targeting.ForDamage.Character.SelectedCircle.SwitchSelectCircle(false);
-        }
-
+        Hero.Abilities.NotifySkillIsTargeting(this, false);
         ClearData();
-        if (!completed) CancelAnim();
-        if (reason == SkillEndReason.FailedEarly) Hero.UIComponent.Miss();
 
-        if (!completed)
+        if (completed)
         {
-            SafeInvoke(() => Canceled?.Invoke(), "Canceled");
+            if (Targeting.ForDamage?.Character != null)
+            {
+                Targeting.ForDamage.Character.SelectedCircle.IsActive = false;
+                Targeting.ForDamage.Character.SelectedCircle.SwitchSelectCircle(false);
+            }
+            Raise(CastFinished);
+        }
+        else
+        {
+            ResetPhantomCosts();
+            CancelAnim();
+            if (reason == SkillEndReason.ForcedMiss) Hero.UIComponent.Miss();
+            Raise(Canceled);
             CmdBroadcastCanceled();
         }
 
-        if (completed) SafeInvoke(() => CastFinished?.Invoke(), "CastFinished");
-        SafeInvoke(() => CastEnded?.Invoke(), "CastEnded");
-        if (!completed) SafeInvoke(() => OnSkillCanceled?.Invoke(), "OnSkillCanceled");
+        Raise(CastEnded);
+        if (!completed) Raise(OnSkillCanceled);
+    }
+    
+    private static void Raise(Action a)
+    {
+        try { a?.Invoke(); }
+        catch (Exception ex) { Debug.LogException(ex); }
     }
 
     private void ResetPhantomCosts()
@@ -261,7 +258,7 @@ public abstract partial class Skill
     private void StartPipeline()
     {
         var c = StartCoroutine(CastPipeline());
-        if (_runActive) _pipeline = c;
+        if (!IsIdle) _pipeline = c;
     }
 
     private bool ConsumeForceFail()
@@ -280,104 +277,81 @@ public abstract partial class Skill
 
     /// <summary>
     /// Prepare → Cast → (Channel) → PostCast → Inactive. Всё в одном месте.
-    /// Выход из любой точки: reason = ...; yield break; — finally гарантирует переход в Inactive.
     /// </summary>
     private IEnumerator CastPipeline()
     {
-        _runActive = true;
-        int run = ++_runId;
-        var reason = SkillEndReason.Completed;
+        bool noCast = Hero.Abilities.TryConsumeNoCast();
+        bool castFromAnim = !noCast && AnimTriggerCast != 0;
 
-        try
+        SetState(noCast ? SkillState.Casting : SkillState.Preparing);
+        Hero.Abilities.NotifySkillPrepared(this);
+        Hero.Abilities.NotifySkillIsTargeting(this, true);
+        Raise(CastStarted);
+        if (IsIdle) yield break;
+
+        if (ConsumeForceFail())
         {
+            EndExecution(SkillEndReason.ForcedMiss);
+            yield break;
+        }
+
+        if (!noCast)
+        {
+            yield return PreparingJob(PreparingDuration);
+            if (IsIdle) yield break;
             if (ConsumeForceFail())
             {
-                reason = SkillEndReason.FailedEarly;
+                EndExecution(SkillEndReason.ForcedMiss);
                 yield break;
             }
 
-            bool noCast = Hero.Abilities.TryConsumeNoCast();
-            bool prepare = !noCast;
-            bool castAnim = !noCast && AnimTriggerCast != 0;
+            SetState(SkillState.Casting);
+        }
 
-            // ── вход ──
-            SetState(prepare ? SkillState.Preparing : SkillState.Casting);
-            Hero.Abilities.NotifySkillPrepared(this);
-            Hero.Abilities.NotifySkillIsTargeting(this, true);
-            SafeInvoke(() => CastStarted?.Invoke(), "CastStarted");
-            if (run != _runId) yield break; // подписчик мог нас прервать
+        if (castFromAnim)
+        {
+            _isPlayCastAnim = true;
+            PlayCastAnim();
+        }
+        else
+        {
+            CancelAnim();
+            TriggerCast();
+        }
 
-            // ── Preparing ──
-            if (prepare)
+        if (IsIdle) yield break;
+
+        while (!IsIdle)
+        {
+            if (!_castTriggered)
             {
-                yield return PreparingJob(PreparingDuration);
-                if (run != _runId) yield break;
                 if (ConsumeForceFail())
                 {
-                    reason = SkillEndReason.FailedEarly;
+                    EndExecution(SkillEndReason.ForcedMiss);
+                    yield break;
+                }
+
+                if (!_isPlayCastAnim)
+                {
+                    Debug.LogWarning($"[Skill:{Name}] анимация каста закончилась без AnimStartCastCoroutine", this);
+                    EndExecution(SkillEndReason.Interrupted);
+                    yield break;
+                }
+
+                if (!ValidateCastTarget())
+                {
+                    EndExecution(SkillEndReason.Interrupted);
                     yield break;
                 }
             }
 
-            // ── Casting ──
-            SetState(SkillState.Casting);
-            if (castAnim)
-            {
-                _isPlayCastAnim = true;
-                PlayCastAnim();
-            }
-            else
-            {
-                CancelAnim();
-                TriggerCast();
-                EnterPostCast();
-            }
-
-            if (run != _runId) yield break;
-
-            // ── Ожидание: событие каста / поток / CastJob / остаточная анимация ──
-            while (true)
-            {
-                if (!_castTriggered)
-                {
-                    if (ConsumeForceFail())
-                    {
-                        reason = SkillEndReason.FailedEarly;
-                        yield break;
-                    }
-
-                    if (!_isPlayCastAnim)
-                    {
-                        Debug.LogWarning(
-                            $"[Skill:{Name}] Анимация каста закончилась без события AnimStartCastCoroutine — каст не сработал",
-                            this);
-                        reason = SkillEndReason.FailedEarly;
-                        yield break;
-                    }
-
-                    if (!ValidateCastTarget())
-                    {
-                        reason = SkillEndReason.Interrupted;
-                        yield break;
-                    }
-                }
-                else if (_state == SkillState.Channeling && !IsChannelingRunning)
-                {
-                    SetState(SkillState.PostCast); // поток закончился
-                }
-
-                bool animBusy = castAnim && _isPlayCastAnim;
-                bool jobBusy = _castTriggered && !_cooldownCommitted;
-                if (!animBusy && !jobBusy) break;
-
-                yield return null;
-                if (run != _runId) yield break;
-            }
+            bool waitAnim = castFromAnim && _isPlayCastAnim;
+            bool waitJob = _castTriggered && !_cooldownCommitted;
+            if (!waitAnim && !waitJob) break;
+            yield return null;
         }
-        finally
-        {
-            if (run == _runId) FinishExecution(reason, stopPipeline: false);
-        }
+
+        EndExecution(SkillEndReason.Completed);
     }
 
     private void TriggerCast()
@@ -386,18 +360,18 @@ public abstract partial class Skill
         _cooldownCommitted = false;
 
         SpendResources();
-        if (_castDuration > 0 && !SkipLegacyChannelingJob)
+        if (Channeling.CastDuration > 0 && !SkipLegacyChannelingJob)
         {
             var ch = StartCoroutine(ChannelingJob());
-            if (!_runActive) return;
-            _channelingCoroutine = _channelingActive ? ch : null;
+            if (IsIdle) return;
+            _channelingCoroutine = ch;
         }
 
         var cast = StartCoroutine(CastJobTracked());
-        if (!_runActive) return;
+        if (IsIdle) return;
         _castCoroutine = cast;
 
-        SafeInvoke(() => CastSuccess?.Invoke(), "CastSuccess");
+        Raise(CastSuccess);
         CmdBroadcastCastSuccess();
     }
 
@@ -421,7 +395,7 @@ public abstract partial class Skill
             yield return current;
         }
         
-        while (IsChannelingRunning)
+        while (_state == SkillState.Channeling && _channelingCoroutine != null) 
             yield return null;
 
         CommitCooldown();
@@ -448,17 +422,12 @@ public abstract partial class Skill
 
     protected Coroutine StartPreparingCoroutine(float time = float.MinValue)
     {
-        if (time == float.MinValue)
-            time = PreparingDuration;
-
-        var c = StartCoroutine(PreparingJob(time));
-        _preparingCoroutine = _preparingActive ? c : null;
+        _preparingCoroutine = StartCoroutine(PreparingJob(time));
         return _preparingCoroutine;
     }
 
     private IEnumerator PreparingJob(float delayTime)
     {
-        _preparingActive = true;
         PreparingStarted?.Invoke(delayTime);
         CmdBroadcastPreparingStarted(delayTime);
         PlayPrepareAnim();
@@ -468,7 +437,7 @@ public abstract partial class Skill
         {
             if (Targeting.NeedLineOfSight && Targeting.NoObstacles() == false)
             {
-                Interrupt(SkillEndReason.Interrupted);
+                EndExecution(SkillEndReason.Interrupted);
                 yield break;
             }
 
@@ -484,8 +453,7 @@ public abstract partial class Skill
             time += Time.deltaTime;
             yield return null;
         }
-
-        _preparingActive = false;
+        
         _preparingCoroutine = null;
         PreparingEnded?.Invoke();
         CmdBroadcastPreparingEnded();
@@ -497,7 +465,6 @@ public abstract partial class Skill
 
     private IEnumerator ChannelingJob()
     {
-        _channelingActive = true;
         EnterChanneling();
         ChannelingStarted?.Invoke(ChannelingDuration);
         CmdBroadcastChannelingStarted(ChannelingDuration);
@@ -514,28 +481,33 @@ public abstract partial class Skill
                 Animation.SyncSpeedToRemaining(Animation.ActiveClipRawLength, remaining);
             }
 
-            time += _manaCostRate;
+            time += Channeling.TickInterval;
 
-            foreach (var skillCost in _manaCostPerTick)
+            foreach (var skillCost in Channeling.Costs)
             {
                 var resource = _hero.Resources[skillCost.type];
                 float cost = Buff.ManaCost.GetBuffedValue(skillCost.value);
 
                 if (resource.CurrentValue < cost)
                 {
-                    Interrupt(SkillEndReason.Interrupted);
+                    EndExecution(SkillEndReason.Interrupted);
                     yield break;
                 }
 
                 resource.CmdUse(cost);
             }
 
-            yield return new WaitForSeconds(_manaCostRate);
+            yield return new WaitForSeconds(Channeling.TickInterval);
         }
-
-        _channelingActive = false;
-        _channelingCoroutine = null;
-        ChannelingEnded?.Invoke();
+        
+        _channelingCoroutine = null; 
+        EndChanneling();
+    }
+    
+    protected void EndChanneling()
+    {
+        if (_state == SkillState.Channeling) SetState(SkillState.PostCast);
+        Raise(ChannelingEnded);
         CmdBroadcastChannelingEnded();
     }
 
@@ -548,7 +520,7 @@ public abstract partial class Skill
         if (fullyAbsorbed) return;
         if (!IsExecuting) return;
 
-        bool isStream = _state == SkillState.Channeling || IsCustomChannelingActive;
+        bool isStream = _state == SkillState.Channeling;
         bool isPrepare = _state == SkillState.Preparing;
         if (!isStream && !isPrepare) return;
 
@@ -628,11 +600,11 @@ public abstract partial class Skill
 
         ResetPhantomCosts();
 
-        bool wasExecuting = _runActive;
+        bool wasExecuting = IsExecuting;
         bool wasTargeting = _targetingWrapperCoroutine != null;
 
         if (wasExecuting)
-            Interrupt(forceCancel ? SkillEndReason.Interrupted : SkillEndReason.Canceled);
+            EndExecution(forceCancel ? SkillEndReason.Interrupted : SkillEndReason.Canceled);
 
         if (wasTargeting)
             CancelTargeting();
@@ -644,9 +616,9 @@ public abstract partial class Skill
             _hero.Move.SetCanMove(true);
             ClearData();
             CancelAnim();
-            SafeInvoke(() => Canceled?.Invoke(), "Canceled");
+            Raise(Canceled);
             CmdBroadcastCanceled();
-            SafeInvoke(() => OnSkillCanceled?.Invoke(), "OnSkillCanceled");
+            Raise(OnSkillCanceled);
         }
 
         return true;
@@ -654,27 +626,16 @@ public abstract partial class Skill
 
     public void ResetSkillState()
     {
-        if (_runActive)
-            Interrupt(SkillEndReason.Interrupted);
-        else if (_state != SkillState.Inactive)
-            SetState(SkillState.Inactive, SkillEndReason.Interrupted);
+        EndExecution(SkillEndReason.Interrupted);
 
         StopCoro(ref _preparingCoroutine);
-        _preparingActive = false;
         PreparingEnded?.Invoke();
 
         _castTriggered = false;
         _cooldownCommitted = false;
         _isAutoMode = false;
 
-        if (Charges.UsesCharges)
-        {
-            _currentChargers = Charges.MaxCharges;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
-
         StopCoro(ref _channelingCoroutine);
-        _channelingActive = false;
         ChannelingEnded?.Invoke();
 
         StopCoro(ref _targetingWrapperCoroutine);

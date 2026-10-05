@@ -155,7 +155,7 @@ public class SneakySpit : Skill
         if (target == null) return false;
 
         return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius &&
-               Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
+               Targeting.NoObstacles(target.transform.position, transform.position, Targeting.AdditionalObstacle);
     }
 
     private void OnHeroEvade(Skill skill)

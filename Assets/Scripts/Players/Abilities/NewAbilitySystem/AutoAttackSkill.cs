@@ -38,7 +38,7 @@ public abstract class AutoAttackSkill : Skill
             if (Target == null)
                 return false;
 
-            return Targeting.NoObstacles(Target.transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, Target.transform); ;
+            return Targeting.NoObstacles(Target.transform.position, Targeting.AdditionalObstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, Target.transform); ;
         }
     }
 
@@ -164,7 +164,7 @@ public abstract class AutoAttackSkill : Skill
                 if (Targeting.IsTargetInRadius(AreaInfo.Radius, Target.transform))
                     _isAttacking = true;
 
-                if (_isAttacking && Targeting.NoObstacles(Target.transform.position, _obstacle))
+                if (_isAttacking && Targeting.NoObstacles(Target.transform.position, Targeting.AdditionalObstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
                     LastTarget = Targeting.GetTarget()?.Character;
@@ -174,7 +174,7 @@ public abstract class AutoAttackSkill : Skill
 
                     //yield return new WaitForSeconds(AttackSpeed);
 
-                    if (Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && !Cooldown.IsActive)
+                    if (Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, Targeting.AdditionalObstacle) && !Cooldown.IsActive)
                     {
                         if (TryPayCost(true))
                         {
@@ -187,7 +187,7 @@ public abstract class AutoAttackSkill : Skill
 
                                 while (_isPlayCastAnimAA)
                                 {
-                                    if((Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && !Cooldown.IsActive) == false)
+                                    if((Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, Targeting.AdditionalObstacle) && !Cooldown.IsActive) == false)
                                     {
                                         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
                                         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);

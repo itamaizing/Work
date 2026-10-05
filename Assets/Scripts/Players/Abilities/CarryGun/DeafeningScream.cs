@@ -23,7 +23,7 @@ public class DeafeningScream : Skill
     {
         return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.Charges.CooldownTime &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
-        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle);
     }
 
     public void HandleJumpEnd()

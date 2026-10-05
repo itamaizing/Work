@@ -156,7 +156,7 @@ public abstract class SkillCreatureIceDeath : Skill
                         lastMovePoint = transform.position;
                     }
 
-                    if (Physics.Raycast(transform.position, transform.forward, RaycastCheckDistance, _obstacle)) interrupted = true;
+                    if (Physics.Raycast(transform.position, transform.forward, RaycastCheckDistance, Targeting.AdditionalObstacle)) interrupted = true;
 
                     if (interrupted) _activeTween?.Kill();
                 });

@@ -394,9 +394,9 @@ private void SecondAttact()
 	/*[Command]
 public void CmdUseCharge(int value)
 {
-	if (Chargers - value >= 0)
+	if (Charges.RemainingCharges - value >= 0)
 	{
-		Chargers = Chargers - 1;
+		Charges.RemainingCharges = Charges.RemainingCharges - 1;
 	}
 }*/
 	

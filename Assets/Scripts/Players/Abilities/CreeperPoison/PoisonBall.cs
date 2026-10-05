@@ -542,12 +542,12 @@ public class PoisonBall : Skill, IAltAbility
 
         if (_activeCastTargetCharacter == null)
             return Vector3.Distance(_activeCastPoint, transform.position) <= AreaInfo.CastLength
-                   && Targeting.NoObstacles(_activeCastPoint, _obstacle);
+                   && Targeting.NoObstacles(_activeCastPoint, Targeting.AdditionalObstacle);
 
         return Vector3.Distance(_activeCastPoint, transform.position) <= AreaInfo.CastLength
-               && Targeting.NoObstacles(_activeCastPoint, _obstacle)
+               && Targeting.NoObstacles(_activeCastPoint, Targeting.AdditionalObstacle)
                || Vector3.Distance(_activeCastTargetCharacter.transform.position, transform.position) <= AreaInfo.CastLength
-               && Targeting.NoObstacles(_activeCastTargetCharacter.transform.position, _obstacle);
+               && Targeting.NoObstacles(_activeCastTargetCharacter.transform.position, Targeting.AdditionalObstacle);
     }
 
     #endregion
