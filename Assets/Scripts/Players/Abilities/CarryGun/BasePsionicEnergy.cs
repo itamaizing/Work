@@ -40,6 +40,8 @@ public class BasePsionicEnergy : Resource, IDamageable
     public event Action<float> OnEnergyChanged;
     public event Action<bool> OnAccumulationPsionicChanged;
 
+    public AttackingPsionicEnergy AttackingPsionicEnergy => _attackingPsionicEnergy;
+    
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
 
@@ -90,6 +92,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     }
     public void AccumulationPsionicRunning(bool value)
     {
+        if(value == _isAccumulationPsionicRunning) return;
         _isAccumulationPsionicRunning = value;
         _lastPosition = _heroCharacter.transform.position;
         _distanceAccumulator = 0f;
@@ -189,13 +192,16 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void PsionicRunning()
     {
         if (!_isAccumulationPsionicRunning) return;
-        if (!_attackingPsionicEnergy.IsAttackingPsiEnergy) return;
+        if (_attackingPsionicEnergy == null || !_attackingPsionicEnergy.IsAttackingPsiEnergy) return;
+        if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 
         Vector3 currentPos = _heroCharacter.transform.position;
         float distanceDelta = Vector3.Distance(currentPos, _lastPosition);
         if (distanceDelta <= 0.001f) return;
-
-        AddPsiByDistance(distanceDelta);
+        
+        float energyGain = distanceDelta * MaxPsi * 0.01f;
+        if (energyGain > 0f)
+            AddPsiAndRestartDecay(energyGain);
 
         _lastPosition = currentPos;
     }

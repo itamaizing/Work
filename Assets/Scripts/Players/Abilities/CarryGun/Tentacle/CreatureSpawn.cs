@@ -29,6 +29,8 @@ public class CreatureSpawn : Skill
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
     
     public override object GroupKey => (GetType(), SpawnType);
+    
+    public event Action UnlockedTypesChanged;
 
     public SpawnType SpawnType
     {
@@ -37,6 +39,11 @@ public class CreatureSpawn : Skill
         {
             Debug.Log($"[CreatureSpawn:{GetEntityId()}] SpawnType set attempt: {_spawnType} -> {value}");
             if (_spawnType == value) return;
+            if (value != SpawnType.None && !IsSpawnTypeUnlocked(value))
+            {
+                Debug.LogWarning($"[CreatureSpawn] {value} не открыт талантом");
+                return;
+            }
             _spawnType = value;
             Debug.Log($"[CreatureSpawn:{GetEntityId()}] SpawnType CHANGED, firing OnSpawnTypeChanged({value})");
             OnSpawnTypeChanged?.Invoke(value);
@@ -75,25 +82,14 @@ public class CreatureSpawn : Skill
             wombSpawn.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
     }
 
-    private void Start()
+    public bool IsSpawnTypeUnlocked(SpawnType type) => type switch
     {
-        if (_spawnType == SpawnType.Getomir && wombSpawn != null)
-        {
-            wombSpawn.OnSpawnGetomirChanged += HandleSpawnGetomirChanged;
-        }
-    }
+        SpawnType.None => false,
+        SpawnType.Getomir => wombSpawn != null && wombSpawn.IsSpawnGetomir,
+        _ => true,
+    };
 
-    private void HandleSpawnGetomirChanged(bool isActive)
-    {
-        if (_spawnType != SpawnType.Getomir) return;
-        if (Hero == null) return;
-
-        var skillManager = Hero.Abilities;
-        if (skillManager == null) return;
-
-        if (isActive) skillManager.ActivateSkill(this);
-        else skillManager.DeactivateSkill(this);
-    }
+    private void HandleSpawnGetomirChanged(bool _) => UnlockedTypesChanged?.Invoke();
 
     private Vector3 GetRandomOffsetPosition(Vector3 center, float radius)
     {
@@ -156,6 +152,7 @@ public class CreatureSpawn : Skill
 
         var spawned = spawnComponentServer.SpawnAliesPointServer(position, Quaternion.identity, minion, index, false, parentCharacter);
         if (spawned == null) return;
+        if (!IsSpawnTypeUnlocked((SpawnType)index)) return;
 
         RpcTentacleCocoon(spawned.netIdentity);
     }

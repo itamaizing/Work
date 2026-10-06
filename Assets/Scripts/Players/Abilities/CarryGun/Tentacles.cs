@@ -40,6 +40,7 @@ public class Tentacles : Skill
 
     #region Talent
     private bool _isPsionicsTalentThree = false;
+    private bool _isPsionicsTalentFour = false;
     private bool _isAttractionTentacleTalent = false;
     private bool _isProtectiveCooconSpawn = false;
     private bool _isProtectiveCooconSpawnAttack = false;
@@ -51,6 +52,13 @@ public class Tentacles : Skill
 
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
+
+    public void PsionicsTalentFour(bool value)
+    {
+        if(value == _isPsionicsTalentFour) return;
+        _isPsionicsTalentFour = value;
+    }
+    
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
     public void SpawnSpike(bool value) => _isSpawnSpike = value;
@@ -517,7 +525,7 @@ public class Tentacles : Skill
 
         _currentTentacle = Instantiate(_tentaclesPrefab, position, Quaternion.identity);
 
-        _currentTentacle.Init(_player, target, position, target.transform.position, _tentacleLifetime, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
+        _currentTentacle.Init(_player, target, position, target.transform.position, _tentacleLifetime, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _isPsionicsTalentFour, _spentAttackingPsiEnergy, this);
 
         NetworkServer.Spawn(_currentTentacle.gameObject);
         
@@ -547,7 +555,7 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, _tentacleLifetime, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, _tentacleLifetime, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _isPsionicsTalentFour, _spentAttackingPsiEnergy, this);
     }
 
     [ClientRpc]

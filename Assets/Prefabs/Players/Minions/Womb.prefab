@@ -5008,6 +5008,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents: []
+  _allTalents: []
 --- !u!1 &962498598457011900
 GameObject:
   m_ObjectHideFlags: 0
@@ -16774,6 +16775,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _attributes: []
   TemporaryResourceDisplay: []
 --- !u!114 &6401325642211474292
 MonoBehaviour:
@@ -16845,9 +16847,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -16863,14 +16865,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -16901,7 +16900,6 @@ MonoBehaviour:
     _cachedCastDelayClipDuration: 0
     _cachedTriggerClips: []
   _soundComponent:
-    _database: {fileID: 0}
     _entries: []
   spawnComponent: {fileID: 7099943676139532891}
   minionMove: {fileID: 321651727084008340}
@@ -26148,7 +26146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureIcon
   _button: {fileID: 289736752889068381}
-  _spawnType: 2
+  _spawnType: 1
   _creatureSpawn: {fileID: 847868207525712670}
 --- !u!1 &5355844639261370825
 GameObject:
@@ -39637,7 +39635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureIcon
   _button: {fileID: 2330904938363495555}
-  _spawnType: 1
+  _spawnType: 2
   _creatureSpawn: {fileID: 847868207525712670}
 --- !u!1 &7908112913332797570
 GameObject:

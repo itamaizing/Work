@@ -33,6 +33,7 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isAttractionTentacleActive;
     private bool _isAttractionTentacle;
     private bool _isSpawnSpike;
+    private bool _isDischarge;
     private float _spentAttackingPsiEnergy;
     
     private float lifeTentacle;
@@ -77,7 +78,7 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition, float lifetime,
-        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, bool isSpawnSpike, float currentDamage, Skill skill)
+        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, bool isSpawnSpike, bool isDischarge, float currentDamage, Skill skill)
     {
         _isPsionicsTalentThree = isPsionicsTalentThree;
         _player = player;
@@ -89,6 +90,7 @@ public class TentacleProjectile : NetworkBehaviour
         _spentAttackingPsiEnergy = currentDamage;
         _skill = skill;
         _isSpawnSpike = isSpawnSpike;
+        _isDischarge = isDischarge;
 
         if (_player != null) _player.TryGetComponent(out _casterPsiEnergy);
 
@@ -285,6 +287,7 @@ public class TentacleProjectile : NetworkBehaviour
             {
                 DealAttackingPsiDamage(attackingPsiValue);
                 if (_isPsionicsTalentThree) ApplyLowVoltageDebuff(attackingPsiValue);
+                if (_isDischarge) ApplyDischargeDebuff(attackingPsiValue);
             }
         }
     }
@@ -334,6 +337,24 @@ public class TentacleProjectile : NetworkBehaviour
                 _skill.ApplyDamage(splashDamage, enemy.gameObject);
             }
         }
+    }
+    
+    private void ApplyDischargeDebuff(float attackingPsiValue)
+    {
+        if (!isServer || _target == null || _target.IsDead) return;
+
+        int stacks = Mathf.FloorToInt(attackingPsiValue / 10f);
+        if (stacks <= 0) return;
+
+        float duration = 6f * stacks;
+
+        _target.CharacterState.AddState(
+            States.Discharge,
+            duration,
+            0f,
+            _player.gameObject,
+            "Tentacles"
+        );
     }
 
     private void ApplyLowVoltageDebuff(float attackingPsiValue)

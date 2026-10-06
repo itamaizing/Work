@@ -4,148 +4,159 @@ using UnityEngine;
 
 public class ImpatienceStateStacking : StateStackingRefreshing
 {
-    private float _durationRemaining;
-
     private static readonly HashSet<Character> ActiveCharacters = new();
-    private static bool _isProcessingSharedDamage;
 
     private bool _isAccumulationActive;
     private BasePsionicEnergy _casterPsionic;
     private Impatica _impatica;
 
+    private const string ShareKey = "ImpatienceShare";
+    
     private const float PsiExplosionPercent = 0.3f;
     private const float PsiExplosionRadius = 3f;
+    private const float ProtectiveAbsorbRatio = 0.5f;
 
-    private List<StatusEffect> _effects = new() { StatusEffect.Ability };
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.Impatience;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
+    private bool _subscribed;
+    
+    public override bool IsUnique => false;
+
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        health = character.Character.Health;
-        this.sourceCaster = personWhoMadeBuff;
-
-        _durationRemaining = durationToExit;
-
         if (!character.isServer) return;
 
         ActiveCharacters.Add(character.Character);
-        health.OnBeforeDamage += HandleBeforeDamage;
 
-        if (personWhoMadeBuff != null)
+        if (!_subscribed && health != null)
         {
-            _casterPsionic = personWhoMadeBuff.GetComponent<BasePsionicEnergy>();
-            _impatica = personWhoMadeBuff.GetComponent<Impatica>();
+            health.OnBeforeDamage += HandleBeforeDamage;
+            _subscribed = true;
+        }
 
-            if (_casterPsionic != null)
-            {
-                _isAccumulationActive = _casterPsionic.IsPsionicsTalentActive;
-                _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
-            }
+        if (personWhoMadeBuff == null) return;
+
+        _casterPsionic = personWhoMadeBuff.GetComponent<BasePsionicEnergy>();
+        _impatica = personWhoMadeBuff.Abilities != null
+            ? personWhoMadeBuff.Abilities.GetSkill<Impatica>()
+            : null;
+
+        if (_casterPsionic != null)
+        {
+            _isAccumulationActive = _casterPsionic.IsPsionicsTalentActive;
+            _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
         }
     }
-    
-    
 
-    public override void UpdateState()
-    {
-
-    }
+    public override void UpdateState() { }
     
     public override bool Stack(float time)
     {
         RemainingDuration = time;
+        if (time > MaxDuration)
+            MaxDuration = time;
         return false;
     }
 
     public override void ExitState()
     {
-        if (characterState.Character.isServer)
+        if (characterState != null && characterState.Character != null && characterState.Character.isServer)
         {
             ActiveCharacters.Remove(characterState.Character);
 
-            if (health != null) health.OnBeforeDamage -= HandleBeforeDamage;
+            if (_subscribed && health != null)
+            {
+                health.OnBeforeDamage -= HandleBeforeDamage;
+                _subscribed = false;
+            }
 
-            if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
+            if (_casterPsionic != null)
+                _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
         }
 
-        CurrentStacksCount = 0;
-        characterState.RemoveState(this);
+        _casterPsionic = null;
+        _impatica = null;
+
+        base.ExitState();
     }
 
     private void HandleAccumulationChanged(bool value) => _isAccumulationActive = value;
 
     private void HandleBeforeDamage(ref Damage damage, Skill skill)
     {
-        if (_isProcessingSharedDamage) return;
-        if (damage.Value <= 0) return;
+        if (characterState == null || !characterState.isServer) return;
+
+        if (damage.DamageKey == ShareKey) return;
 
         float originalDamage = damage.Value;
 
-        if (_isAccumulationActive && _casterPsionic != null && damage.Type == DamageType.Physical && _casterPsionic.IsAttackingPsiEnergyActive)
+        if (damage.Value <= 0f) return;
+        
+        if (_isAccumulationActive
+            && _casterPsionic != null
+            && damage.Type == DamageType.Physical
+            && _casterPsionic.IsAttackingPsiEnergyActive)
         {
-            float psiGain = originalDamage;
-            _casterPsionic.AddPsiAndRestartDecay(psiGain);
+            _casterPsionic.AddPsiAndRestartDecay(originalDamage);
         }
 
-        if (_impatica != null && _impatica.IsExtendDamageAbsorption && _casterPsionic != null)
+        if (_impatica != null
+            && _impatica.IsExtendDamageAbsorption
+            && _casterPsionic != null
+            && _casterPsionic.CurrentValue > 0f)
         {
-            if (_casterPsionic.CurrentValue > 0)
+            float absorbAmount = Mathf.Min(_casterPsionic.CurrentValue, damage.Value);
+            _casterPsionic.UsePsiEnergy(absorbAmount);
+
+            damage.Value -= absorbAmount * ProtectiveAbsorbRatio;
+            damage.Value = Mathf.Max(damage.Value, 0f);
+
+            float aoeDamageValue = absorbAmount * PsiExplosionPercent;
+            if (aoeDamageValue > 0f)
             {
-                float absorbAmount = Mathf.Min(_casterPsionic.CurrentValue, damage.Value);
+                int enemiesHitCount = 0;
+                var hits = Physics.OverlapSphere(
+                    characterState.Character.transform.position,
+                    PsiExplosionRadius);
 
-                _casterPsionic.UsePsiEnergy(absorbAmount);
-
-                damage.Value -= absorbAmount;
-                damage.Value = Mathf.Max(damage.Value, 0f);
-
-                float aoeDamageValue = absorbAmount * PsiExplosionPercent;
-
-                if (aoeDamageValue > 0f)
+                foreach (var hit in hits)
                 {
-                    Collider[] hits = Physics.OverlapSphere( characterState.Character.transform.position, PsiExplosionRadius);
+                    if (!hit.TryGetComponent<Character>(out var target)) continue;
+                    if (target == characterState.Character || target.IsDead) continue;
 
-                    int enemiesHitCount = 0;
-
-                    foreach (var hit in hits)
+                    var aoeDamage = new Damage
                     {
-                        Character target = hit.GetComponent<Character>();
-                        if (target == null) continue;
-                        if (target == characterState.Character) continue;
-                        if (target.IsDead) continue;
+                        Value = aoeDamageValue,
+                        Type = DamageType.Magical,
+                        School = Schools.Air,
+                        Form = AbilityForm.Magic
+                    };
 
-                        Damage aoeDamage = new Damage
-                        {
-                            Value = aoeDamageValue,
-                            Type = DamageType.Magical,
-                            School = Schools.Air,
-                            Form = AbilityForm.Magic
-                        };
+                    target.Health.TryTakeDamage(ref aoeDamage, skill);
+                    enemiesHitCount++;
+                }
 
-                        target.Health.TryTakeDamage(ref aoeDamage, skill);
+                var psionicEnergy = _casterPsionic.PsionicEnergySkill;
+                if (psionicEnergy != null && psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
+                {
+                    float bonusTime = enemiesHitCount * 0.1f;
 
-                        enemiesHitCount++;
-                    }
+                    var attacking = _casterPsionic.AttackingPsionicEnergy;
+                    if (attacking != null)
+                        attacking.ExtendDuration(bonusTime);
 
-                    var psionicEnergy = _casterPsionic.PsionicEnergySkill;
-
-                    if (psionicEnergy != null && psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
+                    foreach (var character in ActiveCharacters)
                     {
-                        float bonusTime = enemiesHitCount * 0.1f;
-
-                        var attacking = _casterPsionic.GetComponent<AttackingPsionicEnergy>();
-                        if (attacking != null)
-                            attacking.ExtendDuration(bonusTime);
-
-                        foreach (var character in ActiveCharacters)
+                        if (character == null) continue;
+                        if (character.CharacterState.GetState(States.Impatience)
+                            is ImpatienceStateStacking state)
                         {
-                            var state = character.CharacterState.GetState(States.Impatience) as ImpatienceStateStacking;
-                            if (state != null)
-                                state.ExtendDuration(bonusTime);
+                            state.ExtendDuration(bonusTime);
                         }
                     }
                 }
@@ -154,7 +165,7 @@ public class ImpatienceStateStacking : StateStackingRefreshing
 
         if (damage.Value <= 0f) return;
 
-        List<Character> recipients = new List<Character>(ActiveCharacters);
+        var recipients = new List<Character>(ActiveCharacters);
 
         if (sourceCaster != null &&
             !sourceCaster.IsDead &&
@@ -163,44 +174,38 @@ public class ImpatienceStateStacking : StateStackingRefreshing
             recipients.Add(sourceCaster);
         }
 
-        if (recipients.Count <= 1)
-            return;
+        if (recipients.Count <= 1) return;
 
-        float dividedDamage = damage.Value / recipients.Count;
+        float divided = damage.Value / recipients.Count;
 
-        _isProcessingSharedDamage = true;
-
-        try
+        foreach (var character in recipients)
         {
-            foreach (var character in recipients)
+            if (character == null || character.IsDead) continue;
+            if (character == characterState.Character) continue;
+
+            var shared = new Damage
             {
-                if (character == characterState.Character) continue;
-                if (character == null || character.IsDead) continue;
+                Value = divided,
+                Type = damage.Type,
+                School = damage.School,
+                Form = damage.Form,
+                PhysicAttackType = damage.PhysicAttackType,
+                SkillType = damage.SkillType,
+                SourceSkill = damage.SourceSkill,
+                DamageKey = ShareKey,
+                FullyAbsorbed = false
+            };
 
-                Damage sharedDamage = new Damage
-                {
-                    Value = dividedDamage,
-                    Type = damage.Type,
-                    School = damage.School,
-                    Form = damage.Form,
-                    PhysicAttackType = damage.PhysicAttackType
-                };
-
-                character.Health.TryTakeDamage(ref sharedDamage, skill);
-            }
-
-            damage.Value = dividedDamage;
+            character.Health.TryTakeDamage(ref shared, skill);
         }
 
-        finally
-        {
-            _isProcessingSharedDamage = false;
-        }
+        damage.Value = divided;
     }
-
+    
     [Server]
     public void ExtendDuration(float amount)
     {
-        _durationRemaining += amount;
+        if (amount <= 0f) return;
+        IncreaseDuration(amount);
     }
 }
