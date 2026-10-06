@@ -115,11 +115,15 @@ public class CostComponent : BaseSkillComponent
     #region Checks
     public bool EnoughResources(List<SkillResourceCost> costs=null, bool shouldModify=true)
     {
+        bool customCost = true;
         if (costs == null)
+        {
             costs = _costs;
+            customCost = false;
+        }
         foreach (SkillResourceCost cost in costs)
         {
-            if (cost.costType != SkillCostType.Mandatory)
+            if (cost.costType != SkillCostType.Mandatory && !customCost)
                 continue;
 
             if (_resources.TryGetValue(cost.type, out var resource))

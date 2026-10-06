@@ -79,6 +79,7 @@ public abstract partial class Skill
 
     private void ApplyTransition(SkillState to, SkillEndReason reason)
     {
+        //Debug.Log($"{_state.ToString()} -> {to.ToString()}");
         var from = _state;
         if (from == to) return;
 
@@ -270,8 +271,8 @@ public abstract partial class Skill
 
     private bool ValidateCastTarget()
     {
-        var damageable = Targeting.ForDamage?.Damageable;
-        if (damageable != null && !IsValidTarget(damageable)) return false;
+        var targetable = Targeting.Target?.Targetable;
+        if (targetable != null && !IsValidTarget(targetable)) return false;
         return IsCanCast;
     }
 
@@ -281,7 +282,7 @@ public abstract partial class Skill
     private IEnumerator CastPipeline()
     {
         bool noCast = Hero.Abilities.TryConsumeNoCast();
-        bool castFromAnim = !noCast && AnimTriggerCast != 0;
+        bool castFromAnim = !noCast && (AnimTriggerCast != 0 || Animation.CastTriggers.Count > 0);
 
         SetState(noCast ? SkillState.Casting : SkillState.Preparing);
         Hero.Abilities.NotifySkillPrepared(this);
@@ -299,8 +300,10 @@ public abstract partial class Skill
         {
             yield return PreparingJob(PreparingDuration);
             if (IsIdle) yield break;
+
             if (ConsumeForceFail())
             {
+                SpendResources();
                 EndExecution(SkillEndReason.ForcedMiss);
                 yield break;
             }
@@ -338,11 +341,14 @@ public abstract partial class Skill
                     yield break;
                 }
 
-                if (!ValidateCastTarget())
-                {
-                    EndExecution(SkillEndReason.Interrupted);
-                    yield break;
-                }
+                //if (!ValidateCastTarget())
+                //{
+                //    Debug.LogError("Couldn't validate Cast Target");
+                //    // Вот тут ложится, если мы используем входя в край радиуса каста
+                //    // Пока уберем доп. проверку нахождения в радиусе после начала каста, потом подумаем
+                //    EndExecution(SkillEndReason.Interrupted);
+                //    yield break;
+                //}
             }
 
             bool waitAnim = castFromAnim && _isPlayCastAnim;

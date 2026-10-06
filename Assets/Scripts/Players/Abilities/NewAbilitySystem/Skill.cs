@@ -383,7 +383,7 @@ using UnityEngine;
 
     public void ClearQueueTarget() => _targetInfoQueue.Clear();
 
-    protected virtual bool IsValidTarget(IDamageable target)
+    protected virtual bool IsValidTarget(ITargetable target)
     {
         if (target == null) return false;
         if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
@@ -528,7 +528,6 @@ using UnityEngine;
     #endregion
     
     #region Charges
-    #region NewSystem
     //[SyncVar] private int _maxCharges;
     private SyncList<double> _rechargeEndTime = new();
     public SyncList<double> RechargeTimers => _rechargeEndTime;
@@ -586,7 +585,6 @@ using UnityEngine;
     {
         _rechargeEndTime.RemoveAt(index);
     }
-    #endregion
     #endregion CHARGES
 
     #region Cooldown
@@ -716,6 +714,7 @@ using UnityEngine;
         return Cost.EnoughResources();
     }
 
+    #region ToDelete
     protected virtual bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
     {
         if (IsHaveResourceOnSkill)
@@ -744,6 +743,7 @@ using UnityEngine;
         if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
         return TryPayCost(Cost.TypeOf(SkillCostType.Mandatory), startCooldown);
     }
+    #endregion
     #endregion
 
     #region Animation 
