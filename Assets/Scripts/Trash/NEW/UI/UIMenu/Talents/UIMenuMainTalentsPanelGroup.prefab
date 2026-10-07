@@ -185,8 +185,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 110, y: 0}
-  m_SizeDelta: {x: -220, y: 0}
+  m_AnchoredPosition: {x: 117.5, y: 0}
+  m_SizeDelta: {x: -235, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2568317446997932317
 GameObject:
@@ -690,6 +690,7 @@ MonoBehaviour:
   _talentsCount: {fileID: 2289309715589204459}
   _itemsParent: {fileID: 3432667500469557706}
   _rowContainer: {fileID: -6500425852377899729, guid: 26e97820ed039b24fb87e102c0310908, type: 3}
+  _backgroundContainer: {fileID: 875305276854524240}
 --- !u!1 &6169795207322665720
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,8 +784,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45
-  m_fontSizeBase: 45
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -938,8 +939,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50.000004, y: 0}
-  m_SizeDelta: {x: -99.99999, y: 0}
+  m_AnchoredPosition: {x: -32.5, y: 0}
+  m_SizeDelta: {x: -65, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3036981048362677432
 CanvasRenderer:
@@ -1089,7 +1090,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -80, y: 0}
+  m_SizeDelta: {x: -65, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &5066274067128482022
 CanvasRenderer:

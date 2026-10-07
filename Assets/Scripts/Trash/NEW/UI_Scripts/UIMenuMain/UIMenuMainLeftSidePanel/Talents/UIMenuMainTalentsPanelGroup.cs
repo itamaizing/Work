@@ -13,6 +13,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     [SerializeField] private TMProLocalizer _talentsCount;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private UIMenuTalentRow _rowContainer;
+    [SerializeField] private GameObject _backgroundContainer;
 
 	private bool _isGameUI = false;
     private float _initialParentCellHeight = 65f;
@@ -191,8 +192,16 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
         return rows;
     }
-    
-	public void Show()
+
+    public void Toggle()
+    {
+        bool isCurrentlyActive = _itemsParent.gameObject.activeSelf;
+        _itemsParent.gameObject.SetActive(!isCurrentlyActive);
+        _backgroundContainer.SetActive(!isCurrentlyActive);
+    }
+
+
+    public void Show()
     {
         if (_itemsParent.gameObject.activeInHierarchy == false)
         {
