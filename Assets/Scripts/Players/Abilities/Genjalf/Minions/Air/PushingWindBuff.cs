@@ -3,46 +3,54 @@ using UnityEngine;
 
 public class PushingWindBuff : StateBasic
 {
-	private float _duration;
+    private const float BuffSpeedBonus = 0.3f;
+    private const float AuraSpeedBonus = 0.1f;
 
-	private float _speedModifier = 0.3f;
-	private AttributeModifier _modifier = new(0,ModifierType.Multiplier);
-	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-	public override States State { get; }
-	public override StateType Type => StateType.Magic;
-	public override List<StatusEffect> Effects { get; }
+    private AttributeModifier _modifier = new(0, ModifierType.Multiplier);
+    private bool _isModifierApplied;
 
-	private bool isAuraState => State == States.PushingWindAura;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    public override States State { get; }
+    public override StateType Type => StateType.Magic;
+    public override List<StatusEffect> Effects { get; } = new();
 
-	public PushingWindBuff(States stateType)
-	{
-		State = stateType;
-	}
+    private bool isAuraState => State == States.PushingWindAura;
 
-	public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		characterState = character;
+    public PushingWindBuff(States stateType)
+    {
+        State = stateType;
+    }
 
-		_speedModifier = isAuraState ? 0.1f : 0.3f;
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        EnsureModifier();
+    }
+    
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        EnsureModifier();
+    }
 
-		_modifier.Value = 1 + _speedModifier;
-		_modifier.Type = ModifierType.Multiplier;
-		characterState.Character.Move.AddModifier(_modifier);
-	}
+    private void EnsureModifier()
+    {
+        if (_isModifierApplied) return;
 
-	public override void UpdateState()
-	{
-		if(isAuraState) return;
-		if (_duration < 0)
-		{
-			ExitState();
-		}
-	}
+        _modifier.Value = 1 + (isAuraState ? AuraSpeedBonus : BuffSpeedBonus);
+        _modifier.Type = ModifierType.Multiplier;
+        characterState.Character.Move.AddModifier(_modifier);
+        _isModifierApplied = true;
+    }
 
-	public override void ExitState()
-	{
-		characterState.Character.Move.RemoveModifier(_modifier);
-		characterState.RemoveState(this);
+    public override void UpdateState() { }
 
+    public override void ExitState()
+    {
+        if (_isModifierApplied)
+        {
+            characterState.Character.Move.RemoveModifier(_modifier);
+            _isModifierApplied = false;
+        }
+
+        base.ExitState();
     }
 }

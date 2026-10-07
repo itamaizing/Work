@@ -1040,9 +1040,10 @@ using UnityEngine;
     [Command] private void CmdSkillAfterCastJob() => SkillAfterCastJob();
 
     #region OnClicks
+
     private void OnClick()
     {
-        _click = TypeClick.LMB;
+        if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.LMB;
     }
 
     private void OnClickCanceled()
@@ -1050,20 +1051,9 @@ using UnityEngine;
         _click = TypeClick.None;
     }
 
-    private void OnShiftClick()
-    {
-        _click = TypeClick.ShiftLMB;
-    }
-
-    private void OnCtrlClick()
-    {
-        _click = TypeClick.CtrlLMB;
-    }
-
-    private void OnSpaceClick()
-    {
-        _click = TypeClick.SpaceLMB;
-    }
+    private void OnShiftClick() { if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.ShiftLMB; }
+    private void OnCtrlClick()  { if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.CtrlLMB; }
+    private void OnSpaceClick() { if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.SpaceLMB; }
     #endregion
 
     private void SubscribeClickEvents()

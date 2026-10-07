@@ -6330,9 +6330,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 1.1
     _area: 0
@@ -6429,9 +6426,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 1
@@ -6531,9 +6525,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -6631,9 +6622,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -6736,9 +6724,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -6841,9 +6826,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
@@ -6936,9 +6918,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 1
@@ -7032,9 +7011,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -7138,9 +7114,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -7236,9 +7209,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 1.5
     _area: 0
@@ -7340,9 +7310,6 @@ MonoBehaviour:
     _castDuration: 2.1
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -7438,9 +7405,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -7536,9 +7500,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 2
@@ -7633,9 +7594,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -7734,9 +7692,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -7836,9 +7791,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -7932,9 +7884,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -8027,9 +7976,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 2
     _area: 0
@@ -8124,9 +8070,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -8218,9 +8161,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 3
@@ -8333,9 +8273,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -9909,9 +9846,6 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0

@@ -233,8 +233,8 @@ public class JumpWithChelicera : Skill
             _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
             
             _cheliceraeStrike.IsTriggeredByJump = true;
-            
-            _cheliceraeStrike.CheliceraStrikeCast();
+
+            _cheliceraeStrike.CastDetached(_cheliceraeStrike.CheliceraStrikeCast);
             _cheliceraeStrike.ClearDataCheliceraStrike();
         }
     }

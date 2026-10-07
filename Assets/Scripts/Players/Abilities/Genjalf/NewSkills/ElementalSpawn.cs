@@ -139,6 +139,7 @@ public class ElementalSpawn : Skill
             case Elementals.Air:
                 HandleAura<AirElement>(enable);
                 HandleSkill<DischargingSkill>(enable,_elementalsActiveTalent);
+                HandleSkill<PushingWind>(enable,_elementalsActiveTalent);
                 break;
 
             case Elementals.Earth:

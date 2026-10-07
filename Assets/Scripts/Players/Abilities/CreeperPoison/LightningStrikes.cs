@@ -13,23 +13,30 @@ public class LightningStrikes : Skill
     [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
-    
+
+    private const int HitsPerCast = 2;
+    private const float FallbackAttackDuration = 3f;
+    private static readonly int attackTrigger = Animator.StringToHash("LightningStrikesAttacking");
+
     private Character _currentTarget;
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
-    private float _heatedGlandsDuration = 4f;
     private float _radiusSearchTarget = 0.5f;
 
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
     private bool _isCanDamageDeal = false;
 
+    private int _hitsDealt;
+    private bool _awaitingHits;
+    private bool _attackFinished;
+
     public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override int AnimTriggerPrepare => 0;
-    protected override int AnimTriggerCast => Animator.StringToHash("LightningStrikesAttacking");
+    protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast
     {
@@ -50,24 +57,29 @@ public class LightningStrikes : Skill
         base.Awake();
     }
 
+    #region Animation events
+
     public void AnimLightningStrikesCast()
     {
-        AnimStartCastCoroutine();
+        if (!_awaitingHits || _hitsDealt >= HitsPerCast) return;
+
+        _hitsDealt++;
+        DealHit(_currentTarget, isLastHit: _hitsDealt >= HitsPerCast);
     }
 
     public void AnimLightningStrikesEnd()
     {
         OnLightningStrikesEnd?.Invoke();
+        _attackFinished = true;
         AnimCastEnded();
     }
-    /* public void Targeting.SetTarget(Character target)
-     {
-         _target = target;
-     }*/
+
+    #endregion
 
     protected override void ClearData()
     {
         _currentTarget = null;
+        _awaitingHits = false;
 
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
@@ -123,23 +135,19 @@ public class LightningStrikes : Skill
 
         if (target == null || !IsTargetInRange(target))
         {
-            AnimCastEnded();
+            TryCancel(true);
             yield break;
         }
-
+        
         if (_lightningMovement != null && _lightningMovement.IsInMovement)
         {
             _animTime = GetClipLength();
             IncreaseAnimSpeed();
         }
 
-        Debug.Log("LightningStrikes / CastAction");
-
         if (_coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
-            float newCooldownTime = Cooldown.BaseCooldownTime * _cooldownMultiplier;
-            Cooldown.CooldownTime = newCooldownTime;
-
+            Cooldown.CooldownTime = Cooldown.BaseCooldownTime * _cooldownMultiplier;
             _isIncreaseCooldownTime = true;
         }
         else
@@ -147,15 +155,43 @@ public class LightningStrikes : Skill
             Cooldown.CooldownTime = Cooldown.BaseCooldownTime;
         }
 
-        DamageDeal(target);
+        if (_player.Abilities.LastCastedSkill is CreeperStrike) _player.Abilities.PreviewCastedSkill = this;
+        _player.Abilities.LastCastedSkill = this;
 
-        yield return null;
+        _hitsDealt = 0;
+        _attackFinished = false;
+        _awaitingHits = true;
+
+        _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
+        _hero.Animator.SetTrigger(attackTrigger);
+        _hero.NetworkAnimator.SetTrigger(attackTrigger);
+
+        float timeout = GetAttackTimeout();
+        float elapsed = 0f;
+        while (!_attackFinished)
+        {
+            elapsed += Time.deltaTime;
+            if (elapsed > timeout)
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        _awaitingHits = false;
     }
 
     private bool IsTargetInRange(Character target)
     {
         if (target == null) return false;
         return Vector3.Distance(_player.transform.position, target.transform.position) <= AreaInfo.Radius;
+    }
+
+    private float GetAttackTimeout()
+    {
+        float clip = GetClipLength();
+        float duration = clip > 0f ? clip : FallbackAttackDuration;
+        return duration / Mathf.Max(0.1f, GetCastSpeed()) + 1f;
     }
 
     private float GetClipLength()
@@ -177,21 +213,18 @@ public class LightningStrikes : Skill
         {
             float multiplier = _lightningMovement.DurationLeap - 4.9f;
             float animTimeMultiplier = _animTime / multiplier;
-            Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);
         }
     }
 
-    private void DamageDeal(Character target)
+    private void DealHit(Character target, bool isLastHit)
     {
         if (target == null) return;
-        Debug.Log("LightningStrikes / DamageDeal");
 
-        if (_player.Abilities.LastCastedSkill is CreeperStrike) _player.Abilities.PreviewCastedSkill = this;
-        _player.Abilities.LastCastedSkill = this;
         _creeperStrike.DamageDeal(target, true);
-
         _isCanDamageDeal = false;
-        if (_coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime) _isIncreaseCooldownTime = false;
+
+        if (isLastHit && _coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime)
+            _isIncreaseCooldownTime = false;
     }
 }

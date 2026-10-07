@@ -345,13 +345,7 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    private void PrepereSkill()
-    {
-        if (_selectedSkill != null)
-        {
-            _selectedSkill.TryStartTargeting();
-        }
-    }
+    private void PrepereSkill() => PrepareSkillWithKey(null);
 
     private void CancelSkillCast()
     {
@@ -424,10 +418,15 @@ public class SkillManager : MonoBehaviour
         return true;
     }
     
-    public void SelectAndPrepareSkill(Skill skill)
+    private void PrepareSkillWithKey(object sessionKey)
     {
-        if (skill == null || skill.Disactive) 
-            return;
+        if (_selectedSkill != null)
+            _selectedSkill.TryStartTargeting(sessionKey);
+    }
+
+    public void SelectAndPrepareSkill(Skill skill, object sessionKey = null)
+    {
+        if (skill == null || skill.Disactive) return;
 
         if (_selectedSkill != skill)
         {
@@ -438,7 +437,7 @@ public class SkillManager : MonoBehaviour
             SetSelectSkill(skill);
         }
 
-        PrepereSkill();
+        PrepareSkillWithKey(sessionKey);
     }
 
     private void SetSelectSkill(Skill skill)

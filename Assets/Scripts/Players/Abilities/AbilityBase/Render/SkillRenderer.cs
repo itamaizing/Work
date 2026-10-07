@@ -70,7 +70,8 @@ public class SkillRenderer : NetworkBehaviour
 
     private void Awake()
     {
-        if (_cursorPrepareTexture != null) _cursorPrepareHotspot = new Vector2(_cursorPrepareTexture.width / 2f, _cursorPrepareTexture.height / 2f);
+        _cursorPrepareHotspot = Vector2.zero;
+        _cursorDefaultHotspot = Vector2.zero;
     }
 
     public void SetPrepareCursorLight() => UnityEngine.Cursor.SetCursor(_cursorPrepareLightTexture, _cursorPrepareHotspot, CursorMode.Auto);

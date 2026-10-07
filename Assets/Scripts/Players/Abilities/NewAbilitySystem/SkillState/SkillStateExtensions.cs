@@ -255,6 +255,8 @@ public abstract partial class Skill
     #endregion
 
     #region Cast pipeline
+    
+    private bool _detachedCastArmed;
 
     private void StartPipeline()
     {
@@ -406,15 +408,27 @@ public abstract partial class Skill
 
         CommitCooldown();
     }
+    
+    public void CastDetached(Action trigger)
+    {
+        _detachedCastArmed = true;
+        try { trigger(); }
+        finally { _detachedCastArmed = false; }
+    }
 
     [ClientCallback]
     protected void AnimStartCastCoroutine()
     {
+        if (!IsExecuting)
+        {
+            if (!_detachedCastArmed) return;
+            StartCoroutine(CastJob());
+            return;
+        }
+
         if (_state != SkillState.Casting || _castTriggered)
         {
-            if (IsExecuting)
-                Debug.LogWarning($"[Skill:{Name}] AnimStartCastCoroutine проигнорировано в состоянии {State}",
-                    this);
+            Debug.LogWarning($"[Skill:{Name}] AnimStartCastCoroutine проигнорировано в состоянии {State}", this);
             return;
         }
 
@@ -655,9 +669,10 @@ public abstract partial class Skill
     
     #region Targeting flow
 
-    public bool TryStartTargeting()
+    public bool TryStartTargeting(object sessionKey = null)
     {
         if (_isTargeting) return false;
+        TargetingSession.Begin(this, sessionKey);
 
         foreach (var skillCost in Cost.Values)
             _hero.Resources[skillCost.type].PhantomValueShow(skillCost.value);
@@ -695,6 +710,7 @@ public abstract partial class Skill
         PlaySound(Sfx_Skill.PrepareEnd);
         Targeting.ClearTempTarget();
         _isTargeting = false;
+        TargetingSession.End(this);
         Renderer.HideSmartIndicator();
 
         _targetingCoroutine = null;
@@ -715,6 +731,21 @@ public abstract partial class Skill
 
         UnSubscribeClickEvents();
         OnClickCanceled();
+        
+        TargetingSession.End(this);
+    }
+    
+    public void CancelTargetingForNewSession()
+    {
+        if (!_isTargeting) return;
+
+        if (IsExecuting)
+        {
+            CancelTargeting();
+            Targeting.ClearTempTarget();
+            ResetPhantomCosts();
+        }
+        else TryCancel(true);
     }
 
     #endregion

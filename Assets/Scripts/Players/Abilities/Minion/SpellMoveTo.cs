@@ -96,7 +96,7 @@ public class SpellMoveTo : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (!Input.GetMouseButtonDown(0))
+        while (!(Input.GetMouseButtonDown(0) && !UiPointer.IsOverScreenUi()))
             yield return null;
 
         Character initialTarget = Targeting.GetTarget()?.Character;
