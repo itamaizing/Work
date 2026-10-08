@@ -107,6 +107,7 @@ public class UIGameWindowPopup : MonoBehaviour
     private void OnCharacterDeselected(Character character)
     {
         _playerIcon.OnCharacterDeselected(character);
+        _playerIcon.IconHolder.SetActive(false);
         _minionPanel.OnCharacterDeselected(character);
         _skillPanel.OnCharacterDeselected(character);
         _attributesPanel.ShowHide(false);

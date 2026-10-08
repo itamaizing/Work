@@ -1,75 +1,43 @@
-using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeakeningSilence : StateBasic
+public class WeakeningSilence : StateStacking, ITickableState
 {
-    private float _damagePerTick;
-    private float _currentDamage;
-    private float _tickInterval = 1f;
-
-    private bool damageTick;
+    private float _damagePerTick = 3;
 
     public override States State => States.WeakeningSilence;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Poison };
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        health = character.Character.Health;
-        _damagePerTick = damageToExit;
-        damageTick = true;
-        _currentDamage = _damagePerTick;
+    public float TickInterval => 1f;
 
-        if (health == null)
-        {
-            Debug.LogWarning($"Health component is missing on {character.name}. WeakeningSilence will not deal damage.");
-            return;
-        }
-
-        characterState.StartCoroutine(PeriodicDamageRoutine());
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-        damageTick = false;
-        characterState.StopCoroutine(PeriodicDamageRoutine());
-    }
-
-    public override void UpdateState()
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
     {
     }
 
-    private IEnumerator PeriodicDamageRoutine()
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
     {
-        while (damageTick)
-        {
-            yield return new WaitForSeconds(_tickInterval);
-            ApplyDamage();
-        }
     }
 
-    [Server]
+    public override void UpdateState() { }
+
+    public void Tick()
+    {
+        ApplyDamage();
+    }
+
     private void ApplyDamage()
     {
-        if (health != null)
+        if (characterState == null || characterState.Character == null || !characterState.isServer || _damagePerTick <= 0f)
+            return;
+
+        Damage damage = new Damage
         {
-            Damage damage = new Damage
-            {
-                Value = _currentDamage,
-                Type = DamageType.Magical
-            };
-            if (health != null)
-            {
-                health.TryTakeDamage(ref damage, null);
-            }
-        }
-        else
-        {
-            Debug.LogError("Health is null in CmdApplyDamage.");
-        }
+            Value = _damagePerTick * CurrentStacksCount,
+            Type = DamageType.Magical
+        };
+
+        health.TryTakeDamage(ref damage, null);
     }
 }

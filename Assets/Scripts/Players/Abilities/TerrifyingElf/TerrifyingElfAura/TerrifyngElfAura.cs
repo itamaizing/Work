@@ -714,4 +714,106 @@ public class TerrifyingElfAura : Skill
     }
     
     #endregion
+    
+    #region InnerDarknessCooldownTalent
+
+    [Header("Inner Darkness Cooldown Talent")]
+    [SerializeField] private List<Skill> _darknessSkills = new();
+
+    private bool _isInnerDarknessCooldownTalent;
+    private Coroutine _innerDarknessTrackerRoutine;
+    private const float CooldownReductionPerTargetPercent = 0.10f;
+    private const float TrackerCheckInterval = 0.5f;
+    
+    public void EnableInnerDarknessCooldownTalent(bool value)
+    {
+        if (_isInnerDarknessCooldownTalent == value) return;
+        _isInnerDarknessCooldownTalent = value;
+
+        if (_isInnerDarknessCooldownTalent)
+        {
+            if (_innerDarknessTrackerRoutine == null)
+                _innerDarknessTrackerRoutine = StartCoroutine(TrackInnerDarknessTargetsRoutine());
+        }
+        else
+        {
+            if (_innerDarknessTrackerRoutine != null)
+            {
+                StopCoroutine(_innerDarknessTrackerRoutine);
+                _innerDarknessTrackerRoutine = null;
+            }
+            RemoveInnerDarknessCooldownReduction();
+        }
+    }
+
+    private IEnumerator TrackInnerDarknessTargetsRoutine()
+    {
+        var wait = new WaitForSeconds(TrackerCheckInterval);
+
+        while (_isInnerDarknessCooldownTalent)
+        {
+            UpdateDarknessCooldownReduction();
+            yield return wait;
+        }
+
+        _innerDarknessTrackerRoutine = null;
+    }
+
+    private void UpdateDarknessCooldownReduction()
+    {
+        if (_hero == null || _darknessSkills == null || _darknessSkills.Count == 0) return;
+
+        int affectedTargetsCount = GetInnerDarknessTargetsCount();
+
+        float totalPercentReduction = affectedTargetsCount * CooldownReductionPerTargetPercent;
+
+        foreach (var skill in _darknessSkills)
+        {
+            if (skill == null) continue;
+
+            var cooldownAttr = skill.Attributes[SkillAttributeName.Cooldown];
+            cooldownAttr.RemoveBySource(this, all: true);
+
+            if (totalPercentReduction > 0f)
+            {
+                var modifier = new AttributeModifier(-totalPercentReduction, ModifierType.Percent, source: this);
+                cooldownAttr.AddModifier(modifier);
+            }
+        }
+    }
+
+    private int GetInnerDarknessTargetsCount()
+    {
+        if (_hero == null) return 0;
+
+        float searchRadius = 10;
+        var colliders = Physics.OverlapSphere(_hero.transform.position, searchRadius, Targeting.Layer);
+
+        int count = 0;
+        foreach (var col in colliders)
+        {
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (target == _hero) continue;
+            if (target.CharacterState == null) continue;
+
+            if (target.CharacterState.CheckForState(States.InnerDarkness))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void RemoveInnerDarknessCooldownReduction()
+    {
+        if (_darknessSkills == null) return;
+
+        foreach (var skill in _darknessSkills)
+        {
+            if (skill == null) continue;
+            skill.Attributes[SkillAttributeName.Cooldown].RemoveBySource(this, all: true);
+        }
+    }
+
+    #endregion
 }

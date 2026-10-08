@@ -1,97 +1,91 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class InnerDarkness : StateStackingRefreshing
 {
     private const float TimeDecreasePerStack = 2f;
-    private float _durationRemaining;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
+    private readonly List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Ability };
 
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.InnerDarkness;
     public override StateType Type => StateType.Magic;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
-    public override float RemainingDuration => _durationRemaining;
 
     public InnerDarkness()
     {
         SetMaxStacks(6);
     }
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
     {
-        characterState = character;
-        
-        _durationRemaining = durationToExit;
-        var terrifyingElfAura = personWhoMadeBuff.GetComponent<TerrifyingElfAura>();
-
-        if (personWhoMadeBuff != null && terrifyingElfAura.IsReductionRecharge)
+        if (sourceCaster != null && sourceCaster.TryGetComponent<TerrifyingElfAura>(out var terrifyingElfAura))
         {
-            SkillManager caster = personWhoMadeBuff.Abilities;
-            foreach (Skill skill in caster.Abilities)
+            if (terrifyingElfAura.IsReductionRecharge)
             {
-                bool isDark = skill.Info.School == Schools.Dark;
-                bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both;
-
-                if (isDark && isSpellish && skill.Cooldown.IsActive)
+                SkillManager casterAbilities = sourceCaster.Abilities;
+                if (casterAbilities != null && casterAbilities.Skills != null)
                 {
-                    float duration = skill.Cooldown.RemainingTime * 0.5f;
-                    skill.Cooldown.Modify(-duration);
+                    foreach (Skill skill in casterAbilities.Skills)
+                    {
+                        if (skill == null || skill.Info == null) continue;
+
+                        bool isDark = skill.Info.School == Schools.Dark;
+                        bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both;
+
+                        if (isDark && isSpellish && skill.Cooldown != null && skill.Cooldown.IsActive)
+                        {
+                            float duration = skill.Cooldown.RemainingTime * 0.5f;
+                            skill.Cooldown.Modify(-duration);
+                        }
+                    }
                 }
             }
         }
     }
 
-    public override void UpdateState()
-    {
-        if (_durationRemaining <= 0) ExitState();
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-        CurrentStacksCount = 0;
-    }
-
     public override bool Stack(float time)
     {
-        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
-
-        if(CurrentStacksCount < MaxStacksCount)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            AddNewStack(time);
+            CurrentStacksCount++;
+            float calculatedDuration = Mathf.Max(0.1f, time - (CurrentStacksCount - 1) * TimeDecreasePerStack);
+            RemainingDuration = calculatedDuration;
+
+            if (CurrentStacksCount == MaxStacksCount)
+            {
+                ApplyFear();
+            }
+
             return true;
         }
 
-        else if (CurrentStacksCount == MaxStacksCount)
+        if (CurrentStacksCount == MaxStacksCount)
         {
-            UpdateDurationForMaxStacks(time);
+            float calculatedDuration = Mathf.Max(0.1f, time - (CurrentStacksCount - 1) * TimeDecreasePerStack);
+            RemainingDuration = calculatedDuration;
+            ApplyFear();
             return false;
         }
 
         return false;
     }
 
-    private void AddNewStack(float time)
+    public override void UpdateState() { }
+
+    public override void ExitState()
     {
-        CurrentStacksCount++;
-
-        if (CurrentStacksCount == MaxStacksCount) CmdStateFear();
-
-        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
+        CurrentStacksCount = 0;
+        base.ExitState();
     }
 
-    private void UpdateDurationForMaxStacks(float time)
+    private void ApplyFear()
     {
-        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
-        CmdStateFear();
-        Debug.Log("обновление при максимальном стаке");
-    }
-    
-    
+        if (characterState == null) return;
 
-    [Command] private void CmdStateFear() => ClientRpcStateFear();
-    [ClientRpc] private void ClientRpcStateFear() { characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, sourceCaster.gameObject, null); }
+        float fearDuration = Random.Range(0.7f, 1.4f);
+        GameObject casterObject = sourceCaster != null ? sourceCaster.gameObject : null;
+
+        characterState.AddStateLogic(States.Fear, fearDuration, 0f, Schools.None, casterObject, null);
+    }
 }

@@ -658,6 +658,7 @@ MonoBehaviour:
   _reviveVisual: {fileID: 0}
   _playerHp: {fileID: 8281172728835060472}
   _playerMana: {fileID: 654678747426985715}
+  _iconHolder: {fileID: 8057477436894338726}
   _lvlInfo: {fileID: 5465920015488967859}
   _FrameBlink: {fileID: 4879880932515034268}
 --- !u!114 &2782366347426868164
@@ -680,6 +681,8 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+  m_MaxWidth: -1
+  m_MaxHeight: -1
 --- !u!1 &7817899506400545291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1027,6 +1030,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1038,7 +1042,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 6e72656b
+  m_ActiveFontFeatures: 6e72656bu
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1

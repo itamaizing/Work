@@ -49,8 +49,12 @@ public class Silence : Skill
     private readonly List<CharacterState> _batchTargetsList = new List<CharacterState>();
 
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-    
-    public void WeakeningSilenceTalentActive(bool value) => _weakeningSilenceTalentActive = value;
+
+    public void WeakeningSilenceTalentActive(bool value)
+    {
+        if(value == _weakeningSilenceTalentActive) return;
+        _weakeningSilenceTalentActive = value;
+    }
 
     private void OnEnable()
     {
@@ -121,9 +125,12 @@ public class Silence : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_targetPoint == Vector3.positiveInfinity) yield return null;
+        if (float.IsInfinity(_targetPoint.x))
+        {
+            yield break;
+        }
 
-        CalculateFinalDurationAndSpendMana();
+        //CalculateFinalDurationAndSpendMana();
 
         CmdSpawnEffectAtTargetPoint(_targetPoint);
         ApplyStateToEnemiesInZone(_targetPoint);
@@ -230,6 +237,7 @@ public class Silence : Skill
 
              float duration = _finalDuration;
              bool hasInnerDarkness = targetState.CheckForState(States.InnerDarkness);
+            
 
              if (_effectsDarknessTalent && hasInnerDarkness)
              {
@@ -240,9 +248,13 @@ public class Silence : Skill
 
              targetState.AddState(States.Silent, duration, 0, Hero.gameObject, this.name);
 
-             if (_weakeningSilenceTalentActive && hasInnerDarkness) 
+             if (_weakeningSilenceTalentActive && hasInnerDarkness)
              {
-                 targetState.AddState(States.WeakeningSilence, 4f, 4f, Hero.gameObject, this.name);
+                 int innerDarknessStacks = targetState.CheckStateStacks(States.InnerDarkness);
+                 for (int s = 0; s < innerDarknessStacks; s++)
+                 {
+                     targetState.AddState(States.WeakeningSilence, 4f, 3f, Hero.gameObject, this.name);
+                 }
              }
          }
      }
@@ -264,6 +276,13 @@ public class Silence : Skill
             }
         }
     }
+    
+    protected override void SpendResources()
+    {
+        CalculateFinalDurationAndSpendMana();
+        base.SpendResources();
+    }
+
 
     private void ApplyEnemiesZone(Collider hitCollider, ref int minionHitCount, ref int ghostAuraMinionHitCount, HashSet<CharacterState> targetsToSilence)
     {
