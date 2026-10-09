@@ -23,13 +23,9 @@ public class HeatedGlandsState : StateStackingRefreshing
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("HeatedGlands / Apply");
-
         SetMaxStacks(_maxStacks);
-
         _playerMana = personWhoMadeBuff.TryGetResource(ResourceType.Mana);
-
         _baseDuration = durationToExit;
-
         _baseManaRegen = personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue;
 
         if (CurrentStacksCount < MaxStacksCount)
@@ -39,20 +35,11 @@ public class HeatedGlandsState : StateStackingRefreshing
         }
     }
 
-    public override void UpdateState()
-    {
-
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         sourceCaster.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
-        
         _allManaRegenIncrease = 0;
-
         CurrentStacksCount = 0;
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -60,17 +47,13 @@ public class HeatedGlandsState : StateStackingRefreshing
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;
-
             RemainingDuration = _baseDuration;
-
             IncreasingManaRegeneration();
-
             return true;
         }
         else
         {
             RemainingDuration = _baseDuration;
-
             return true;
         }
     }

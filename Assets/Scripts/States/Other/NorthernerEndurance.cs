@@ -15,14 +15,8 @@ public class NorthernerEndurance : StateBasic
 		_damageToExit = damageToExit;
 	}
 
-	public override void UpdateState()
+	protected override void OnExit()
 	{
-	}
-
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-		
 		//_health.BoostHpReverse(_damageToExit);
 	}
 }

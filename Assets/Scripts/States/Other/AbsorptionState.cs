@@ -29,14 +29,9 @@ public class AbsorptionState : StateStackingRefreshing, IDamageable
         UpdateShieldValues();
     }
 
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         Debug.Log("Absorption state exited.");
-        characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }
 

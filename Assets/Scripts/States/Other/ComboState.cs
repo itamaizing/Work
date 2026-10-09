@@ -34,22 +34,11 @@ public class ComboStateStacking : StateStackingRefreshing
         CurrentStacksCount = 1;
     }
 
-    public override void UpdateState()
-    {
-        if (_durationRemaining <= 0f)
-        {
-            //ExitState();
-            return;
-        }
-        //_durationRemaining -= Time.deltaTime;
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
-        characterState.RemoveState(this);
     }
-    
+
     public override void ReduceStack()
     {
         CurrentStacksCount--;
@@ -58,10 +47,6 @@ public class ComboStateStacking : StateStackingRefreshing
         {
             
             ExitState();
-        }
-        else
-        {
-
         }
     }
 
@@ -75,6 +60,4 @@ public class ComboStateStacking : StateStackingRefreshing
 
         return true;
     }
-    
-    
 }

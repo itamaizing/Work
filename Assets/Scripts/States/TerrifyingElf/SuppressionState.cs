@@ -73,13 +73,10 @@ public class SuppressionState : StateBasic
         DrainManaByDistance(deltaDist);
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
-
-        
-        characterState.RemoveState(this);
 
         if (health != null) health.DamageTaken -= OnDamageTaken;
     }

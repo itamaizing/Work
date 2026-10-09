@@ -24,18 +24,14 @@ public class BleedingDebuff : StateBasic
         _baseDuration = durationToExit;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         Debug.Log("Exiting KnockdownDebuff State");
-
-        characterState.RemoveState(this);
     }
 
     public override void UpdateState()
     {
         Debug.Log("Updating KnockdownDebuff State");
-        _duration -= Time.deltaTime;
-
         timer += Time.deltaTime;
 
         if (timer >= 1f)
@@ -43,12 +39,6 @@ public class BleedingDebuff : StateBasic
             DealDamage();
             timer = 0f;
         }
-
-        if (_duration < 0)
-        {
-            ExitState();
-        }
-
     }
 
     private void DealDamage()

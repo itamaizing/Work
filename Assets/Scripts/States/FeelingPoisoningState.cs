@@ -24,11 +24,6 @@ public class FeelingPoisoningStateStacking : StateStackingRefreshing
         ApplyRegenBonus();
     }
 
-    public override void UpdateState()
-    {
-
-    }
-
     public override bool Stack(float time)
     {
         RemainingDuration = time;
@@ -42,10 +37,9 @@ public class FeelingPoisoningStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         characterState.Character.Resource.Attr_RegenValue.RemoveBySource(this, all: true);
-        base.ExitState();
     }
 
     public override void ReduceStack()

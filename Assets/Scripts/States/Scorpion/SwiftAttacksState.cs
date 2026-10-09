@@ -79,15 +79,7 @@ public class SwiftAttacksStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void UpdateState()
-    {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         
@@ -101,8 +93,6 @@ public class SwiftAttacksStateStacking : StateStackingRefreshing
         _affectedSkills.Clear();
 
         RemoveSpeedBuff();
-        base.ExitState();
-        characterState?.RemoveState(this);
     }
 
     public override bool Stack(float time) => false;

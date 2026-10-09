@@ -36,11 +36,7 @@ public class SelfHarmState : StateBasic
         Debug.Log("SelfHarm enter");
     }
 
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
@@ -55,9 +51,7 @@ public class SelfHarmState : StateBasic
         {
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
-        
-        characterState.RemoveState(this);
-        
+
         Debug.Log("SelfHarm exit");
     }
 

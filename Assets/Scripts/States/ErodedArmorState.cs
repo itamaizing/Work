@@ -67,11 +67,10 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
             
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveReduction();
         CurrentStacksCount = 0;
-        base.ExitState();
     }
 
     private void RemoveReduction()
@@ -87,8 +86,4 @@ public class ErodedArmorStateStacking : StateStackingRefreshing
 
         _armorModifier.Value = 0f;
     }
-
-    public override void UpdateState() { }
-
-    
 }

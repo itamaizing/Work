@@ -36,7 +36,7 @@ public class DarkShield : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_healthComponent != null)
         {
@@ -50,7 +50,6 @@ public class DarkShield : StateBasic
         }
 
         if (_darkShield != null) _darkShield.SetActive(false);
-        characterState.RemoveState(this);
     }
 
     private void HandleDamageTaken(Damage damage, Skill skill)
@@ -75,14 +74,5 @@ public class DarkShield : StateBasic
 
         _healthComponent.CmdTryTakeDamage(damageToTake, null);
         _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake, null, isServerRequest: true);
-    }
-
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 }

@@ -68,7 +68,7 @@ public class InjectionAdrenalineState : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_animator != null)
         {
@@ -79,7 +79,5 @@ public class InjectionAdrenalineState : StateBasic
         {
             _moveCreature.MoveDurationPerUnit = _originalMoveDuration;
         }
-
-        base.ExitState();
     }
 }

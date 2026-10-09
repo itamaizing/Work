@@ -35,10 +35,6 @@ public class CorrodedArmorState : StateStackingRefreshing
         ApplyReduction();
     }
 
-    public override void UpdateState()
-    {
-    }
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < MaxStacksCount)
@@ -63,13 +59,11 @@ public class CorrodedArmorState : StateStackingRefreshing
         attribute.AddModifier(new AttributeModifier(totalReduction, ModifierType.Flat, this));
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         var attribute = characterState?.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
         attribute?.RemoveBySource(this);
 
         CurrentStacksCount = 1;
-
-        characterState.RemoveState(this);
     }
 }

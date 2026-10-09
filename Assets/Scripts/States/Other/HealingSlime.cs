@@ -106,7 +106,7 @@ public class HealingSlime : StateStackingRefreshing
         _regenModifier.Value = newValue;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         _infinite = false;
@@ -116,9 +116,5 @@ public class HealingSlime : StateStackingRefreshing
             health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
             health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
         }
-
-        characterState.RemoveState(this);
     }
-    
-    
 }

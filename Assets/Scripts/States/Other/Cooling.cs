@@ -41,7 +41,7 @@ public class Cooling : StateStackingRefreshing
 		if(RemainingDuration <= 0) ExitState();
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
 		CurrentStacksCount = 0;
@@ -49,7 +49,6 @@ public class Cooling : StateStackingRefreshing
 		_damageOnStart = 0;
 		_damageToExit = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
-		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)
@@ -57,13 +56,11 @@ public class Cooling : StateStackingRefreshing
         RemainingDuration = time;
 		if(CurrentStacksCount < MaxStacksCount)
 		{
-            characterState.Character.Move.RemoveModifier(_modif);
-            CurrentStacksCount++;
+			characterState.Character.Move.RemoveModifier(_modif);
+			CurrentStacksCount++;
 			_modif.Value = CurrentStacksCount * _speedDebuf;
 			characterState.Character.Move.AddModifier(_modif);
 		}
 		return true;
-    }
-    
-    
+	}
 }

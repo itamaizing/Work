@@ -80,9 +80,8 @@ public class ShadowTree : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (CurrentStacksCount > 0)  characterState.Character.Health.AddMax(-CurrentStacksCount * BonusPerStack);
-        characterState.RemoveState(this);
     }
 }

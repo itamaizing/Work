@@ -148,7 +148,7 @@ public abstract class StateBasic
         Character sourceCaster, string skillName) =>
         Apply(character, durationToExit, damageToExit, sourceCaster, skillName);
 
-    public abstract void UpdateState();
+	public virtual void UpdateState() { }
     
     protected void ProcessTick()
     {
@@ -174,7 +174,14 @@ public abstract class StateBasic
 	    }
     }
 
-    public virtual void ExitState() => characterState.RemoveState(this);
+	public virtual void ExitState()
+	{
+		_hasApplied = false;
+		OnExit();
+		characterState.RemoveState(this);
+	}
+
+	protected virtual void OnExit() { }
 
     protected virtual bool CanEnterState(CharacterState character) => true;
 
@@ -430,10 +437,7 @@ public abstract class AuraState : StateBasic
         }
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
+    protected override void OnExit() { }
 
     /*public override bool Stack(float time)
     {

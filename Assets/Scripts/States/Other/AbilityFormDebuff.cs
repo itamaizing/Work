@@ -44,10 +44,9 @@ public class AbilityFormDebuff : StateBasic
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		Debug.Log("Exiting AbilityFormDebuff State");
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledForm, true);

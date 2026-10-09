@@ -50,7 +50,6 @@ public class HealingPoisonCloudState : StateStackingRefreshing
 
     public override void UpdateState()
     {
-
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
@@ -59,11 +58,9 @@ public class HealingPoisonCloudState : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

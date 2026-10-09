@@ -71,12 +71,9 @@ public class InnerDarkness : StateStackingRefreshing
         return false;
     }
 
-    public override void UpdateState() { }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
-        base.ExitState();
     }
 
     private void ApplyFear()

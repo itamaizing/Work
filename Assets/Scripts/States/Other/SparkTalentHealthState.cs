@@ -19,25 +19,14 @@ public class SparkTalentHealthState : StateBasic
         _skill = personWhoMadeBuff.Abilities.Abilities.FirstOrDefault(o => o.Name == skillName);
         
         characterState = character;
-        _healthBuffActiveTime = durationToExit;
+        RemainingDuration = durationToExit;
         _healthBoostPercentage = damageToExit;
         ApplyBuff();
     }
 
-    public override void UpdateState()
-    {
-        _healthBuffActiveTime -= Time.deltaTime;
-
-        if (_healthBuffActiveTime <= 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveBuff();
-        characterState.RemoveState(this);
     }
 
     private void ApplyBuff()

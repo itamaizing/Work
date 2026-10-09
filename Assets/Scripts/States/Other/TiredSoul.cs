@@ -32,14 +32,6 @@ public class TiredSoul : StateStacking
         }
     }
 
-    public override void ExitState()
-    {
-       if(!characterState.CheckForState(States.TiredSoul)) 
-           return;
-       
-       characterState.RemoveState(this);
-    }
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < MaxStacksCount)

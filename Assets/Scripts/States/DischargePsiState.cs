@@ -14,14 +14,4 @@ public class DischargePsiState : StateBasic
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
     }
-
-    public override void ExitState()
-    {
-        
-        characterState.RemoveState(this);
-    }
-
-    public override void UpdateState()
-    {
-    }
 }

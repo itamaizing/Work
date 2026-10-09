@@ -28,17 +28,15 @@ public class InvisibleState : StateBasic
 	public override void UpdateState()
 	{
 		//Debug.Log("Updating Invisible State");
-		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
 			ExitState();
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		//Debug.Log("Exiting Invisible State");
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Others))
 		{
 			//characterState.Health.SetInvincible(false);

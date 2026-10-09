@@ -106,7 +106,7 @@ public class GodAuraBuff : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveModifierFromAllSkills(_modifier);
 
@@ -115,12 +115,8 @@ public class GodAuraBuff : StateStackingRefreshing
         _stackTimer = 0;
         _modifier.Value = _modifierPerStack;
         _character = null;
-    
-        if (characterState != null && characterState.CheckForState(States.GodAuraBuff))
-            characterState.RemoveState(this);
-    
+
         characterState = null;
-        
     }
 
     private void ApplyModifierToAllSkills(AttributeModifier modifier)

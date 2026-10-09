@@ -30,14 +30,8 @@ public class TentacleGrip : StateBasic
 		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
+	protected override void OnExit()
 	{
-
-	}
-
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 	}
 }

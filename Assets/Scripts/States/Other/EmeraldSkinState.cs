@@ -21,7 +21,7 @@ public class EmeraldSkinState : StateBasic
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        _buffDuration = durationToExit;
+        RemainingDuration = durationToExit;
         _isTalentActive = damageToExit > 0;
 
         ApplyBuff();
@@ -47,17 +47,7 @@ public class EmeraldSkinState : StateBasic
         }
     }
 
-    public override void UpdateState()
-    {
-        _buffDuration -= Time.deltaTime;
-
-        if (_buffDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
@@ -80,25 +70,24 @@ public class EmeraldSkinState : StateBasic
 
         Debug.Log("Emerald Skin state Exit");
         RemoveBuff();
-        characterState.RemoveState(this);
     }
 
     private void AddTimeByFlash()
     {
         Debug.Log("Add time by flash - " + _flashBuffDuration);
-        _buffDuration += _flashBuffDuration;
+        RemainingDuration += _flashBuffDuration;
     }
 
     private void AddTimeByShield()
     {
         Debug.Log("Add time by shield - " + _shieldBuffDuration);
-        _buffDuration += _shieldBuffDuration;
+        RemainingDuration += _flashBuffDuration;
     }
 
     private void AddTimeByLightMagic()
     {
         Debug.Log("Add time by light - " + _lightMagicBuffDuration);
-        _buffDuration += _lightMagicBuffDuration;
+        RemainingDuration += _flashBuffDuration;
     }
 
     private void ApplyBuff()

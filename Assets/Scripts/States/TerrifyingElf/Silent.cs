@@ -28,20 +28,8 @@ public class Silent : StateBasic
         BlockMagicAbilities();
     }
 
-    public override void UpdateState()
+    protected override void OnExit()
     {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
-    {
-        Debug.Log("Exiting Silent State");
-        
-        characterState.RemoveState(this);
-
         UnblockMagicAbilities();
     }
 

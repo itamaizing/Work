@@ -38,14 +38,6 @@ public class CounterRageStateStacking : StateStackingRefreshing
         CurrentStacksCount = 1;
     }
 
-    public override void UpdateState()
-    {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
     private void AddBonus(float additionalBonus)
     {
         if (_energyResource == null) return;
@@ -59,7 +51,7 @@ public class CounterRageStateStacking : StateStackingRefreshing
             _energyResource.AddMax(toAdd, keepPercent: false);
         }
     }
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_energyResource != null && CurrentBonus > 0f)
         {
@@ -73,7 +65,6 @@ public class CounterRageStateStacking : StateStackingRefreshing
 
         CurrentBonus = 0f;
         CurrentStacksCount = 0;
-        characterState?.RemoveState(this);
     }
 
     public override bool Stack(float time)

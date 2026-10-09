@@ -122,10 +122,9 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         ResetValues();
-        base.ExitState();
     }
 
     private void ResetValues()

@@ -32,16 +32,7 @@ public class LastBreath : StateBasic
 		//increase -regen
 	}
 
-	public override void UpdateState()
-	{
-		_durationToExit -= Time.deltaTime;
-		if (_durationToExit < 0)
-		{
-			ExitState();
-		}
-	}
-
-	public override void ExitState()
+	protected override void OnExit()
 	{
         //decrease -regen
         //_character.Move.ChangeMoveSpeedBack(1.2f);

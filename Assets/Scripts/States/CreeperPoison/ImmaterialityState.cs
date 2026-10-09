@@ -23,16 +23,10 @@ public class ImmaterialityState : StateBasic
         DisabledCollider();
     }
 
-    public override void UpdateState()
-    {
-
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         TargetRpcResetPlayerComponents();
         RemainingDuration = 0;
-        characterState.RemoveState(this);
     }
 
     private void DisabledCollider()

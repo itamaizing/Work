@@ -23,11 +23,7 @@ public class Anxiety : StateStacking
         Debug.Log($"Anxiety state applied: {CurrentStacksCount}/{MaxStacksCount} stacks, duration {RemainingDuration}s");
     }
 
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveEffects();
         Debug.Log($"Anxiety state removed: {CurrentStacksCount}/{MaxStacksCount} stacks");

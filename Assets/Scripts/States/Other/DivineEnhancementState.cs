@@ -24,16 +24,9 @@ public class DivineEnhancementState : StateBasic, IDamageGivenModifier
         ModifyManaCost();
     }
 
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0) ExitState();
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         ResetManaCost();
-        characterState.RemoveState(this);
     }
 
     private void ModifyManaCost()

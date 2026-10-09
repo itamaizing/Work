@@ -66,10 +66,9 @@ public class DestructivePoisonStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
-        characterState.RemoveState(this);
     }
 
 

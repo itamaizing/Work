@@ -72,9 +72,8 @@ public class BurningMatterDebuff : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         _damagePerMetr = _baseDamagePerMetr;
-        characterState.RemoveState(this);
     }
 }

@@ -50,11 +50,9 @@ public class RegeneratingPoisonState : StateStacking
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

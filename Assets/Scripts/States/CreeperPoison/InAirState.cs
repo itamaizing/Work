@@ -20,15 +20,8 @@ public class InAirState : StateBasic
         _baseDuration = durationToExit;
     }
 
-    public override void UpdateState()
-    {
-    }
-
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         characterState.Character.Move.SetCanMove(true);
-        
-        characterState.RemoveState(this);
     }
 }

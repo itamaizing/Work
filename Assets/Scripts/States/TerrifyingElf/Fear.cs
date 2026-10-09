@@ -57,14 +57,9 @@ public class Fear : StateBasic
                 }
             }
         }
-
-        if (_duration <= 0f)
-        {
-            ExitState();
-        }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_moveCoroutine != null)
         {
@@ -89,7 +84,6 @@ public class Fear : StateBasic
             skill.Disactive = false;
         }
         _disabledSkills.Clear();
-        characterState.RemoveState(this);
     }
 
     private IEnumerator MoveAwayCoroutine(MoveComponent moveComp)

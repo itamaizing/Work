@@ -27,10 +27,6 @@ public class CreeperComboStateStacking : StateStackingRefreshing
         RemainingDuration = durationToExit;
     }
 
-    public override void UpdateState()
-    {
-    }
-
     public override bool Stack(float time)
     {
         RemainingDuration = time;
@@ -43,11 +39,8 @@ public class CreeperComboStateStacking : StateStackingRefreshing
         RemainingDuration = -1f;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         ResetStacks();
-
-        if (characterState != null)
-            characterState.RemoveState(this);
     }
 }

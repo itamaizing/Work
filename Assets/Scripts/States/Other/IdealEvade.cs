@@ -25,26 +25,13 @@ public class IdealEvade : StateBasic
         _baseDuration = durationToExit;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         Debug.Log("Exiting IdealEvadeBuff State");
 
         if (!characterState.Check(StatusEffect.Others))
         {
             //return evade chance
-        }
-
-        characterState.RemoveState(this);
-    }
-
-    public override void UpdateState()
-    {
-        Debug.Log("Updating IdealEvadeBuff State");
-        _duration -= Time.deltaTime;
-
-        if (_duration < 0 /*|| turnOff*/)
-        {
-            ExitState();
         }
     }
 }

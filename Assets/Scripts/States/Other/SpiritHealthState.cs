@@ -44,8 +44,6 @@ public class SpiritHealthStateStacking : StateStackingRefreshing
         RecalcRegenAmount();
     }
 
-    public override void UpdateState() { }
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < MaxStacksCount)
@@ -62,7 +60,7 @@ public class SpiritHealthStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_healthComponent != null)
             _healthComponent.DamageTaken -= OnDamageTaken;
@@ -79,7 +77,6 @@ public class SpiritHealthStateStacking : StateStackingRefreshing
         _character = null;
         _spiritHealthStateEffectInstance = null;
 
-        characterState?.RemoveState(this);
         characterState = null;
     }
 

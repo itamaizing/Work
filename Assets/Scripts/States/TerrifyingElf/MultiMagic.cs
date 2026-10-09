@@ -52,7 +52,7 @@ public class MultiMagic : StateStackingRefreshing
             }
         }
     }
-    
+
     private void UnsubscribeFromSkills()
     {
         if (_skills != null && _skills.Abilities != null)
@@ -70,17 +70,11 @@ public class MultiMagic : StateStackingRefreshing
 
         _castSuccessHandlers.Clear();
     }
-    
-    public override void UpdateState()
-    {
-    }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         UnsubscribeFromSkills();
-
-        base.ExitState();
     }
 
     public override bool Stack(float time) => false;

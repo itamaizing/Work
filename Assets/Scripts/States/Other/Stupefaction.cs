@@ -41,10 +41,9 @@ public class Stupefaction : StateBasic
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		characterState.Character.Health.DamageTaken -= OnAnyDamage;
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 		turnOff = false;

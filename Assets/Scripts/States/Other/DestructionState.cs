@@ -110,17 +110,14 @@ public class DestructionStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         _isActive = false;
         RemainingDuration = 0f;
         _timer = 0f;
         CurrentStacksCount = 0;
-        characterState?.RemoveState(this);
         characterState = null;
     }
 
     private bool IsStackingMode => State == States.DestructionStacking;
-    
-    
 }

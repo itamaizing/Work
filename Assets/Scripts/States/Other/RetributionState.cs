@@ -38,10 +38,6 @@ public class RetributionStateStacking : StateStackingRefreshing
         ExitState();
     }
 
-    public override void UpdateState()
-    {
-    }
-
     private void GetLightSkills()
     {
         if (_baseLightSkills.Count > 0)
@@ -89,14 +85,11 @@ public class RetributionStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemainingDuration = 0f;
         CurrentStacksCount = 0;
         ReturnToBaseDamage();
-        characterState?.RemoveState(this);
         characterState = null;
     }
-
-    
 }

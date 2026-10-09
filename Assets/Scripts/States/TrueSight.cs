@@ -25,7 +25,7 @@ public class TrueSight : StateBasic
 
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         var character = characterState.GetComponent<Character>();
         if (characterState.CheckForState(States.Invisible) || characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);

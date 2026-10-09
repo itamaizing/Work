@@ -119,7 +119,7 @@ public class ElvenSkill : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         
@@ -145,14 +145,7 @@ public class ElvenSkill : StateStackingRefreshing
             _elvenSkillEffect.SetActive(false);
         
         abilities.GetSkill<ElvenReflexes>().Disactive = true;
-        base.ExitState();
     }
-
-    public override void UpdateState()
-    {
-    }
-    
-    
 
     private void OnPhysCastStarted()
     {

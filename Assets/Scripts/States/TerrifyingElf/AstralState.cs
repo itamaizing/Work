@@ -101,14 +101,8 @@ public class AstralStateStacking : StateStackingRefreshing
         if (characterState.isServer) _dotJob = characterState.StartCoroutine(DotJob());
     }
 
-    public override void UpdateState()
+    protected override void OnExit()
     {
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-
         if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
         if (_weapon != null) _weaponRenderer.material = _originalWeaponMaterial;
 

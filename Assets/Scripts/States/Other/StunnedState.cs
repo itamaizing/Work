@@ -30,16 +30,6 @@ public class StunnedStateStacking : StateStackingRefreshing
 		characterState.Character.Move.StopMoveAndAnimationMove();
 	}
 
-	public override void UpdateState()
-	{
-		if (RemainingDuration <= 0)
-		{
-			ExitState();
-		}
-	}
-	
-	
-
 	public override bool Stack(float newDuration)
 	{
 		if (newDuration > RemainingDuration)
@@ -49,11 +39,10 @@ public class StunnedStateStacking : StateStackingRefreshing
 		return true;
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		CurrentStacksCount = 0;
 		 characterState.Character.Move.IsMoveBlocked = false;
 		abilities.SetAbilitiesDisactive(false);
-		characterState.RemoveState(this);
 	}
 }

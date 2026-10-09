@@ -23,14 +23,6 @@ public class KillingSpreeStateStacking : StateStackingRefreshing
             SubscribeToPhysicalSkills();
     }
 
-    public override void UpdateState()
-    {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
     private void SubscribeToPhysicalSkills()
     {
         foreach (var physSkill in characterState.Character.Abilities.Abilities)
@@ -80,15 +72,13 @@ public class KillingSpreeStateStacking : StateStackingRefreshing
         damage.Value *= _currentBonus;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if(characterState.isServer)
             UnsubscribeFromPhysicalSkills();
         _lastTarget = null;
         _currentBonus = 1f;
         CurrentStacksCount = 0;
-
-        base.ExitState();
     }
 
     public override bool Stack(float time)

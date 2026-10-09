@@ -44,8 +44,6 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
         RecalcRegenAmount();
     }
 
-    public override void UpdateState() { }
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < MaxStacksCount)
@@ -62,7 +60,7 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_healthComponent != null)
             _healthComponent.DamageTaken -= OnDamageTaken;
@@ -78,7 +76,6 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
         _manaResource = null;
         _spiritEnergyStateEffectInstance = null;
 
-        characterState?.RemoveState(this);
         characterState = null;
     }
 

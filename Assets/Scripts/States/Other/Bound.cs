@@ -71,15 +71,13 @@ public class Bound : StateBasic
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff) ExitState();
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		_stateClosing = true;
 		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) if (skill.Info.Moving == Moving.Free) skill.Disactive = false;
 		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
@@ -98,4 +96,3 @@ public class Bound : StateBasic
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) skill.Disactive = false;
 	}
 }
-

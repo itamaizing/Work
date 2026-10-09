@@ -69,11 +69,8 @@ public class HotAuraBuff : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveCastSpeedBuff();
-        base.ExitState();
     }
-
-    public override void UpdateState() { }
 }

@@ -65,8 +65,6 @@ public class FireFlash : StateStackingRefreshing
         }
     }
 
-    public override void ExitState() => characterState.RemoveState(this);
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount >= MaxStacksCount) return false;

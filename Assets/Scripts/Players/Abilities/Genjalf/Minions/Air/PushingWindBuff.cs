@@ -41,16 +41,12 @@ public class PushingWindBuff : StateBasic
         _isModifierApplied = true;
     }
 
-    public override void UpdateState() { }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_isModifierApplied)
         {
             characterState.Character.Move.RemoveModifier(_modifier);
             _isModifierApplied = false;
         }
-
-        base.ExitState();
     }
 }

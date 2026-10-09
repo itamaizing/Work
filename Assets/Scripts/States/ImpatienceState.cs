@@ -53,8 +53,6 @@ public class ImpatienceStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void UpdateState() { }
-    
     public override bool Stack(float time)
     {
         RemainingDuration = time;
@@ -63,7 +61,7 @@ public class ImpatienceStateStacking : StateStackingRefreshing
         return false;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (characterState != null && characterState.Character != null && characterState.Character.isServer)
         {
@@ -81,8 +79,6 @@ public class ImpatienceStateStacking : StateStackingRefreshing
 
         _casterPsionic = null;
         _impatica = null;
-
-        base.ExitState();
     }
 
     private void HandleAccumulationChanged(bool value) => _isAccumulationActive = value;

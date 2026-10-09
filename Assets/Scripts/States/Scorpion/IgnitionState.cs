@@ -61,14 +61,13 @@ public class IgnitionStateStacking : StateStackingRefreshing
             characterState.AddState(States.ScorchedSoul, 6f, 0f, sourceCaster.gameObject, nameof(IgnitionStateStacking));
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         _currentTick = 0;
         _tickTimer = 0f;
         _damageBonus = 0f;
         _fireBreathBonus = 0;
         MaxTicks = 6;
-        characterState.RemoveState(this);
     }
     
     private float ExtractNumber(string text)
