@@ -34,6 +34,7 @@ public class Ghost : Skill
     private float _treeVisionRadius;
     private float _heroVisionRadius;
     private float _infinityDistance = 999;
+    private float _lastTreesCacheTime = -999f;
     private bool _isPreviewHiddenOverGhost;
     private bool _ghostMoveToTarget;
     private bool _teleportGhost;
@@ -47,11 +48,99 @@ public class Ghost : Skill
     private Coroutine _boostWindow;
     private List<GrowTreeAura> _allGrowTrees = new();
 
+    private const float TreesCacheInterval = 0.5f;
     private const float ManaPercentToCheckTeleport = 0.05f;
 
     private Resource _manaResource;
 
     private readonly Queue<Vector3> _pendingSpawn = new();
+    
+    #region DrawRendering
+    private const float DynamicRenderInterval = 0.1f;
+    private readonly List<DrawCircle> _treeCircles = new();
+    private float _lastTreeCircleRadius = -1f;
+
+    private float GetCastRadius()
+    {
+        if (!_isGhostSpawnInRadiusTree) return baseRadius;
+
+        float vision = Hero.VisionComponent != null ? Hero.VisionComponent.VisionRange : _heroVisionRadius;
+        return Mathf.Max(baseRadius, vision);
+    }
+
+    private float GetExtendedRadius() => _isGhostSpawnInRadiusTree ? 0f : extendedRadius;
+
+    public override IEnumerator CustomDrawJob(float time = DynamicRenderInterval)
+    {
+        var wait = new WaitForSeconds(time);
+
+        while (IsTargeting)
+        {
+            AreaInfo.Radius = GetCastRadius();
+            UpdateTreeCircles();
+            yield return wait;
+        }
+
+        ResetDrawRadius();
+    }
+
+    private void ResetDrawRadius()
+    {
+        HideTreeCircles();
+        AreaInfo.Radius = baseRadius;
+    }
+    
+    private void UpdateTreeCircles()
+    {
+        if (!_isGhostSpawnInRadiusTree || _extendedRadiusCircle == null)
+        {
+            HideTreeCircles();
+            return;
+        }
+
+        RefreshTreesCache();
+        _treeCircles.RemoveAll(c => c == null);
+
+        float r = treeVisionComponent != null ? treeVisionComponent.VisionRange : _treeVisionRadius;
+        bool radiusChanged = !Mathf.Approximately(_lastTreeCircleRadius, r);
+        _lastTreeCircleRadius = r;
+
+        int used = 0;
+        foreach (var tree in _allGrowTrees)
+        {
+            if (tree == null || tree.Owner != Hero) continue;
+
+            if (used >= _treeCircles.Count)
+            {
+                var created = Instantiate(_extendedRadiusCircle);
+                created.Clear();
+                _treeCircles.Add(created);
+                radiusChanged = true;
+            }
+
+            var circle = _treeCircles[used++];
+            circle.gameObject.SetActive(true);
+
+            if (circle.transform.parent != tree.transform || radiusChanged)
+            {
+                circle.transform.SetParent(tree.transform, false);
+                circle.transform.localPosition = Vector3.zero;
+                circle.Clear();
+                circle.Draw(r);
+                circle.SetColor(Color.green);
+            }
+        }
+
+        for (int i = used; i < _treeCircles.Count; i++)
+            _treeCircles[i].gameObject.SetActive(false);
+    }
+
+    private void HideTreeCircles()
+    {
+        foreach (var c in _treeCircles)
+            if (c != null) c.gameObject.SetActive(false);
+    }
+    #endregion
 
     #region Talent
     private bool _sendingGhostTargetTalentActive;
@@ -76,20 +165,15 @@ public class Ghost : Skill
         {
             if (_teleportGhost && _ghostToTeleport != null)
             {
-                if (!_isGhostSpawnInRadiusTree) 
-                    return IsWithinRadius(_ghostToTeleport.transform.position, AreaInfo.Radius + extendedRadius);
-                
-                return true; 
+                Vector3 p = _ghostToTeleport.transform.position;
+                return IsWithinRadius(p, CurrentCastRadius + GetExtendedRadius()) || IsInTalentVision(p);
             }
 
             if (_ghostMoveToTarget) return true;
 
             if (!float.IsPositiveInfinity(_spawnPosition.x))
             {
-                bool allowedByTree = _isGhostSpawnInRadiusTree && (IsNearGrowTree(_spawnPosition, 1f) || IsVisibleToHero(_spawnPosition));
-                bool inRadius = IsWithinRadius(_spawnPosition, AreaInfo.Radius);
-
-                if (!allowedByTree && !inRadius) 
+                if (!IsWithinRadius(_spawnPosition, CurrentCastRadius) && !IsInTalentVision(_spawnPosition))
                     return false;
             }
 
@@ -109,6 +193,8 @@ public class Ghost : Skill
         }
     }
     
+    private float CurrentCastRadius => _isGhostSpawnInRadiusTree ? GetCastRadius() : AreaInfo.Radius;
+
     public bool CooldownGhostShotActive => _cooldownGhostShotActive;
     public List<Character> GhostTarget { get => _ghosts; set => _ghosts = value; }
 
@@ -137,7 +223,11 @@ public class Ghost : Skill
 
     public void PassingThroughGhost(bool value) => _passingThroughGhost = value;
     public void PullingHealthGostTeleport(bool value) => _isPullingHealthGostTeleport = value;
-    public void GhostSpawnInRadiusTree(bool value) => _isGhostSpawnInRadiusTree = value;
+    public void GhostSpawnInRadiusTree(bool value)
+    {
+        if(value == _isGhostSpawnInRadiusTree) return;
+        _isGhostSpawnInRadiusTree = value;
+    }
     #endregion
 
     public override void Init(SkillRenderer render, Character hero)
@@ -229,6 +319,7 @@ public class Ghost : Skill
     private void HideExtendedRadiusAndStopWatch()
     {
         HideExtendedRadius();
+        ResetDrawRadius();
         if (_checkExtendedRadiusCoroutine != null)
         {
             StopCoroutine(_checkExtendedRadiusCoroutine);
@@ -248,13 +339,6 @@ public class Ghost : Skill
         _baseCastDelay = PreparingDuration;
         _ghosts = new List<Character>();
         _spawnComponent = GetComponent<SpawnComponent>();
-    }
-
-    private bool IsNearGrowTree(Vector3 point, float radius = 1f)
-    {
-        var hits = Physics.OverlapSphere(point, radius);
-        for (int i = 0; i < hits.Length; i++) if (hits[i].GetComponentInParent<GrowTreeAura>() != null) return true;
-        return false;
     }
 
     private void RegisterSpawnEvents()
@@ -278,8 +362,8 @@ public class Ghost : Skill
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
+        _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
         if (!_isGhostSpawnInRadiusTree) _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
-        else _allGrowTrees = FindObjectsOfType<GrowTreeAura>().ToList();
 
         Vector3 mousePositionStart = Targeting.GetMousePoint();
         _ghostPrefabPreview = Instantiate(ghostPrefabPreview, mousePositionStart, Quaternion.identity);
@@ -590,13 +674,6 @@ public class Ghost : Skill
 
     private bool IsWithinRadius(Vector3 targetPosition, float radius) => Vector3.Distance(transform.position, targetPosition) <= radius;
 
-    private bool IsVisibleToHero(Vector3 point)
-    {
-        Vector3 direction = point - transform.position;
-        if (Physics.Raycast(transform.position + Vector3.up, direction.normalized, out var hit, direction.magnitude)) if (hit.collider.GetComponent<Character>() == Hero) return true;
-        return false;
-    }
-
     private IEnumerator SpawnGhostVisualEffect(Vector3 targetPosition)
     {
         _isSpawningGhostVisual = true;
@@ -666,12 +743,12 @@ public class Ghost : Skill
 
         while (true)
         {
-            float currentTargetRadius = AreaInfo.Radius + extendedRadius;
+            float currentTargetRadius = CurrentCastRadius + GetExtendedRadius();
 
             bool ghostWithAuraInExtendedRadius = _ghosts.Any(ghost =>
                 ghost != null &&
                 ghost.GetComponent<GhostAura>() != null &&
-                IsWithinRadius(ghost.transform.position, currentTargetRadius));
+                (IsWithinRadius(ghost.transform.position, currentTargetRadius) || IsInTalentVision(ghost.transform.position)));
 
             if (_extendedRadiusCircle != null)
             {
@@ -688,6 +765,38 @@ public class Ghost : Skill
             }
             yield return new WaitForSeconds(0.1f);
         }
+    }
+    
+    private static float FlatDistance(Vector3 a, Vector3 b)
+    {
+        a.y = 0f; b.y = 0f;
+        return Vector3.Distance(a, b);
+    }
+
+    private void RefreshTreesCache()
+    {
+        if (Time.time - _lastTreesCacheTime < TreesCacheInterval) return;
+        _lastTreesCacheTime = Time.time;
+        _allGrowTrees = FindObjectsOfType<GrowTreeAura>().ToList();
+    }
+    
+    private bool IsInTalentVision(Vector3 point)
+    {
+        if (!_isGhostSpawnInRadiusTree) return false;
+
+        float heroVision = Hero.VisionComponent != null ? Hero.VisionComponent.VisionRange : _heroVisionRadius;
+        if (FlatDistance(Hero.transform.position, point) <= heroVision) return true;
+
+        RefreshTreesCache();
+        float treeVision = treeVisionComponent != null ? treeVisionComponent.VisionRange : _treeVisionRadius;
+
+        for (int i = 0; i < _allGrowTrees.Count; i++)
+        {
+            var tree = _allGrowTrees[i];
+            if (tree == null || tree.Owner != Hero) continue;
+            if (FlatDistance(tree.transform.position, point) <= treeVision) return true;
+        }
+        return false;
     }
 
     protected override IEnumerator CastJob()

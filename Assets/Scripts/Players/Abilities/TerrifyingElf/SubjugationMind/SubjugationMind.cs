@@ -1,7 +1,15 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+public class ControlData
+{
+    public NetworkConnectionToClient Owner;
+    public byte Team;
+    public bool UiSwitched;
+}
 
 public class SubjugationMind : Skill
 {
@@ -27,6 +35,8 @@ public class SubjugationMind : Skill
 
     private int _midTriggerHash = Animator.StringToHash(SubjugationMindMidTrigger);
     private int _castDelayHash = Animator.StringToHash("PullingHealthCastDelay");
+    
+    private readonly Dictionary<uint, ControlData> _controlled = new();
 
     private void OnEnable()
     {
@@ -201,38 +211,40 @@ public class SubjugationMind : Skill
     }
 
     [Server]
-    private IEnumerator ReturnHeroControlAfterDelay(HeroComponent heroTarget, NetworkIdentity netId)
+    private IEnumerator ReturnHeroControlAfterDelay(HeroComponent heroTarget, NetworkIdentity netId, ControlData data)
     {
+        uint heroNetId = heroTarget.netId;
         yield return new WaitForSeconds(4);
 
-        if (netId == null) yield break;
+        _controlled.Remove(heroNetId);
 
-        Vector3 finalPosition = heroTarget.transform.position;
-        Quaternion finalRotation = heroTarget.transform.rotation;
-
-        netId.RemoveClientAuthority();
-
-        if (_originalOwner != null)
+        if (heroTarget != null)
         {
-            TargetRpcSetKinematicTrue(connectionToClient, heroTarget.netId);
-            TargetRpcSetKinematicFalse(_originalOwner, heroTarget.netId);
-
-            TargetRpcResetControlState(connectionToClient, heroTarget.netId);
-
-            TargetRpcSetTransform(_originalOwner, heroTarget.netId, finalPosition, finalRotation);
-
-            netId.AssignClientAuthority(_originalOwner);
-
-            RestoreControlledTeam(heroTarget);
+            var settings = heroTarget.GetComponent<UserNetworkSettings>();
+            if (settings != null) settings.TeamIndex = data.Team;
         }
 
-        if (_uiWasSwitched)
+        if (netId != null && heroTarget != null)
         {
-            TargetRpcSwitchSkillPanelToCaster(connectionToClient);
-            _uiWasSwitched = false;
+            Vector3 finalPosition = heroTarget.transform.position;
+            Quaternion finalRotation = heroTarget.transform.rotation;
+
+            netId.RemoveClientAuthority();
+
+            if (data.Owner != null)
+            {
+                TargetRpcSetKinematicTrue(connectionToClient, heroNetId);
+                TargetRpcSetKinematicFalse(data.Owner, heroNetId);
+                TargetRpcResetControlState(connectionToClient, heroNetId);
+                TargetRpcSetTransform(data.Owner, heroNetId, finalPosition, finalRotation);
+                netId.AssignClientAuthority(data.Owner);
+            }
         }
 
-        _originalOwner = null;
+        if (data.UiSwitched) TargetRpcSwitchSkillPanelToCaster(connectionToClient);
+
+        yield return new WaitForSeconds(0.6f);
+        RpcRefreshLocalLayers();
     }
 
     [Server]
@@ -274,6 +286,19 @@ public class SubjugationMind : Skill
         foreach (var user in allUsers) if (user != null) user.RpcUpdateLayers();
     }
 
+    [ClientRpc]
+    private void RpcRefreshLocalLayers()
+    {
+        if (Character.Local != null && Character.Local.NetworkSettings != null)
+            Character.Local.NetworkSettings.MarkUpEnemiesOrAllies();
+    }
+    
+    private IEnumerator RefreshLayersDelayed()
+    {
+        yield return new WaitForSeconds(0.6f);
+        RpcRefreshLocalLayers();
+    }
+    
     [Command]
     private void CmdSpawnEffect(GameObject start, GameObject target)
     {
@@ -303,22 +328,33 @@ public class SubjugationMind : Skill
         if (character is HeroComponent heroTarget)
         {
             var netId = heroTarget.GetComponent<NetworkIdentity>();
-            if (netId == null) return;
+            var targetSettings = heroTarget.GetComponent<UserNetworkSettings>();
+            var casterSettings = Hero.GetComponent<UserNetworkSettings>();
+            if (netId == null || targetSettings == null || casterSettings == null) return;
 
-            _originalOwner = netId.connectionToClient != null ? netId.connectionToClient : null;
+            if (_controlled.ContainsKey(heroTarget.netId)) return;
+
+            var data = new ControlData
+            {
+                Owner = netId.connectionToClient,
+                Team = targetSettings.TeamIndex,
+                UiSwitched = true
+            };
+            _controlled[heroTarget.netId] = data;
 
             netId.RemoveClientAuthority();
             netId.AssignClientAuthority(connectionToClient);
 
-            ApplyControlledTeam(heroTarget);
-
+            targetSettings.TeamIndex = casterSettings.TeamIndex;
+            RefreshAllUsersLayers();
+            StartCoroutine(RefreshLayersDelayed());
+            
             TargetRpcSetKinematicFalse(connectionToClient, heroTarget.netId);
-            if (_originalOwner != null) TargetRpcSetKinematicTrue(_originalOwner, heroTarget.netId);
+            if (data.Owner != null) TargetRpcSetKinematicTrue(data.Owner, heroTarget.netId);
 
             TargetRpcSwitchSkillPanelToTarget(connectionToClient, heroTarget.netId);
-            _uiWasSwitched = true;
 
-            StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, netId));
+            StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, netId, data));
         }
     }
 

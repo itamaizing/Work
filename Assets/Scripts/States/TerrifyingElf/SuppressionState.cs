@@ -3,25 +3,29 @@ using UnityEngine;
 
 public class SuppressionState : StateBasic
 {
-    private const int MaxStacks = 1;
-
-    private const float CellLength = 0.10f;
-    private const float ManaLossPerCell = 0.001f;
+    private const float CellLength = 0.1f;
+    private const float ManaPercentPerMeter = 0.01f;
+    private const float ManaStealFromDamage = 0.25f;
     private const float MoveEpsilon = 0.05f;
+
+    private struct HitRecord
+    {
+        public float SumBefore;
+        public bool Qualifies;
+    }
+
+    private static readonly List<StatusEffect> _effects = new() { StatusEffect.Move };
+    private readonly List<HitRecord> _hits = new();
 
     private GameObject _suppressionIdle;
     private GameObject _suppressionMove;
-
-    private Resource manaResource;
+    private Resource _targetMana;
     private Suppression _suppression;
 
-    private float _baseDuration;
+    private Vector3 _lastPosition;
     private float _distBuffer;
     private bool _isMoving;
-
-    private Vector3 _lastPosition; 
-
-    private static readonly List<StatusEffect> _effects = new() { StatusEffect.Move };
+    private bool _isActive;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Suppression;
@@ -29,44 +33,43 @@ public class SuppressionState : StateBasic
     public override List<StatusEffect> Effects => _effects;
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit,
-                                    Character caster, string skillName)
+        Character caster, string skillName)
     {
-        characterState = character;
-        sourceCaster = caster;
-
-        if (sourceCaster != null)
-        {
-            _suppression = sourceCaster.GetComponent<Suppression>();
-        }
-
-        _baseDuration = durationToExit;
-        RemainingDuration = _baseDuration;
+        _isActive = true;
+        _suppression = sourceCaster != null ? sourceCaster.GetComponent<Suppression>() : null;
+        _targetMana = characterState.Character.TryGetResource(ResourceType.Mana);
 
         _distBuffer = 0f;
         _isMoving = false;
+        _lastPosition = Flat(characterState.transform.position);
+        _hits.Clear();
 
-        _lastPosition = characterState.transform.position;
-        _lastPosition.y = 0f;
-
-        manaResource = character.Character.TryGetResource(ResourceType.Mana);
-
-        health = character.Character.Health;
-        health.DamageTaken += OnDamageTaken;
+        if (characterState.isServer)
+        {
+            health.OnBeforeDamage -= OnBeforeDamage;
+            health.OnBeforeDamage += OnBeforeDamage;
+        }
 
         _suppressionIdle = characterState.StateEffects.SuppressionIdle;
         _suppressionMove = characterState.StateEffects.SuppressionMove;
-
         if (_suppressionIdle) _suppressionIdle.SetActive(true);
         if (_suppressionMove) _suppressionMove.SetActive(false);
     }
 
-    public override void UpdateState()
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit,
+        Character caster, string skillName)
     {
-        if (RemainingDuration <= 0f)
+        if (!_isActive)
         {
-            ExitState();
+            Apply(character, durationToExit, damageToExit, caster, skillName);
             return;
         }
+        _suppression = sourceCaster != null ? sourceCaster.GetComponent<Suppression>() : null;
+    }
+
+    public override void UpdateState()
+    {
+        if (characterState.isServer) ProcessHits();
 
         float deltaDist = CalcHorizontalDistanceThisFrame();
         HandleVisuals(deltaDist);
@@ -75,91 +78,91 @@ public class SuppressionState : StateBasic
 
     protected override void OnExit()
     {
+        if (characterState.isServer) ProcessHits();
+
+        _isActive = false;
+        if (health != null) health.OnBeforeDamage -= OnBeforeDamage;
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
 
-        if (health != null) health.DamageTaken -= OnDamageTaken;
+        base.ExitState();
+    }
+    
+    private void OnBeforeDamage(ref Damage damage, Skill skill)
+    {
+        bool qualifies =
+            _suppression != null && _suppression.IsSuppressionManaAbsorbtion
+            && damage.Value > 0f
+            && skill != null && skill.Hero != null
+            && IsFromRequiredSource(skill.Hero);
+
+        _hits.Add(new HitRecord { SumBefore = health.SumDamageTaken, Qualifies = qualifies });
     }
 
-    private void OnDamageTaken(Damage damage, Skill skill)
+    private void ProcessHits()
     {
-        if (characterState.isServer) return;
-        if (_suppression == null || !_suppression.IsSuppressionManaAbsorbtion) return;
-        if (skill == null || skill.Hero == null) return;
+        if (_hits.Count == 0) return;
 
-        Character attacker = skill.Hero;
-        if (!IsFromRequiredSource(attacker)) return;
+        float now = health.SumDamageTaken;
+        for (int i = 0; i < _hits.Count; i++)
+        {
+            if (!_hits[i].Qualifies) continue;
 
-        ApplyManaBurn(damage.Value);
+            float end = i + 1 < _hits.Count ? _hits[i + 1].SumBefore : now;
+            float dealt = end - _hits[i].SumBefore;
+            if (dealt > 0f) StealMana(dealt * ManaStealFromDamage);
+        }
+        _hits.Clear();
+    }
+
+    private void StealMana(float amount)
+    {
+        if (_targetMana == null) return;
+
+        amount = Mathf.Min(amount, _targetMana.CurrentValue);
+        if (amount <= 0f) return;
+
+        _targetMana.TryUse(amount);
+
+        sourceCaster?.TryGetResource(ResourceType.Mana)?.Add(amount);
     }
 
     private bool IsFromRequiredSource(Character attacker)
+        => attacker == sourceCaster || attacker.TryGetComponent<GhostAura>(out _);
+
+    private void DrainManaByDistance(float deltaDist)
     {
-        if (attacker == null) return false;
-        if (attacker.TryGetComponent<TerrifyingElfAura>(out _)) return true;
-        if (attacker.TryGetComponent<GhostAura>(out _)) return true;
-        return false;
+        if (!characterState.isServer || deltaDist <= 0f || _targetMana == null) return;
+
+        _distBuffer += deltaDist;
+        int cells = Mathf.FloorToInt(_distBuffer / CellLength);
+        if (cells <= 0) return;
+        _distBuffer -= cells * CellLength;
+
+        float loss = cells * CellLength * ManaPercentPerMeter * _targetMana.MaxValue;
+        loss = Mathf.Min(loss, _targetMana.CurrentValue);
+        if (loss > 0f) _targetMana.TryUse(loss);
     }
 
-    private void ApplyManaBurn(float damageValue)
-    {
-        if (manaResource == null) return;
+    private static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
 
-        float burnAmount = damageValue * 0.25f;
-        float currentMana = manaResource.CurrentValue;
-        float newMana = Mathf.Max(0, currentMana - burnAmount);
-
-        manaResource.CmdUse(burnAmount); 
-    }
-
-    #region Helpers
     private float CalcHorizontalDistanceThisFrame()
     {
-        Vector3 currentPos = characterState.transform.position;
-        currentPos.y = 0f;
-
-        float dist = Vector3.Distance(currentPos, _lastPosition);
-        _lastPosition = currentPos;
+        Vector3 pos = Flat(characterState.transform.position);
+        float dist = Vector3.Distance(pos, _lastPosition);
+        _lastPosition = pos;
         return dist;
     }
 
     private void HandleVisuals(float deltaDist)
     {
         if (Time.deltaTime <= 0f) return;
-        
-        bool nowMoving = (deltaDist / Time.deltaTime) > MoveEpsilon;
 
+        bool nowMoving = (deltaDist / Time.deltaTime) > MoveEpsilon;
         if (nowMoving == _isMoving) return;
         _isMoving = nowMoving;
 
-        if (_isMoving)
-        {
-            if (_suppressionIdle) _suppressionIdle.SetActive(false);
-            if (_suppressionMove) _suppressionMove.SetActive(true);
-        }
-        else
-        {
-            if (_suppressionMove) _suppressionMove.SetActive(false);
-            if (_suppressionIdle) _suppressionIdle.SetActive(true);
-        }
+        if (_suppressionIdle) _suppressionIdle.SetActive(!_isMoving);
+        if (_suppressionMove) _suppressionMove.SetActive(_isMoving);
     }
-
-    private void DrainManaByDistance(float deltaDist)
-    {
-        if (deltaDist <= 0f || manaResource == null) return;
-
-        _distBuffer += deltaDist;
-
-        int cells = Mathf.FloorToInt(_distBuffer / CellLength);
-        if (cells <= 0) return;
-
-        _distBuffer -= cells * CellLength;
-
-        if (characterState.isServer)
-        {
-            float loss = cells * manaResource.MaxValue * ManaLossPerCell;
-            manaResource.TryUse(loss);
-        }
-    }
-    #endregion
 }

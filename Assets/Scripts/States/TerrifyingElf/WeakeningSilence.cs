@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class WeakeningSilence : StateStacking, ITickableState
 {
-    private float _damagePerTick = 3;
+    private const int MaxStacks = 6;
+    private const float DamagePerStack = 3f;
 
     public override States State => States.WeakeningSilence;
     public override StateType Type => StateType.Magic;
@@ -12,29 +13,39 @@ public class WeakeningSilence : StateStacking, ITickableState
 
     public float TickInterval => 1f;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
+    public WeakeningSilence()
     {
+        SetMaxStacks(MaxStacks);
     }
 
-    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
-    {
-    }
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName) { }
 
     public override void UpdateState() { }
 
-    public void Tick()
+    public override void GlobalUpdate()
     {
-        ApplyDamage();
+        UpdateState();
+        ProcessTick();
+
+        RemainingDuration -= Time.deltaTime;
+        if (RemainingDuration <= 0f) ExitState();
     }
 
-    private void ApplyDamage()
+    public override void ExitState()
     {
-        if (characterState == null || characterState.Character == null || !characterState.isServer || _damagePerTick <= 0f)
+        base.ExitState();
+        CurrentStacksCount = 0;
+    }
+
+    public void Tick()
+    {
+        if (characterState == null || characterState.Character == null || !characterState.isServer)
             return;
 
         Damage damage = new Damage
         {
-            Value = _damagePerTick * CurrentStacksCount,
+            Value = DamagePerStack * CurrentStacksCount,
             Type = DamageType.Magical
         };
 

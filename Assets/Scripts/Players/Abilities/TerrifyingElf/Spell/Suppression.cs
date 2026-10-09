@@ -15,8 +15,16 @@ public class Suppression : Skill, IMultiMagicSkill
 
     #region Talent
     private bool _isSuppressionManaAbsorbtion;
-    public bool IsSuppressionManaAbsorbtion { get => _isSuppressionManaAbsorbtion; set => _isSuppressionManaAbsorbtion = value; }
-    public void SuppressionManaAbsorbtion(bool value) => _isSuppressionManaAbsorbtion = value;
+    public bool IsSuppressionManaAbsorbtion => _isSuppressionManaAbsorbtion;
+
+    public void SuppressionManaAbsorbtion(bool value)
+    {
+        _isSuppressionManaAbsorbtion = value;
+        if (isClient && isOwned) CmdSetManaAbsorbtion(value);
+    }
+
+    [Command]
+    private void CmdSetManaAbsorbtion(bool value) => _isSuppressionManaAbsorbtion = value;
     #endregion
 
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)

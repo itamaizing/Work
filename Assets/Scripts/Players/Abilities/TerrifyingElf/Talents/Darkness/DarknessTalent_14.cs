@@ -11,6 +11,7 @@ public class DarknessTalent_14 : Talent
     //#ПЕРЕНЕСЕНО В 8М
     public override void Enter()
     {
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<SubjugationMind>());
         /*ghost.CooldownGhostShotActiveTalent(true);
         pullingHealth.SetPullingHealthGhostTalentActive(true);
         silence.SilenceEffectsOnMinionMagic(true);
@@ -21,6 +22,7 @@ public class DarknessTalent_14 : Talent
 
     public override void Exit()
     {
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<SubjugationMind>());
         /*ghost.CooldownGhostShotActiveTalent(false);
         pullingHealth.SetPullingHealthGhostTalentActive(false);
         silence.SilenceEffectsOnMinionMagic(false);

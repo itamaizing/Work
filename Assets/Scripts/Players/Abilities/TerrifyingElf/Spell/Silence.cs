@@ -26,6 +26,9 @@ public class Silence : Skill
     private const float StatesCacheInterval = 1f;
     #endregion
 
+    private const float WeakeningSilenceDuration = 4f;
+    private const int WeakeningSilenceMaxStacks = 6;
+    
     private AudioSource _audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _finalDuration;
@@ -41,6 +44,7 @@ public class Silence : Skill
     private bool _isApplyingSilenceChain = false;
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
     
+    private readonly HashSet<States> _linkedDebuffs = new HashSet<States>();
     private readonly HashSet<CharacterState> _targetsToSilence = new HashSet<CharacterState>();
     private readonly Collider[] _overlapBuffer = new Collider[64];
     private readonly List<CharacterState> _cachedCharacterStates = new List<CharacterState>();
@@ -165,23 +169,16 @@ public class Silence : Skill
             
             if (_isSilenceAddAllCharacterWithDeabaffElf)
             {
-                bool anyTargetHasDebuff = false;
+                _linkedDebuffs.Clear();
                 foreach (var tState in _targetsToSilence)
-                {
-                    if (tState != null && tState.CheckForState(States.InnerDarkness))
-                    {
-                        anyTargetHasDebuff = true;
-                        break;
-                    }
-                }
+                    CollectOurDebuffs(tState, _linkedDebuffs);
 
-                if (anyTargetHasDebuff)
+                if (_linkedDebuffs.Count > 0)
                 {
                     if (Time.time - _lastStatesCacheTime > StatesCacheInterval || _cachedCharacterStates.Count == 0)
                     {
                         _cachedCharacterStates.Clear();
-                        CharacterState[] allStates = FindObjectsOfType<CharacterState>();
-                        _cachedCharacterStates.AddRange(allStates);
+                        _cachedCharacterStates.AddRange(FindObjectsOfType<CharacterState>());
                         _lastStatesCacheTime = Time.time;
                     }
                     else
@@ -191,10 +188,10 @@ public class Silence : Skill
 
                     foreach (var state in _cachedCharacterStates)
                     {
-                        if (state != null && state.CheckForState(States.InnerDarkness))
-                        {
-                            _targetsToSilence.Add(state);
-                        }
+                        if (state == null || state.Character == null) continue;
+                        if (state.gameObject == Hero.gameObject) continue;
+                        if (IsAllyTarget(state.Character)) continue;
+                        if (HasAnyLinkedDebuff(state, _linkedDebuffs)) _targetsToSilence.Add(state);
                     }
                 }
             }
@@ -223,6 +220,31 @@ public class Silence : Skill
         }
     }
      
+     private static bool IsIgnoredForLink(States s) => s == States.Silent || s == States.WeakeningSilence;
+
+     private bool IsOurDebuff(StateBasic state) =>
+         state != null
+         && state.BaffDebaff == BaffDebaff.Debaff
+         && !IsIgnoredForLink(state.State)
+         && state.SourceCaster != null
+         && state.SourceCaster.gameObject == Hero.gameObject;
+
+     private void CollectOurDebuffs(CharacterState target, HashSet<States> result)
+     {
+         if (target == null) return;
+         var states = target.CurrentStates;
+         for (int i = 0; i < states.Count; i++)
+             if (IsOurDebuff(states[i])) result.Add(states[i].State);
+     }
+
+     private bool HasAnyLinkedDebuff(CharacterState target, HashSet<States> linked)
+     {
+         var states = target.CurrentStates;
+         for (int i = 0; i < states.Count; i++)
+             if (linked.Contains(states[i].State) && IsOurDebuff(states[i])) return true;
+         return false;
+     }
+     
      [Command]
      private void CmdApplySilenceStatesBatch(List<CharacterState> targetStates)
      {
@@ -237,8 +259,7 @@ public class Silence : Skill
 
              float duration = _finalDuration;
              bool hasInnerDarkness = targetState.CheckForState(States.InnerDarkness);
-            
-
+             
              if (_effectsDarknessTalent && hasInnerDarkness)
              {
                  int stacks = targetState.CheckStateStacks(States.InnerDarkness);
@@ -248,13 +269,12 @@ public class Silence : Skill
 
              targetState.AddState(States.Silent, duration, 0, Hero.gameObject, this.name);
 
-             if (_weakeningSilenceTalentActive && hasInnerDarkness)
+             if (_weakeningSilenceTalentActive)
              {
-                 int innerDarknessStacks = targetState.CheckStateStacks(States.InnerDarkness);
-                 for (int s = 0; s < innerDarknessStacks; s++)
-                 {
-                     targetState.AddState(States.WeakeningSilence, 4f, 3f, Hero.gameObject, this.name);
-                 }
+                 int darknessStacks = targetState.CheckStateStacks(States.InnerDarkness);
+                 int stacks = Mathf.Min(darknessStacks, WeakeningSilenceMaxStacks);
+                 for (int s = 0; s < stacks; s++)
+                     targetState.AddState(States.WeakeningSilence, WeakeningSilenceDuration, 0f, Hero.gameObject, this.name);
              }
          }
      }
