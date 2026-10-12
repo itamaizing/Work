@@ -13,15 +13,14 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     [SerializeField] private TMProLocalizer _talentsCount;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private UIMenuTalentRow _rowContainer;
-    [SerializeField] private GameObject _backgroundContainer;
 
-	private bool _isGameUI = false;
+    private bool _isGameUI = false;
     private float _initialParentCellHeight = 65f;
     private int _itemsPerRow = 3;
     public event UnityAction OnShowPanelGroup;
 
-    private List<UIMenuMainTalentsPanelGroupItem> _talents = new ();
-    private List<UIMenuTalentRow> _rows = new ();
+    private List<UIMenuMainTalentsPanelGroupItem> _talents = new();
+    private List<UIMenuTalentRow> _rows = new();
 
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
@@ -34,12 +33,14 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     public event Action<TalentData> PointerExitedOnTalentIcon;
     public event UnityAction OnAnyTalentChanged;
 
+    public bool IsExpanded => _itemsParent.gameObject.activeSelf;
+
 
     public void SetPanel(TalentsGroup talentsGroup, TalentSystem talentSystem, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
     {
         _isGameUI = isGameUI;
-
         _talentSystem = talentSystem;
+
         _attributesPanel = attributesPanel;
         _talentsGroup = talentsGroup;
         _title.Localize(talentsGroup.Name);
@@ -53,17 +54,19 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
         UpdateActiveTalentsCount();
 
+        //foreach (var row in talentsGroup.TalentRows)
         for (int i = 0; i < talentsGroup.TalentRows.Count; i++)
         {
             var row = Instantiate(_rowContainer, _itemsParent);
             _rows.Add(row);
-
             foreach (var item in talentsGroup.TalentRows[i].Talents)
             {
                 var talent = Instantiate(_talentPrefab, row.Rect);
 
                 talent.Owner = this;
-                talent.Fill(item, i, isInteractable);
+                //talent.Fill(item.Data, i, isInteractable);
+                talent.Fill(item, i, isInteractable); //from LvlTransfer branch
+                item.Data.Row = i;
 
                 if (isInteractable)
                     talent.Selected += OnTalentSelected;
@@ -74,19 +77,32 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
                 row.AddTalent(talent);
                 _talents.Add(talent);
             }
-
             row.SetConditionDescription(talentsGroup.GetRowConditionDescription(i));
         }
-
         RefreshRowsLocked();
+
+        if (_rows != null)
+            if (_rows.Count > 0)
+                _rows[0].SetRowActive(true);
+
+        for (int i = 0; i < _rows.Count - 1; i++)
+        {
+            foreach (var talent in _rows[i].Talents)
+            {
+                if (talent.Talent.IsOpen)
+                {
+                    _rows[i + 1].ActivateRow();
+                }
+                talent.Selected += _rows[i + 1].ActivateRow;
+            }
+        }
     }
-    
     public void RefreshRowsLocked()
     {
         foreach (var talentIcon in _talents)
             talentIcon.RefreshLockState();
     }
-    
+
     private void OnEnable()
     {
         SaveManager.Instance.TalentStateSettled += RefreshAllIconsVisual;
@@ -109,9 +125,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         //var activeTalentsCount = _talentsGroup.TalentsData.Count(o => o.Data.IsOpen);
         var activeTalentsCount = GetCountTalents();
 
-		_talentsCount.ChangeKey(activeTalentsCount);
+        _talentsCount.ChangeKey(activeTalentsCount);
     }
-    
+
     private void RefreshAllIconsVisual()
     {
         foreach (var talentIcon in _talents)
@@ -125,7 +141,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     {
         foreach (var talentItem in _talents)
         {
-            talentItem.TryRefreshVisual(); 
+            talentItem.TryRefreshVisual();
         }
     }
 
@@ -140,24 +156,24 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         OnAnyTalentChanged?.Invoke();
     }
 
-	private int GetActiveTalents()
-	{
-		List<Talent> activeTalents = new();
-		
-			foreach (TalentRow row in _talentsGroup.TalentRows)
-			{
-				foreach (Talent talent in row.Talents)
-				{
-					if (talent.Data.IsOpen)
-					{
-						activeTalents.Add(talent);
-					}
-				}
-			}
+    private int GetActiveTalents()
+    {
+        List<Talent> activeTalents = new();
 
-		return activeTalents.Count;
+        foreach (TalentRow row in _talentsGroup.TalentRows)
+        {
+            foreach (Talent talent in row.Talents)
+            {
+                if (talent.Data.IsOpen)
+                {
+                    activeTalents.Add(talent);
+                }
+            }
+        }
 
-	}
+        return activeTalents.Count;
+
+    }
 
     private int GetCountTalents()
     {
@@ -180,7 +196,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     private int GetItemsInRowCount()
     {
         int rows = 0;
-		
+
         foreach (TalentRow row in _talentsGroup.TalentRows)
         {
             foreach (Talent talent in row.Talents)
@@ -188,7 +204,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
                 rows++;
             }
         }
-		
+
 
         return rows;
     }
@@ -197,11 +213,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     {
         bool isCurrentlyActive = _itemsParent.gameObject.activeSelf;
         _itemsParent.gameObject.SetActive(!isCurrentlyActive);
-        _backgroundContainer.SetActive(!isCurrentlyActive);
     }
 
-
-    public void Show()
+    public void Show() // from LvlTransfer branch
     {
         if (_itemsParent.gameObject.activeInHierarchy == false)
         {
@@ -213,10 +227,20 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
             OnShowPanelGroup?.Invoke();
         }
     }
-    
+
     public void Hide()
     {
         _itemsParent.gameObject.SetActive(false);
+    }
+
+    public void SetGroupVisible(bool visible)
+    {
+        gameObject.SetActive(visible);
+    }
+
+    public void SetItemsExpanded(bool expanded)
+    {
+        _itemsParent.gameObject.SetActive(expanded);
     }
 
     public void Destroy()
@@ -236,11 +260,11 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(_text != null)
+        if (_text != null)
         {
             _text.color = _newColor;
         }
-        
+
     }
 
     public void OnPointerExit(PointerEventData eventData)

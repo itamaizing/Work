@@ -70,7 +70,7 @@ public class SkillRenderer : NetworkBehaviour
 
     private void Awake()
     {
-        _cursorPrepareHotspot = Vector2.zero;
+        _cursorPrepareHotspot = new Vector2(_cursorPrepareTexture.width / 3.3f, _cursorPrepareTexture.height / 2.4f);   //магические числа, подобрано на глаз
         _cursorDefaultHotspot = Vector2.zero;
     }
 

@@ -32,7 +32,7 @@ public class ReversePolarityState : StateBasic
         Damage damage = new Damage
         {
             Value = damageValue,
-            Type  = DamageType.Magical,
+            Type  = DamageType.DOTMag,
         };
 
         characterState.Character.TryTakeDamage(ref damage, skill);

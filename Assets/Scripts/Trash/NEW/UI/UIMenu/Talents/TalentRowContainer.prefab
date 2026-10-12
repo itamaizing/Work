@@ -89,3 +89,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIMenuTalentRow
   _rect: {fileID: 7990676069690170440}
+  _lockedOverlay: {fileID: 0}

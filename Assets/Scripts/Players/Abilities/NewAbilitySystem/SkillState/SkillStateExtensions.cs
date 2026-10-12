@@ -539,6 +539,8 @@ public abstract partial class Skill
     {
         if (fullyAbsorbed) return;
         if (!IsExecuting) return;
+        if (type == DamageType.DOTPhys || type == DamageType.DOTMag)
+            return;
 
         bool isStream = _state == SkillState.Channeling;
         bool isPrepare = _state == SkillState.Preparing;
