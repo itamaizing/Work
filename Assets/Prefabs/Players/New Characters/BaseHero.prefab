@@ -2754,6 +2754,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents: []
+  _allTalents: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &845466918946893360
 GameObject:
   m_ObjectHideFlags: 0
@@ -18320,7 +18324,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _attributes: []
-  TemporaryResourceDisplay: []
 --- !u!114 &5630810179120932799
 MonoBehaviour:
   m_ObjectHideFlags: 0
