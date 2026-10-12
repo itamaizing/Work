@@ -10479,9 +10479,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -10497,7 +10497,7 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 1.3
     _tickInterval: 0.1
@@ -10508,15 +10508,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _castDuration: 1.3
-  _manaCostRate: 0.1
-  _manaCostPerTick:
-  - nameToShow: 1,3 Mana - Mandatory mod desc
-    type: 1
-    value: 1.3
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
   _areaComponent:
     _radius: 5
     _area: 0
@@ -10589,9 +10580,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -10607,7 +10598,7 @@ MonoBehaviour:
     _baseCooldown: 18
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 1.5
     _tickInterval: 0.1
@@ -10618,15 +10609,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _castDuration: 1.5
-  _manaCostRate: 0.1
-  _manaCostPerTick:
-  - nameToShow: 3 Mana - Mandatory mod desc
-    type: 1
-    value: 3
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
   _areaComponent:
     _radius: 4
     _area: 0
@@ -10703,9 +10685,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 10
     _costs:
@@ -10727,14 +10709,11 @@ MonoBehaviour:
     _baseCooldown: 14
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 2
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 2
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -10811,9 +10790,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -10829,14 +10808,11 @@ MonoBehaviour:
     _baseCooldown: 15
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 1.1
     _area: 0
@@ -10910,9 +10886,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 30
     _costs:
@@ -10934,14 +10910,11 @@ MonoBehaviour:
     _baseCooldown: 16
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 1.6
+  _preparingDuration: 1.6
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
@@ -11016,9 +10989,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -11040,14 +11013,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 6
+  _preparingDuration: 6
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 2
     _area: 0
@@ -11116,9 +11086,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -11140,14 +11110,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -11221,9 +11188,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -11245,7 +11212,7 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
@@ -11256,15 +11223,6 @@ MonoBehaviour:
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
   _areaComponent:
     _radius: 0
     _area: 0
@@ -11334,9 +11292,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 10
     _costs:
@@ -11358,14 +11316,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 2
+  _preparingDuration: 2
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -11435,9 +11390,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 8
     _costs:
@@ -11459,14 +11414,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -11542,9 +11494,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 15
     _costs:
@@ -11566,14 +11518,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -11644,9 +11593,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 30
     _costs:
@@ -11668,14 +11617,11 @@ MonoBehaviour:
     _baseCooldown: 16
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 1.6
+  _preparingDuration: 1.6
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
@@ -11748,9 +11694,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -11772,14 +11718,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 2
+  _preparingDuration: 2
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -11853,9 +11796,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 40
     _costs:
@@ -11877,14 +11820,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
@@ -11974,9 +11914,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 80
     _costs:
@@ -11998,14 +11938,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 2
+  _preparingDuration: 2
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 4
     _area: 0
@@ -12076,9 +12013,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 10
     _costs:
@@ -12106,14 +12043,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 2
+  _preparingDuration: 2
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -12223,9 +12157,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
@@ -12241,14 +12175,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -12320,9 +12251,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 40
     _costs:
@@ -12344,14 +12275,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 2
@@ -12423,9 +12351,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -12447,14 +12375,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -12525,9 +12450,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 80
     _costs:
@@ -12549,14 +12474,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -12626,9 +12548,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 20
     _costs:
@@ -12650,14 +12572,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 2
+  _preparingDuration: 2
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 3
@@ -12732,9 +12651,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -12756,14 +12675,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 3
+  _preparingDuration: 3
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -12836,9 +12752,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -12860,14 +12776,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
@@ -12937,9 +12850,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs:
@@ -12961,14 +12874,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -13040,9 +12950,9 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 40
     _costs:
@@ -13064,14 +12974,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 3
