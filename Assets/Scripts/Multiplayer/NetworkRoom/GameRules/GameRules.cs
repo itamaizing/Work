@@ -404,8 +404,7 @@ public abstract class GameRules : NetworkBehaviour
             }
 
             InitializeChat();
-
-
+            
             GameStartClient();
         }
     }
