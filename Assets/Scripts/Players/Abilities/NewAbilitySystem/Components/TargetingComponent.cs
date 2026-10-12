@@ -292,6 +292,8 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public TargetData GetTargetOrPoint(float searchRadius = _defaultSearchRadius, bool useLayerMask = true)
     {
+        if (SkillType == SkillType.NonTargetWithClick)
+            return new TargetData(Vector3.zero);
         var clickPoint = GetMousePoint(useLayerMask: useLayerMask);
         if (clickPoint == null || clickPoint == Vector3.zero)
             return null;

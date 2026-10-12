@@ -20,7 +20,6 @@ public class AttributeSystem : NetworkBehaviour
     public Dictionary<ResourceType, ResourceAttribute> Resources => _resources;
     private SyncDictionary<string, float> _syncResources = new();
     public SyncDictionary<string, float> SyncResources { get => _syncResources; }
-    [SerializeField] public List<ResourceAttribute> TemporaryResourceDisplay = new(); //TMP: Для простоты дебаггинга, потом убрать
 
     public Attribute this[CharacterAttributeName attribute] => _attributes[attribute];
     public Attribute HPMax => _resources[ResourceType.Health].Attributes[ResourceAttributeName.MaxValue];
@@ -74,7 +73,6 @@ public class AttributeSystem : NetworkBehaviour
             }
             _attributes.TryAdd(attribute, new Attribute(attribute.ToString(), baseValue));
         }
-        TemporaryResourceDisplay = _resources.Values.ToList();
         SubscribeToAttributeModify();
     }
     

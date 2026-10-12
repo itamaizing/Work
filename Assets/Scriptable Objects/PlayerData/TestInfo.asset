@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: GENA
   _description: golden ball heat trick
   type: 
-  _icon: {fileID: 21300000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
+  _icon: {fileID: 21300000, guid: 13979068f029e09418c3af4557d6c7a3, type: 3}
   _iconSize: 0
   _health:
     nameToShow: Health
@@ -65,8 +65,8 @@ MonoBehaviour:
       type: 3
       value: 0
     - nameToShow: MoveSpeed
-      type: 4
+      type: 6
       value: 5
     - nameToShow: VisionRadius
-      type: 5
+      type: 7
       value: 2
