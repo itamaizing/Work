@@ -3,13 +3,14 @@
 public class CameraMoveNew : MonoBehaviour
 {
     [SerializeField] float m_MoveSpeed = 20;
-    [SerializeField] float m_BorderDistance = 5;
+    [SerializeField] int m_EdgePixels = 1;
 
     [SerializeField] float m_MinX = -64;
     [SerializeField] float m_MaxX = 64;
     [SerializeField] float m_MinY = -64;
     [SerializeField] float m_MaxY = 64;
     [SerializeField] private CameraBoxLimiter _limiter;
+    [SerializeField] int m_OutsidePixels = 40;
     public TestController Target;
 
     public float moveSpeed = 5f;
@@ -37,6 +38,7 @@ public class CameraMoveNew : MonoBehaviour
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     private void LateUpdate()
@@ -158,35 +160,40 @@ public class CameraMoveNew : MonoBehaviour
 
     void HandleMovement2()
     {
-        if (Input.mousePosition.x < 0 || Input.mousePosition.x > Screen.width ||
-            Input.mousePosition.y < 0 || Input.mousePosition.y > Screen.height)
-        {
+        Vector3 mp = Input.mousePosition;
+
+        if (mp.x < -m_OutsidePixels || mp.x > Screen.width + m_OutsidePixels ||
+            mp.y < -m_OutsidePixels || mp.y > Screen.height + m_OutsidePixels)
             return;
+
+        float dirX = 0f;
+        float dirZ = 0f;
+
+        if (mp.x <= m_EdgePixels)                       dirX -= 1f;
+        if (mp.x >= Screen.width - 1 - m_EdgePixels)    dirX += 1f;
+        if (mp.y <= m_EdgePixels)                       dirZ -= 1f;
+        if (mp.y >= Screen.height - 1 - m_EdgePixels)   dirZ += 1f;
+
+        if (dirX != 0f || dirZ != 0f)
+        {
+            Vector3 forward = transform.forward;
+            forward.y = 0f;
+            if (forward.sqrMagnitude < 0.0001f)
+            {
+                forward = transform.up;
+                forward.y = 0f;
+            }
+            forward.Normalize();
+
+            Vector3 right = transform.right;
+            right.y = 0f;
+            right.Normalize();
+
+            Vector3 movement = (right * dirX + forward * dirZ);
+            if (movement.sqrMagnitude > 1f) movement.Normalize();
+
+            transform.Translate(movement * m_MoveSpeed * Time.deltaTime, Space.World);
         }
-
-        float mouseX = Mathf.Clamp(Input.mousePosition.x, 0f, Screen.width);
-        float mouseY = Mathf.Clamp(Input.mousePosition.y, 0f, Screen.height);
-
-        Vector2 screenpos = new Vector2(
-            mouseX * 100f / Screen.width,
-            mouseY * 100f / Screen.height);
-
-        Vector3 movement = Vector3.zero;
-
-        if (screenpos.x < m_BorderDistance) 
-            movement.x -= 1f;
-    
-        if (screenpos.x > 100f - m_BorderDistance) 
-            movement.x += 1f;
-
-        if (screenpos.y < m_BorderDistance) 
-            movement.y -= 1f;
-    
-        if (screenpos.y > 100f - m_BorderDistance) 
-            movement.y += 1f;
-
-        float currentSpeed = m_MoveSpeed * Time.deltaTime;
-        transform.Translate(movement * currentSpeed, Space.Self);
 
         ApplyCurrentBounds();
     }

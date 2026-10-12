@@ -252289,7 +252289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MoveSpeed: 20
-  m_BorderDistance: 5
+  m_EdgePixels: 5
   m_MinX: -64
   m_MaxX: 64
   m_MinY: -64
@@ -276252,6 +276252,10 @@ PrefabInstance:
       propertyPath: _uiCamera
       value: 
       objectReference: {fileID: 767801948}
+    - target: {fileID: 9072973448013671613, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _hideUnusedButtons
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9218407394255202166, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_IsActive
       value: 1
