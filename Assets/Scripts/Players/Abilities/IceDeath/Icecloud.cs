@@ -33,7 +33,7 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 		}
 	}
 
-	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerPrepare => 0;
 
 	protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
@@ -117,9 +117,9 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 		if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
 	}
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
-		return base.PrepareJob(callbackDataSaved);
+		return base.TargetingJob(callbackDataSaved);
     }
 
 	protected override IEnumerator CastJob()

@@ -40,8 +40,6 @@ public class RestorationStateStacking : StateStackingRefreshing, ITickableState
         Tick();
     }
 
-    public override void UpdateState() { }
-
     public void Tick() => ApplyHealTick();
 
     private void ApplyHealTick()
@@ -86,15 +84,13 @@ public class RestorationStateStacking : StateStackingRefreshing, ITickableState
         UpdateDisplayText();
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_targetCharacter != null)
         {
             _targetCharacter.Health.HealTakedServer -= OnTargetHealTaken;
             _targetCharacter = null;
         }
-
-        characterState.RemoveState(this);
     }
 
     [Server]

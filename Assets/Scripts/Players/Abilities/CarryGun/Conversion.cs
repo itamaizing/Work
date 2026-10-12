@@ -9,7 +9,7 @@ public class Conversion : Skill
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => _psionicEnergy != null && _psionicEnergy.CurrentValue > 0;
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -21,7 +21,7 @@ public class Conversion : Skill
     {
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         yield break;
     }

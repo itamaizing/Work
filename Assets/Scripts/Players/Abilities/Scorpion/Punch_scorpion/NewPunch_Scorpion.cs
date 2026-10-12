@@ -38,10 +38,10 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
     private static readonly int LeftPunchTrigger = Animator.StringToHash("LeftPunch");
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
     
-    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, Targeting.AdditionalObstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private void Start()
@@ -149,7 +149,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Targetable == null)
         {

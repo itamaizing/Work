@@ -5,7 +5,7 @@ public class StandartAutoAttack : AutoAttackSkill
     [SerializeField] private float _damage;
     [SerializeField] private float _animSpeed = 1;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("AtackStandartAutoAttack");
 

@@ -42,7 +42,7 @@ namespace Gangdollarff
 
         public override string AdditionalDescription => "";
 
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
         protected override int AnimTriggerCast => 0;
         protected override bool IsCanCast => CheckCanCast();
 
@@ -94,7 +94,7 @@ namespace Gangdollarff
             _aoeShieldTargets.Clear();
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             if (!IsAllyTargetAvailable) yield break;
 
@@ -173,7 +173,7 @@ namespace Gangdollarff
             RpcControlMovement(false);
             _shield.DamageTaken += OnAbsorb;
 
-            yield return new WaitForSeconds(_castDuration);
+            yield return new WaitForSeconds(ChannelingDuration);
 
             if (_isAoeShieldActive)
                 TargetRpcStopAoeScan(connectionToClient);

@@ -12,7 +12,7 @@ public class ShadowSkill : Skill
     [SerializeField] private float _darkDamageThreshold = 50f;
     [SerializeField] private int _maxShadowCharges = 3;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Shadow");
     protected override bool IsCanCast => true;
 
@@ -124,7 +124,7 @@ public class ShadowSkill : Skill
         _clickPoint = Vector3.zero;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
 

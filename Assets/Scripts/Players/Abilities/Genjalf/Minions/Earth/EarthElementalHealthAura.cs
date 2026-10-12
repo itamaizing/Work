@@ -113,15 +113,10 @@ namespace Gangdollarff.EarthElemental
             }
         }
 
-        public override void ExitState()
+        protected override void OnExit()
         {
             StopRegenRoutine();
             RemoveBuffs();
-            base.ExitState();
-        }
-
-        public override void UpdateState()
-        {
         }
     }
 }

@@ -135,8 +135,8 @@ public class ComboSeriesSystem : Skill
                 comboSkill.OnSeriesDamaged -= RegisterHit;
                 comboSkill.OnSeriesDamaged += RegisterHit;
 
-                skill.PreparingStarted -= OnSkillPreparingStarted;
-                skill.PreparingStarted += OnSkillPreparingStarted;
+                skill.TargetingStarted -= OnSkillTargetingStarted;
+                skill.TargetingStarted += OnSkillTargetingStarted;
 
                 skill.CastStarted -= OnSkillCastStarted;
                 skill.CastStarted += OnSkillCastStarted;
@@ -156,7 +156,7 @@ public class ComboSeriesSystem : Skill
             if (skill is IComboSeriesParticipatingSkill comboSkill)
             {
                 comboSkill.OnSeriesDamaged -= RegisterHit;
-                skill.PreparingStarted -= OnSkillPreparingStarted;
+                skill.TargetingStarted -= OnSkillTargetingStarted;
                 skill.CastStarted -= OnSkillCastStarted;
                 skill.OnSkillCanceled -= OnSkillCanceledHandler;
             }
@@ -189,7 +189,7 @@ public class ComboSeriesSystem : Skill
         _timerPaused = false;
     }
 
-    private void OnSkillPreparingStarted(Skill skill)
+    private void OnSkillTargetingStarted(Skill skill)
     {
         if (!_seriesIsEnable || skill == null) return;
 
@@ -497,7 +497,7 @@ public class ComboSeriesSystem : Skill
         throw new NotImplementedException();
     }
 
-    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerPrepare { get; }
     protected override int AnimTriggerCast { get; }
     #endregion
 }

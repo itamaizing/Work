@@ -34,10 +34,6 @@ public class ParasitesStateStacking : StateStackingRefreshing, ITickableState
         return true;
     }
 
-    public override void UpdateState()
-    {
-    }
-
     public void Tick()
     {
         if (!characterState.isServer) return;
@@ -54,9 +50,8 @@ public class ParasitesStateStacking : StateStackingRefreshing, ITickableState
         health.TryTakeDamage(ref damage, skill);
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
-        characterState.RemoveState(this);
     }
 }

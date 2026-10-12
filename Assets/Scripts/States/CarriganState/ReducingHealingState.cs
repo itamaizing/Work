@@ -31,16 +31,6 @@ public class ReducingHealingState : StateBasic
         _delayBeforeChecking = _startDelayBeforeChecking;
     }
 
-    public override void UpdateState()
-    {
-
-    }
-
-    public override void ExitState()
-    {
-
-    }
-
     private void UdpatingDictionaries()
     {
     }

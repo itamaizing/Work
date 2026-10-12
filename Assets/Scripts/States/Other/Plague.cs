@@ -95,12 +95,9 @@ public class Plague : StateStackingRefreshing
         return _damageSum;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
-        base.ExitState();
         CurrentStacksCount = 0;
         _damageSum = 0;
     }
-
-    
 }

@@ -60,7 +60,7 @@ public class PoisonSlap : Skill
     private static readonly int poisonSlapTrigger = Animator.StringToHash("PoisonSlapCastAnimTrigger");
 
     protected override int AnimTriggerCast => poisonSlapTrigger;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
@@ -85,7 +85,7 @@ public class PoisonSlap : Skill
     public void PoisonSlapPreparation()
     {
         // Блокируем движение ТОЛЬКО если способность реально исполняется/подготавливается
-        if (!IsCasting && !IsPreparing) return;
+        if (!IsCasting && !IsTargeting) return;
 
         if (Hero != null && Hero.Move != null)
         {
@@ -138,7 +138,7 @@ public class PoisonSlap : Skill
         Targeting.ClearTempTarget();
         Targeting.ClearTarget();
 
-        _castDeley = 0;
+        _preparingDuration = 0;
         base.ClearData();
     }
 

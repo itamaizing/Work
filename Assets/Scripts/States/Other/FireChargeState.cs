@@ -51,17 +51,12 @@ public class FireChargeState : StateBasic
         chainBlade?.AddFireBonus(_bladeDamagePercent, _bladeScorchedChance);
         ExitState();
     }
-    
-    
 
-    public override void UpdateState() { }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         _punchKickDamagePercent = 0f;
         _punchKickScorchedChance = 0f;
         _bladeDamagePercent = 0f;
         _bladeScorchedChance = 0f;
-        characterState?.RemoveState(this);
     }
 }

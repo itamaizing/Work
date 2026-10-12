@@ -15,7 +15,7 @@ public class RetributiveReckoning : Skill
     private Coroutine _disactiveResetCoroutine;
     private Coroutine _magicBoostCoroutine;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => _lastAttacker != null && !Disactive;
@@ -92,7 +92,7 @@ public class RetributiveReckoning : Skill
         Disactive = true;
     }
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         if (_lastAttacker != null)
         {

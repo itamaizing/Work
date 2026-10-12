@@ -40,7 +40,7 @@ public class ConsumeCombo_Scorpion : Skill
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     private bool _ninjaTalentEnabled = false;
     private bool _fireComboTalentEnabled = false; 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private bool isConsumeCombo_ScorpionPhysicStateClear;
@@ -247,7 +247,7 @@ public class ConsumeCombo_Scorpion : Skill
         (target.GetComponent<CharacterState>()?.GetState(States.ComboState) as StateStacking)?.ReduceStack();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

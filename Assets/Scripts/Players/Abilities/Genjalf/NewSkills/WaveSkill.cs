@@ -20,7 +20,7 @@ public class WaveSkill : Skill
 
     public override string AdditionalDescription => "";
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -228,7 +228,7 @@ public class WaveSkill : Skill
             Type = Info.DamageType,
         };
 
-        while (IsPreparing)
+        while (IsTargeting)
         {
             Vector3 mousePoint = GetGroundMousePoint();
 
@@ -263,7 +263,7 @@ public class WaveSkill : Skill
         SkillRender.StopDrawRadius();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new();
 

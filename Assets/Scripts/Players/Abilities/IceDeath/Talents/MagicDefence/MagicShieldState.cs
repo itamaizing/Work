@@ -81,11 +81,7 @@ public class MagicShieldState : StateBasic
         return overflow;
     }
 
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (characterState.Character?.Health != null)
         {
@@ -95,6 +91,5 @@ public class MagicShieldState : StateBasic
         characterState.SetSuppressStateDebuffEffects(false);
         characterState.SetSuppressStateBuffEffects(false);
         _durability = 0;
-        base.ExitState();
     }
 }

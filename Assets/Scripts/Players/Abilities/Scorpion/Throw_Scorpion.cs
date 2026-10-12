@@ -23,7 +23,7 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
                                          Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
                                          CheckResourcesOnSkill();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Throw");
 
     public void AnimThrowStart()
@@ -36,7 +36,7 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
         //AnimCastEnded();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

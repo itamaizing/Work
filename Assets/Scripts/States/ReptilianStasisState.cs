@@ -33,12 +33,10 @@ public class ReptilianStasisStateStacking : StateStacking
         _owner.Abilities.CancleAllSkills();
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveStasis();
         ResetCooldowns();
-
-        base.ExitState();
     }
 
     private void RemoveStasis()
@@ -76,6 +74,4 @@ public class ReptilianStasisStateStacking : StateStacking
     {
 
     }
-
-    public override void UpdateState() { }
 }

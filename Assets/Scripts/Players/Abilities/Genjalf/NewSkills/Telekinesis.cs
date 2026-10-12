@@ -21,7 +21,7 @@ namespace Gangdollarff
         private float _clickRadius = 0.5f;
         private float _secPerMeter = 0.4f;
 
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
 
         protected override int AnimTriggerCast => Animator.StringToHash("TelekinesSkill");
 
@@ -78,7 +78,7 @@ namespace Gangdollarff
                 _secondClickPoint = Vector3.zero;
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             _skillRender.DrawRadius(AreaInfo.Radius);
             while (Targeting.GetTempTarget()?.Character == null)
@@ -149,7 +149,7 @@ namespace Gangdollarff
             _originalGroundPosition = _tempChar.transform.position.y;
             Vector3 startPos = _tempChar.transform.position;
 
-            float castEndTime = Time.time + _castDuration;
+            float castEndTime = Time.time + ChannelingDuration;
 
             CmdMoveTaget(targetGO, startPos + new Vector3(0, _amountOfLift, 0), _deleyTelekines);
             yield return new WaitForSeconds(_deleyTelekines);
@@ -254,7 +254,7 @@ namespace Gangdollarff
 
         [Command]
         private void CmdAddState(Character target) =>
-            target.CharacterState.AddState(States.Stun, _castDuration, 0, Hero.gameObject, name);
+            target.CharacterState.AddState(States.Stun, ChannelingDuration, 0, Hero.gameObject, name);
 
         [Command]
         private void CmdRemoveState(Character target) => target.CharacterState.RemoveState(States.Stun);

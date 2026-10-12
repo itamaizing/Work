@@ -142,12 +142,7 @@ public class CoolingDamaged : StateBasic
             nameof(Cooling)
         );
     }
-
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (characterState?.Character?.Health != null)
         {
@@ -155,6 +150,5 @@ public class CoolingDamaged : StateBasic
         }
 
         RemoveBuffs();
-        base.ExitState();
     }
 }

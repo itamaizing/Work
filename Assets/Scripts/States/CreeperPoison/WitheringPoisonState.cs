@@ -86,11 +86,10 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         ResetValues();
-        base.ExitState();
     }
 
     [Server]
@@ -130,6 +129,4 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
         _bindingPoison = null;
         _player = null;
     }
-    
-    
 }

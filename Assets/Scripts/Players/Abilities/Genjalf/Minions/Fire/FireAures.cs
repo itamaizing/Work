@@ -34,8 +34,6 @@ public class Burn : StateBasic, ITickableState
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName) => Attach();
     public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName) => Attach();
 
-    public override void UpdateState() { }
-
     public void Tick()
     {
         if (!characterState.isServer) return;
@@ -53,10 +51,9 @@ public class Burn : StateBasic, ITickableState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         Detach();
-        characterState?.RemoveState(this);
     }
 
     private void Attach()
@@ -118,14 +115,11 @@ public class Burning : StateStackingRefreshing, ITickableState
         if (startingFresh) DealDamage(1);
     }
 
-    public override void UpdateState() { }
-
     public void Tick() => DealDamage(CurrentStacksCount);
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
-        characterState.RemoveState(this);
     }
 
     private void DealDamage(int stacks)

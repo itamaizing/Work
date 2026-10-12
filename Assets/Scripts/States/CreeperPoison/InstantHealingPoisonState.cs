@@ -37,11 +37,6 @@ public class InstantHealingPoisonState : StateBasic
         MakeHeal();
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
-
     [Server]
     private void MakeHeal()
     {

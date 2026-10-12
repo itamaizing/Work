@@ -26,7 +26,7 @@ namespace Gangdollarff
         public override string AdditionalDescription =>
             $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
 
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
 
         protected override int AnimTriggerCast => 0;
 
@@ -174,7 +174,7 @@ namespace Gangdollarff
         {
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             yield return null;
         }

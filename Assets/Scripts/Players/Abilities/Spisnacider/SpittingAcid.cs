@@ -9,7 +9,7 @@ public class SpittingAcid : MoveSkill
     [SerializeField] private float maxDamage = 10f;
     [SerializeField] private float corrodedDuration = 6f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SpittingAcid");
 
     protected override bool IsCanCast

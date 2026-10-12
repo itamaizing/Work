@@ -13,12 +13,12 @@ public class CreatureIcon : MonoBehaviour
     private void Awake()
     {
         _button.onClick.AddListener(OnClick);
-        _creatureSpawn.PreparingSuccess += OnCastStarted;
+        _creatureSpawn.TargetingSuccess += OnCastStarted;
         _creatureSpawn.CastEnded += OnCanceled;
         _creatureSpawn.Canceled += OnCanceled;
+        _creatureSpawn.UnlockedTypesChanged += OnUnlockedChanged;
 
         gameObject.SetActive(false);
-
         _rotation = transform.rotation;
     }
 
@@ -31,19 +31,29 @@ public class CreatureIcon : MonoBehaviour
 
     private void OnDestroy()
     {
-        _creatureSpawn.PreparingSuccess -= OnCastStarted;
+        _creatureSpawn.TargetingSuccess -= OnCastStarted;
         _creatureSpawn.CastEnded -= OnCanceled;
         _creatureSpawn.Canceled -= OnCanceled;
+        _creatureSpawn.UnlockedTypesChanged -= OnUnlockedChanged;
     }
+
 
     private void OnClick()
     {
+        if (!_creatureSpawn.IsSpawnTypeUnlocked(_spawnType)) return;
         _creatureSpawn.SpawnType = _spawnType;
     }
 
     private void OnCastStarted(Skill skill)
     {
-        gameObject.SetActive(true);
+        if (_creatureSpawn.IsSpawnTypeUnlocked(_spawnType))
+            gameObject.SetActive(true);
+    }
+
+    private void OnUnlockedChanged()
+    {
+        if (gameObject.activeSelf && !_creatureSpawn.IsSpawnTypeUnlocked(_spawnType))
+            gameObject.SetActive(false);
     }
 
     private void OnCanceled()

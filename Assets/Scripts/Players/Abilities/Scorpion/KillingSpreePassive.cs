@@ -8,7 +8,7 @@ public class KillingSpreePassive : Skill
     private float _duration = 4f;
 
     protected override bool IsCanCast => CanCast();
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private bool CanCast()
@@ -28,7 +28,7 @@ public class KillingSpreePassive : Skill
         _hero.CharacterState.AddState(States.KillingSpree, _duration, 0, Schools.Physical, _hero.gameObject, nameof(KillingSpreeStateStacking));
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo info = new TargetInfo();
         info.AddTarget(Hero);

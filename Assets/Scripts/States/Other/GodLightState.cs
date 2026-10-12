@@ -17,12 +17,6 @@ public class GodLightState : StateBasic
         characterState.Character.Abilities.SetNextSkillNoCast();
     }
 
-    public override void ExitState()
-    {
-        
-        characterState.RemoveState(this);
-    }
-    
     public override void UpdateState()
     {
         if (!characterState.Character.Abilities.IsNextSkillNoCast) ExitState();

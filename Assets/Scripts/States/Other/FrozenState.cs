@@ -149,7 +149,7 @@ public class FrozenStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RestoreMaterials();
         
@@ -158,11 +158,9 @@ public class FrozenStateStacking : StateStackingRefreshing
         RemoveEffects();
         _damageCount = 0f;
         CurrentStacksCount = 0;
-        characterState.RemoveState(this);
 
         if (_frozenEffectInstance != null)
             _frozenEffectInstance.SetActive(false);
-        
     }
 
     public override bool Stack(float time)
@@ -247,6 +245,4 @@ public class FrozenStateStacking : StateStackingRefreshing
         _affectedSkills.Clear();
         _appliedCastSlow = 0f;
     }
-    
-    
 }

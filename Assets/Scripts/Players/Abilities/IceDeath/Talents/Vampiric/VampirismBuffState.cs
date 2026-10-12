@@ -27,17 +27,13 @@ public class VampirismBuffStateStacking : StateStackingRefreshing
         characterState.Character.DamageTracker.OnDamageTracked += OnDamageDealt;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (characterState != null)
             characterState.Character.DamageTracker.OnDamageTracked -= OnDamageDealt;
 
         _accumulatedDamageForRune = 0;
-        
-        characterState.RemoveState(this);
     }
-
-    public override void UpdateState() { }
 
     public override bool Stack(float time) => false;
 

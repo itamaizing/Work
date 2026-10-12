@@ -32,10 +32,8 @@ public class ScorchedSoul : StateStackingRefreshing
         CurrentStacksCount = 1;
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
-        base.ExitState();
-        
         if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
             //return cast speed
@@ -67,14 +65,4 @@ public class ScorchedSoul : StateStackingRefreshing
         _duration = _baseDuration;
         return false;
     }
-
-    public override void UpdateState()
-    {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-    
-    
 }

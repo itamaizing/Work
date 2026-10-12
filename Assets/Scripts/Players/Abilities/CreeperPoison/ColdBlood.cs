@@ -31,7 +31,7 @@ public class ColdBlood : Skill
     }
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override bool IsCanCast => !_isWaitingForHit;
 
@@ -45,7 +45,7 @@ public class ColdBlood : Skill
         Debug.LogError("ColdBlood / LoadTargetData / NonTarget skill should not load target data");
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield break;
     }

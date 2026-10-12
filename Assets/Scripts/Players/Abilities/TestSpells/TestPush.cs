@@ -18,11 +18,11 @@ public class TestPush : Skill
             if (_target == null)
                 return false;
 
-            return Targeting.NoObstacles(_target.transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, _target.transform); ;
+            return Targeting.NoObstacles(_target.transform.position, Targeting.AdditionalObstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, _target.transform); ;
         }
     }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
@@ -48,7 +48,7 @@ public class TestPush : Skill
         _target = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while(_target == null)
         {

@@ -19,7 +19,7 @@ public class SongOfSleep : Skill
 
     private static readonly int _animTrigger = Animator.StringToHash("SongSpellCastDelayAnimTrigger");
 
-    protected override int AnimTriggerCastDelay => _animTrigger;
+    protected override int AnimTriggerPrepare => _animTrigger;
     protected override int AnimTriggerCast => 0;
 
     public bool IsSleepInnerDarknessTalentActive { get => _isSleepInnerDarknessTalentActive; set => _isSleepInnerDarknessTalentActive = value; }
@@ -51,7 +51,7 @@ public class SongOfSleep : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         StartRadiusRender();
 

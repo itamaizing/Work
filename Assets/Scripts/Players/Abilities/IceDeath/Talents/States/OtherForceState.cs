@@ -41,15 +41,7 @@ public class OtherForceStateStacking : StateStackingRefreshing
         CurrentStacksCount = 1;
     }
 
-    public override void UpdateState()
-    {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_healthResource != null && _currentBonus > 0f && !characterState.isClient)
         {
@@ -67,8 +59,6 @@ public class OtherForceStateStacking : StateStackingRefreshing
 
         _currentBonus = 0f;
         CurrentStacksCount = 0;
-
-        characterState?.RemoveState(this);
     }
 
     public override bool Stack(float time)

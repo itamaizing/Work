@@ -19,18 +19,4 @@ public class Curse : StateBasic
 		//if(character.personWhoShoted != null)
 		//_personWhoShooted = character.personWhoShoted;
 	}
-
-	public override void UpdateState()
-	{
-		_durationToExit -= Time.deltaTime;
-		if (_durationToExit < 0)
-		{
-			ExitState();
-		}
-	}
-
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-	}
 }

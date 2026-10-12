@@ -7,7 +7,7 @@ public class DispelMagic : Skill
 {
     private float _clickRadius = 0.5f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DispelMagic");
 
     protected override bool IsCanCast =>
@@ -31,7 +31,7 @@ public class DispelMagic : Skill
 
     protected override void ClearData() => Targeting.ClearTarget();
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

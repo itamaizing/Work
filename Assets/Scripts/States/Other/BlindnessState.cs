@@ -44,11 +44,10 @@ public class BlindnessStateStacking : StateStackingRefreshing
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
         if (_duration < 0 || turnOff) ExitState();
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (characterState.isOwned) RemoveEffectFromLocalCamera();
 
@@ -57,8 +56,6 @@ public class BlindnessStateStacking : StateStackingRefreshing
             abilities = ability.Abilities;
             foreach (var abil in abilities.Abilities) if (abil.Targeting.SkillType == SkillType.Target) abil.Disactive = false;
         }
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

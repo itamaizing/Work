@@ -154,7 +154,7 @@
 
 //            if (dist > distanceforTrap) rawPos = _startPosition + dir.normalized * distanceforTrap;
 
-//            bool blocked = Physics.Raycast(_startPosition + Vector3.up * 0.1f, dir.normalized, dist, _obstacle);
+//            bool blocked = Physics.Raycast(_startPosition + Vector3.up * 0.1f, dir.normalized, dist, Targeting.AdditionalObstacle);
 
 //            _preview.UpdateSecondPoint(rawPos);
 //            UpdateMinRadiusCircle(rawPos);

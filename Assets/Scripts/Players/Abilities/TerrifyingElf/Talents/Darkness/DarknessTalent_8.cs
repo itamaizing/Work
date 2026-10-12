@@ -7,8 +7,9 @@ public class DarknessTalent_8 : Talent
     //#Перенесено - не проверено
     public override void Enter()
     {
-        character.Abilities.GetSkill<Ghost>().CooldownGhostShotActiveTalent(true);
-        character.Abilities.GetSkill<PullingHealth>().SetPullingHealthGhostTalentActive(true);
+        character.Abilities.GetSkill<TerrifyingElfAura>().EnableInnerDarknessCooldownTalent(true);
+        /*character.Abilities.GetSkill<Ghost>().CooldownGhostShotActiveTalent(true);
+        character.Abilities.GetSkill<PullingHealth>().SetPullingHealthGhostTalentActive(true);*/
         //character.Abilities.GetSkill<Silence>().SilenceEffectsOnMinionMagic(true);
         //character.Abilities.GetSkill<Silence>().GhostDeathSilence(true);
         //character.Abilities.GetSkill<Silence>().SilenceEffectGhostCast(true);
@@ -17,8 +18,9 @@ public class DarknessTalent_8 : Talent
 
     public override void Exit()
     {
-        character.Abilities.GetSkill<Ghost>().CooldownGhostShotActiveTalent(false);
-        character.Abilities.GetSkill<PullingHealth>().SetPullingHealthGhostTalentActive(false);
+        character.Abilities.GetSkill<TerrifyingElfAura>().EnableInnerDarknessCooldownTalent(false);
+        /*character.Abilities.GetSkill<Ghost>().CooldownGhostShotActiveTalent(false);
+        character.Abilities.GetSkill<PullingHealth>().SetPullingHealthGhostTalentActive(false);*/
         //character.Abilities.GetSkill<Silence>().SilenceEffectsOnMinionMagic(false);
         //character.Abilities.GetSkill<Silence>().GhostDeathSilence(false);
         //character.Abilities.GetSkill<Silence>().SilenceEffectGhostCast(false);

@@ -6,12 +6,12 @@ using UnityEngine.AI;
 public class MoveSkill : Skill
 {
     [SerializeField] private NavMeshAgent _agent;
-    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerPrepare { get; }
     protected override int AnimTriggerCast { get; }
     private Coroutine _approachRoutine;
     public override void LoadTargetData(TargetInfo targetInfo) { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield return TargetingBehaviour(targetDataSavedCallback); }
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) { yield return TargetingBehaviour(targetDataSavedCallback); }
 
     protected override IEnumerator CastJob() { throw new NotImplementedException(); }
 

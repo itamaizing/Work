@@ -56,7 +56,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         return Vector3.Distance(_placedPosition, transform.position) <= AreaInfo.Radius;
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IcePuddle");
 
     
@@ -70,7 +70,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     
     private void OnAnySkillCanceled()
     {
-        if (IsPreparing)
+        if (IsTargeting)
             _radiusNeedsRedraw = true;
         
         if (_preViewPuddle)
@@ -146,7 +146,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_energy == null)
             _energy = (Energy)Hero.Resources[ResourceType.Energy]; ;

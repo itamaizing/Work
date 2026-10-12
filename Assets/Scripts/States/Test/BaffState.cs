@@ -39,11 +39,6 @@ public class BaffState : StateStackingRefreshing
         _durationRemaining -= Time.deltaTime;
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < MaxStacksCount)

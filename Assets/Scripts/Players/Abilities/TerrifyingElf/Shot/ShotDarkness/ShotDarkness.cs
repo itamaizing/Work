@@ -46,7 +46,7 @@ public class ShotDarkness : Skill, IMultiMagicSkill
 
     private bool _isHealthAboveThreshold;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
     protected override bool IsCanCast { get => CheckCanCast(); }
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
@@ -126,7 +126,7 @@ public class ShotDarkness : Skill, IMultiMagicSkill
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
 

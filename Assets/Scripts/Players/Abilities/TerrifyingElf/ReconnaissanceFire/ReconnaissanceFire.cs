@@ -79,17 +79,17 @@ public class ReconnaissanceFire : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override void SkillEnableBoostLogic()
     {
-        CastDeley = 0;
+        PreparingDuration = 0;
     }
 
     protected override void SkillDisableBoostLogic()
     {
-        CastDeley = _baseCastDelay;
+        PreparingDuration = _baseCastDelay;
     }
 
     public override void Init(SkillRenderer render, Character hero)
@@ -112,7 +112,7 @@ public class ReconnaissanceFire : Skill
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
     }
 
     private void OnDisable()
@@ -185,7 +185,7 @@ public class ReconnaissanceFire : Skill
         _targetPoint = targetInfo.Points[0];
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         ReconnaissanceFireHealthTalentEnter();
 
@@ -433,7 +433,7 @@ public class ReconnaissanceFire : Skill
     private void ResetData()
     {
         _castFromExtendedRadius = false;
-        CastDeley = _baseCastDelay;
+        PreparingDuration = _baseCastDelay;
     }
 
     protected override void ClearData()
@@ -582,7 +582,7 @@ public class ReconnaissanceFire : Skill
             HideExtendedRadius();
         }
 
-        if (_isFireArrowIntoSkyRadiusTalent && IsPreparing)
+        if (_isFireArrowIntoSkyRadiusTalent && IsTargeting)
         {
             ShowExtendedRadius();
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);

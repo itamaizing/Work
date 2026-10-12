@@ -9,7 +9,7 @@ public class TimeBackSkill : Skill
     [SerializeField] private float _snapshotInterval = 0.1f;
     [SerializeField] private float _rewindTime = 3f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private struct CharacterSnapshot
@@ -24,7 +24,7 @@ public class TimeBackSkill : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         yield return null;
     }

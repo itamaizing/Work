@@ -33,10 +33,9 @@ public class MagicBuff : StateBasic, IDamageable
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		_character.Health.Shields.Remove(this);
-		characterState.RemoveState(this);
 		//_character.Health.SetMagAbsorb(0);
 	}
 

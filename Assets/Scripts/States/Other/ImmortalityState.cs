@@ -30,14 +30,7 @@ public class ImmortalityState : StateBasic
         _player.Health.OnTryResist += NegateAllDamage;
     }
 
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-            ExitState();
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         _duration = 0;
 
@@ -50,8 +43,6 @@ public class ImmortalityState : StateBasic
 
             _player.Health.OnTryResist -= NegateAllDamage;
         }
-
-        characterState.RemoveState(this);
     }
 
     private bool NegateAllDamage(Damage damage, Skill skill) => true;

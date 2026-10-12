@@ -143,7 +143,8 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     }
     public UnitType Units { get => _unitType; }
     public OutOfRangeClick OutRange { get => _outOfRangeBehaviour; }
-
+    
+    public LayerMask AdditionalObstacle;
 
     public TargetData Target => _target;
     public TargetData Temporary { 

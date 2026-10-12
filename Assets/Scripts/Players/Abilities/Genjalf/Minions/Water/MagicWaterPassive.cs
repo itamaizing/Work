@@ -9,11 +9,11 @@ public class MagicWaterPassive : Skill, IPassiveSkill
     [SerializeField] private MagicWaterAura magicWaterAura;
     
     #region Skill
-    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerPrepare { get; }
     protected override int AnimTriggerCast { get; }
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
 
     protected override IEnumerator CastJob() { yield return null; }
 

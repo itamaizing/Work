@@ -6,7 +6,7 @@ using UnityEngine;
 public class DarkForm : Skill
 {
     [SerializeField] private float _manaCost = 20f;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
@@ -18,7 +18,7 @@ public class DarkForm : Skill
     public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(_hero);

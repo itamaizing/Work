@@ -31,16 +31,14 @@ public class TransformationDebuff : StateStacking
 
     public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0)
 		{
 			ExitState();
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
-		characterState.RemoveState(this);
 		characterState.Character.TransformationComponent.ReturnToInitial();
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{

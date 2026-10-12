@@ -33,16 +33,16 @@ public class ShoolTalent : Talent
         {
             foreach (var item in character.Abilities.Abilities)
             {
-                item.PreparingStarted += OnPreparingStarted;
+                item.TargetingStarted += OnTargetingStarted;
             }
         }
     }
 
-    private void OnPreparingStarted(Skill skill)
+    private void OnTargetingStarted(Skill skill)
     {
         _skill = skill;
 
-        skill.PreparingStarted -= OnPreparingStarted;
+        skill.TargetingStarted -= OnTargetingStarted;
         
         mod_cost = new AttributeModifier(_multiple, ModifierType.Multiplier, source: this);
         _skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(mod_cost);

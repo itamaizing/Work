@@ -38,9 +38,9 @@ public class MultiMagic : StateStackingRefreshing
             if (skill is not IMultiMagicSkill) continue;
             if (_castSuccessHandlers.ContainsKey(skill)) continue;
 
-            if (skill.CastStreamDuration > 0)
+            if (skill.ChannelingDuration > 0)
             {
-                skill.PreparingSuccess += OnTargetSkillCast;
+                skill.TargetingSuccess += OnTargetSkillCast;
                 _castSuccessHandlers[skill] = null;
             }
             else
@@ -52,7 +52,7 @@ public class MultiMagic : StateStackingRefreshing
             }
         }
     }
-    
+
     private void UnsubscribeFromSkills()
     {
         if (_skills != null && _skills.Abilities != null)
@@ -61,8 +61,8 @@ public class MultiMagic : StateStackingRefreshing
             {
                 if (skill is not IMultiMagicSkill) continue;
 
-                if (skill.CastStreamDuration > 0)
-                    skill.PreparingSuccess -= OnTargetSkillCast;
+                if (skill.ChannelingDuration > 0)
+                    skill.TargetingSuccess -= OnTargetSkillCast;
                 else if (_castSuccessHandlers.TryGetValue(skill, out var handler) && handler != null)
                     skill.CastFinished -= handler;
             }
@@ -70,17 +70,11 @@ public class MultiMagic : StateStackingRefreshing
 
         _castSuccessHandlers.Clear();
     }
-    
-    public override void UpdateState()
-    {
-    }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         UnsubscribeFromSkills();
-
-        base.ExitState();
     }
 
     public override bool Stack(float time) => false;

@@ -15,7 +15,7 @@ public class FireBoll : MoveSkill
     protected override bool IsCanCast { get => CheckCanCast(); }
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellDaley");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("SpellDaley");
 
     protected override int AnimTriggerCast => Animator.StringToHash("Attack04");
     
@@ -72,7 +72,7 @@ public class FireBoll : MoveSkill
         Hero.Move.StopLookAt();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

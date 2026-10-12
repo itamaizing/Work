@@ -11,7 +11,7 @@ public class TestSpawn : Skill
 
     protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -32,7 +32,7 @@ public class TestSpawn : Skill
         _position = Vector2.zero;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while(_position == Vector3.zero)
         {

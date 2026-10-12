@@ -41,7 +41,7 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 	}
 
 	protected override bool IsCanCast => IsCanCastCheck();
-	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerPrepare => 0;
 	protected override int AnimTriggerCast => 0;
 
 	private bool IsCanCastCheck()
@@ -77,12 +77,12 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 	
 	private void OnEnable()
 	{
-		CastDeleyStarted += OnCastDelayStarted;
+		PreparingStarted += OnCastDelayStarted;
 	}
 
 	private void OnDisable()
 	{
-		CastDeleyStarted -= OnCastDelayStarted;
+		PreparingStarted -= OnCastDelayStarted;
 	}
 
 	private void OnCastDelayStarted(float duration)
@@ -95,7 +95,7 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 	{
 		get
 		{
-			if (_castDeleyCoroutine != null)
+			if (_preparingCoroutine != null)
 			{
 				float elapsed = Time.time - _delayStartTime;
 				return Mathf.Max(0f, _currentDelayDuration - elapsed);
@@ -149,10 +149,10 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 		obj.GetComponent<BlockOfIceProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		WasInterruptedForShadow = false;
-		return base.PrepareJob(callbackDataSaved);
+		return base.TargetingJob(callbackDataSaved);
 	}
 
 	protected override IEnumerator CastJob()

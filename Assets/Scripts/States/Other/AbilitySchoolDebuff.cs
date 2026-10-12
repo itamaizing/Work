@@ -23,11 +23,8 @@ public class AbilitySchoolDebuff : StateStackingRefreshing
 		_character = character.GetComponent<Character>();
 	}
 
-	public override void UpdateState() { }
-
-	public override void ExitState()
+	protected override void OnExit()
 	{
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledSchoool, true);

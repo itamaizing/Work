@@ -61,11 +61,6 @@ public class HealingPoisonPerSecondState : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
-
     [Server]
     private void MakeHeal()
     {

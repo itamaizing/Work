@@ -21,7 +21,7 @@ public class GhostAura : Skill
     private bool _effectsDarknessTalent;
     private bool _passingThroughGhost;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
     protected override bool IsCanCast => throw new System.NotImplementedException();
 
@@ -166,7 +166,7 @@ public class GhostAura : Skill
 
     #endregion
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield break;
     }

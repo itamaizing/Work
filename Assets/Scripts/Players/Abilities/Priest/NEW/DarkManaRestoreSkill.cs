@@ -5,9 +5,9 @@ using UnityEngine;
 public class DarkManaRestoreSkill : Skill, IPassiveSkill
 {
     public override void LoadTargetData(TargetInfo targetInfo){ }
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { return null; }
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) { return null; }
 
     protected override IEnumerator CastJob() { return null; }
 

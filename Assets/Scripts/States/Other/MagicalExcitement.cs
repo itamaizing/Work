@@ -20,12 +20,6 @@ public class MagicalExcitement : StateStackingRefreshing
         SetMaxStacks(int.MaxValue);
     }
 
-    public override void ExitState()
-    {
-        
-        characterState.RemoveState(this);
-    }
-
     public override bool Stack(float time)
     {
         CurrentStacksCount++;
@@ -34,11 +28,4 @@ public class MagicalExcitement : StateStackingRefreshing
 
         return true;
     }
-
-    public override void UpdateState()
-    {
-        if (_duration <= 0) ExitState();
-    }
-    
-    
 }

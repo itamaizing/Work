@@ -20,15 +20,8 @@ public class ManaRegen : StateBasic
         if (_manaRegen) _manaRegen.SetActive(true);
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (_manaRegen) _manaRegen.SetActive(false);
-
-        
-        characterState.RemoveState(this);
-    }
-
-    public override void UpdateState()
-    {
     }
 }

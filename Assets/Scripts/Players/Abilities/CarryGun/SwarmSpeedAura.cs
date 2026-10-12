@@ -10,7 +10,7 @@ public class SwarmSpeedAura : Skill
 
     private const float Duration = 5f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => _swarmCapacity != null && _swarmCapacity.CurrentCounter > 0;
@@ -51,7 +51,7 @@ public class SwarmSpeedAura : Skill
 
     protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);

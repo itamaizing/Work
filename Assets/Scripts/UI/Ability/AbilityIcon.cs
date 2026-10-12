@@ -45,7 +45,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
             //ability.CurrentChargeChanged += OnCurrentChargeText; //old
             ability.Charges.OnCurrentChange += OnCurrentChargeText; //new
             _chargeCounter.enabled = true;
-            OnCurrentChargeText(ability.Chargers);
+            OnCurrentChargeText(ability.Charges.RemainingCharges);
         }
 
         if (ability is AutoAttackSkill)
@@ -124,7 +124,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         _castLine.Stop();
     }
 
-    private void OnStartCastDeley(float time)
+    private void OnStartPreparing(float time)
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time);
@@ -151,10 +151,10 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
 
     private void SubscribingSkillOnEvents(Skill ability)
     {
-        ability.CastStreamStarted += OnStartStreaming;
+        ability.ChannelingStarted += OnStartStreaming;
         ability.Canceled += OnStopStreaming;
 
-        ability.CastDeleyStarted += OnStartCastDeley;
+        ability.PreparingStarted += OnStartPreparing;
         ability.Canceled += OnStopCastDeley;
 
         //ability.CooldownStarted += OnStartCooldown; //old
@@ -172,10 +172,10 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
 
     private void UnsubscribingSkillOnEvents(Skill ability)
     {
-        ability.CastStreamStarted -= OnStartStreaming;
+        ability.ChannelingStarted -= OnStartStreaming;
         ability.Canceled -= OnStopStreaming;
 
-        ability.CastDeleyStarted -= OnStartCastDeley;
+        ability.PreparingStarted -= OnStartPreparing;
         ability.Canceled -= OnStopCastDeley;
 
         //ability.CooldownStarted -= OnStartCooldown; //old

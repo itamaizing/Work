@@ -124,16 +124,9 @@ public class WarmingUpStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         RemoveBuffs();
-        
-        base.ExitState();
-        characterState.RemoveState(this);
     }
-
-    public override void UpdateState() { }
-
-    
 }

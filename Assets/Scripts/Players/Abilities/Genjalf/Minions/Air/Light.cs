@@ -11,7 +11,7 @@ namespace Gangdollarff.AirElemental
         [SerializeField, Range(0, 100)] private int _debuffChance = 30;
 
         protected override bool IsCanCast { get => CheckCanCast(); }
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerPrepare => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("AttackLight");
         private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
         
@@ -81,7 +81,7 @@ namespace Gangdollarff.AirElemental
             //_target = null;
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             TargetInfo targetInfo = new TargetInfo();
             while (Targeting.GetTempTarget() == null)

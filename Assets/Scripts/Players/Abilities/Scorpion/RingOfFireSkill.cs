@@ -10,7 +10,7 @@ public class RingOfFireSkill : Skill,IFireComboParticipatingSkill
     private const float RingDuration = 6f;
     protected override bool IsCanCast => true;
     public bool IsAoe => true;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FireRing");
     
     private const float RadiusPerFullCombo = 1f;
@@ -29,7 +29,7 @@ public class RingOfFireSkill : Skill,IFireComboParticipatingSkill
         AnimCastEnded();
     }   
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         callbackDataSaved(new TargetInfo());
         yield return null;
@@ -77,11 +77,6 @@ public class RingOfFireSkill : Skill,IFireComboParticipatingSkill
     {
         if (_ringOfFireAura == null) return;
         _ringOfFireAura.ActivateAura(false);
-    }
-
-    protected override void CommitUse()
-    {
-        UseCooldownOrCharges();
     }
 
     protected override void ClearData() { }

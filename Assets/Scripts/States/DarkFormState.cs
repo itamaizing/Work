@@ -26,17 +26,11 @@ public class DarkFormState : StateBasic
         SetShadowSkillActive(true);
     }
 
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         _character.Move.RemoveModifier(_speedModifier);
 
         SetShadowSkillActive(false);
-
-        characterState.RemoveState(this);
     }
 
     private void SetShadowSkillActive(bool value)

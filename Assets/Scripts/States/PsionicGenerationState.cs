@@ -47,9 +47,4 @@ public class PsionicGenerationState : StateBasic
             if (_psionicEnergy != null) _psionicEnergy.AddPsiAndRestartDecay(PsiPerTick);
         }
     }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 }

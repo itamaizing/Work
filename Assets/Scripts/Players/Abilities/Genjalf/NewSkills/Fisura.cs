@@ -23,7 +23,7 @@ namespace Gangdollarff
         public override string AdditionalDescription =>
             $"Длительность: {AbilityNameBox.ColorOpen}{_fisuraDuration} сек{AbilityNameBox.ColorEnd}";
 
-        protected override int AnimTriggerCastDelay => Animator.StringToHash("FisuraCast");
+        protected override int AnimTriggerPrepare => Animator.StringToHash("FisuraCast");
 
         protected override int AnimTriggerCast => Animator.StringToHash("Fisura");
 
@@ -58,7 +58,7 @@ namespace Gangdollarff
             {
                 IsEnabled = false;
 
-                _castDeley = _tempCastDeley;
+                _preparingDuration = _tempCastDeley;
             }
             else
             {
@@ -82,7 +82,7 @@ namespace Gangdollarff
             _endPoint = Vector3.zero;
         }
 
-        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
         {
             TargetInfo targetInfo = new TargetInfo();
             Vector3 firstPoint = Vector3.zero;

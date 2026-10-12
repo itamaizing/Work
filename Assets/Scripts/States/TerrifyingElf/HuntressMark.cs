@@ -19,17 +19,4 @@ public class HuntressMark : StateBasic
         characterState = character;
         
     }
-
-    public override void ExitState()
-    {
-        
-        characterState.RemoveState(this);
-    }
-
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0) ExitState();
-    }
 }

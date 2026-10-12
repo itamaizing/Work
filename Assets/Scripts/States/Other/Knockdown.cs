@@ -34,10 +34,9 @@ public class Knockdown : StateStackingRefreshing
         ApplyDebuff();
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         RemoveDebuff();
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -52,15 +51,6 @@ public class Knockdown : StateStackingRefreshing
 
         _duration = _baseDuration;
         return false;
-    }
-
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     private void ApplyDebuff()

@@ -125,7 +125,7 @@ public class Sleep : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         characterState.gameObject.layer = _initialLayer;
 
@@ -145,8 +145,6 @@ public class Sleep : StateBasic
         characterState.Character.Health.DamageTaken -= OnAnyDamage;
 
         _disabledSkills.Clear();
-        
-        characterState.RemoveState(this);
 
         var networkSettings = characterState.Character.NetworkSettings;
 

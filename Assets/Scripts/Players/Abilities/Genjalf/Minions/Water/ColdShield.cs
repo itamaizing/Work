@@ -9,7 +9,7 @@ public class ColdShield : MoveSkill
     [SerializeField] private Shield _shieldPref;
     [SerializeField] private float _baffDuration = 9;
     
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
 
@@ -34,7 +34,7 @@ public class ColdShield : MoveSkill
     private void OnEnable() { Canceled += CancelMove; }
     private void OnDisable() { Canceled -= CancelMove; }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         while (Targeting.GetTempTarget() == null)

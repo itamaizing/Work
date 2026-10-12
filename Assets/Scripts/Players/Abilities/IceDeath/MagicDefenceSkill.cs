@@ -37,7 +37,7 @@ public class MagicDefenceSkill : Skill
 
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     
     private int MagicDefenceTrigger => Animator.StringToHash("Throw");
 
@@ -128,7 +128,7 @@ public class MagicDefenceSkill : Skill
         _skillRender.StopDrawArea();
     }
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         _castTarget = null;
 

@@ -25,17 +25,12 @@ public class SlowFlowLightStateStacking : StateStackingRefreshing
 			s.Buff.CastSpeed.IncreasePercentage(1 - _speedDebuf));
 	}
 
-	public override void UpdateState()
-	{
-	}
-
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
 		CurrentStacksCount = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
 		characterState.Character.Abilities.Abilities.ForEach(s => s.Buff.CastSpeed.Reset());
-		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)

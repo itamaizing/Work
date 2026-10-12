@@ -9,17 +9,12 @@ public class PsionicsTalent_4 : Talent
     public override void Enter()
     {
         _basePsionicEnergy.DissipatingPsi(true);
-        
-        /*_psionicEnergySkill.DischargingPsiTalen(true);
-        _tentacles.ProtectiveCooconSpawnAttack(true);
-        _tentacles.PsionicsTalentThree(true);*/
+        _tentacles.PsionicsTalentFour(true);
     }
 
     public override void Exit()
     {
         _basePsionicEnergy.DissipatingPsi(false);
-        /*_psionicEnergySkill.DischargingPsiTalen(false);
-        _tentacles.ProtectiveCooconSpawnAttack(false);
-        _tentacles.PsionicsTalentThree(false);*/
+        _tentacles.PsionicsTalentFour(false);
     }
 }

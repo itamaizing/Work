@@ -17,7 +17,7 @@ public class DoubleCheliceraStrike : Skill
     private static readonly int DoubleCheliceraStrikeAnimTrigger = Animator.StringToHash("DoubleCheliceraStrikeAnimation");
 
     protected override int AnimTriggerCast => DoubleCheliceraStrikeAnimTrigger;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override bool IsCanCast => IsTargetInRange() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 
@@ -46,7 +46,7 @@ public class DoubleCheliceraStrike : Skill
     {
         return Targeting.GetTarget()?.Character != null &&
             Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
-            Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+            Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle);
     }
 
     private void HandleSkillCanceled()

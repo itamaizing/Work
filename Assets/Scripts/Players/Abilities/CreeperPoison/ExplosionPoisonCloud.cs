@@ -28,7 +28,7 @@ public class ExplosionPoisonCloud : Skill
     private bool _isExploded = false;
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud) || _player.CharacterState.CheckForState(States.HealingPoisonCloud);
 
     #region Talent
@@ -47,7 +47,7 @@ public class ExplosionPoisonCloud : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

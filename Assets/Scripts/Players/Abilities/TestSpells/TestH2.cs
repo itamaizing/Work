@@ -27,7 +27,7 @@ public class TestH2 : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("H2CastDelay");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("H2CastDelay");
 
     protected override int AnimTriggerCast => 0;
 
@@ -71,7 +71,7 @@ public class TestH2 : Skill
         //_target = null;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTarget()?.Character == null)
         {

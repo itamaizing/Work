@@ -64,12 +64,12 @@ public class UIPlayerComponents : MonoBehaviour
             _castStreamHandlers[ability] = onStream;
             _castStreamEndHandlers[ability] = onStreamEnd;
 
-            ability.CastDeleyStarted += onDeley;
-            ability.CastDeleyEnded += onDeleyEnd;
+            ability.PreparingStarted += onDeley;
+            ability.PreparingEnded += onDeleyEnd;
             ability.Canceled += onDeleyEnd;
 
-            ability.CastStreamStarted += onStream;
-            ability.CastStreamEnded += onStreamEnd;
+            ability.ChannelingStarted += onStream;
+            ability.ChannelingEnded += onStreamEnd;
             ability.Canceled += onStreamEnd;
         }
     }
@@ -84,22 +84,22 @@ public class UIPlayerComponents : MonoBehaviour
         foreach (var ability in _character.Abilities.Abilities)
         {
             if (_castDeleyHandlers.TryGetValue(ability, out var onDeley))
-                ability.CastDeleyStarted -= onDeley;
+                ability.PreparingStarted -= onDeley;
             if (_castDeleyEndHandlers.TryGetValue(ability, out var onDeleyEnd))
             {
-                ability.CastDeleyEnded -= onDeleyEnd;
+                ability.PreparingEnded -= onDeleyEnd;
                 ability.Canceled -= onDeleyEnd;
             }
             if (_castStreamHandlers.TryGetValue(ability, out var onStream))
-                ability.CastStreamStarted -= onStream;
+                ability.ChannelingStarted -= onStream;
             if (_castStreamEndHandlers.TryGetValue(ability, out var onStreamEnd))
             {
-                ability.CastStreamEnded -= onStreamEnd;
+                ability.ChannelingEnded -= onStreamEnd;
                 ability.Canceled -= onStreamEnd;
             }
 
-            ability.CastStreamProgressApplied -= OnCastStreamRollback;
-            ability.CastTimeRolledBack -= OnCastTimeRollback;
+            ability.ChannelingProgressApplied -= OnChannelingRollback;
+            ability.PreparingRolledBack -= OnPreparingRollback;
         }
 
         _castDeleyHandlers.Clear();
@@ -213,13 +213,13 @@ public class UIPlayerComponents : MonoBehaviour
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time, 1, 0);
 
-        skill.CastStreamProgressApplied -= OnCastStreamRollback;
-        skill.CastStreamProgressApplied += OnCastStreamRollback;
+        skill.ChannelingProgressApplied -= OnChannelingRollback;
+        skill.ChannelingProgressApplied += OnChannelingRollback;
     }
 
     private void OnStopStreaming(Skill skill)
     {
-        skill.CastStreamProgressApplied -= OnCastStreamRollback;
+        skill.ChannelingProgressApplied -= OnChannelingRollback;
 
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
@@ -239,13 +239,13 @@ public class UIPlayerComponents : MonoBehaviour
         };
     }
     
-    private void OnCastStreamRollback(float rollbackAmount)
+    private void OnChannelingRollback(float rollbackAmount)
     {
         if (_castLine != null)
             _castLine.SkipForward(rollbackAmount);
     }
     
-    private void OnCastTimeRollback(float rollbackAmount)
+    private void OnPreparingRollback(float rollbackAmount)
     {
         if (_castLine != null)
             _castLine.Rollback(rollbackAmount);
@@ -258,13 +258,13 @@ public class UIPlayerComponents : MonoBehaviour
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time, 0, 1);
 
-        skill.CastTimeRolledBack -= OnCastTimeRollback;
-        skill.CastTimeRolledBack += OnCastTimeRollback;
+        skill.PreparingRolledBack -= OnPreparingRollback;
+        skill.PreparingRolledBack += OnPreparingRollback;
     }
 
     private void OnStopCastDeley(Skill skill)
     {
-        skill.CastTimeRolledBack -= OnCastTimeRollback;
+        skill.PreparingRolledBack -= OnPreparingRollback;
 
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();

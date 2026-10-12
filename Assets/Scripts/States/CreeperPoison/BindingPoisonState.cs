@@ -46,12 +46,10 @@ public class BindingPoisonState : StateStackingRefreshing
 
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

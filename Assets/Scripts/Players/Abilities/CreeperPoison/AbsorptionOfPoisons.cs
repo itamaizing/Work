@@ -28,7 +28,7 @@ public class AbsorptionOfPoisons : Skill
 
     public bool IsWorking { get => _isWorking; }
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => true;
 
     protected override void ClearData()
@@ -40,7 +40,7 @@ public class AbsorptionOfPoisons : Skill
         
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

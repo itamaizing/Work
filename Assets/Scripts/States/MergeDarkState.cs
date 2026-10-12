@@ -36,14 +36,7 @@ public class MergeDarkState : StateBasic
         }
     }
 
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-            ExitState();
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         foreach (var attr in _character.AttributeSystem.Attributes.Values)
             attr.RemoveBySource(this);
@@ -55,12 +48,10 @@ public class MergeDarkState : StateBasic
         }
 
         _character.IsInvisible = false;
-
-        characterState.RemoveState(this);
     }
 
     private bool IsInstantSkill(Skill skill)
     {
-        return skill.CastDeley <= 0f && skill.Channeling.CastDuration <= 0f;
+        return skill.PreparingDuration <= 0f && skill.Channeling.CastDuration <= 0f;
     }
 }

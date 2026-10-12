@@ -20,7 +20,7 @@ public class LightningStrike : Skill
 
     private bool _isChaining = false;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private float _clickRadius = 0.5f;
@@ -206,7 +206,7 @@ public class LightningStrike : Skill
         Targeting.ClearTarget();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

@@ -31,11 +31,10 @@ public class HardenedFlesh : StateStackingRefreshing
     }
     
 
-    public override void ExitState()
+    protected override void OnExit()
     {
-        base.ExitState();
         RemoveModifier();
-        
+
         CurrentStacksCount = 0;
     }
 
@@ -51,10 +50,6 @@ public class HardenedFlesh : StateStackingRefreshing
         return true;
     }
 
-    public override void UpdateState()
-    {
-    }
-    
     private void ApplyOrUpdateModifier()
     {
         if (characterState?.Character == null) return;
@@ -86,6 +81,4 @@ public class HardenedFlesh : StateStackingRefreshing
         resistanceAttr.RemoveModifier(_resistanceModifier);
         _resistanceModifier = null;
     }
-    
-    
 }

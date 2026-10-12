@@ -51,14 +51,12 @@ public class LightShield : StateBasic, IDamageable
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         if (characterState.TryGetComponent<Health>(out var health))
         {
             health.ResetShieldValues();
         }
-
-        characterState.RemoveState(this);
 
         if (_lightShield != null)
             _lightShield.SetActive(false);

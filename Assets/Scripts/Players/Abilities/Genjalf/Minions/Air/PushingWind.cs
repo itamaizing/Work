@@ -7,7 +7,7 @@ public class PushingWind : MoveSkill
 {
     [SerializeField] private float _buffDuration = 4;
     protected override bool IsCanCast { get => CheckCanCast(); }
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     protected override int AnimTriggerCast => 0;
 
@@ -43,7 +43,7 @@ public class PushingWind : MoveSkill
         Targeting.ClearTarget();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
         while (Targeting.GetTarget() == null)

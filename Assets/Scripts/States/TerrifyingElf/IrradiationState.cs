@@ -29,16 +29,9 @@ public class IrradiationState : StateStackingRefreshing
         ApplyMagicDefenseReduction();
     }
 
-    public override void UpdateState()
-    {
-        RemainingDuration -= Time.deltaTime;
-        if (RemainingDuration <= 0) ExitState();
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         RestoreMagicDefense();
-        characterState.RemoveState(this);
         characterState.OnStateAdded -= OnNewStateAdded;
     }
 

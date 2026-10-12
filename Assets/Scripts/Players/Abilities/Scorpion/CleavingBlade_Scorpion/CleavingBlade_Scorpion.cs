@@ -39,7 +39,7 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
     
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
@@ -97,7 +97,7 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         _wasDamageApplied = false;
 

@@ -65,7 +65,7 @@ public class CreeperStrike : Skill
     private BindingPoisonState _bindingPoisonState;
 
     protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     public event Action OnCreeperStrikeEnd;
     public event Action OnHit;
@@ -383,7 +383,7 @@ public class CreeperStrike : Skill
 
         if (value)
         {
-            _baseAttackSpeed = CastDeley;
+            _baseAttackSpeed = PreparingDuration;
 
             if (_reptileCoroutine == null)
                 _reptileCoroutine = StartCoroutine(ReptileLogic());
@@ -466,7 +466,7 @@ public class CreeperStrike : Skill
         {
             while (_currentStacksAttackSpeed < _currentAllStacks)
             {
-                if (CastDeley > _maxMinimumAttackSpeed)
+                if (PreparingDuration > _maxMinimumAttackSpeed)
                 {
                     IncreaseAttackSpeed();
                 }

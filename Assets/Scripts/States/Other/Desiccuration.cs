@@ -40,17 +40,15 @@ public class Desiccuration : StateBasic
 	public override void UpdateState()
 	{
 	//	Debug.Log("Updating Desiccuration State");
-		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff || characterState.Character.Health.SumDamageTaken >= _damageToExit)
 		{
 			ExitState();
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExit()
 	{
 	//	Debug.Log("Exiting Desiccuration State");
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.SetCanMove(true);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}

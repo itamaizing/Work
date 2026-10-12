@@ -31,6 +31,7 @@ public class GrowTreeAura : NetworkBehaviour
 
     [Header("Talent")]
     private bool _growTreeIncreasesMaxHealth;
+    public Character Owner => _Hero;
     
     public bool GrowTreeIncreasesMaxHealth { get => _growTreeIncreasesMaxHealth; set => _growTreeIncreasesMaxHealth = value; }
 

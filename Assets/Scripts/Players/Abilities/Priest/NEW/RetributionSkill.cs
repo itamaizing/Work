@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class RetributionSkill : Skill, IPassiveSkill
 {
     [SerializeField] private float _buffDuration = 6f;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private float _retributionChance = 20f;
@@ -15,7 +15,7 @@ public class RetributionSkill : Skill, IPassiveSkill
     private bool _enabled;
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield break; }
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback) { yield break; }
     protected override IEnumerator CastJob() { yield break; }
     protected override void ClearData() { }
 

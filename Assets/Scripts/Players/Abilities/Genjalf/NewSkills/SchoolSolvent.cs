@@ -9,7 +9,7 @@ public class SchoolSolvent : Skill
 {
     [SerializeField] private CounterSpell _counterSpell;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -67,7 +67,7 @@ public class SchoolSolvent : Skill
             Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

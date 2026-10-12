@@ -4,7 +4,7 @@ using UnityEngine;
 
 class ExampleTargetedAbility : Skill
 {
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new NotImplementedException();
 
     protected override int AnimTriggerCast => throw new NotImplementedException();
 
@@ -13,9 +13,9 @@ class ExampleTargetedAbility : Skill
         throw new NotImplementedException();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        return base.PrepareJob(targetDataSavedCallback);
+        return base.TargetingJob(targetDataSavedCallback);
     }
 
     protected override IEnumerator CastJob()

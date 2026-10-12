@@ -64,7 +64,7 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         return energy.CurrentValue >= _energyPerTick && rune.CurrentValue >= _runeCost;
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private void OnEnable()  => OnSkillCanceled += HandleCancel;
@@ -92,7 +92,7 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         _isStreaming = false;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (!GetMouseButton)
             yield return null;

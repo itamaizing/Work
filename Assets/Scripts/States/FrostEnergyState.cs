@@ -19,15 +19,4 @@ public class FrostEnergyStateStacking : StateStackingRefreshing
     {
         characterState = character;
     }
-
-    public override void UpdateState()
-    {
-
-    }
-
-    public override void ExitState()
-    {
-        base.ExitState();
-    }
-
 }

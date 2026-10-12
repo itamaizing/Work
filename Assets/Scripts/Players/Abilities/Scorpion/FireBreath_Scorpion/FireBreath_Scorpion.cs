@@ -36,7 +36,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
     public event Action OnFireBreathStarted;
 
     protected override bool IsCanCast => true;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     
     private Coroutine _fireBreathDamageCoroutine;
@@ -118,7 +118,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         _isIncreasedDamageExposure = value;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (!GetMouseButton)
         {
@@ -130,6 +130,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
 
     protected override IEnumerator CastJob()
     {
+        EnterChanneling();
         ClearExposureTicks();
         if (isClient)
             CmdClearServerExposureTicks();
@@ -257,7 +258,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
 
         Hero.Move.SetCanMove(false);
 
-        while (elapsed < CastStreamDuration)
+        while (elapsed < ChannelingDuration)
         {
             ApplyDamageAndDebuff(elapsed, baseDamage);
 
@@ -273,16 +274,13 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         //CmdDestroyFireBreath();
     }
     
-    protected override void CommitUse()
-    {
-        UseCooldownOrCharges();
-    }
+    protected override void SpendResources() { }
 
     private void TrySpendEnergy(float elapsedTime)
     {
         if (_hero == null) return;
 
-        float progressPercent = (elapsedTime / CastStreamDuration) * 100f;
+        float progressPercent = (elapsedTime / ChannelingDuration) * 100f;
         float current10PercentBlocks = Mathf.Floor(progressPercent / 10f);
 
         int blocksToSpend = (int)(current10PercentBlocks - _lastEnergyTickPercent);

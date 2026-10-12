@@ -31,19 +31,8 @@ public class PetrificationStateStacking : StateStacking
         }
     }
 
-    public override void UpdateState()
+    protected override void OnExit()
     {
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-
         foreach (var ability in characterState.Character.Abilities.Abilities)
         {
             ability.Disactive = false;

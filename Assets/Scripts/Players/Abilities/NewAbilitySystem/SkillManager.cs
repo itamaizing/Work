@@ -132,9 +132,9 @@ public class SkillManager : MonoBehaviour
         OnSkillPreparedSuccessfully?.Invoke(skill);
     }
     
-    public void NotifySkillIsPreparing(Skill skill, bool isPreparing)
+    public void NotifySkillIsTargeting(Skill skill, bool IsTargeting)
     {
-        if (isPreparing)
+        if (IsTargeting)
         {
             CurrentCastingSkill = skill;
         }
@@ -158,7 +158,7 @@ public class SkillManager : MonoBehaviour
 
     public void CancleAllSkills()
     {
-        while (_selectedSkill != null && _selectedSkill.IsPreparing)
+        while (_selectedSkill != null && _selectedSkill.IsTargeting)
         {
             CancelSkillCast();
         }
@@ -336,7 +336,7 @@ public class SkillManager : MonoBehaviour
 
             InputHandler.OnCast -= OnCastSelect;
 
-            if (_selectedSkill != null && _selectedSkill.IsPreparing)
+            if (_selectedSkill != null && _selectedSkill.IsTargeting)
             {
                 _selectedSkill.TryCancel();
 
@@ -345,17 +345,11 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    private void PrepereSkill()
-    {
-        if (_selectedSkill != null)
-        {
-            _selectedSkill.TryPreparing();
-        }
-    }
+    private void PrepereSkill() => PrepareSkillWithKey(null);
 
     private void CancelSkillCast()
     {
-        if (_selectedSkill != null && _selectedSkill.IsPreparing)
+        if (_selectedSkill != null && _selectedSkill.IsTargeting)
         {
             _selectedSkill.TryCancel();
 
@@ -394,7 +388,7 @@ public class SkillManager : MonoBehaviour
         if (_selectedSkills[index] is IPassiveSkill) return false;
         if (_selectedSkills[index].Disactive) return false;
 
-        if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
+        if (_selectedSkill != null && _selectedSkill.IsTargeting == true)
         {
             if (_selectedSkill != _selectedSkills[index])
             {
@@ -424,21 +418,26 @@ public class SkillManager : MonoBehaviour
         return true;
     }
     
-    public void SelectAndPrepareSkill(Skill skill)
+    private void PrepareSkillWithKey(object sessionKey)
     {
-        if (skill == null || skill.Disactive) 
-            return;
+        if (_selectedSkill != null)
+            _selectedSkill.TryStartTargeting(sessionKey);
+    }
+
+    public void SelectAndPrepareSkill(Skill skill, object sessionKey = null)
+    {
+        if (skill == null || skill.Disactive) return;
 
         if (_selectedSkill != skill)
         {
-            if (_selectedSkill != null && _selectedSkill.IsPreparing)
+            if (_selectedSkill != null && _selectedSkill.IsTargeting)
                 _selectedSkill.TryCancel(true);
 
             DeselectSkill();
             SetSelectSkill(skill);
         }
 
-        PrepereSkill();
+        PrepareSkillWithKey(sessionKey);
     }
 
     private void SetSelectSkill(Skill skill)
@@ -473,7 +472,7 @@ public class SkillManager : MonoBehaviour
 
     private void SubscribingSkillOnEvents(Skill skill)
     {
-        skill.PreparingSuccess += OnPreperingSuccess;
+        skill.TargetingSuccess += OnPreperingSuccess;
     }
 
     private void UnsubscribingSkillOnEvents(Skill skill)
@@ -481,7 +480,7 @@ public class SkillManager : MonoBehaviour
         if (skill == null)
             return;
 
-        skill.PreparingSuccess -= OnPreperingSuccess;
+        skill.TargetingSuccess -= OnPreperingSuccess;
     }
 
     private void OnPreperingSuccess(Skill skill)
@@ -639,7 +638,7 @@ private void CacheAnimationTriggerDurations()
         if (skill == null) continue;
 
         bool changed = skill.Animation.CacheAnimationTriggersEditor(animator);
-        changed |= skill.Animation.CacheIntHashTriggersEditor(animator, skill.AnimTriggerCastPublic, skill.AnimTriggerCastDelayPublic);
+        changed |= skill.Animation.CacheIntHashTriggersEditor(animator, skill.AnimTriggerCastPublic, skill.AnimTriggerPreparePublic);
 
         if (changed) { UnityEditor.EditorUtility.SetDirty(skill); anyChanged = true; }
     }

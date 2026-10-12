@@ -38,7 +38,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
     
     public virtual float TargetSearchRadius => AreaInfo.Radius * _targetSearchRadiusMultiplier;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private void Awake()
@@ -112,7 +112,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
         if (IsCasting) TryCancel(true);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetData targetData = null;
         while (targetData == null)
@@ -252,7 +252,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
 
         float distance = Vector3.Distance(transform.position, _target.transform.position);
         bool inAttackRange = distance <= AreaInfo.Radius;
-        bool hasLineOfSight = Targeting.NoObstacles(_target.transform.position, _obstacle);
+        bool hasLineOfSight = Targeting.NoObstacles(_target.transform.position, Targeting.AdditionalObstacle);
 
         if (inAttackRange && hasLineOfSight)
         {

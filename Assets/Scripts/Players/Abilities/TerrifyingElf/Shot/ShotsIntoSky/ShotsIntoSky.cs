@@ -37,7 +37,7 @@ public class ShotsIntoSky : Skill
 
     #endregion
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotsSkyCastDelay");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("ShotsSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
 
@@ -47,12 +47,12 @@ public class ShotsIntoSky : Skill
 
     private void OnEnable()
     {
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
         Canceled += HandleSkillCanceled;
     }
 
-    protected override void SkillEnableBoostLogic() => CastDeley = 0;
-    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
+    protected override void SkillEnableBoostLogic() => PreparingDuration = 0;
+    protected override void SkillDisableBoostLogic() => PreparingDuration = _baseCastDelay;
 
     public void ShotsAnimationMove()
     {
@@ -104,13 +104,13 @@ public class ShotsIntoSky : Skill
     
     protected override void PlayPrepareAnim()
     {
-        if (CastDeley > 0f)
-            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (PreparingDuration > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / PreparingDuration;
         
         base.PlayPrepareAnim();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
 

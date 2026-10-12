@@ -29,10 +29,6 @@ public class ReflectiveScalesStateStacking : StateStacking
         _durationRemaining = durationToExit;
     }
 
-    public override void UpdateState()
-    {
-    }
-
     public override bool Stack(float time)
     {
         _durationRemaining = time;
@@ -44,10 +40,5 @@ public class ReflectiveScalesStateStacking : StateStacking
         ExitState();
 
         return true;
-    }
-
-    public override void ExitState()
-    {
-
     }
 }

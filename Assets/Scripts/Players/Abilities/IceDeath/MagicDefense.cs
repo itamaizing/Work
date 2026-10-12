@@ -20,7 +20,7 @@ public class MagicDefense : Skill
 
 	protected override bool IsCanCast => CheckCanCast();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerPrepare => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
@@ -76,7 +76,7 @@ public class MagicDefense : Skill
 		//magArea.Init(_playerLinks, _energy.CurrentValue, false, this);
 	}*/
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while(_target == null && Vector2.Distance(_position, transform.position) > AreaInfo.Radius)
 		{
@@ -118,7 +118,7 @@ public class MagicDefense : Skill
 		Debug.Log("trypay");
 		if (_target != null)
 		{
-			if (_deathSpiral.Chargers >= 1 && _plagueAbsorption.Charges >= 1 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 1)
+			if (_deathSpiral.Charges.RemainingCharges >= 1 && _plagueAbsorption.Charges >= 1 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 1)
 			{
 				Debug.Log("Casting");
 				_rune.CmdUse(1);
@@ -129,7 +129,7 @@ public class MagicDefense : Skill
 			}
 		}
 		else 
-		if (_deathSpiral.Chargers >= 2 && _plagueAbsorption.Charges >= 2 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 2)
+		if (_deathSpiral.Charges.RemainingCharges >= 2 && _plagueAbsorption.Charges >= 2 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 2)
 		{
 			_isArea = true;
 			_rune.CmdUse(2);

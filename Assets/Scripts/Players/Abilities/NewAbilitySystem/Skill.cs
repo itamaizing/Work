@@ -4,23 +4,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+ using UnityEngine.Serialization;
 
-public abstract class Skill : NetworkBehaviour
+ public abstract partial class Skill : NetworkBehaviour
 {
     #region Variables
     #region InspectorSettings
     [Header("[Talent State]")]
     [SerializeField] protected bool _isTalentSpell = false;
     [SerializeField] protected bool _isSkillActive = true;
-    [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
+    [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f;
 
     [Header("[Skill Info]")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [SerializeField] protected InfoComponent _infoComponent;
     [SerializeField] TargetingComponent _targetingComponent;
-    #region TargetingToDelete
-    [SerializeField] protected LayerMask _obstacle;
-    #endregion
     [SerializeField] CostComponent _costComponent;
     [SerializeField] protected float _damageValue;
     [Header("[Cooldown]")]
@@ -30,13 +28,8 @@ public abstract class Skill : NetworkBehaviour
 
     [Header("[Channeling]")]
     [SerializeField] protected float _autoAttackDelay;
-    [SerializeField] protected float _castDeley;
+    [FormerlySerializedAs("_castDeley")] [SerializeField] protected float _preparingDuration;
     [SerializeField] protected ChannelComponent _channelComponent;
-    #region ChannelToDelete
-    [SerializeField] protected float _castDuration;
-    [SerializeField] protected float _manaCostRate;
-    [SerializeField] protected List<SkillResourceCost> _manaCostPerTick;
-    #endregion
     [Header("[Area settings]")]
     [SerializeField] protected AreaComponent _areaComponent;
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
@@ -49,14 +42,14 @@ public abstract class Skill : NetworkBehaviour
 
     #region CastReduction
     
-    public event Action<float> CastTimeRolledBack;
-    public event Action<float> CastStreamRolledBack;
+    public event Action<float> PreparingRolledBack;
+    public event Action<float> ChannelingRolledBack;
     
-    public event Action<float> CastStreamProgressApplied;
-    protected void RaiseCastStreamProgressApplied(float amount) => CastStreamProgressApplied?.Invoke(amount);
+    public event Action<float> ChannelingProgressApplied;
+    protected void RaiseChannelingProgressApplied(float amount) => ChannelingProgressApplied?.Invoke(amount);
     
-    protected virtual bool IsCustomStreamActive => false;
-    protected virtual bool SkipLegacyCastStreamJob => false;
+    protected virtual bool IsCustomChannelingActive => false;
+    protected virtual bool SkipLegacyChannelingJob => false;
     
     protected float _castTimeRollback = 0f;
     
@@ -75,27 +68,21 @@ public abstract class Skill : NetworkBehaviour
     #region Coroutines
     //COOLDOWNS
     //protected Coroutine _cooldownJob;
-    protected Coroutine _rechargeJob;
     //COOLDOWNS
-    protected Coroutine _prepareCoroutine;
+    protected Coroutine _targetingCoroutine;
     protected Coroutine _castCoroutine;
-    protected Coroutine _castDeleyCoroutine;
-    protected Coroutine _castStreamCoroutine;
+    protected Coroutine _preparingCoroutine;
+    protected Coroutine _channelingCoroutine;
     protected Coroutine _dynamicRendererJob;
-    private Coroutine _actionWrapperForPreparingCoroutine;
-    private Coroutine _actionWrapperForCastCoroutine;
+    private Coroutine _targetingWrapperCoroutine;
     #endregion
 
     protected bool _isCanCancel = true;
     protected bool _isPlayCastAnim;
-    bool hasCastAnim => AnimTriggerCast != 0 || Animation.CastTriggers.Count > 0;
-    bool hasPrepareAnim => AnimTriggerCastDelay != 0 || Animation.PrepareTriggers.Count > 0;
+
     protected bool _forceFailCastEarly;
     //test counter
     protected float _currentCounter;
-
-    private bool _isPreparing = false;
-    private bool _isCasting = false;
     private TypeClick _click;
     private bool _isAutoMode;
     #endregion Variables
@@ -231,21 +218,19 @@ public abstract class Skill : NetworkBehaviour
     #region Scriptable Objects
     public string Name => _abilityInfo.Name;
     public string Description { get => _abilityInfo.AddingDescription; set => _abilityInfo.AddingDescription = value; }
-    public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     #endregion
     public virtual bool IsPayCostStartCooldown { get => true; }
-    public bool IsPreparing => _isPreparing;
     public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public virtual bool IsHaveResources { get => IsHaveResourceOnSkill && !Cooldown.IsActive && Charges.HasCharges; }
     public List<SkillResourceCost> SkillEnergyCosts { get => Cost.TypeOf(SkillCostType.Mandatory); }
     public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => Cost.TypeOf(SkillCostType.Bonus); }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
-    public bool IsCasting { get => _isCasting; protected set => _isCasting = value; }
+    public float PreparingDuration { get => Buff.CastSpeed.GetBuffedValue(_preparingDuration); set => _preparingDuration = value; }
+    public bool IsCasting => IsExecuting;
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
     public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
@@ -257,11 +242,11 @@ public abstract class Skill : NetworkBehaviour
     
     #region Events
     #region Casting Events
-    public event Action<Skill> PreparingStarted;
-    public event Action<Skill> PreparingSuccess;
-    public event Action PreparingCanceled;
-    public event Action<float> CastDeleyStarted;
-    public event Action CastDeleyEnded;
+    public event Action<Skill> TargetingStarted;
+    public event Action<Skill> TargetingSuccess;
+    public event Action TargetingCanceled;
+    public event Action<float> PreparingStarted;
+    public event Action PreparingEnded;
     public event Action CastStarted;
     public event Action CastSuccess;
     public event Action CastFinished;
@@ -322,14 +307,6 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual void Awake()
     {
-        if (Charges.UsesCharges)
-        {
-            _currentChargers = Charges.MaxCharges;
-            _remainingCooldownTimeChargers = new List<float>(new float[Charges.MaxCharges]);
-            _currentChargeCooldownJob = new List<Coroutine>(new Coroutine[Charges.MaxCharges]);
-        }
-        else
-            _currentChargers = 1;
     }
     #endregion
 
@@ -337,7 +314,7 @@ public abstract class Skill : NetworkBehaviour
     {
         TickTimers();
         
-        if (_isPreparing)
+        if (IsTargeting)
         {
             Renderer.UpdateSmartIndicator();
         }
@@ -380,7 +357,7 @@ public abstract class Skill : NetworkBehaviour
 
     private void LoadTargetDataForCheckCast()
     {
-        if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
+        if (IsExecuting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
             LoadTargetData(temp);
     }
 
@@ -406,7 +383,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ClearQueueTarget() => _targetInfoQueue.Clear();
 
-    protected virtual bool IsValidTarget(IDamageable target)
+    protected virtual bool IsValidTarget(ITargetable target)
     {
         if (target == null) return false;
         if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
@@ -419,35 +396,11 @@ public abstract class Skill : NetworkBehaviour
     /// Этап указания цели/места.
     /// PrepareJob => TargetingBehaviour => SetQueueTarget => SaveTargetData
     /// </summary>
-    protected virtual IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected virtual IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         yield return TargetingBehaviour(targetDataSavedCallback);
     }
 
-    
-    public void HandleDirectDamageDuringCast(float damageValue, DamageType type, bool fullyAbsorbed)
-    {
-        if (fullyAbsorbed) return;
-        if (!_isCasting) return;
-
-        bool isStreamActive = _castStreamCoroutine != null || IsCustomStreamActive;
-        bool isDelayActive  = _castDeleyCoroutine != null;
-
-        if (!isStreamActive && !isDelayActive) return;
-
-        float totalDuration = isStreamActive ? CastStreamDuration : _castDeley;
-
-        float rollbackPercent = type == DamageType.Physical
-            ? PhysRollbackBase + damageValue * RollbackPerDamage
-            : MagRollbackBase + damageValue * RollbackPerDamage;
-
-        float rollbackAmount = totalDuration * Mathf.Clamp01(rollbackPercent);
-        _castTimeRollback += rollbackAmount;
-
-        if (isStreamActive) CastStreamRolledBack?.Invoke(rollbackAmount);
-        else CastTimeRolledBack?.Invoke(rollbackAmount);
-    }
-    
     /// <summary>
     ///  Каст способности.
     ///  CommitUse => LoadTargetData => CastJob
@@ -523,15 +476,6 @@ public abstract class Skill : NetworkBehaviour
         Cost.TryPayMandatory();
     }
 
-    /// <summary>
-    /// Что делаем, если заклинание сработало
-    /// </summary>
-    protected virtual void CommitUse()
-    {
-        UseCooldownOrCharges();
-        SpendResources();
-    }
-
     public virtual float GetCastSpeed()
     {
         switch (Info.AbilityForm)
@@ -545,401 +489,7 @@ public abstract class Skill : NetworkBehaviour
         }
     }
     #endregion Skill Execution Loop
-
-
-    #region Cast Related
-    /// <summary>
-    /// Отсюда начинается этап подготовки
-    /// </summary>
-    public bool TryPreparing()
-    {
-        if (_isPreparing == false)
-        {
-            foreach (var skillCost in Cost.Values)
-            {
-                //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.type);
-                var resource = _hero.Resources[skillCost.type];
-                resource.PhantomValueShow(skillCost.value);
-            }
-            _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Главная точка входа
-    /// Отсюда начинается каст
-    /// </summary>
-    public virtual bool TryCast()
-    {
-        if (_isCasting)
-            return false;
-
-        LoadTargetDataForCheckCast();
-        if (IsHaveResources && IsCanCast && _isCasting == false && Hero.IsDead == false)
-        {
-            _isCasting = true;
-            //TryPayCost(IsPayCostStartCooldown); //moved to ActionWrapper
-
-            if (_targetInfoQueue.Count > 0)
-            {
-
-                var targetInfo = _targetInfoQueue.Dequeue();
-
-                LoadTargetData(targetInfo);
-
-                if (targetInfo.GetTargets().Count > 0)
-                {
-                    if (targetInfo.GetTargets()[0] is Character target)
-                        _hero.Move.LookAtTransform(target.transform);
-                }
-
-                if (targetInfo.Points.Count > 0)
-                {
-                    var point = (Vector3)targetInfo.Points[0];
-                    _hero.Move.LookAtPosition(point);
-                }
-            }
-
-            _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
-
-            return true;
-        }
-        else return false;
-    }
-
-    public bool TryCast(TargetInfo targetInfo)
-    {
-        if (_isCasting)
-            return false;
-
-        LoadTargetDataForCheckCast();
-        if (IsHaveResources && _isCasting == false && Hero.IsDead == false)
-        {
-            LoadTargetData(targetInfo);
-
-            if (IsCanCast)
-            {
-                _isCasting = true;
-                //TryPayCost(IsPayCostStartCooldown);
-
-                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
-
-                if (_targetInfoQueue.Count > 0)
-                {
-                    if (targetInfo.GetTargets().Count > 0)
-                    {
-                        var target = (Character)targetInfo.GetTargets()[0];
-                        _hero.Move.LookAtTransform(target.transform);
-                    }
-
-                    if (targetInfo.Points.Count > 0)
-                    {
-                        var point = (Vector3)targetInfo.Points[0];
-                        _hero.Move.LookAtPosition(point);
-                    }
-                }
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public bool TryCancel(bool forceCancel = false)
-    {
-        foreach (var skillCost in Cost.Values)
-        {
-            //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.type);
-            var resource = _hero.Resources[skillCost.type];
-            resource.PhantomValueShow(0);
-            //resourse.
-        }
-
-        if (forceCancel || _isCanCancel)
-        {
-            Hero.Abilities.NotifySkillIsPreparing(this, false);
-            Canceled?.Invoke();
-            CmdBroadcastCanceled();
-            _hero.Move.SetCanMove(true);
-            ClearData();
-            _isPlayCastAnim = false;
-
-            if (_dynamicRendererJob != null)
-            {
-                StopCoroutine(_dynamicRendererJob);
-            }
-            CancelCoroutine(_castCoroutine);
-
-            if (_actionWrapperForCastCoroutine != null)
-            {
-                StopCoroutine(_actionWrapperForCastCoroutine);
-                CancelCoroutine(_castCoroutine);
-                _actionWrapperForCastCoroutine = null;
-                _isCasting = false;
-                ClearData();
-
-                try { CastEnded?.Invoke(); }
-                catch (Exception ex) { Debug.LogError($"[Skill:{Name}] CastEnded subscriber threw: {ex}"); }
-            }
-
-            CancelCoroutine(_castDeleyCoroutine);
-            CancelCoroutine(_castStreamCoroutine);
-            
-            _castTimeRollback = 0f;
-
-            if (_actionWrapperForPreparingCoroutine != null)
-            {
-                StopCoroutine(_actionWrapperForPreparingCoroutine);
-                CancelCoroutine(_prepareCoroutine);
-                _actionWrapperForPreparingCoroutine = null;
-                _isPreparing = false;
-                Renderer.HideSmartIndicator();
-
-                StopLoopSound(Sfx_Skill.PrepareLoop);
-                PreparingCanceled?.Invoke();
-
-                UnSubscribeClickEvents();
-                OnClickCanceled();
-            }
-
-            //_tempTargetbase = null; => Targeting.ClearTemporary()?
-            Targeting.ClearTempTarget();
-
-            CancelAnim();
-            try { OnSkillCanceled?.Invoke(); }
-            catch (Exception ex) { Debug.LogError($"[Skill:{Name}] OnSkillCanceled subscriber threw: {ex}"); }
-
-
-            return true;
-        }
-        else
-        {
-            Hero.Abilities.NotifySkillIsPreparing(this, false);
-            return false;
-        }
-    }
-
-    private IEnumerator ActionWrapperForPreparingJob()
-    {
-        PreparingStarted?.Invoke(this);
-        PlaySound(Sfx_Skill.PrepareStart);
-        _isPreparing = true;
-        //ClearData();
-        Renderer.ShowSmartIndicator();
-        if (_informationRenderComponent.IsDynamicRenderer)
-        {
-            StartDynamicRenderer();
-        }
-
-        SubscribeClickEvents();
-        _skillRender.SetPrepareCursor();
-
-        yield return _prepareCoroutine = StartCoroutine(PrepareJob(SaveTargetData));
-
-        UnSubscribeClickEvents();
-
-        OnClickCanceled();
-
-        //test
-        if (_targetInfoQueue.TryPeek(out TargetInfo info))
-        {
-            if (info.GetTargets().Count > 0)
-            {
-                if (info.GetTargets()[0] is Character targetCharacter && targetCharacter != _hero)
-                {
-                    targetCharacter.UIComponent.CircleSelect1.IsActive = false;
-                }
-            }
-        }
-
-        PreparingSuccess?.Invoke(this);
-        PlaySound(Sfx_Skill.PrepareEnd);
-        Targeting.ClearTempTarget();
-        _isPreparing = false;
-        Renderer.HideSmartIndicator();
-
-        _prepareCoroutine = null;
-    }
     
-    private bool TryAbortIfForceFailed()
-    {
-        if (!_forceFailCastEarly)
-            return false;
-
-        _forceFailCastEarly = false;
-        CancelCastEarly();
-        return true;
-    }
-
-    private void CancelCastEarly()
-    {
-        _isCasting = false;
-        _isPlayCastAnim = false;
-
-        CancelAnim();
-        StopLoopSound(Sfx_Skill.CastLoop);
-
-        _hero.Move.StopLookAt();
-        HandleMovementLock(MovementLockPhase.CastFailedEarly);
-
-        Hero.Abilities.NotifySkillIsPreparing(this, false);
-
-        ClearData();
-
-        try { CastEnded?.Invoke(); }
-        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] CastEnded subscriber threw: {ex}"); }
-
-        try { OnSkillCanceled?.Invoke(); }
-        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] OnSkillCanceled subscriber threw: {ex}"); }
-
-        try { Canceled?.Invoke(); }
-        catch (Exception ex) { Debug.LogError($"[Skill:{Name}] Canceled subscriber threw: {ex}"); }
-
-        Hero.UIComponent.Miss();
-    }
-
-    private IEnumerator ActionWrapperForCastingJob()
-    {
-        if (TryAbortIfForceFailed()) yield break;
-
-        Hero.Abilities.NotifySkillPrepared(this);
-        Hero.Abilities.NotifySkillIsPreparing(this, true); 
-        CastStarted?.Invoke();
-        PlaySound(Sfx_Skill.CastStart); 
-        _isCasting = true;
-
-        bool noCast = Hero.Abilities.TryConsumeNoCast();
-
-        HandleMovementLock(MovementLockPhase.CastStarted);
-
-        if (!noCast && hasPrepareAnim)
-            yield return StartCastDeleyCoroutine();
-
-        if (TryAbortIfForceFailed()) yield break;
-
-        if (!noCast && hasCastAnim)
-        {
-            _isPlayCastAnim = true;
-            //_isWaitingForCastCoroutine = true;
-
-            PlayCastAnim();
-
-            if (TryAbortIfForceFailed()) yield break;
-
-            while (_isPlayCastAnim)
-            {
-                //*
-                if (Targeting.ForDamage?.Damageable != null && !IsValidTarget(Targeting.ForDamage?.Damageable))
-                {
-                    TryCancel(true);
-                    yield break;
-                }
-
-                if (!IsCanCast)
-                {
-                    TryCancel(true);
-                    yield break;
-                }
-                //*/
-                yield return null;
-            }
-
-            //_isWaitingForCastCoroutine = false;
-        }
-
-        else
-        {
-            if (TryAbortIfForceFailed()) yield break;
-
-            CancelAnim();
-
-            _castCoroutine = StartCoroutine(CastJob());
-            if (_castDuration > 0 && !SkipLegacyCastStreamJob) _castStreamCoroutine = StartCoroutine(CastStreamJob());
-            
-            CastSuccess?.Invoke();
-            CmdBroadcastCastSuccess();
-            HandleMovementLock(MovementLockPhase.CastTriggered);
-            
-            yield return _castCoroutine;
-        }
-
-        //CancelAnim();
-
-        CommitUse();
-        CastFinished?.Invoke();
-        PlaySound(Sfx_Skill.CastEnd);
-        CastEnded?.Invoke();
-        _isCasting = false;
-
-        Hero.Abilities.NotifySkillIsPreparing(this, false); 
-        
-        ClearData();
-
-        /// test
-        if (Targeting.ForDamage != null && Targeting.ForDamage.Character != null)
-        {
-            Targeting.ForDamage.Character.SelectedCircle.IsActive = false;
-            Targeting.ForDamage.Character.SelectedCircle.SwitchSelectCircle(false);
-        }
-
-        _hero.Move.StopLookAt();
-        if (!_isAutoMode) HandleMovementLock(MovementLockPhase.CastFinished);
-
-        _castCoroutine = null;
-    }
-    
-    #region CastDelay
-    protected Coroutine StartCastDeleyCoroutine(float time = float.MinValue)
-    {
-        if (time == float.MinValue)
-            time = CastDeley;
-
-        _castDeleyCoroutine = StartCoroutine(CastDeleyJob(time));
-        return _castDeleyCoroutine;
-    }
-
-    private IEnumerator CastDeleyJob(float delayTime)
-    {
-        CastDeleyStarted?.Invoke(delayTime);
-        CmdBroadcastCastDeleyStarted(delayTime); 
-        PlayPrepareAnim();
-        float time = 0;
-
-        while (time < delayTime)
-        {
-            if (Targeting.NeedLineOfSight && Targeting.NoObstacles() == false)
-                TryCancel(true);
-
-            if (_castTimeRollback > 0f)
-            {
-                time = Mathf.Max(0f, time - _castTimeRollback);
-                _castTimeRollback = 0f;
-
-                float remaining = delayTime - time;
-                Animation.SyncSpeedToRemaining(Animation.ActiveClipRawLength, remaining);
-            }
-
-            time += Time.deltaTime;
-            yield return null;
-        }
-        _castDeleyCoroutine = null;
-        CastDeleyEnded?.Invoke();
-        CmdBroadcastCastDeleyEnded();
-    }
-    #endregion CastDelay
-    #endregion
 
     #region LockMovementPhase
 
@@ -948,8 +498,7 @@ public abstract class Skill : NetworkBehaviour
         CastStarted,
         CastTriggered,
         CastFinished,
-        CastCanceled,
-        CastFailedEarly
+        CastCanceled
     }
     
     protected virtual void HandleMovementLock(MovementLockPhase phase)
@@ -960,6 +509,7 @@ public abstract class Skill : NetworkBehaviour
         switch (phase)
         {
             case MovementLockPhase.CastStarted:
+                _hero.Move.StopMoveAndAnimationMove();
                 _hero.Move.SetCanMove(false);
                 break;
 
@@ -970,7 +520,6 @@ public abstract class Skill : NetworkBehaviour
 
             case MovementLockPhase.CastFinished:
             case MovementLockPhase.CastCanceled:
-            case MovementLockPhase.CastFailedEarly:
                 _hero.Move.SetCanMove(true);
                 break;
         }
@@ -979,109 +528,14 @@ public abstract class Skill : NetworkBehaviour
     #endregion
     
     #region Charges
-    // Пока не вырезал, есть скиллы завязанные на ручном управлении зарядами
-    // Для переписывания, добавил в новую систему тип Infinite (не тикающие)
-    #region Old
-    protected int _currentChargers;
-    private List<float> _remainingCooldownTimeChargers = new();
-    private List<Coroutine> _currentChargeCooldownJob;
-
-    #region ChargeRelatedProperties
-    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public List<float> RemainingCooldownTimeCharge => _remainingCooldownTimeChargers;
-    #endregion
-
-    #region Charge Events
-    public event Action<int> CurrentChargeChanged;
-    public event Action<float> ChargeStartCooldown;
-    public event Action<int> ChargeCooldownEnded;
-    public event Action MassageHaventCharge;
-    #endregion
-
-    #region Methods
-    public virtual bool TryUseCharge()
-    {
-        if (Charges.UsesCharges == false)
-            return true;
-
-        Charges.TryUse();
-
-        if (_currentChargers > 0)
-        {
-            _currentChargers--;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-
-            if (_rechargeJob == null && Charges.CooldownType == ChargeCooldownType.Sequential)
-            {
-                _rechargeJob = StartCoroutine(RechargeCoroutine());
-            }
-            else if (_rechargeJob == null && Charges.CooldownType == ChargeCooldownType.Independant)
-            {
-                for (int i = 0; i < Charges.MaxCharges; i++)
-                {
-                    if (_remainingCooldownTimeChargers[i] <= 0)
-                    {
-                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, Charges.CooldownTime));
-
-                        ChargeStartCooldown?.Invoke(Charges.CooldownTime);
-                        break;
-                    }
-                }
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
-    {
-        _remainingCooldownTimeChargers[chargeIndex] = time;
-
-        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
-        {
-            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
-
-            yield return null;
-        }
-
-        if (_currentChargers < Charges.MaxCharges)
-        {
-            _currentChargers++;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
-    }
-
-    protected virtual IEnumerator RechargeCoroutine()
-    {
-        while (_currentChargers < Charges.MaxCharges)
-        {
-            ChargeStartCooldown?.Invoke(Charges.CooldownTime);
-            float time = 0;
-            while (time < Charges.CooldownTime)
-            {
-                time += Time.deltaTime;
-                yield return null;
-            }
-            if (_currentChargers < Charges.MaxCharges)
-            {
-                _currentChargers++;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
-        _rechargeJob = null;
-    }
-    #endregion Coroutines
-    #endregion Old
-
-    #region NewSystem
     //[SyncVar] private int _maxCharges;
     private SyncList<double> _rechargeEndTime = new();
     public SyncList<double> RechargeTimers => _rechargeEndTime;
 
+    public virtual bool TryUseCharge()
+    {
+        return Charges.TryUse();
+    }
 
     [Command]
     public void CmdStartRecharge(float duration)
@@ -1131,7 +585,6 @@ public abstract class Skill : NetworkBehaviour
     {
         _rechargeEndTime.RemoveAt(index);
     }
-    #endregion
     #endregion CHARGES
 
     #region Cooldown
@@ -1194,32 +647,32 @@ public abstract class Skill : NetworkBehaviour
     #endregion
     
     #region Networked Cast Bar Events
-    [Command] private void CmdBroadcastCastDeleyStarted(float duration) => RpcCastDeleyStarted(duration);
-    [ClientRpc] private void RpcCastDeleyStarted(float duration)
+    [Command] private void CmdBroadcastPreparingStarted(float duration) => RpcPreparingStarted(duration);
+    [ClientRpc] private void RpcPreparingStarted(float duration)
     {
         if (isOwned) return;
-        CastDeleyStarted?.Invoke(duration);
+        PreparingStarted?.Invoke(duration);
     }
 
-    [Command] private void CmdBroadcastCastDeleyEnded() => RpcCastDeleyEnded();
-    [ClientRpc] private void RpcCastDeleyEnded()
+    [Command] private void CmdBroadcastPreparingEnded() => RpcPreparingEnded();
+    [ClientRpc] private void RpcPreparingEnded()
     {
         if (isOwned) return;
-        CastDeleyEnded?.Invoke();
+        PreparingEnded?.Invoke();
     }
 
-    [Command] private void CmdBroadcastCastStreamStarted(float duration) => RpcCastStreamStarted(duration);
-    [ClientRpc] private void RpcCastStreamStarted(float duration)
+    [Command] private void CmdBroadcastChannelingStarted(float duration) => RpcChannelingStarted(duration);
+    [ClientRpc] private void RpcChannelingStarted(float duration)
     {
         if (isOwned) return;
-        CastStreamStarted?.Invoke(duration);
+        ChannelingStarted?.Invoke(duration);
     }
 
-    [Command] private void CmdBroadcastCastStreamEnded() => RpcCastStreamEnded();
-    [ClientRpc] private void RpcCastStreamEnded()
+    [Command] private void CmdBroadcastChannelingEnded() => RpcChannelingEnded();
+    [ClientRpc] private void RpcChannelingEnded()
     {
         if (isOwned) return;
-        CastStreamEnded?.Invoke();
+        ChannelingEnded?.Invoke();
     }
 
     [Command] private void CmdBroadcastCanceled() => RpcCanceled();
@@ -1233,71 +686,35 @@ public abstract class Skill : NetworkBehaviour
     #region Channeling
 
     #region Properties
-    public float CastStreamDuration => Channeling.CastDuration; // Ctrl+R
-    public float ManaCostRate { get => _manaCostRate; }
+    public float ChannelingDuration => Channeling.CastDuration;
+    public float ManaCostRate { get => Channeling.TickInterval; }
     public List<SkillResourceCost> ManaCostPerTick { get => Channeling.Costs; }
     #endregion
 
     #region Events
-    public event Action<float> CastStreamStarted;
-    public event Action CastStreamEnded;
+    public event Action<float> ChannelingStarted;
+    public event Action ChannelingEnded;
     #endregion
 
     #region Methods
-    public void InvokeCastStreamStarted(float duration)
+    public void InvokeChannelingStarted(float duration)
     {
-        CastStreamStarted?.Invoke(duration);
-        CmdBroadcastCastStreamStarted(duration);
-    }
-    private IEnumerator CastStreamJob()
-    {
-        CastStreamStarted?.Invoke(CastStreamDuration);
-        CmdBroadcastCastStreamStarted(CastStreamDuration);
-        float time = 0;
-
-        while (time < CastStreamDuration)
-        {
-            if (_castTimeRollback > 0f)
-            {
-                time += _castTimeRollback;
-                _castTimeRollback = 0f;
-
-                float remaining = CastStreamDuration - time;
-                Animation.SyncSpeedToRemaining(Animation.ActiveClipRawLength, remaining);
-            }
-            
-            time += _manaCostRate;
-
-            foreach (var skillCost in _manaCostPerTick)
-            {
-                var currentResourceValue = _hero.Resources[skillCost.type].CurrentValue;
-
-                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.value))
-                {
-                    TryCancel(true);
-                }
-                else
-                {
-                    var resource = _hero.Resources[skillCost.type];
-                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-                }
-            }
-            yield return new WaitForSeconds(_manaCostRate);
-        }
-        _castStreamCoroutine = null;
-        CastStreamEnded?.Invoke();
-        CmdBroadcastCastStreamEnded();
+        EnterChanneling();
+        ChannelingStarted?.Invoke(duration);
+        CmdBroadcastChannelingStarted(duration);
     }
 
     #endregion
     #endregion
 
     #region Resource Related
+
     protected virtual bool CheckResourcesOnSkill()
     {
         return Cost.EnoughResources();
     }
 
+    #region ToDelete
     protected virtual bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
     {
         if (IsHaveResourceOnSkill)
@@ -1312,7 +729,7 @@ public abstract class Skill : NetworkBehaviour
             {
                 Cooldown.Start();
             }
-            if (!Charges.IsComboPart) TryUseCharge();
+            if (!Charges.IsComboPart) Charges.TryUse();
             return true;
         }
         else
@@ -1327,24 +744,13 @@ public abstract class Skill : NetworkBehaviour
         return TryPayCost(Cost.TypeOf(SkillCostType.Mandatory), startCooldown);
     }
     #endregion
+    #endregion
 
     #region Animation 
-    protected abstract int AnimTriggerCastDelay { get; }
+    protected abstract int AnimTriggerPrepare { get; }
     protected abstract int AnimTriggerCast { get; }
     public int AnimTriggerCastPublic => AnimTriggerCast;
-    public int AnimTriggerCastDelayPublic => AnimTriggerCastDelay;
-
-
-    [ClientCallback]
-    protected void AnimStartCastCoroutine()
-    {
-        _castCoroutine = StartCoroutine(CastJob());
-        if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
-        
-        CastSuccess?.Invoke();
-        CmdBroadcastCastSuccess();
-        HandleMovementLock(MovementLockPhase.CastTriggered);
-    }
+    public int AnimTriggerPreparePublic => AnimTriggerPrepare;
 
     protected virtual void AnimCastEnded()
     {
@@ -1379,11 +785,11 @@ public abstract class Skill : NetworkBehaviour
         {
             Animation.PlayPreparing();
         }
-        else if (AnimTriggerCastDelay != 0) //Временное решение, пока названия анимаций не перенесены в компонент
+        else if (AnimTriggerPrepare != 0) //Временное решение, пока названия анимаций не перенесены в компонент
         {
             _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
-            _hero.Animator.SetTrigger(AnimTriggerCastDelay);
-            _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
+            _hero.Animator.SetTrigger(AnimTriggerPrepare);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerPrepare);
         }
     }
 
@@ -1438,14 +844,6 @@ public abstract class Skill : NetworkBehaviour
     }
     #endregion
 
-    protected void CancelCoroutine(Coroutine coroutine)
-    {
-        if (coroutine != null)
-        {
-            StopCoroutine(coroutine);
-        }
-    }
-
     #region ScoreBoard?
     private void AddAssist(Character character)
     {
@@ -1487,7 +885,7 @@ public abstract class Skill : NetworkBehaviour
     [ClientRpc]
     public void RpcCancelActiveSkill()
     {
-        if (_isPreparing || _isCasting)
+        if (IsTargeting || IsExecuting)
         {
             TryCancel(true);
         }
@@ -1504,42 +902,7 @@ public abstract class Skill : NetworkBehaviour
     
     [Command(requiresAuthority = false)]
     public void CmdCancelActiveSkill() => RpcCancelActiveSkill();
-
-    public void ResetSkillState()
-    {
-        //ResetCooldownStateOnly();
-
-        if (_castDeleyCoroutine != null)
-        {
-            StopCoroutine(_castDeleyCoroutine);
-            _castDeleyCoroutine = null;
-        }
-        CastDeleyEnded?.Invoke();
-
-        _isPreparing = false;
-        _isCasting = false;
-        _isAutoMode = false;
-
-        if (Charges.UsesCharges)
-        {
-            _currentChargers = Charges.MaxCharges;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
-
-        if (_castStreamCoroutine != null)
-        {
-            StopCoroutine(_castStreamCoroutine);
-            _castStreamCoroutine = null;
-        }
-        CastStreamEnded?.Invoke();
-
-        CancelCoroutine(_castCoroutine);
-        CancelCoroutine(_actionWrapperForPreparingCoroutine);
-        CancelCoroutine(_actionWrapperForCastCoroutine);
-        ClearData();
-    }
-
-
+    
     public void ApplyDamage(Damage damage, GameObject target)
     {
         OnBeforeApplyDamage?.Invoke(ref damage, this, target);
@@ -1677,9 +1040,10 @@ public abstract class Skill : NetworkBehaviour
     [Command] private void CmdSkillAfterCastJob() => SkillAfterCastJob();
 
     #region OnClicks
+
     private void OnClick()
     {
-        _click = TypeClick.LMB;
+        if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.LMB;
     }
 
     private void OnClickCanceled()
@@ -1687,20 +1051,9 @@ public abstract class Skill : NetworkBehaviour
         _click = TypeClick.None;
     }
 
-    private void OnShiftClick()
-    {
-        _click = TypeClick.ShiftLMB;
-    }
-
-    private void OnCtrlClick()
-    {
-        _click = TypeClick.CtrlLMB;
-    }
-
-    private void OnSpaceClick()
-    {
-        _click = TypeClick.SpaceLMB;
-    }
+    private void OnShiftClick() { if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.ShiftLMB; }
+    private void OnCtrlClick()  { if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.CtrlLMB; }
+    private void OnSpaceClick() { if (UiPointer.IsOverScreenUi()) return; _click = TypeClick.SpaceLMB; }
     #endregion
 
     private void SubscribeClickEvents()

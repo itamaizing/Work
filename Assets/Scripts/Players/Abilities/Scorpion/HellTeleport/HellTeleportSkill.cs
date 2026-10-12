@@ -20,7 +20,7 @@ public class HellTeleportSkill : Skill
     private GameObject _spawnedHell;
     private Coroutine  _hellRoutine;
 
-    protected override int  AnimTriggerCastDelay => 0;
+    protected override int  AnimTriggerPrepare => 0;
     protected override int  AnimTriggerCast      => 0;
 
     protected override bool IsCanCast =>
@@ -39,43 +39,41 @@ public class HellTeleportSkill : Skill
             _accumulatedFireDamage -= _fireDamageThreshold;
             TargetAddCharge(_hero.gameObject);
 
-            if (Chargers > 0)
+            if (Charges.RemainingCharges > 0)
             {
                 Disactive = false;
             }
         }
     }
     
+    private void OnChargesChanged(int remaining) => UpdateDisactiveFromCharges();
+    
     [TargetRpc]
     private void TargetAddCharge(GameObject obj)
     {
-        if (_currentChargers < Charges.MaxCharges)
-        {
-            Chargers = _currentChargers + 1;
-        }
-
-        CheckChargers();
+        AddCharge();
+        
+        
+        UpdateDisactiveFromCharges();
     }
 
-    private void CheckChargers()
+    private void AddCharge()
     {
-        if (_currentChargers > 0)
-        {
-            Disactive = false;
-        }
-        else
-        {
-            Disactive = true;
-        }
+        if (Charges.RemainingCharges >= Charges.MaxCharges) return;
+        if (Charges.RechargeTimers.Count > 0)
+            Charges.RestoreCharge(0);
+        UpdateDisactiveFromCharges();
+    }
 
-        Charges.SendCurrentChange(_currentChargers);
+    private void UpdateDisactiveFromCharges()
+    {
+        Disactive = !Charges.HasCharges;
+        Charges.SendCurrentChange(Charges.RemainingCharges);
     }
 
     protected override void UseCooldownOrCharges()
     {
-        if (_currentChargers <= 0) return;
-        Chargers = _currentChargers - 1;
-        CheckChargers();
+        Charges.TryUse();
     }
     
 
@@ -85,15 +83,19 @@ public class HellTeleportSkill : Skill
     {
         base.Init(render, hero);
         hero.DamageTracker.OnDamageTracked += TrackFireDamage;
+        
+        Charges.OnCurrentChange += OnChargesChanged;
     }
 
     private void OnDisable()
     {
         if (Hero == null) return;
         Hero.DamageTracker.OnDamageTracked -= TrackFireDamage;
+        
+        Charges.OnCurrentChange -= OnChargesChanged;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

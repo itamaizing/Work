@@ -25,8 +25,6 @@ public class RestorativeAttacksState : StateBasic
         character.Character.TryGetResource(ResourceType.Energy, out _energy);
     }
 
-    public override void UpdateState() { }
-
     public void OnAttackHit(Skill sourceSkill)
     {
         if (_energy != null)
@@ -48,9 +46,8 @@ public class RestorativeAttacksState : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
-        characterState?.RemoveState(this);
         _lastHits.Clear();
         _energy = null;
     }

@@ -1,75 +1,54 @@
-using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeakeningSilence : StateBasic
+public class WeakeningSilence : StateStacking, ITickableState
 {
-    private float _damagePerTick;
-    private float _currentDamage;
-    private float _tickInterval = 1f;
-
-    private bool damageTick;
+    private const int MaxStacks = 6;
+    private const float DamagePerStack = 3f;
 
     public override States State => States.WeakeningSilence;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Poison };
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public float TickInterval => 1f;
+
+    public WeakeningSilence()
     {
-        health = character.Character.Health;
-        _damagePerTick = damageToExit;
-        damageTick = true;
-        _currentDamage = _damagePerTick;
+        SetMaxStacks(MaxStacks);
+    }
 
-        if (health == null)
-        {
-            Debug.LogWarning($"Health component is missing on {character.name}. WeakeningSilence will not deal damage.");
-            return;
-        }
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName) { }
 
-        characterState.StartCoroutine(PeriodicDamageRoutine());
+    public override void UpdateState() { }
+
+    public override void GlobalUpdate()
+    {
+        UpdateState();
+        ProcessTick();
+
+        RemainingDuration -= Time.deltaTime;
+        if (RemainingDuration <= 0f) ExitState();
     }
 
     public override void ExitState()
     {
-        characterState.RemoveState(this);
-        damageTick = false;
-        characterState.StopCoroutine(PeriodicDamageRoutine());
+        base.ExitState();
+        CurrentStacksCount = 0;
     }
 
-    public override void UpdateState()
+    public void Tick()
     {
-    }
+        if (characterState == null || characterState.Character == null || !characterState.isServer)
+            return;
 
-    private IEnumerator PeriodicDamageRoutine()
-    {
-        while (damageTick)
+        Damage damage = new Damage
         {
-            yield return new WaitForSeconds(_tickInterval);
-            ApplyDamage();
-        }
-    }
+            Value = DamagePerStack * CurrentStacksCount,
+            Type = DamageType.Magical
+        };
 
-    [Server]
-    private void ApplyDamage()
-    {
-        if (health != null)
-        {
-            Damage damage = new Damage
-            {
-                Value = _currentDamage,
-                Type = DamageType.Magical
-            };
-            if (health != null)
-            {
-                health.TryTakeDamage(ref damage, null);
-            }
-        }
-        else
-        {
-            Debug.LogError("Health is null in CmdApplyDamage.");
-        }
+        health.TryTakeDamage(ref damage, null);
     }
 }

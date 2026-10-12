@@ -39,14 +39,6 @@ public class DisappointmentStateStacking : StateStackingRefreshing
         CurrentStacksCount = 1;
     }
 
-    public override void UpdateState()
-    {
-        if (RemainingDuration <= 0)
-        {
-            ExitState();
-        }
-    }
-
     private void OnDamaged(Damage dmg, Skill skill)
     {
         if (_isBleedingUpgrade && dmg.DamageKey == "bleeding")
@@ -58,7 +50,7 @@ public class DisappointmentStateStacking : StateStackingRefreshing
         ExitState();
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         characterState.Character.Move.SetCanMove(true);
         characterState.Character.Move.StopLookAt();
@@ -78,7 +70,6 @@ public class DisappointmentStateStacking : StateStackingRefreshing
         }
         
         CurrentStacksCount = 0;
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

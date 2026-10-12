@@ -34,10 +34,6 @@ public class ProtectiveScalesStateStacking : StateStacking
         TryDispelMagicDebuffs();
     }
 
-    public override void UpdateState()
-    {
-    }
-
     public override bool Stack(float time)
     {
         _durationRemaining = time;
@@ -73,9 +69,8 @@ public class ProtectiveScalesStateStacking : StateStacking
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         characterState.Character.AttributeSystem[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
-        characterState.RemoveState(this);
     }
 }

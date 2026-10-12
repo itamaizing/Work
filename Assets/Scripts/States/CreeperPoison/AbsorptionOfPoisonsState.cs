@@ -34,24 +34,12 @@ public class AbsorptionOfPoisonsState : StateStackingRefreshing
         IncreaseHealth();
     }
 
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         _player.Health.RemoveModifier(_attributeModifiers);
         //_player.Health.ChangedMaxValue(-_allIncreasedHealth);
 
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     private void IncreaseHealth()

@@ -59,7 +59,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     //        return Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
     //}
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
 
     public void EnableTalentPhysicalShieldBoost(bool value)
@@ -79,7 +79,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     {
         base.Init(render, hero);
         
-        _baseCastDelay = CastDeley;
+        _baseCastDelay = PreparingDuration;
         UpdateMode();
         
         _overhealMana = new OverhealManaBooster(this, Hero);
@@ -129,7 +129,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
         Cooldown.OnForceRefreshUI();
     }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
        // _previousTarget = null;
 
@@ -263,11 +263,11 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
     protected override void SkillEnableBoostLogic()
     {
-        CastDeley = 0;
+        PreparingDuration = 0;
     }
     protected override void SkillDisableBoostLogic()
     {
-        CastDeley = _baseCastDelay;
+        PreparingDuration = _baseCastDelay;
     }
 
     private void ReduceCooldowns()

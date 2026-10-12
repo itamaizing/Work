@@ -20,16 +20,8 @@ public class ShackleState : StateBasic
         _character.Move.SetCanMove(false);
     }
 
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-            ExitState();
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         _character.Move.SetCanMove(true);
-        characterState.RemoveState(this);
     }
 }

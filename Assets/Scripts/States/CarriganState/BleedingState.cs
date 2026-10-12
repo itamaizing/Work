@@ -55,11 +55,6 @@ public class BleedingStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
-
     public override bool Stack(float time)
     {
         if (CurrentStacksCount < 3)

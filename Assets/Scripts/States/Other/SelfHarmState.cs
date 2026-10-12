@@ -23,8 +23,8 @@ public class SelfHarmState : StateBasic
         {
             if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
-                skill.PreparingStarted += OnMagicSpellStartPreparing;
-                skill.PreparingSuccess += OnMagicSpellEndCast;
+                skill.TargetingStarted += OnMagicSpellStartTargeting;
+                skill.TargetingSuccess += OnMagicSpellEndCast;
             }
         }
 
@@ -36,18 +36,14 @@ public class SelfHarmState : StateBasic
         Debug.Log("SelfHarm enter");
     }
 
-    public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
             if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
-                skill.PreparingStarted -= OnMagicSpellStartPreparing;
-                skill.PreparingSuccess -= OnMagicSpellEndCast;
+                skill.TargetingStarted -= OnMagicSpellStartTargeting;
+                skill.TargetingSuccess -= OnMagicSpellEndCast;
             }
         }
         
@@ -55,9 +51,7 @@ public class SelfHarmState : StateBasic
         {
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
-        
-        characterState.RemoveState(this);
-        
+
         Debug.Log("SelfHarm exit");
     }
 
@@ -70,7 +64,7 @@ public class SelfHarmState : StateBasic
         Debug.Log($"[SelfHarm] Chance increased to {_currentStackChance}%");
     }
 
-    private void OnMagicSpellStartPreparing(Skill skill)
+    private void OnMagicSpellStartTargeting(Skill skill)
     {
         var isNeedUseBuff = Random.Range(0f, 100f) <= _currentStackChance;
 
@@ -78,7 +72,7 @@ public class SelfHarmState : StateBasic
         {
             skill.Buff.CastSpeed.IncreasePercentage(CastTimeReductionMultiplier);
             Debug.Log("[SelfHarm] Start preparing");
-            Debug.Log(skill.CastDeley);
+            Debug.Log(skill.PreparingDuration);
         }
     }
     
@@ -91,7 +85,7 @@ public class SelfHarmState : StateBasic
             _currentStackChance = 0f;
             skill.Buff.CastSpeed.ReductionPercentage(CastTimeReductionMultiplier);
             Debug.Log("[SelfHarm] Success preparing");
-            Debug.Log(skill.CastDeley);
+            Debug.Log(skill.PreparingDuration);
         }
     }
 }

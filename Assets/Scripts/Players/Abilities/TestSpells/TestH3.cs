@@ -14,7 +14,7 @@ public class TestH3 : Skill
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
 
@@ -86,7 +86,7 @@ public class TestH3 : Skill
         _targetPoint = Vector3.positiveInfinity;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 

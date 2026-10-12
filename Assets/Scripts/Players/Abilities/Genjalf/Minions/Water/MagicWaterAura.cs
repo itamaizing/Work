@@ -117,14 +117,9 @@ public class MagicWater : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         StopRegenRoutine();
         RemoveBuffs();
-        base.ExitState();
-    }
-
-    public override void UpdateState()
-    {
     }
 }

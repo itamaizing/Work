@@ -19,7 +19,7 @@ public class DomeOfLight : Skill, IPolaritySwitchable
     [SerializeField] private Color _lightColor = Color.white;
     [SerializeField] private Color _darkColor  = Color.yellow;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DomeOfLight");
     protected override bool IsCanCast => true;
 
@@ -122,7 +122,7 @@ public class DomeOfLight : Skill, IPolaritySwitchable
         Destroy(tempEffect.gameObject);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(_hero);

@@ -29,7 +29,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     
     private float _clickRadius = 0.5f;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
     #region Talents
@@ -79,7 +79,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     protected override bool IsCanCast =>
 		Targeting.GetTarget()?.Character != null &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
-        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
+        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, Targeting.AdditionalObstacle) &&
         ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
     public override void Init(SkillRenderer render, Character hero)
@@ -148,7 +148,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Cooldown.OnForceRefreshUI();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {

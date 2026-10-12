@@ -19,7 +19,7 @@ public class PriestShield : Skill
     private float _nextAvailableTime;
     private float _clickRadius = 0.5f;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("PriestShield");
+    protected override int AnimTriggerPrepare => Animator.StringToHash("PriestShield");
     protected override int AnimTriggerCast => 0;
     
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
@@ -226,7 +226,7 @@ public class PriestShield : Skill
     public void SetDisciplineShieldBoostValue(float boostValue) => _disciplineBonus = boostValue;
     #endregion
     
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new();
 

@@ -93,16 +93,11 @@ public class FrostingStateStacking : StateStackingRefreshing
 			ExitState();
 	}
 
-	public override void UpdateState()
-	{
-	}
-
-	public override void ExitState()
+	protected override void OnExit()
 	{
 		UnSubscribeOnDamage();
 		_damageCount = 0;
 		//Debug.Log("Exiting Frosting State");
-		characterState.RemoveState(this);
 		CurrentStacksCount = 0;
 		if (!characterState.Check(StatusEffect.Move))
 		{
@@ -127,6 +122,4 @@ public class FrostingStateStacking : StateStackingRefreshing
 
 		return true;
 	}
-
-	
 }

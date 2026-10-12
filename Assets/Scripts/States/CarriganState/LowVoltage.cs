@@ -6,9 +6,6 @@ public class LowVoltage : StateStackingRefreshing
     private const float ReductionPerStack = 0.15f;
     private const int MaxStack = 6;
 
-    private float _duration;
-    private float _remainingDuration;
-
     public override States State => States.LowVoltage;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -23,42 +20,24 @@ public class LowVoltage : StateStackingRefreshing
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        
-
-        _duration = durationToExit;
-        _remainingDuration = _duration;
+        RemainingDuration = durationToExit;
         CurrentStacksCount = 1;
 
-        Debug.Log($"[LowVoltage] Applied! Max stacks: {MaxStacksCount}, duration: {_duration}s");
+        Debug.Log($"[LowVoltage] Applied! Max stacks: {MaxStacksCount}, duration: {RemainingDuration}s");
 
         characterState.OnStateAdded += OnNewStateAdded;
 
         ApplyDebuffToActiveMagicBuffs();
     }
 
-    public override void UpdateState()
-    {
-        _remainingDuration -= Time.deltaTime;
 
-        if (_remainingDuration <= 0)
-        {
-            ExitState();
-            characterState.RemoveState(this);
-            return;
-        }
-    }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         Debug.Log("[LowVoltage] ExitState called");
 
         CurrentStacksCount = 0;
 
         characterState.OnStateAdded -= OnNewStateAdded;
-
-        
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -68,9 +47,9 @@ public class LowVoltage : StateStackingRefreshing
             CurrentStacksCount++;
         }
 
-        _remainingDuration = time;
+        RemainingDuration = time;
 
-        Debug.Log($"[LowVoltage] Stacked to {CurrentStacksCount}. Remaining duration: {_remainingDuration}");
+        Debug.Log($"[LowVoltage] Stacked to {CurrentStacksCount}. Remaining duration: {RemainingDuration}");
 
         ApplyDebuffToActiveMagicBuffs();
 

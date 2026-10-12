@@ -215,7 +215,7 @@ public class MinionSkillPanelController
         {
             if (skill == null || skill.Hero == null || skill.Hero.IsDead) continue;
             Debug.Log($"[MinionPanel] IssueGroupOrder -> SelectAndPrepareSkill on skill={skill.GetEntityId()}");
-            skill.Hero.GetComponent<SkillManager>()?.SelectAndPrepareSkill(skill);
+            skill.Hero.GetComponent<SkillManager>()?.SelectAndPrepareSkill(skill, group);
         }
     }
     
@@ -225,7 +225,7 @@ public class MinionSkillPanelController
         {
             foreach (var skill in group.Instances)
             {
-                if (skill != null && skill.IsPreparing)
+                if (skill != null && skill.IsTargeting)
                     skill.TryCancel();
             }
         }

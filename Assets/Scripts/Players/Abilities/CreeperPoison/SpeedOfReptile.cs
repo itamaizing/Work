@@ -20,7 +20,7 @@ public class SpeedOfReptile : Skill
     private readonly AttributeModifier _evadeMagicModifier = new(1, ModifierType.Multiplier);
 
     protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => true;
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -28,7 +28,7 @@ public class SpeedOfReptile : Skill
         
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

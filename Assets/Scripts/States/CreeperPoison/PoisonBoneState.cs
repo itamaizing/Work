@@ -115,7 +115,7 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         ResetValues();
 

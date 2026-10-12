@@ -44,11 +44,10 @@ namespace Gangdollarff.AirElemental
             //DischargeTick();
         }
 
-        public override void ExitState()
+        protected override void OnExit()
         {
             CurrentStacksCount = 0;
             RemoveSlow();
-            characterState.RemoveState(this);
         }
 
         public override void UpdateState()

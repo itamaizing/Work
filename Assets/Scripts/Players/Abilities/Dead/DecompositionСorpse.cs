@@ -79,6 +79,6 @@ public class DecompositionCorpse : Skill, IPassiveSkill
         yield break;
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 }

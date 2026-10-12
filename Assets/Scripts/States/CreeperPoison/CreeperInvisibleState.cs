@@ -63,11 +63,10 @@ public class CreeperInvisibleState : StateBasic
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         _playerInInvisible = false;
         ResetValues();
-        characterState.RemoveState(this);
     }
 
     private void ApplyInvisible()

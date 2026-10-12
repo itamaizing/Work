@@ -8,29 +8,41 @@ public class PlayerIcon : MonoBehaviour
     [SerializeField] private ReviveVisualUI _reviveVisual;
     [SerializeField] private Bar _playerHp;
     [SerializeField] private Bar _playerMana;
-
+    [SerializeField] private GameObject _iconHolder;
+    
     private Character _character;
     private TeamsPanel _panel;
 
+    public GameObject IconHolder => _iconHolder;
     public Character Character { get => _character; }
 
     public void Init(Character character, TeamsPanel panel)
     {
         _character = character;
         _panel = panel;
+        if (_character == null)
+        {
+            _iconHolder.SetActive(false);
+            return;
+        }
+        _iconHolder.SetActive(true);
         UpdateInfo(character);
     }
 
     public void OnCharacterSelected(Character character)
     {
-        gameObject.SetActive(true);
+        if (character == null)
+        {
+            _iconHolder.SetActive(false);
+            return;
+        }
 
+        _iconHolder.SetActive(true);
         UpdateInfo(character);
     }
-
     public void OnCharacterDeselected(Character character)
     {
-        gameObject.SetActive(false);
+        _iconHolder.SetActive(false);
     }
 
     public void StartReviveTimer(float time)

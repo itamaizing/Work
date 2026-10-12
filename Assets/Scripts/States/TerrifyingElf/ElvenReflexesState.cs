@@ -48,7 +48,7 @@ public class ElvenReflexesState : StateBasic
         elvenSkill.ReduceStackExternal(true);
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical]
             .RemoveBySource(this, all: true);
@@ -56,6 +56,5 @@ public class ElvenReflexesState : StateBasic
         /*characterState.Character.Health.EvadeMeleeDamage -= _currentEvasionBonus;
         _baseEvade = 0;
         _currentEvasionBonus = 0;*/
-        characterState.RemoveState(this);
     }
 }

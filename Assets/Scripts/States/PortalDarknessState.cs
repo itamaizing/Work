@@ -87,9 +87,8 @@ public class PortalDarknessStateStacking : StateStackingRefreshing
         }*/
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
-        base.ExitState();
         _spawnedCount = 0;
     }
 }

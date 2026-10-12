@@ -35,10 +35,6 @@ public class Calmness : StateStackingRefreshing
         }
     }
 
-    public override void UpdateState()
-    {
-    }
-
     public override void ReduceStack()
     {
         RemainingDuration = _baseDuration;
@@ -50,13 +46,11 @@ public class Calmness : StateStackingRefreshing
         }
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         manaResource.MaxValueChanged -= RecalcRegenAmount;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
-        
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float newDuration)
@@ -98,7 +92,4 @@ public class Calmness : StateStackingRefreshing
             manaResource.CmdAdd(amount);
         }
     }
-    
-    
-
 }

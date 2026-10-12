@@ -66,11 +66,10 @@ public class LightningEvadeStateStacking : StateStackingRefreshing
         ExitState();
     }
 
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         RemoveEvade();
-        base.ExitState();
     }
 
     private void RemoveEvade()
@@ -84,8 +83,4 @@ public class LightningEvadeStateStacking : StateStackingRefreshing
         _evadePhysicalModifier.Value = 0f;
         _evadeMagicalModifier.Value = 0f;
     }
-
-    public override void UpdateState() { }
-    
-    
 }

@@ -22,13 +22,10 @@ public class SwarmSpeedStateStacking : StateStackingRefreshing
         characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(_speedModifier);
     }
 
-    public override void UpdateState() { }
-
-    public override void ExitState()
+    protected override void OnExit()
     {
         CurrentStacksCount = 0;
         RemoveSpeedModifier();
-        base.ExitState();
     }
 
     private void RemoveSpeedModifier()

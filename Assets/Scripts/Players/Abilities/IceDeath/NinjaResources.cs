@@ -7,7 +7,7 @@ public class NinjaResources : Skill, IPassiveSkill
 {
     #region Skill
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
     protected override IEnumerator CastJob() => null;
@@ -16,7 +16,7 @@ public class NinjaResources : Skill, IPassiveSkill
     {
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved) => null;
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
 
     #endregion

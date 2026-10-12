@@ -658,6 +658,7 @@ MonoBehaviour:
   _reviveVisual: {fileID: 0}
   _playerHp: {fileID: 8281172728835060472}
   _playerMana: {fileID: 654678747426985715}
+  _iconHolder: {fileID: 8057477436894338726}
   _lvlInfo: {fileID: 5465920015488967859}
   _FrameBlink: {fileID: 4879880932515034268}
 --- !u!114 &2782366347426868164

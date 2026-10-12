@@ -60,7 +60,7 @@ public class IceShadow : Skill, IEnergyDamagable, SkillQueue.IPreemptsQueue
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerPrepare => 0;
 
 	protected override int AnimTriggerCast => 0;
     
@@ -136,7 +136,7 @@ public class IceShadow : Skill, IEnergyDamagable, SkillQueue.IPreemptsQueue
 		return false;
 	}
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
 	{
 		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
 

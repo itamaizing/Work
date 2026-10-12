@@ -34,20 +34,20 @@ public class CircularFrosting : Skill, IEnergyDamagable, IComboSeriesParticipati
     private Coroutine _delayedFrostingCoroutine;
 
     protected override bool IsCanCast => true;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
     private void OnEnable()
     {
-        CastDeleyStarted += OnCastDelayStarted;
-        CastDeleyEnded += OnCastDelayEnded;
+        PreparingStarted += OnCastDelayStarted;
+        PreparingEnded += OnCastDelayEnded;
         OnSkillCanceled += OnSkillCanceledHandler;
     }
 
     private void OnDisable()
     {
-        CastDeleyStarted -= OnCastDelayStarted;
-        CastDeleyEnded -= OnCastDelayEnded;
+        PreparingStarted -= OnCastDelayStarted;
+        PreparingEnded -= OnCastDelayEnded;
         OnSkillCanceled -= OnSkillCanceledHandler;
     }
 
@@ -58,7 +58,7 @@ public class CircularFrosting : Skill, IEnergyDamagable, IComboSeriesParticipati
         if (_rune == null) _rune = (RuneComponent)hero.Resources[ResourceType.Rune];
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);

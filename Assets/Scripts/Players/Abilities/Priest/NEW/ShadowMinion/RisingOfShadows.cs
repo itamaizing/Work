@@ -12,7 +12,7 @@ public class RisingOfShadows : Skill
     [SerializeField] private float _shadowSpeedMultiplier = 0.5f;
     [SerializeField] private Vector3 _spawnOffset = new Vector3(0.5f, 0f, 0.5f);
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
 
@@ -40,7 +40,7 @@ public class RisingOfShadows : Skill
         _clickPoint = Vector3.zero;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 

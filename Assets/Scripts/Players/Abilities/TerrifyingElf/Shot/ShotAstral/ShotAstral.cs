@@ -14,22 +14,22 @@ public class ShotAstral : Skill, IMultiMagicSkill
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
+    protected override int AnimTriggerPrepare => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast =>
         Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius &&
-        Targeting.NoObstacles(_targetPoint, transform.position, _obstacle);
+        Targeting.NoObstacles(_targetPoint, transform.position, Targeting.AdditionalObstacle);
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
     
     protected override void PlayPrepareAnim()
     {
-        if (CastDeley > 0f)
-            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (PreparingDuration > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / PreparingDuration;
         base.PlayPrepareAnim();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
+    protected override IEnumerator TargetingJob(Action<TargetInfo> callback)
     {
         OnSkillCanceled += HandleSkillCanceled;
 
@@ -39,7 +39,7 @@ public class ShotAstral : Skill, IMultiMagicSkill
             {
                 Vector3 click = Targeting.GetMousePoint();
 
-                if (Targeting.NoObstacles(click, transform.position, _obstacle))
+                if (Targeting.NoObstacles(click, transform.position, Targeting.AdditionalObstacle))
                 {
                     _targetPoint = click;
                     Targeting.FindTempTarget();
