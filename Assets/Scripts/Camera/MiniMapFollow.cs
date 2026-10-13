@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class MiniMapFollow : MonoBehaviour
 {
     [SerializeField] private Transform _target;
-    [SerializeField] private Toggle _miniMapToggle;
     [SerializeField] private bool _isRotation;
 
     private Quaternion _initialRotation;
@@ -35,6 +34,10 @@ public class MiniMapFollow : MonoBehaviour
         }
     }
 
+    public void ToggleRotation(bool isOn)
+    {
+        _isRotation = isOn;
+    }
 
     private void MiniMapFollowPosition()
     {

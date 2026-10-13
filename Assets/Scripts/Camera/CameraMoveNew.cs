@@ -38,7 +38,7 @@ public class CameraMoveNew : MonoBehaviour
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.lockState = CursorLockMode.Confined;
     }
 
     private void LateUpdate()
