@@ -279,18 +279,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4410183109477920619, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6512015697919154383, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
       propertyPath: _unfocusedMessageContainer
       value: 
       objectReference: {fileID: 3629441}
-    - target: {fileID: 6691808292838405272, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
-      propertyPath: m_ChildControlWidth
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6691808292838405272, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
-      propertyPath: m_ChildControlHeight
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7765878349779837665, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
