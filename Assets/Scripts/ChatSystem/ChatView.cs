@@ -19,40 +19,26 @@ public class ChatView : MonoBehaviour, IChatView
     [Header("Settings")]
     [SerializeField] private ChatConfig _config;
 
-    public event Action<string, ChatChannel> OnMessageSent;
+    public event Action<string> OnMessageSent;
+    public event Action<int> OnChannelSelected;
 
-    private List<ChatMessageUI> _focusedMessageUIList = new List<ChatMessageUI>();
-    private List<ChatMessageUI> _unfocusedMessageUIList = new List<ChatMessageUI>();
-    private List<ChatMessage> _allMessages = new List<ChatMessage>();
-    private ChatChannel _currentChannel = ChatChannel.Team;
+    private readonly List<string> _history = new();
+    private readonly List<ChatMessageUI> _focusedUi = new();
+    private readonly List<ChatMessageUI> _unfocusedUi = new();
 
     private void Awake()
-    {
-        SetupInputField();
-        SetupChannelDropdown();
-        
-        SetState(ChatState.Hidden);
-    }
-
-    private void SetupInputField()
     {
         if (_inputField != null)
         {
             _inputField.characterLimit = _config.MaxMessageLength;
             _inputField.lineType = TMP_InputField.LineType.SingleLine;
-            
             _inputField.onSubmit.AddListener(OnSubmit);
         }
-    }
 
-    private void SetupChannelDropdown()
-    {
         if (_channelDropdown != null)
-        {
-            _channelDropdown.ClearOptions();
-            _channelDropdown.AddOptions(new List<string> { "Союзники", "Общий" });
-            _channelDropdown.onValueChanged.AddListener(OnChannelChanged);
-        }
+            _channelDropdown.onValueChanged.AddListener(OnDropdownChanged);
+
+        SetState(ChatState.Hidden);
     }
 
     public void SetState(ChatState state)
@@ -63,13 +49,13 @@ public class ChatView : MonoBehaviour, IChatView
                 _focusedPanel.SetActive(false);
                 _unfocusedPanel.SetActive(false);
                 break;
-            
+
             case ChatState.Unfocused:
                 _focusedPanel.SetActive(false);
                 _unfocusedPanel.SetActive(true);
                 UpdateUnfocusedMessages();
                 break;
-            
+
             case ChatState.Focused:
                 _focusedPanel.SetActive(true);
                 _unfocusedPanel.SetActive(false);
@@ -83,116 +69,104 @@ public class ChatView : MonoBehaviour, IChatView
     {
         if (_messagePrefab == null || _messageContainer == null) return;
 
-        _allMessages.Add(message);
+        string text = ChatMessageFormatter.Format(message);
+        _history.Add(text);
 
-        ChatMessageUI focusedMessageUI = Instantiate(_messagePrefab, _messageContainer);
-        focusedMessageUI.Setup(message, GetTeamColor(message.TeamIndex), _config.WhiteColor);
-        _focusedMessageUIList.Add(focusedMessageUI);
+        var ui = Instantiate(_messagePrefab, _messageContainer);
+        ui.SetText(text);
+        _focusedUi.Add(ui);
+
+        while (_history.Count > _config.MaxHistory)
+        {
+            _history.RemoveAt(0);
+            Destroy(_focusedUi[0].gameObject);
+            _focusedUi.RemoveAt(0);
+        }
 
         UpdateUnfocusedMessages();
     }
 
     public void ClearMessages()
     {
-        _allMessages.Clear();
+        _history.Clear();
 
-        foreach (var messageUI in _focusedMessageUIList)
-        {
-            if (messageUI != null)
-            {
-                Destroy(messageUI.gameObject);
-            }
-        }
-        _focusedMessageUIList.Clear();
+        foreach (var ui in _focusedUi)
+            if (ui != null) Destroy(ui.gameObject);
+        _focusedUi.Clear();
 
-        foreach (var messageUI in _unfocusedMessageUIList)
-        {
-            if (messageUI != null)
-            {
-                Destroy(messageUI.gameObject);
-            }
-        }
-        _unfocusedMessageUIList.Clear();
+        foreach (var ui in _unfocusedUi)
+            if (ui != null) Destroy(ui.gameObject);
+        _unfocusedUi.Clear();
     }
 
-    public void SetCurrentChannel(ChatChannel channel)
+    public void SetChannels(IReadOnlyList<ChatTarget> targets, int activeIndex)
     {
-        _currentChannel = channel;
-        _channelDropdown.value = (int)channel;
+        if (_channelDropdown == null) return;
+
+        var options = new List<TMP_Dropdown.OptionData>(targets.Count);
+        foreach (var target in targets)
+            options.Add(new TMP_Dropdown.OptionData(target.Label));
+
+        _channelDropdown.options = options;
+        SetActiveChannel(activeIndex);
+    }
+
+    public void SetActiveChannel(int index)
+    {
+        if (_channelDropdown == null) return;
+
+        _channelDropdown.SetValueWithoutNotify(index);
+        _channelDropdown.RefreshShownValue();
     }
 
     public void ScrollToBottom()
     {
-        if (_scrollRect != null)
-        {
-            Canvas.ForceUpdateCanvases();
-            _scrollRect.verticalNormalizedPosition = 0f;
-        }
+        if (_scrollRect == null) return;
+
+        Canvas.ForceUpdateCanvases();
+        _scrollRect.verticalNormalizedPosition = 0f;
     }
 
     private void UpdateUnfocusedMessages()
     {
-        foreach (var messageUI in _unfocusedMessageUIList)
-        {
-            if (messageUI != null)
-            {
-                Destroy(messageUI.gameObject);
-            }
-        }
-        _unfocusedMessageUIList.Clear();
+        if (_unfocusedMessageContainer == null || _messagePrefab == null) return;
 
-        int startIndex = Mathf.Max(0, _allMessages.Count - _config.MaxUnfocusedMessages);
-        
-        for (int i = startIndex; i < _allMessages.Count; i++)
+        int count = Mathf.Min(_history.Count, _config.MaxUnfocusedMessages);
+
+        while (_unfocusedUi.Count < count)
+            _unfocusedUi.Add(Instantiate(_messagePrefab, _unfocusedMessageContainer));
+
+        while (_unfocusedUi.Count > count)
         {
-            if (_unfocusedMessageContainer != null)
-            {
-                ChatMessageUI unfocusedMessageUI = Instantiate(_messagePrefab, _unfocusedMessageContainer);
-                unfocusedMessageUI.Setup(_allMessages[i], GetTeamColor(_allMessages[i].TeamIndex), _config.WhiteColor);
-                _unfocusedMessageUIList.Add(unfocusedMessageUI);
-            }
+            Destroy(_unfocusedUi[_unfocusedUi.Count - 1].gameObject);
+            _unfocusedUi.RemoveAt(_unfocusedUi.Count - 1);
         }
+
+        int start = _history.Count - count;
+        for (int i = 0; i < count; i++)
+            _unfocusedUi[i].SetText(_history[start + i]);
     }
 
     private void OnSubmit(string text)
     {
-        OnMessageSent?.Invoke(text, _currentChannel);
+        OnMessageSent?.Invoke(text);
         _inputField.text = string.Empty;
     }
 
-    private void OnChannelChanged(int value)
+    private void OnDropdownChanged(int index)
     {
-        _currentChannel = (ChatChannel)value;
-    }
+        OnChannelSelected?.Invoke(index);
 
-    private Color GetTeamColor(int teamIndex)
-    {
-        return teamIndex == 1 ? _config.Team1Color : _config.Team2Color;
+        if (_inputField != null)
+            _inputField.ActivateInputField();
     }
 
     private void OnDestroy()
     {
         if (_inputField != null)
-        {
             _inputField.onSubmit.RemoveListener(OnSubmit);
-        }
-        
+
         if (_channelDropdown != null)
-        {
-            _channelDropdown.onValueChanged.RemoveListener(OnChannelChanged);
-        }
+            _channelDropdown.onValueChanged.RemoveListener(OnDropdownChanged);
     }
-}
-
-public enum ChatChannel
-{
-    Team,
-    All
-}
-
-public enum ChatState
-{
-    Hidden,
-    Unfocused,
-    Focused
 }

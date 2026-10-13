@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3b8fb90c7e996d4f89cb85ceafce7f9, type: 3}
+  m_Name: ColorPalette
+  m_EditorClassIdentifier: Assembly-CSharp::ColorPalette
+  _ui:
+    White: {r: 1, g: 1, b: 1, a: 1}
+    YellowAccent: {r: 1, g: 0.8392157, b: 0.30980393, a: 1}
+  _elements:
+    Earth: {r: 0.5882353, g: 0.43137255, b: 0.23529412, a: 1}
+    Fire: {r: 0.92156863, g: 0.3529412, b: 0.15686275, a: 1}
+    Water: {r: 0.27450982, g: 0.54901963, b: 0.92156863, a: 1}
+    Air: {r: 0.74509805, g: 0.88235295, b: 0.9411765, a: 1}
+  _chat:
+    Time: {r: 0.6666667, g: 0.6666667, b: 0.6666667, a: 1}
+    Team1: {r: 0.3529412, g: 0.5882353, b: 1, a: 1}
+    Team2: {r: 1, g: 0.39215687, b: 0.39215687, a: 1}
+    All:
+      Label: "\u041E\u0431\u0449\u0438\u0439"
+      TagColor: {r: 1, g: 1, b: 1, a: 1}
+      ColorNameByTeam: 1
+      NameColor: {r: 1, g: 1, b: 1, a: 1}
+      TextColor: {r: 1, g: 1, b: 1, a: 1}
+    Team:
+      Label: "\u0421\u043E\u044E\u0437\u043D\u0438\u043A\u0438"
+      TagColor: {r: 0.3529412, g: 0.78431374, b: 0.47058824, a: 1}
+      ColorNameByTeam: 1
+      NameColor: {r: 1, g: 1, b: 1, a: 1}
+      TextColor: {r: 1, g: 1, b: 1, a: 1}
+    Group:
+      Label: "\u0413\u0440\u0443\u043F\u043F\u0430"
+      TagColor: {r: 0.39215687, g: 0.6666667, b: 1, a: 1}
+      ColorNameByTeam: 1
+      NameColor: {r: 1, g: 1, b: 1, a: 1}
+      TextColor: {r: 0.78431374, g: 0.88235295, b: 1, a: 1}
+    Private:
+      Label: "\u041B\u0438\u0447\u043D\u043E"
+      TagColor: {r: 1, g: 0.54901963, b: 0.8627451, a: 1}
+      ColorNameByTeam: 0
+      NameColor: {r: 1, g: 0.54901963, b: 0.8627451, a: 1}
+      TextColor: {r: 1, g: 0.54901963, b: 0.8627451, a: 1}

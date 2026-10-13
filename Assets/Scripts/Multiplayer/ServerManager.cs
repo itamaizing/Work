@@ -4,9 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class ServerManager : NetworkBehaviour
 {
@@ -19,6 +17,8 @@ public class ServerManager : NetworkBehaviour
     private const string IPPORT = "ipAndPort";
     private const string ADDEDTOGROUP = "AddedToGroup";
     private const string LEFTGROUP = "leftGroup";
+    private const string ACCEPTINVITE = "acceptInvite";
+    private const string PLAYERID = "playerId";
 
     [SerializeField] private List<NetworkRoomsManager> _managers;
     [SerializeField] private List<HeroComponent> _heroList;
@@ -55,34 +55,32 @@ public class ServerManager : NetworkBehaviour
 
     private void Start()
     {
+        if (_instance != this) return;
+
         WebSocketClient.Instance.MessageReceived += OnMessageReceived;
     }
 
     private void OnDestroy()
     {
-        WebSocketClient.Instance.MessageReceived -= OnMessageReceived;
+        if (_instance != this) return;
+
+        if (WebSocketClient.Instance != null)
+            WebSocketClient.Instance.MessageReceived -= OnMessageReceived;
     }
 
     public void StartClient()
     {
-        //_menuEnv.gameObject.SetActive(false);
-        //AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
-
         if (MPNetworkManager.Instance.UserID < 0)
         {
             OnServerRoomCreatedSuccess("localhost:7777");
             return;
         }
-        //request
-        /*
-        Dictionary<string, string> data = new Dictionary<string, string>()
+        
+        if (_groupManager.HostId != null)
         {
-            {HEROINDEX, _currentHeroIndex.ToString()},
-            {GAMEMODE, _currentGameMode.ToString()},
-            {USERID, MPNetworkManager.Instance.UserID.ToString()},
-            {GROUPUSERS, MPNetworkManager.Instance.UserID.ToString()}
-        };
-        NetworkHTTP.Instance.Post(URLLibrary.StartGame, data, OnServerRoomCreatedSuccess, OnServerRoomCreatedError);*/
+            Debug.Log("Я гость группы, жду roomReady от хоста");
+            return;
+        }
 
         var startData = new
         {
@@ -93,6 +91,7 @@ public class ServerManager : NetworkBehaviour
         };
         string json = JsonConvert.SerializeObject(startData);
 
+        Debug.Log($"startGame, группа: '{_groupManager.GetPlayerInGroup()}'");
         WebSocketClient.Instance.SendMessageToServer(json);
     }
 
@@ -103,42 +102,50 @@ public class ServerManager : NetworkBehaviour
 
     private void OnMessageReceived(Dictionary<string, string> dictionary, string json)
     {
-        if (dictionary.Count == 0)
+        if (dictionary == null || dictionary.Count == 0)
             return;
 
-        string type = dictionary["type"].ToString();
+        if (!dictionary.TryGetValue("type", out string type))
+            return;
 
         switch (type)
         {
             case ROOMREADY:
-                string ipPort = dictionary[IPPORT].ToString();
-                OnServerRoomCreatedSuccess(ipPort);
+                if (dictionary.TryGetValue(IPPORT, out string ipPort))
+                    OnServerRoomCreatedSuccess(ipPort);
                 break;
 
             case ADDEDTOGROUP:
-                string addedUserId = dictionary[USERID].ToString();
-                _groupManager.AddPlayerInGroup(addedUserId);
+                if (dictionary.TryGetValue(USERID, out string addedUserId))
+                    _groupManager.AddPlayerInGroup(addedUserId);
                 break;
 
             case LEFTGROUP:
-                string removedUserId = dictionary[USERID].ToString();
-                _groupManager.RemovePlayerInGroup(removedUserId);
+                if (dictionary.TryGetValue(USERID, out string removedUserId))
+                    _groupManager.RemovePlayerInGroup(removedUserId);
+                break;
+
+            case ACCEPTINVITE:
+                if (dictionary.TryGetValue(PLAYERID, out string joinedId))
+                    _groupManager.AddPlayerInGroup(joinedId);
                 break;
         }
     }
 
-
     private void OnServerRoomCreatedSuccess(string ipAndPort)
     {
-        string ip;  
-        string port;
+        if (NetworkClient.active)
+        {
+            Debug.LogWarning("NetworkClient уже активен, roomReady проигнорирован");
+            return;
+        }
 
         string[] parts = ipAndPort.Split(':');
 
         if (parts.Length == 2)
         {
-            ip = parts[0];
-            port = parts[1];
+            string ip = parts[0];
+            string port = parts[1];
 
             Debug.Log($"Try connect - {ip}:{port}");
 
@@ -149,21 +156,27 @@ public class ServerManager : NetworkBehaviour
                 Debug.LogError("Transport not found on NetworkManager");
                 return;
             }
-            transport.port = ushort.Parse(port);
+
+            if (!ushort.TryParse(port, out ushort portNumber))
+            {
+                Debug.LogError($"Bad port: {port}");
+                return;
+            }
+
+            transport.port = portNumber;
             MPNetworkManager.Instance.networkAddress = ip;
 
             MPNetworkManager.Instance.StartClient();
         }
         else
         {
-            Debug.LogError("Samthing wrong " + parts.Length);
-            Debug.LogError(parts);
+            Debug.LogError($"Something wrong with ipAndPort: '{ipAndPort}' (parts: {parts.Length})");
         }
     }
 
     private void OnServerRoomCreatedError(string obj)
     {
-        throw new NotImplementedException();
+        Debug.LogError($"Room create error: {obj}");
     }
 
     [Command(requiresAuthority = false)]
@@ -193,7 +206,6 @@ public class ServerManager : NetworkBehaviour
         yield return StartCoroutine(_managers[index].AddPlayerJob(player));
 
         user.GetComponent<User>().connectionToClient.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
-        //SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
     }
 
     public void SetPlayer(HeroComponent hero)
@@ -214,10 +226,18 @@ public class GroupManager
 {
     private const string INVITE = "invite";
     private const string ACCEPTINVITE = "acceptInvite";
-    private const string PLAYERID = "playerId";
 
-    private List<int> _ids = new List<int>();
+    private readonly List<int> _ids = new List<int>();
+
+    public event Action Changed;
+
+    public IReadOnlyList<int> Members => _ids;
     
+    public int? HostId { get; private set; }
+
+    public void SetHost(int id) => HostId = id;
+    public void ClearHost() => HostId = null;
+
     public void SendInvite(int id)
     {
         var invData = new
@@ -226,66 +246,60 @@ public class GroupManager
             hostplayerId = MPNetworkManager.Instance.UserID,
             playerId = id
         };
-        string json = JsonConvert.SerializeObject(invData);
+        WebSocketClient.Instance.SendMessageToServer(JsonConvert.SerializeObject(invData));
+    }
 
-        WebSocketClient.Instance.SendMessageToServer(json);
-    }    
-
-    public void AcceptInvite(int id)
+    public void AcceptInvite(int hostId)
     {
         var invData = new
         {
             type = ACCEPTINVITE,
-            HostplayerId = MPNetworkManager.Instance.UserID,
-            playerId = id
+            hostId = hostId,
+            playerId = MPNetworkManager.Instance.UserID 
         };
-        string json = JsonConvert.SerializeObject(invData);
-
-        WebSocketClient.Instance.SendMessageToServer(json);
-        Debug.Log("Try inv" + id);
+        WebSocketClient.Instance.SendMessageToServer(JsonConvert.SerializeObject(invData));
+        SetHost(hostId);
+        Debug.Log("Accept invite from host " + hostId);
     }
 
     public void AddPlayerInGroup(int id)
     {
+        if (_ids.Contains(id)) return;
         _ids.Add(id);
+        Changed?.Invoke();
     }
 
     public void AddPlayerInGroup(string id)
     {
         if (int.TryParse(id, out int idInt))
-            _ids.Add(idInt);
+            AddPlayerInGroup(idInt);
         else
             Debug.LogError("Шляпа, а не ID");
     }
 
     public void RemovePlayerInGroup(int id)
     {
-        _ids.Remove(id);
-    }
+        if (HostId == id)
+            ClearHost();
 
-    public void Clear() { _ids.Clear(); }
+        if (_ids.Remove(id))
+            Changed?.Invoke();
+    }
 
     public void RemovePlayerInGroup(string id)
     {
         if (int.TryParse(id, out int idInt))
-            _ids.Remove(idInt);
+            RemovePlayerInGroup(idInt);
         else
             Debug.LogError("Шляпа, а не ID");
     }
 
-    public string GetPlayerInGroup()
+    public void Clear()
     {
-        string playerIdForAddGroup = "";
-
-        if(_ids.Count == 0)
-            return playerIdForAddGroup;
-
-        foreach (var id in _ids)
-        {
-            playerIdForAddGroup = playerIdForAddGroup + id + ":";
-        }
-        playerIdForAddGroup = playerIdForAddGroup.Remove(playerIdForAddGroup.Length - 1);
-
-        return playerIdForAddGroup;
+        ClearHost();
+        _ids.Clear();
+        Changed?.Invoke();
     }
+
+    public string GetPlayerInGroup() => string.Join(":", _ids);
 }

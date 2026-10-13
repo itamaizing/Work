@@ -40,6 +40,9 @@ public abstract class GameRules : NetworkBehaviour
     public HeroSpawnManager SpawnPoints => _spawnPoints;
     public int MaxPlayers { get => _maxPlayers;}
     public int CurrentPlayers { get => _currentPlayers; set => _currentPlayers = value; }
+    
+    private const float ChatStillWaitingLogDelay = 15f;
+    private const float ChatTeamWaitTimeout = 15f; 
 
     public abstract void GameStartServer(HeroSpawnManager spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
@@ -152,6 +155,7 @@ public abstract class GameRules : NetworkBehaviour
     {
         base.OnStartClient();
         StartCoroutine(FoundGameManagerCorounite());
+        StartCoroutine(InitializeChatRoutine());
     }
 
     public void CloseRoomOnClient()
@@ -402,27 +406,74 @@ public abstract class GameRules : NetworkBehaviour
 
                 _gameManager.Source.AddInTeam(playerSettings);
             }
-
-            InitializeChat();
-            
             GameStartClient();
         }
     }
 
-    protected void InitializeChat()
+    private IEnumerator InitializeChatRoutine()
     {
-        if (_gameManager == null || _gameManager.ChatController == null) return;
+        ChatController chat = null;
+        Character local = null;
+        bool ready = false;
+        bool loggedWaiting = false;
 
-        foreach (var player in _players)
+        float startTime = Time.realtimeSinceStartup;
+        float teamWaitStart = -1f;
+
+        while (NetworkClient.active)
         {
-            var networkIdentity = player.GetComponent<NetworkIdentity>();
-            if (networkIdentity != null && player.isOwned)
+            if (_gameManager == null) FindGameManager();
+
+            chat = _gameManager != null ? _gameManager.ChatController : null;
+            local = FindLocalCharacter();
+
+            if (chat != null && chat.isClient && local != null)
             {
-                _gameManager.ChatController.Initialize(player);
-                break;
+                if (local.NetworkSettings.TeamIndex > 0)
+                {
+                    ready = true;
+                    break;
+                }
+                
+                if (teamWaitStart < 0f)
+                {
+                    teamWaitStart = Time.realtimeSinceStartup;
+                }
+                else if (Time.realtimeSinceStartup - teamWaitStart > ChatTeamWaitTimeout)
+                {
+                    Debug.LogWarning("[GameRules] Команда не назначена за отведённое время, чат инициализируется с TeamIndex = 0");
+                    ready = true;
+                    break;
+                }
             }
+            else if (!loggedWaiting && Time.realtimeSinceStartup - startTime > ChatStillWaitingLogDelay)
+            {
+                loggedWaiting = true;
+                Debug.Log(
+                    $"[GameRules] Чат ждёт инициализации (это нормально, пока в комнате не собрались все игроки): " +
+                    $"gameManager={(_gameManager != null)}, chatController={(chat != null)}, " +
+                    $"chat.isClient={(chat != null && chat.isClient)}, localHero={(local != null)}");
+            }
+
+            yield return new WaitForSecondsRealtime(0.25f);
         }
+
+        if (ready)
+            chat.Initialize(local);
     }
+    
+    private Character FindLocalCharacter()
+    {
+        foreach (GameObject item in _playersSyncList)
+        {
+            if (item == null) continue;
+
+            if (item.TryGetComponent(out Character character) && character.isOwned)
+                return character;
+        }
+        return null;
+    }
+
 
     [ClientRpc]
     protected void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
