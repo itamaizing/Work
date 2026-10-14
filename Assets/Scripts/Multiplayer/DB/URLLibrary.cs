@@ -33,6 +33,8 @@ public class URLLibrary
     private const string _getUserInfo = "GetUserInfo.php";
     private const string _saveMatchHistory = "SaveMatchHistory.php";
     private const string _getMatchHistory = "GetMatchHistory.php";
+    private const string _getChatHistory = "GetChatHistory.php";
+    private const string _getChatConversations = "GetChatConversations.php";
     
     private readonly List<string> _heroName = new()
     {
@@ -74,4 +76,6 @@ public class URLLibrary
     public static string GetUserInfo { get { return GameFolder + _getUserInfo; } }
     public static string SaveMatchHistory { get { return GameFolder + _saveMatchHistory; } }
     public static string GetMatchHistory { get { return GameFolder + _getMatchHistory; } }
+    public static string GetChatHistory { get { return GameFolder + _getChatHistory; } }
+    public static string GetChatConversations { get { return GameFolder + _getChatConversations; } }
 }

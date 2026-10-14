@@ -1425,7 +1425,6 @@ MonoBehaviour:
   - GameMode: 5
     GameObjcet: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
   _currentGameRulesIndex: 0
-  _userID: -37
 --- !u!114 &452850708
 MonoBehaviour:
   m_ObjectHideFlags: 0

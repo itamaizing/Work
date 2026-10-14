@@ -58,6 +58,7 @@ public class ServerManager : NetworkBehaviour
         if (_instance != this) return;
 
         WebSocketClient.Instance.MessageReceived += OnMessageReceived;
+        WebSocketClient.Instance.Disconnected += OnSocketDisconnected;
     }
 
     private void OnDestroy()
@@ -65,7 +66,15 @@ public class ServerManager : NetworkBehaviour
         if (_instance != this) return;
 
         if (WebSocketClient.Instance != null)
+        {
             WebSocketClient.Instance.MessageReceived -= OnMessageReceived;
+            WebSocketClient.Instance.Disconnected -= OnSocketDisconnected;
+        }
+    }
+
+    private void OnSocketDisconnected()
+    {
+        _groupManager?.Clear();
     }
 
     public void StartClient()
@@ -75,7 +84,7 @@ public class ServerManager : NetworkBehaviour
             OnServerRoomCreatedSuccess("localhost:7777");
             return;
         }
-        
+
         if (_groupManager.HostId != null)
         {
             Debug.Log("Я гость группы, жду roomReady от хоста");
@@ -255,7 +264,7 @@ public class GroupManager
         {
             type = ACCEPTINVITE,
             hostId = hostId,
-            playerId = MPNetworkManager.Instance.UserID 
+            playerId = MPNetworkManager.Instance.UserID
         };
         WebSocketClient.Instance.SendMessageToServer(JsonConvert.SerializeObject(invData));
         SetHost(hostId);
@@ -292,6 +301,12 @@ public class GroupManager
             RemovePlayerInGroup(idInt);
         else
             Debug.LogError("Шляпа, а не ID");
+    }
+    
+    public void Leave()
+    {
+        WebSocketClient.Instance.SendMessageToServer(JsonConvert.SerializeObject(new { type = "leaveGroup" }));
+        Clear();
     }
 
     public void Clear()

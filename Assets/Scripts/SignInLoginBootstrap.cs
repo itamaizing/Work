@@ -104,8 +104,15 @@ public class SignInLoginBootstrap : MonoBehaviour
 
     private void TryConnectWebSocket()
     {
-        _webSocketClient.Connected += TryAuthorization;
+        _webSocketClient.PlayerId = _id;
+        _webSocketClient.Connected += OnSocketConnected;
         _webSocketClient.Connect();
+    }
+    
+    private void OnSocketConnected()
+    {
+        _webSocketClient.Connected -= OnSocketConnected;
+        SceneManager.LoadScene(_menuSceneIndex);
     }
 
     private void TryAuthorization()
@@ -173,13 +180,13 @@ public class SignInLoginBootstrap : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarning($"Недопустимое значение GameMode: {modeValue}");
+                        Debug.LogWarning($"РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ Р·РЅР°С‡РµРЅРёРµ GameMode: {modeValue}");
                         _gameMode = GameMode.None;
                     }
                 }
                 else
                 {
-                    Debug.LogWarning($"Не удалось распарсить GameMode: {modeStr}");
+                    Debug.LogWarning($"РќРµ СѓРґР°Р»РѕСЃСЊ СЂР°СЃРїР°СЂСЃРёС‚СЊ GameMode: {modeStr}");
                     _gameMode = GameMode.None;
                 }
             }

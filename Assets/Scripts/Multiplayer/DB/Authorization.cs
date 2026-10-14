@@ -1,4 +1,3 @@
-using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,8 +54,8 @@ public class Authorization : MonoBehaviour
         {
             Debug.Log(id);
             _id = id;
-            Successed?.Invoke(id);
             _networkManager.UserID = id;
+            Successed?.Invoke(id);
             //_networkManager.StartClient(); // Previously connected to the unity server here, now it happens when searching for a game.
         }
         else

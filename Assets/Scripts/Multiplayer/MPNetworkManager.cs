@@ -23,18 +23,18 @@ public class MPNetworkManager : NetworkManager
     [SerializeField] private int _currentGameRulesIndex;
 
     private List<GameObject> _players = new List<GameObject>();
-    [SerializeField] private int _userID = -37;
+    private int _userID = -37;
     private GameRules _currentGameRules;
 
-    public int UserID { get => _userID; set { if(_userID == -37) _userID = value; } }
+    public int UserID { get => _userID; set => _userID = value; }
     public List<GameObject> Players => _players;
 
     public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }
     public int CurrentGameRulesIndex { get => _currentGameRulesIndex; set => _currentGameRulesIndex = value; }
     public GameMode CurrentGameMode { get; set; }
-    
+
     public HeroProgressSnapshot PendingHeroProgressSnapshot { get; set; }
-    
+
     public event Action ConnectClosed;
     public event Action NewConnected;
 
@@ -78,7 +78,7 @@ public class MPNetworkManager : NetworkManager
     {
         return _userID > 0;
     }
-    
+
     public override void OnClientDisconnect()
     {
         base.OnClientDisconnect();
