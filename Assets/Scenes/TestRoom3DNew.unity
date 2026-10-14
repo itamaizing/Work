@@ -279,18 +279,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4410183109477920619, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6512015697919154383, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
       propertyPath: _unfocusedMessageContainer
       value: 
       objectReference: {fileID: 3629441}
-    - target: {fileID: 6691808292838405272, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
-      propertyPath: m_ChildControlWidth
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6691808292838405272, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
-      propertyPath: m_ChildControlHeight
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7765878349779837665, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -370,6 +366,10 @@ PrefabInstance:
     - target: {fileID: 7765878349779837665, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8298754359471890505, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -5.3899994
       objectReference: {fileID: 0}
     - target: {fileID: 8667739252145862938, guid: f61f0cc543e8b6945a73b96952ab81f4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -185912,11 +185912,11 @@ RectTransform:
   - {fileID: 1911355200}
   m_Father: {fileID: 1449958313856924993}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -69.98, y: 0}
-  m_SizeDelta: {x: 20.05, y: 20}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 320, y: 15}
+  m_SizeDelta: {x: 20.049988, y: 20}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &1418101874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185964,7 +185964,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2369399868655483650}
         m_TargetAssemblyTypeName: UIGameWindowPopup, Assembly-CSharp
         m_MethodName: SwichAll
         m_Mode: 0
@@ -192197,7 +192197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6003069071678405392, guid: 8302b3ce78f76f9498d628f931f676ac, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -332.01
+      value: -332.00995
       objectReference: {fileID: 0}
     - target: {fileID: 6003069071678405392, guid: 8302b3ce78f76f9498d628f931f676ac, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -251600,10 +251600,10 @@ RectTransform:
   - {fileID: 2128701876}
   m_Father: {fileID: 1418101873}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -597.4, y: -530.7}
-  m_SizeDelta: {x: 20, y: 20}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1911355201
 MonoBehaviour:
@@ -264235,9 +264235,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7980821659159193855}
         m_TargetAssemblyTypeName: MiniMapFollow, Assembly-CSharp
-        m_MethodName: MiniMapFollowRotationToggle
+        m_MethodName: ToggleRotation
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -264247,7 +264247,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &2038726450
 GameObject:
   m_ObjectHideFlags: 0
@@ -274404,8 +274404,8 @@ RectTransform:
   m_Children:
   - {fileID: 1037404224}
   - {fileID: 2035911107}
-  - {fileID: 1418101873}
   - {fileID: 2369399868655483648}
+  - {fileID: 1418101873}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -275519,7 +275519,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3917567901375206605, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -735
+      value: -734.99994
       objectReference: {fileID: 0}
     - target: {fileID: 3997863087303306533, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -276127,7 +276127,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7941604275639459579, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -6.8
+      value: -6.800003
       objectReference: {fileID: 0}
     - target: {fileID: 8059950131063265804, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_IsActive
@@ -276354,6 +276354,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 083b16bd2d46c0f4bacf8d92de6f5d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2369399868655483650 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1906108907671255808, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+  m_PrefabInstance: {fileID: 2369399868655483647}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f92a5bff599055044a081fe9d6bb4a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &2369399868655483651 stripped
@@ -278322,6 +278333,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3085423025882027267, guid: 11c1747292b08f74b9a02d57bf1a479c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -321.60004
+      objectReference: {fileID: 0}
     - target: {fileID: 3108965899795558597, guid: 11c1747292b08f74b9a02d57bf1a479c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -279627,6 +279642,7 @@ GameObject:
   - component: {fileID: 5702245875008427790}
   - component: {fileID: 2272119436268379564}
   - component: {fileID: 7980821659159193854}
+  - component: {fileID: 7980821659159193855}
   m_Layer: 0
   m_Name: MinimapCamera
   m_TagString: Untagged
@@ -279678,6 +279694,20 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &7980821659159193855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7980821659159193853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18367776cd44a63418c8187f069bb254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MiniMapFollow
+  _target: {fileID: 4456171774845196309}
+  _isRotation: 0
 --- !u!1 &8240090945397829985
 GameObject:
   m_ObjectHideFlags: 0
