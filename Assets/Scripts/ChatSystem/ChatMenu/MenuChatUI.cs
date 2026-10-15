@@ -31,6 +31,7 @@ public class MenuChatUI : MonoBehaviour
     [SerializeField] private TMP_Dropdown _focusDropdown;
 
     [Header("Channels panel")]
+    [SerializeField] private RectTransform _channelsPanel;
     [SerializeField] private List<GroupView> _groups;
     [SerializeField] private Button _channelButtonPrefab;
 
@@ -161,6 +162,7 @@ public class MenuChatUI : MonoBehaviour
         _focusDropdown.ClearOptions();
         _focusDropdown.AddOptions(ordered.Select(c => c.Title).ToList());
         SetDropdownValue(_service.Focus);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_channelsPanel);
     }
 
     private void SetDropdownValue(MenuChatChannel focus)
