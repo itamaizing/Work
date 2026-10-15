@@ -53,15 +53,15 @@ public static class DB_Attribute
 
         var resources = Resources.LoadAll<SO_ResourceData>($"{AttributeRelativeFolder}/ResourceAttributes");
         foreach ( var resource in resources )
-            _resourceAttributes.Add(resource.type, resource);
+            _resourceAttributes.TryAdd(resource.type, resource);
         
         var basic = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/BasicAttributes");
         foreach ( var attribute in basic )
-            _characterAttributes.Add(Enum.Parse<CharacterAttributeName>(attribute.type), attribute);
+            _characterAttributes.TryAdd(Enum.Parse<CharacterAttributeName>(attribute.type), attribute);
 
         var skill = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/SkillAttributes");
         foreach (var attribute in skill )
-            _skillAttributes.Add(Enum.Parse<SkillAttributeName>(attribute.type), attribute);
+            _skillAttributes.TryAdd(Enum.Parse<SkillAttributeName>(attribute.type), attribute);
 
         var extra = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/ExtraAttributes");
         //foreach ( var attribute in extra )

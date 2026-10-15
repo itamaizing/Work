@@ -328,7 +328,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		return _resources.TryGetValue(type, out resource);
 	}
 
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    public virtual bool TryTakeDamage(ref Damage damage, Skill skill)
     {
 		bool b = Health.TryTakeDamage(ref damage, skill);
 		_damageTakeCounter += damage.Value;

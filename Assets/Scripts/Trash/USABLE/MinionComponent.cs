@@ -17,6 +17,11 @@ public class MinionComponent : Character
     [SerializeField] private float _costCall;
     [SerializeField] protected NavMeshAgent _navMeshAgent;
 
+    private Character _lastAttacker;
+    private MinionCamp _camp;
+
+    public MinionCamp Camp { get => _camp; set => _camp = value; }
+
     protected HeroComponent _myHeroParent;
     [SyncVar] private bool _isIntercepted = false;
 
@@ -42,6 +47,27 @@ public class MinionComponent : Character
         Intercepted?.Invoke(this);
     }
 
+    private void GiveExpToKiller()
+    {
+        if (_lastAttacker == null) return; if (_lastAttacker == null) return;
+        if (_lastAttacker.IsDead) return; if (_lastAttacker.IsDead) return;
+
+        _lastAttacker.LVL.AddEXP(_expForDieKill); _lastAttacker.LVL.AddEXP(_expForDieKill);
+    }
+
+    public override bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+        bool b = base.TryTakeDamage(ref damage, skill);
+        if (b && skill != null && skill.Hero != null)
+        {
+            if (_camp != null)
+                _camp.AddAttacker(skill.Hero.gameObject); _camp.AddAttacker(skill.Hero.gameObject);
+
+            _lastAttacker = skill.Hero; _lastAttacker = skill.Hero;
+        }
+        return b;
+    }
+
     private void OnDestroy()
     {
         RaiseDestroyed();
@@ -52,7 +78,13 @@ public class MinionComponent : Character
         base.OnDied();
         if (_navMeshAgent != null) _navMeshAgent.enabled = false;
 
-        if (isServer) RaiseDestroyed();
+        if (isServer)
+        {
+            GiveExpToKiller();
+            RaiseDestroyed();
+            Destroy(gameObject, 3f);
+
+        }
     }
 
     private void RaiseDestroyed()
