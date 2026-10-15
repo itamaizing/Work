@@ -5,14 +5,22 @@ public enum MenuChatChannelType { Private, Group }
 
 public enum MenuChatGroup { Users, Friends, Channels }
 
+public enum MenuChatMessageState { Sent, Pending, Failed }
+
 public class MenuChatMessage
 {
     public int Id;
+    public string ClientId;
     public int SenderId;
     public string SenderLogin;
     public string Text;
     public DateTime Time;
     public bool IsMine;
+
+    public MenuChatMessageState State = MenuChatMessageState.Sent;
+    public bool Delivered = true;
+    public string Error;
+
     public bool IsSystem => SenderId < 0;
 }
 

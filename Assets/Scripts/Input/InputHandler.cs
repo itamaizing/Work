@@ -12,7 +12,7 @@ public class InputHandler : MonoBehaviour
 	public static InputHandler Instance;
 
 	private string[] _keySpell = new string[16];
-	
+
 	private Vector2 _movementVector;
 	private StandardInput _inputActions;
 	private bool _IsClick;
@@ -62,6 +62,41 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction<int> OnCast = delegate { };
 	#endregion
 
+	private static bool IsBlocked(InputLayer layer) => InputBlocker.IsBlocked(layer);
+
+	private static void Bind(InputAction action, InputLayer layer, Action onPerformed, Action onCanceled = null, bool pointer = false)
+	{
+		if (onPerformed != null)
+			action.performed += _ =>
+			{
+				if (pointer) InputBlocker.NotifyPointerPress();
+				if (!IsBlocked(layer)) onPerformed();
+			};
+
+		if (onCanceled != null)
+			action.canceled += _ => onCanceled();
+	}
+
+	private static void BindValue<T>(InputAction action, InputLayer layer, Action<T> onPerformed) where T : struct
+	{
+		action.performed += c => { if (!IsBlocked(layer)) onPerformed(c.ReadValue<T>()); };
+	}
+
+	private static bool PointerHitsUI()
+	{
+		if (EventSystem.current == null)
+			return false;
+
+		PointerEventData eventData = new(EventSystem.current)
+		{
+			position = Input.mousePosition
+		};
+
+		List<RaycastResult> results = new();
+		EventSystem.current.RaycastAll(eventData, results);
+		return results.Count > 0;
+	}
+
 	private void Awake()
 	{
 		if (Instance == null)
@@ -75,83 +110,54 @@ public class InputHandler : MonoBehaviour
         }
 		_inputActions = new StandardInput();
 
-
-		//Debug.Log(_inputActions.GameplayMap.Spell3.bindings[0].path);
+		var map = _inputActions.GameplayMap;
 
 		#region Events Listeners
 
-		_inputActions.GameplayMap.Move.performed += i => OnPlayerMove?.Invoke(i.ReadValue<Vector2>());
-		_inputActions.GameplayMap.Click.performed += i => 
-		{
-			if (EventSystem.current == null)
+		const InputLayer G = InputLayer.Gameplay;
+
+		BindValue<Vector2>(map.Move, G, v => OnPlayerMove?.Invoke(v));
+
+		Bind(map.Click, G,
+			() =>
 			{
+				if (PointerHitsUI())
+					return;
 				OnClick?.Invoke();
-				return;
-			}
+			},
+			() => OnClickCanceled?.Invoke(),
+			pointer: true);
 
-			PointerEventData eventData = new(EventSystem.current)
-            {
-                position = Input.mousePosition
-            };
+		Bind(map.AltClick, G, () => OnAltClick?.Invoke(), pointer: true);
+		Bind(map.AltDoubleClick, G, () => OnDoubleAltClick?.Invoke(), pointer: true);
+		Bind(map.SwitchAutoMode, G, () => OnSwitchAutoMode?.Invoke(), () => OnSwitchAutoModeCanceled?.Invoke());
+		Bind(map.ShiftMouse, G, () => OnShiftLeftMouse?.Invoke(), () => OnShiftLeftMouseCanceled?.Invoke(), pointer: true);
+		Bind(map.SpaceMouse, G, () => OnSpacetLeftMouse?.Invoke(), () => OnSpacetLeftMouseCanceled?.Invoke(), pointer: true);
 
-            List<RaycastResult> results = new();
+		BindValue<float>(map.ScrollMouse, InputLayer.Camera, v => ScrollMouse?.Invoke(v));
 
-            EventSystem.current.RaycastAll(eventData, results);
+		Bind(map.ShowMenu, InputLayer.Hotkeys, () => ShowMenu?.Invoke());
+		Bind(map.ShowStatistics, InputLayer.Hotkeys, () => ShowStatistics?.Invoke());
+		Bind(map.ShowSource, InputLayer.Hotkeys, () => ShowSource?.Invoke());
 
-            if (results.Count > 0)
-                return;
+		// spells 1-2-3-4-5-6-7-8 (по порядку, как раньше: Ability -> конкретный Cast -> общий OnCast)
+		Bind(map.Spell1, G, () => { OnFirstAbility?.Invoke();   OnFirstCast?.Invoke(0);   OnCast?.Invoke(0); });
+		Bind(map.Spell2, G, () => { OnSecondAbility?.Invoke();  OnSecondCast?.Invoke(1);  OnCast?.Invoke(1); });
+		Bind(map.Spell3, G, () => { OnThirdAbility?.Invoke();   OnThirdCast?.Invoke(2);   OnCast?.Invoke(2); });
+		Bind(map.Spell4, G, () => { OnFourthAbility?.Invoke();  OnFourthCast?.Invoke(3);  OnCast?.Invoke(3); });
+		Bind(map.Spell5, G, () => { OnFifthAbility?.Invoke();   OnFifthCast?.Invoke(4);   OnCast?.Invoke(4); });
+		Bind(map.Spell6, G, () => { OnSixthAbility?.Invoke();   OnSixthCast?.Invoke(5);   OnCast?.Invoke(5); });
+		Bind(map.Spell7, G, () => { OnSeventhAbility?.Invoke(); OnSeventhCast?.Invoke(6); OnCast?.Invoke(6); });
+		Bind(map.Spell8, G, () => { OnEighthAbility?.Invoke();  OnEighthCast?.Invoke(7);  OnCast?.Invoke(7); });
 
-			OnClick?.Invoke(); 
-		};
-		_inputActions.GameplayMap.Click.canceled += i => OnClickCanceled?.Invoke();
-		_inputActions.GameplayMap.AltClick.performed += i => OnAltClick?.Invoke();
-		_inputActions.GameplayMap.AltDoubleClick.performed += i => OnDoubleAltClick?.Invoke();
-		_inputActions.GameplayMap.SwitchAutoMode.performed += i => OnSwitchAutoMode?.Invoke();
-		_inputActions.GameplayMap.SwitchAutoMode.canceled += i => OnSwitchAutoModeCanceled?.Invoke();
-		_inputActions.GameplayMap.ShiftMouse.performed += i => OnShiftLeftMouse?.Invoke();
-		_inputActions.GameplayMap.ShiftMouse.canceled += i => OnShiftLeftMouseCanceled?.Invoke();
-		_inputActions.GameplayMap.SpaceMouse.performed += i => OnSpacetLeftMouse?.Invoke();
-		_inputActions.GameplayMap.SpaceMouse.canceled += i => OnSpacetLeftMouseCanceled?.Invoke();
-		_inputActions.GameplayMap.ScrollMouse.performed += i => ScrollMouse?.Invoke(i.ReadValue<float>());
-		_inputActions.GameplayMap.ShowMenu.performed += i => ShowMenu?.Invoke();
-		_inputActions.GameplayMap.ShowStatistics.performed += i => ShowStatistics?.Invoke();
-		_inputActions.GameplayMap.ShowSource.performed += i => ShowSource?.Invoke();
-
-		// spells 1-2-3-4-5-6-7-8
-		_inputActions.GameplayMap.Spell1.performed += i => OnFirstAbility?.Invoke();
-		_inputActions.GameplayMap.Spell2.performed += i => OnSecondAbility?.Invoke();
-		_inputActions.GameplayMap.Spell3.performed += i => OnThirdAbility?.Invoke();
-		_inputActions.GameplayMap.Spell4.performed += i => OnFourthAbility?.Invoke();
-		_inputActions.GameplayMap.Spell5.performed += i => OnFifthAbility?.Invoke();
-		_inputActions.GameplayMap.Spell6.performed += i => OnSixthAbility?.Invoke();
-		_inputActions.GameplayMap.Spell7.performed += i => OnSeventhAbility?.Invoke();
-		_inputActions.GameplayMap.Spell8.performed += i => OnEighthAbility?.Invoke();
-
-		_inputActions.GameplayMap.Spell1.performed += i => OnFirstCast?.Invoke(0);
-		_inputActions.GameplayMap.Spell2.performed += i => OnSecondCast?.Invoke(1);
-		_inputActions.GameplayMap.Spell3.performed += i => OnThirdCast?.Invoke(2);
-		_inputActions.GameplayMap.Spell4.performed += i => OnFourthCast?.Invoke(3);
-		_inputActions.GameplayMap.Spell5.performed += i => OnFifthCast?.Invoke(4);
-		_inputActions.GameplayMap.Spell6.performed += i => OnSixthCast?.Invoke(5);
-		_inputActions.GameplayMap.Spell7.performed += i => OnSeventhCast?.Invoke(6);
-		_inputActions.GameplayMap.Spell8.performed += i => OnEighthCast?.Invoke(7);
-
-		_inputActions.GameplayMap.Spell1.performed += i => OnCast?.Invoke(0);
-		_inputActions.GameplayMap.Spell2.performed += i => OnCast?.Invoke(1);
-		_inputActions.GameplayMap.Spell3.performed += i => OnCast?.Invoke(2);
-		_inputActions.GameplayMap.Spell4.performed += i => OnCast?.Invoke(3);
-		_inputActions.GameplayMap.Spell5.performed += i => OnCast?.Invoke(4);
-		_inputActions.GameplayMap.Spell6.performed += i => OnCast?.Invoke(5);
-		_inputActions.GameplayMap.Spell7.performed += i => OnCast?.Invoke(6);
-		_inputActions.GameplayMap.Spell8.performed += i => OnCast?.Invoke(7);
-		_inputActions.GameplayMap.Spell9.performed += i => OnCast?.Invoke(8);
-		_inputActions.GameplayMap.Spell10.performed += i => OnCast?.Invoke(9);
-		_inputActions.GameplayMap.Spell11.performed += i => OnCast?.Invoke(10);
-		_inputActions.GameplayMap.Spell12.performed += i => OnCast?.Invoke(11);
-		_inputActions.GameplayMap.Spell13.performed += i => OnCast?.Invoke(12);
-		_inputActions.GameplayMap.Spell14.performed += i => OnCast?.Invoke(13);
-		_inputActions.GameplayMap.Spell15.performed += i => OnCast?.Invoke(14);
-		_inputActions.GameplayMap.Spell16.performed += i => OnCast?.Invoke(15);
+		Bind(map.Spell9,  G, () => OnCast?.Invoke(8));
+		Bind(map.Spell10, G, () => OnCast?.Invoke(9));
+		Bind(map.Spell11, G, () => OnCast?.Invoke(10));
+		Bind(map.Spell12, G, () => OnCast?.Invoke(11));
+		Bind(map.Spell13, G, () => OnCast?.Invoke(12));
+		Bind(map.Spell14, G, () => OnCast?.Invoke(13));
+		Bind(map.Spell15, G, () => OnCast?.Invoke(14));
+		Bind(map.Spell16, G, () => OnCast?.Invoke(15));
 
 		#endregion
 

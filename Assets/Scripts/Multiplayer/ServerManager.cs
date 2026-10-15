@@ -96,7 +96,8 @@ public class ServerManager : NetworkBehaviour
             type = STARTGAME,
             playerId = MPNetworkManager.Instance.UserID,
             playerIdForAddGroup = _groupManager.GetPlayerInGroup(),
-            gamemode = CurrentGameMode
+            gamemode = CurrentGameMode,
+            maxPlayers = MPNetworkManager.Instance.GetMaxPlayers(CurrentGameMode)
         };
         string json = JsonConvert.SerializeObject(startData);
 

@@ -121,6 +121,14 @@ public class MPNetworkManager : NetworkManager
         if (_currentGameRules.MaxPlayers == _currentGameRules.CurrentPlayers)
             StartGame();
     }
+    
+    public int GetMaxPlayers(GameMode mode)
+    {
+        foreach (var rule in _gameRules)
+            if (rule.GameMode == mode && rule.GameObjcet != null)
+                return rule.GameObjcet.MaxPlayers;
+        return 1;
+    }
 
     private Dictionary<GameMode, GameRules> GetGameRulesAsDictionary()
     {

@@ -61,6 +61,7 @@ public class MenuChatUI : MonoBehaviour
         _service.ActiveChanged += OnActiveChanged;
         _service.FocusChanged += OnFocusChanged;
         _service.MessageAdded += OnMessageAdded;
+        _service.MessageUpdated += OnMessageUpdated;
         _service.HistoryLoaded += OnHistoryLoaded;
 
         _sendButton.onClick.AddListener(OnSend);
@@ -89,6 +90,7 @@ public class MenuChatUI : MonoBehaviour
         _service.ActiveChanged -= OnActiveChanged;
         _service.FocusChanged -= OnFocusChanged;
         _service.MessageAdded -= OnMessageAdded;
+        _service.MessageUpdated -= OnMessageUpdated;
         _service.HistoryLoaded -= OnHistoryLoaded;
 
         _sendButton.onClick.RemoveListener(OnSend);
@@ -167,7 +169,7 @@ public class MenuChatUI : MonoBehaviour
         _focusDropdown.SetValueWithoutNotify(Mathf.Max(idx, 0));
         _focusDropdown.RefreshShownValue();
     }
-
+    
     private void OnActiveChanged(MenuChatChannel ch) => RebuildHistory();
     private void OnFocusChanged(MenuChatChannel ch) => SetDropdownValue(ch);
     private void OnHistoryLoaded(MenuChatChannel ch) => RebuildHistory();
@@ -176,6 +178,12 @@ public class MenuChatUI : MonoBehaviour
     {
         AddHistoryItem(msg);
         ScrollToBottom();
+    }
+
+    private void OnMessageUpdated(MenuChatChannel ch, MenuChatMessage msg)
+    {
+        if (ch == _service.Active)
+            RebuildHistory();
     }
 
     private void RebuildHistory()
@@ -207,9 +215,25 @@ public class MenuChatUI : MonoBehaviour
             return $"<i><color=#999999>{Escape(m.Text)}</color></i>";
 
         string time = m.Time.ToLocalTime().ToString("HH:mm");
-        return $"<color=#888888>[{time}]</color> <b>{Escape(m.SenderLogin)}</b>: {Escape(m.Text)}";
+
+        string suffix = string.Empty;
+        switch (m.State)
+        {
+            case MenuChatMessageState.Pending:
+                suffix = " <color=#888888>…</color>";
+                break;
+            case MenuChatMessageState.Failed:
+                suffix = $" <color=#E57373>(не доставлено: {Escape(m.Error)})</color>";
+                break;
+            default:
+                if (m.IsMine && !m.Delivered)
+                    suffix = " <color=#888888>(получатель не в сети)</color>";
+                break;
+        }
+
+        return $"<color=#888888>[{time}]</color> <b>{Escape(m.SenderLogin)}</b>: {Escape(m.Text)}{suffix}";
     }
-    
+
     private static string Escape(string s)
     {
         return string.IsNullOrEmpty(s) ? string.Empty : s.Replace("<", "<noparse><</noparse>");

@@ -24,15 +24,15 @@ public class CameraMoveNew : MonoBehaviour
 
     public Transform player;
     public Vector3 offset;
-    public float smoothSpeed = 0.125f; // Скорость плавного перемещения
-    public float minDistance = 2f; // Минимальное расстояние от игрока
+    public float smoothSpeed = 0.125f;
+    public float minDistance = 2f;
 
 
-    private Vector3 _velocity; // Переменная для плавного движения
+    private Vector3 _velocity;
 
     public float sensitivity = 10f;
-    public float minY = 5f; // Minimum Y position (zoom in limit)
-    public float maxY = 30f; // Maximum Y position (zoom out limit)
+    public float minY = 5f;
+    public float maxY = 30f;
 
     private void Start()
     {
@@ -43,30 +43,29 @@ public class CameraMoveNew : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
-            return;
-        HandleMovement();
-        HandleRotation();
-        HandleResetPosition();
-        HandleZoom();
-        HandleMovement2();
+        if (!InputBlocker.IsBlocked(InputLayer.Camera))
+        {
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                return;
+            HandleMovement();
+            HandleRotation();
+            HandleResetPosition();
+            HandleZoom();
+            HandleMovement2();
+        }
+
         if (player == null) return;
 
-        // Расчет расстояния от камеры до игрока
         Vector3 direction = player.position - transform.position;
         float distance = direction.magnitude;
 
-        // Если расстояние меньше минимального, то корректируем положение
         if (distance < minDistance)
         {
             direction = direction.normalized * minDistance;
         }
 
-
-        // Вычисление новой позиции камеры
         Vector3 targetPosition = player.position + offset;
 
-        // Плавное перемещение камеры
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _velocity, smoothSpeed);
     }
 
@@ -87,7 +86,7 @@ public class CameraMoveNew : MonoBehaviour
         {
             moveY = 1f;
         }*/
-        
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
             //moveZ = 1f;
@@ -98,7 +97,7 @@ public class CameraMoveNew : MonoBehaviour
             //moveZ = -1f;
             moveY = -1f;
         }
-        
+
         if (Input.GetKey(KeyCode.RightArrow))
         {
             moveX = 1f;
@@ -143,16 +142,15 @@ public class CameraMoveNew : MonoBehaviour
 
     private void HandleZoom()
     {
+        if (InputBlocker.IsPointerOverUI())
+            return;
+
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-        // Calculate the new position based on the scroll input and sensitivity
-        // This moves the camera along its local Z-axis (forward/backward)
         Vector3 move = transform.forward * scroll * sensitivity;
 
-        // Apply the movement
         transform.Translate(move, Space.World);
 
-        // Optional: Clamp the camera's vertical position to stay within bounds
         Vector3 currentPosition = transform.position;
         currentPosition.y = Mathf.Clamp(currentPosition.y, minY, maxY);
         transform.position = currentPosition;
@@ -197,10 +195,10 @@ public class CameraMoveNew : MonoBehaviour
 
         ApplyCurrentBounds();
     }
-    
+
     private void ApplyCurrentBounds()
     {
-        if (_limiter == null) 
+        if (_limiter == null)
         {
             transform.position = new Vector3(
                 Mathf.Clamp(transform.position.x, m_MinX, m_MaxX),
@@ -208,7 +206,7 @@ public class CameraMoveNew : MonoBehaviour
                 Mathf.Clamp(transform.position.z, m_MinY, m_MaxY));
             return;
         }
-        
+
         Bounds bounds = _limiter.GetCurrentBounds();
         Vector3 pos = transform.position;
 

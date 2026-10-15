@@ -23,7 +23,7 @@ public class WebSocketClient : MonoBehaviour
     private bool _reconnectPending;
     private float _nextReconnectAt;
     private int _reconnectAttempt;
-    
+
     private const float PingInterval = 10f;
     private const float DeadTimeout = 35f;
     private float _nextPingAt;
@@ -36,13 +36,13 @@ public class WebSocketClient : MonoBehaviour
     public event Action Disconnected;
 
     public event Action<Dictionary<string, string>, string> MessageReceived;
-    
+
     public int PlayerId { get; set; } = -1;
 
     private void Awake()
     {
         Application.runInBackground = true;
-    
+
         if (Instance == null)
         {
             Instance = this;
@@ -69,7 +69,7 @@ public class WebSocketClient : MonoBehaviour
             _reconnectPending = false;
             _ = TryReconnect();
         }
-        
+
         if (_isConnected)
         {
             if (Time.unscaledTime >= _nextPingAt)
@@ -160,9 +160,10 @@ public class WebSocketClient : MonoBehaviour
 
     public void SendMessageToServer(string message)
     {
-        Debug.LogError($"Message: {message} websocket == null {_webSocket == null} websocket state: {_webSocket.State}");
         if (_webSocket != null && _webSocket.State == WebSocketState.Open)
             _webSocket.SendText(message);
+        else
+            Debug.LogWarning($"WebSocket: сообщение не отправлено, сокет не открыт ({(_webSocket == null ? "null" : _webSocket.State.ToString())}): {message}");
     }
 
     private void OnWebSocketMessage(byte[] bytes)
@@ -178,15 +179,28 @@ public class WebSocketClient : MonoBehaviour
         {
             data = new Dictionary<string, string>();
         }
-        Debug.LogError($"1 data: {data}  json: {json}");
-        MessageReceived?.Invoke(data, json);
+        
+        var handlers = MessageReceived;
+        if (handlers == null) return;
+
+        foreach (Action<Dictionary<string, string>, string> handler in handlers.GetInvocationList())
+        {
+            try
+            {
+                handler(data, json);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
     }
 
     private void OnOpen()
     {
         _lastReceivedAt = Time.unscaledTime;
         _nextPingAt = Time.unscaledTime + PingInterval;
-        
+
         Debug.Log("connected websocket");
         _isConnected = true;
         _reconnectPending = false;

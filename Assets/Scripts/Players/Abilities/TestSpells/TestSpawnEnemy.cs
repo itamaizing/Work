@@ -13,7 +13,8 @@ public class TestSpawnEnemy : MonoBehaviour
 
     private void Update()
     {
-
+        if (InputBlocker.IsBlocked(InputLayer.Gameplay)) return;
+        
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             Hero.SpawnComponent.CmdSpawnCharacter(0, transform.position + Vector3.forward * 2f, Quaternion.identity, teamId: 1); //Враг

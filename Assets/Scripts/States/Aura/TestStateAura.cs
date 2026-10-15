@@ -8,6 +8,8 @@ public class TestStateAura : MonoBehaviour
 
     private void Update()
     {
+        if (InputBlocker.IsBlocked(InputLayer.Gameplay)) return;
+        
         if (Input.GetKeyUp(KeyCode.H))
         {
             characterState.CmdAddState(States.TestAuraState, 0, 0, this.gameObject, name);
