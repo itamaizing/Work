@@ -6,7 +6,7 @@ public static class ChatMessageFormatter
 {
     public static string Format(ChatMessage message)
     {
-        ChatChannelStyle style = ChatGlobalStyle.Colors.Chat.GetStyle(message.Channel);
+        ChatChannelStyle style = G.Colors.Chat.GetStyle(message.Channel);
 
         var sb = new StringBuilder(160);
         sb.Append(FormatTime(message));
@@ -21,7 +21,7 @@ public static class ChatMessageFormatter
     private static string FormatTime(ChatMessage m)
     {
         string time = DateTimeOffset.FromUnixTimeSeconds(m.UnixTime).ToLocalTime().ToString("HH:mm");
-        return Colorize(time, ChatGlobalStyle.Colors.Chat.Time);
+        return Colorize(time, G.Colors.Chat.Time);
     }
 
     private static string FormatChannel(ChatMessage m, ChatChannelStyle style)
@@ -36,20 +36,22 @@ public static class ChatMessageFormatter
     private static string FormatUser(ChatMessage m, ChatChannelStyle style)
     {
         Color nameColor = style.ColorNameByTeam ? TeamColor(m.SenderTeam) : style.NameColor;
-        string user = $"({Escape(m.HeroName)}) {Escape(m.SenderName)}";
+        string user = string.IsNullOrEmpty(m.HeroName)
+            ? Escape(m.SenderName)
+            : $"({Escape(m.HeroName)}) {Escape(m.SenderName)}";
 
         return FormatChannel(m, style) + " " + Colorize(user, nameColor);
     }
 
     private static string FormatText(ChatMessage m, ChatChannelStyle style) =>
-        Colorize(Escape(m.Text), style.TextColor);
+        Colorize(ChatRichText.Sanitize(m.Text), style.TextColor);
 
     private static Color TeamColor(int teamIndex) =>
-        teamIndex == 1 ? ChatGlobalStyle.Colors.Chat.Team1 : ChatGlobalStyle.Colors.Chat.Team2;
+        teamIndex == 1 ? G.Colors.Chat.Team1 : G.Colors.Chat.Team2;
 
-    private static string Colorize(string text, Color color) =>
+    public static string Colorize(string text, Color color) =>
         $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{text}</color>";
 
-    private static string Escape(string text) =>
+    public static string Escape(string text) =>
         string.IsNullOrEmpty(text) ? string.Empty : text.Replace("<", "<\u200B");
 }

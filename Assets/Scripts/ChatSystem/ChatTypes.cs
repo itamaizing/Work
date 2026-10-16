@@ -33,7 +33,7 @@ public readonly struct ChatTarget : IEquatable<ChatTarget>
     
     public string Label => Channel == ChatChannel.Private
         ? (PeerName ?? "?")
-        : ChatGlobalStyle.Colors.Chat.GetStyle(Channel).Label;
+        : G.Colors.Chat.GetStyle(Channel).Label;
 
     public bool Equals(ChatTarget other) => Channel == other.Channel && PeerId == other.PeerId;
     public override bool Equals(object obj) => obj is ChatTarget other && Equals(other);

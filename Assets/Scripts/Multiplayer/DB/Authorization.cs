@@ -55,6 +55,7 @@ public class Authorization : MonoBehaviour
             Debug.Log(id);
             _id = id;
             _networkManager.UserID = id;
+            _networkManager.UserLogin = _login;
             Successed?.Invoke(id);
             //_networkManager.StartClient(); // Previously connected to the unity server here, now it happens when searching for a game.
         }
@@ -69,6 +70,7 @@ public class Authorization : MonoBehaviour
         if(data[LOGIN] == "test" && data[LOGIN] == "test")
         {
             Debug.Log("Test user");
+            _networkManager.UserLogin = _login;
             Successed?.Invoke(-37);
             //_networkManager.StartClient(); // Previously connected to the unity server here, now it happens when searching for a game.
             return true;

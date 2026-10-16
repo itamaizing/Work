@@ -25,6 +25,16 @@ public class ColorPalette : ScriptableObject
         public Color Team1 = new Color32(90, 150, 255, 255);
         public Color Team2 = new Color32(255, 100, 100, 255);
 
+        [Header("Chat menu")]
+        [Tooltip("Ник по умолчанию (в меню нет команд)")]
+        public Color Name = Color.white;
+        [Tooltip("Ник друга")]
+        public Color Friend = new Color32(139, 226, 139, 255);
+        public Color SystemMessage = new Color32(153, 153, 153, 255);
+        [Tooltip("Отправляется / получатель не в сети")]
+        public Color Pending = new Color32(136, 136, 136, 255);
+        public Color Error = new Color32(229, 115, 115, 255);
+
         [Header("Channels")]
         public ChatChannelStyle All = new ChatChannelStyle
         {

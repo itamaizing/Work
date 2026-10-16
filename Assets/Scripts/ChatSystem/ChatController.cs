@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class ChatController : NetworkBehaviour
 {
-    private static readonly string[] WhisperCommands = { "/w", "/ц", "/л" };
-
     [SerializeField] private ChatConfig _config;
     [SerializeField] private ChatView _view;
 
@@ -22,6 +20,9 @@ public class ChatController : NetworkBehaviour
     private ChatPlayerInfo _local;
     private bool _hasLocal;
     private GroupManager _groupManager;
+    private Commands _commands;
+    private MenuChatService _menuChat;
+    private readonly Dictionary<string, ChatPeer> _seenPlayers = new(StringComparer.OrdinalIgnoreCase);
 
     public event Action<ChatMessage> OnMessageReceived;
 
@@ -31,6 +32,8 @@ public class ChatController : NetworkBehaviour
 
     private void Awake()
     {
+        _commands = new Commands(this);
+
         if (_view != null)
         {
             _view.OnMessageSent += HandleMessageSent;
@@ -48,6 +51,7 @@ public class ChatController : NetworkBehaviour
     private void OnDestroy()
     {
         UnsubscribeFromGroup();
+        UnsubscribeFromMenuChat();
 
         if (_view != null)
         {
@@ -82,11 +86,11 @@ public class ChatController : NetworkBehaviour
         _hasLocal = true;
 
         SubscribeToGroup();
+        SubscribeToMenuChat();
         CmdRegisterSelf(_local);
         RebuildTargets();
     }
 
-    /// Пересобрать состав группы из GroupManager. Вызывается по GroupManager.Changed
     public void RefreshGroup()
     {
         if (!_hasLocal || !NetworkClient.active) return;
@@ -95,11 +99,7 @@ public class ChatController : NetworkBehaviour
         CmdRegisterSelf(_local);
         RebuildTargets();
     }
-
-    /// <summary>
-    /// Открыть личную переписку (например, клик по нику в списке игроков):
-    /// добавляет временный канал, делает его активным и открывает чат.
-    /// </summary>
+    
     public void OpenPrivateChannel(int peerId, string peerName)
     {
         if (!_hasLocal || peerId == _local.UserId) return;
@@ -108,7 +108,6 @@ public class ChatController : NetworkBehaviour
         OpenChat(_targets.IndexOf(ChatTarget.ForPeer(peerId, peerName)));
     }
 
-    /// Сброс окна: история и временные (личные) каналы. Вызывается при остановке клиента
     public void ResetSession()
     {
         if (_hideCoroutine != null)
@@ -119,6 +118,9 @@ public class ChatController : NetworkBehaviour
 
         UnsubscribeFromGroup();
 
+        UnsubscribeFromMenuChat();
+        _commands?.ResetSession();
+        _seenPlayers.Clear();
         _targets.RemoveAll(t => t.Channel == ChatChannel.Private);
         _local = default;
         _hasLocal = false;
@@ -133,8 +135,11 @@ public class ChatController : NetworkBehaviour
         RebuildTargets();
     }
 
-    // TODO: заменить на реальный логин аккаунта
-    private static string ResolveNickname(int teamIndex) => "Player" + teamIndex;
+    private static string ResolveNickname(int teamIndex)
+    {
+        string login = MPNetworkManager.Instance != null ? MPNetworkManager.Instance.UserLogin : null;
+        return string.IsNullOrWhiteSpace(login) ? "Player" + teamIndex : login;
+    }
 
     private static int[] ReadGroupMembers()
     {
@@ -295,47 +300,46 @@ public class ChatController : NetworkBehaviour
             return;
         }
 
-        if (TryParseWhisper(text, out string peerName, out string body))
+        if (!_commands.TryExecute(text))
         {
-            if (peerName != null)
-                CmdSendMessage(ChatChannel.Private, 0, peerName, body);
+            ChatTarget target = _targets[_activeTarget];
+            SendOrWarn(target.Channel, target.PeerId, target.PeerName, text);
+        }
 
-            CloseChat();
+        CloseChat();
+    }
+    
+    private bool SendChat(ChatChannel channel, int peerId, string peerName, string text)
+    {
+        if (channel == ChatChannel.Private)
+        {
+            return MenuChatService.Instance != null
+                && MenuChatService.Instance.SendPrivate(peerId, peerName, text);
+        }
+
+        if (_view.IsSpamBlocked) return false;
+
+        _view.RegisterSend();
+        CmdSendMessage(channel, peerId, peerName ?? string.Empty, text);
+        return true;
+    }
+
+    private void SendOrWarn(ChatChannel channel, int peerId, string peerName, string text)
+    {
+        if (SendChat(channel, peerId, peerName, text)) return;
+
+        if (channel != ChatChannel.Private)
+        {
+            _view.NotifySpam();
             return;
         }
 
-        ChatTarget target = _targets[_activeTarget];
-        CmdSendMessage(target.Channel, target.PeerId, target.PeerName ?? string.Empty, text);
-        CloseChat();
+        if (MenuChatService.Instance != null && MenuChatService.Instance.IsSpamBlocked) return;
+
+        _view.AddSystemMessage("Сообщение не отправлено: нет соединения или получатель не найден");
     }
 
-    private static bool TryParseWhisper(string text, out string peerName, out string body)
-    {
-        peerName = null;
-        body = null;
-
-        foreach (string command in WhisperCommands)
-        {
-            bool isCommand = text.Equals(command, StringComparison.OrdinalIgnoreCase)
-                || text.StartsWith(command + " ", StringComparison.OrdinalIgnoreCase);
-            if (!isCommand) continue;
-
-            string rest = text.Substring(command.Length).TrimStart();
-            int space = rest.IndexOf(' ');
-            if (space > 0)
-            {
-                string message = rest.Substring(space + 1).Trim();
-                if (message.Length > 0)
-                {
-                    peerName = rest.Substring(0, space);
-                    body = message;
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
+    private void FocusTarget(ChatTarget target) => SetActiveTarget(_targets.IndexOf(target));
 
     [Command(requiresAuthority = false)]
     private void CmdRegisterSelf(ChatPlayerInfo info, NetworkConnectionToClient sender = null)
@@ -479,10 +483,23 @@ public class ChatController : NetworkBehaviour
     {
         if (!_hasLocal) return;
 
+        if (packet.SenderId != _local.UserId)
+        {
+            if (ChatBlockList.IsBlocked(packet.SenderId)) return;
+
+            if (!string.IsNullOrEmpty(packet.SenderName))
+                _seenPlayers[packet.SenderName] = new ChatPeer(packet.SenderId, packet.SenderName);
+        }
+
         var message = new ChatMessage(packet, _local.UserId);
 
         if (message.Channel == ChatChannel.Private)
+        {
             EnsurePrivateTarget(message.PeerId, message.PeerName);
+
+            if (!message.IsOwn)
+                _commands.NoteIncomingPrivate(message.SenderId, message.SenderName);
+        }
 
         _view.AddMessage(message);
         OnMessageReceived?.Invoke(message);
@@ -494,6 +511,128 @@ public class ChatController : NetworkBehaviour
         }
 
         _view.ScrollToBottom();
+    }
+
+    #endregion
+
+    #region Личные сообщения через меню-чат
+
+    private void SubscribeToMenuChat()
+    {
+        UnsubscribeFromMenuChat();
+
+        _menuChat = MenuChatService.Instance;
+        if (_menuChat == null) return;
+
+        _menuChat.Initialize();
+        _menuChat.PrivateMessageAdded += OnMenuPrivateMessage;
+        _menuChat.MessageUpdated += OnMenuMessageUpdated;
+        _menuChat.SpamNotice += OnMenuSpamNotice;
+    }
+
+    private void UnsubscribeFromMenuChat()
+    {
+        if (_menuChat == null) return;
+
+        _menuChat.PrivateMessageAdded -= OnMenuPrivateMessage;
+        _menuChat.MessageUpdated -= OnMenuMessageUpdated;
+        _menuChat.SpamNotice -= OnMenuSpamNotice;
+        _menuChat = null;
+    }
+
+    private void OnMenuPrivateMessage(MenuChatChannel channel, MenuChatMessage msg)
+    {
+        if (!_hasLocal) return;
+
+        var packet = new ChatPacket
+        {
+            Channel = ChatChannel.Private,
+            SenderId = msg.IsMine ? _local.UserId : msg.SenderId,
+            SenderName = msg.IsMine ? _local.Name : msg.SenderLogin,
+            HeroName = string.Empty,
+            SenderTeam = 0,
+            RecipientId = msg.IsMine ? channel.UserId : _local.UserId,
+            RecipientName = msg.IsMine ? channel.Title : _local.Name,
+            UnixTime = new DateTimeOffset(msg.Time.ToUniversalTime()).ToUnixTimeSeconds(),
+            Text = msg.Text
+        };
+
+        HandlePacket(packet);
+    }
+
+    private void OnMenuSpamNotice(string text)
+    {
+        if (_hasLocal) _view.AddSystemMessage(text);
+    }
+
+    private void OnMenuMessageUpdated(MenuChatChannel channel, MenuChatMessage msg)
+    {
+        if (!_hasLocal || channel.Type != MenuChatChannelType.Private || !msg.IsMine) return;
+
+        if (msg.State == MenuChatMessageState.Failed)
+            _view.AddSystemMessage($"Сообщение для «{channel.Title}» не доставлено: {msg.Error}");
+        else if (msg.State == MenuChatMessageState.Sent && !msg.Delivered)
+            _view.AddSystemMessage($"«{channel.Title}» не в сети: сообщение сохранено");
+    }
+
+    #endregion
+
+    #region Команды
+
+    private sealed class Commands : ChatCommandProvider
+    {
+        private readonly ChatController _c;
+
+        public Commands(ChatController controller) { _c = controller; }
+
+        protected override int LocalUserId => _c._hasLocal ? _c._local.UserId : 0;
+        protected override bool HasGroup => _c.HasGroup;
+        protected override bool IsInMatch => true;
+
+        protected override void Say(string text) => _c._view.AddSystemMessage(text);
+
+        protected override void Resolve(string nick, bool requireId, Action<ChatPeer> found, Action<string> failed)
+        {
+            if (_c._hasLocal && string.Equals(nick, _c._local.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                found(new ChatPeer(_c._local.UserId, _c._local.Name));
+                return;
+            }
+
+            if (_c._seenPlayers.TryGetValue(nick, out ChatPeer seen))
+            {
+                found(seen);
+                return;
+            }
+
+            if (MenuChatService.Instance == null)
+            {
+                failed("Личные сообщения и чёрный список недоступны в оффлайн-режиме");
+                return;
+            }
+
+            MenuChatService.Instance.ResolvePeer(nick, found, failed);
+        }
+
+        protected override void FocusPrivate(ChatPeer peer)
+        {
+            _c.EnsurePrivateTarget(peer.Id, peer.Name);
+            _c.FocusTarget(ChatTarget.ForPeer(peer.Id, peer.Name));
+        }
+
+        protected override void SendPrivate(ChatPeer peer, string text)
+            => Send(ChatChannel.Private, peer.Id, peer.Name, text);
+
+        protected override void FocusGroup() => _c.FocusTarget(ChatTarget.Of(ChatChannel.Group));
+        protected override void SendGroup(string text) => Send(ChatChannel.Group, 0, string.Empty, text);
+
+        protected override void FocusAll() => _c.FocusTarget(ChatTarget.Of(ChatChannel.All));
+        protected override void FocusTeam() => _c.FocusTarget(ChatTarget.Of(ChatChannel.Team));
+
+        private void Send(ChatChannel channel, int peerId, string peerName, string text)
+        {
+            _c.SendOrWarn(channel, peerId, peerName, text);
+        }
     }
 
     #endregion

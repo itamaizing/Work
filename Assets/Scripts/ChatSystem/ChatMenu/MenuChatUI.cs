@@ -51,6 +51,15 @@ public class MenuChatUI : MonoBehaviour
         Unbind();
     }
 
+    private void Update()
+    {
+        if (!_bound) return;
+
+        bool blocked = _service.IsSpamBlocked;
+        if (_sendButton.interactable == blocked)
+            _sendButton.interactable = !blocked;
+    }
+
     private IEnumerator Bind()
     {
         while (MenuChatService.Instance == null)
@@ -95,6 +104,7 @@ public class MenuChatUI : MonoBehaviour
         _service.HistoryLoaded -= OnHistoryLoaded;
 
         _sendButton.onClick.RemoveListener(OnSend);
+        _sendButton.interactable = true;
         _input.onSubmit.RemoveListener(OnSubmit);
         _focusDropdown.onValueChanged.RemoveListener(OnFocusDropdown);
         foreach (var g in _groups) g.Header.onClick.RemoveAllListeners();
@@ -178,7 +188,7 @@ public class MenuChatUI : MonoBehaviour
 
     private void OnMessageAdded(MenuChatChannel ch, MenuChatMessage msg)
     {
-        AddHistoryItem(msg);
+        AddHistoryItem(ch, msg);
         ScrollToBottom();
     }
 
@@ -200,41 +210,19 @@ public class MenuChatUI : MonoBehaviour
         var active = _service.Active;
         if (active != null)
             foreach (var m in active.Messages)
-                AddHistoryItem(m);
+                AddHistoryItem(active, m);
 
         ScrollToBottom();
     }
 
-    private void AddHistoryItem(MenuChatMessage m)
+    private void AddHistoryItem(MenuChatChannel ch, MenuChatMessage m)
     {
         var item = Instantiate(_messagePrefab, _historyContent);
-        item.text = Format(m);
+        item.text = FormatMessage(ch, m);
     }
-
-    private static string Format(MenuChatMessage m)
-    {
-        if (m.IsSystem)
-            return $"<i><color=#999999>{Escape(m.Text)}</color></i>";
-
-        string time = m.Time.ToLocalTime().ToString("HH:mm");
-
-        string suffix = string.Empty;
-        switch (m.State)
-        {
-            case MenuChatMessageState.Pending:
-                suffix = " <color=#888888>…</color>";
-                break;
-            case MenuChatMessageState.Failed:
-                suffix = $" <color=#E57373>(не доставлено: {Escape(m.Error)})</color>";
-                break;
-            default:
-                if (m.IsMine && !m.Delivered)
-                    suffix = " <color=#888888>(получатель не в сети)</color>";
-                break;
-        }
-
-        return $"<color=#888888>[{time}]</color> <b>{Escape(m.SenderLogin)}</b>: {Escape(m.Text)}{suffix}";
-    }
+    
+    private string FormatMessage(MenuChatChannel ch, MenuChatMessage m)
+        => MenuChatMessageFormatter.FormatMessage(ch, m, _service.IsFriend(m.SenderId));
 
     private static string Escape(string s)
     {

@@ -25,6 +25,7 @@ public class ChatView : MonoBehaviour, IChatView
     private readonly List<string> _history = new();
     private readonly List<ChatMessageUI> _focusedUi = new();
     private readonly List<ChatMessageUI> _unfocusedUi = new();
+    private readonly SpamGuard _spam = new SpamGuard();
 
     private void Awake()
     {
@@ -67,9 +68,19 @@ public class ChatView : MonoBehaviour, IChatView
 
     public void AddMessage(ChatMessage message)
     {
+        AddFormatted(ChatMessageFormatter.Format(message));
+    }
+    
+    public void AddSystemMessage(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return;
+        AddFormatted($"<i><color=#999999>{text.Replace("<", "<noparse><</noparse>")}</color></i>");
+    }
+
+    private void AddFormatted(string text)
+    {
         if (_messagePrefab == null || _messageContainer == null) return;
 
-        string text = ChatMessageFormatter.Format(message);
         _history.Add(text);
 
         var ui = Instantiate(_messagePrefab, _messageContainer);
@@ -147,8 +158,30 @@ public class ChatView : MonoBehaviour, IChatView
             _unfocusedUi[i].SetText(_history[start + i]);
     }
 
+    public bool IsSpamBlocked => _spam.IsBlocked;
+
+    public void RegisterSend()
+    {
+        _spam.TrySend();
+        NotifySpam();
+    }
+
+    public void NotifySpam()
+    {
+        if (_spam.ShouldNotify())
+            AddSystemMessage(_spam.NoticeText);
+    }
+
     private void OnSubmit(string text)
     {
+        bool isCommand = text != null && text.TrimStart().StartsWith("/");
+        if (!string.IsNullOrWhiteSpace(text) && !isCommand && _spam.IsBlocked)
+        {
+            NotifySpam();
+            _inputField.ActivateInputField();
+            return;
+        }
+
         OnMessageSent?.Invoke(text);
         _inputField.text = string.Empty;
     }

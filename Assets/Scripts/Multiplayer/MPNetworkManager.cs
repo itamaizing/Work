@@ -27,6 +27,7 @@ public class MPNetworkManager : NetworkManager
     private GameRules _currentGameRules;
 
     public int UserID { get => _userID; set => _userID = value; }
+    public string UserLogin { get; set; } = string.Empty;
     public List<GameObject> Players => _players;
 
     public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }

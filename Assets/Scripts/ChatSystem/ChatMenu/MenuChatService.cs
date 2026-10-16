@@ -30,10 +30,16 @@ public class MenuChatService : MonoBehaviour
     public event Action<MenuChatChannel> FocusChanged;
     public event Action<MenuChatChannel, MenuChatMessage> MessageAdded;
     public event Action<MenuChatChannel, MenuChatMessage> MessageUpdated;
+    public event Action<MenuChatChannel, MenuChatMessage> PrivateMessageAdded;
+    public event Action<string> SpamNotice;
     public event Action<MenuChatChannel> HistoryLoaded;
 
     public MenuChatChannel Active { get; private set; }
     public MenuChatChannel Focus { get; private set; }
+
+    private readonly SpamGuard _spam = new SpamGuard();
+    public bool IsSpamBlocked => _spam.IsBlocked;
+    public float SpamRemaining => _spam.Remaining;
 
     private class PendingMessage
     {
@@ -45,11 +51,13 @@ public class MenuChatService : MonoBehaviour
     private class LookupRequest
     {
         public string Nick;
-        public string Message;
+        public Action<ChatPeer> Found;
+        public Action<string> Failed;
         public float StartedAt;
     }
 
     private LookupRequest _lookup;
+    private Commands _commands;
 
     private readonly Dictionary<string, MenuChatChannel> _channels = new Dictionary<string, MenuChatChannel>();
     private readonly HashSet<int> _friendIds = new HashSet<int>();
@@ -70,6 +78,7 @@ public class MenuChatService : MonoBehaviour
             return;
         }
         Instance = this;
+        _commands = new Commands(this);
         DontDestroyOnLoad(transform.root.gameObject);
     }
 
@@ -79,11 +88,13 @@ public class MenuChatService : MonoBehaviour
         WebSocketClient.Instance.MessageReceived += OnMessageReceived;
         WebSocketClient.Instance.Disconnected += OnSocketDisconnected;
         WebSocketClient.Instance.Reconnected += OnSocketReconnected;
+        ChatBlockList.Changed += OnBlockListChanged;
     }
 
     private void OnDestroy()
     {
         if (Instance != this) return;
+        ChatBlockList.Changed -= OnBlockListChanged;
         if (WebSocketClient.Instance != null)
         {
             WebSocketClient.Instance.MessageReceived -= OnMessageReceived;
@@ -103,9 +114,9 @@ public class MenuChatService : MonoBehaviour
 
         if (_lookup != null && Time.unscaledTime - _lookup.StartedAt > LookupTimeout)
         {
-            string nick = _lookup.Nick;
+            var request = _lookup;
             _lookup = null;
-            AddSystem(Active, $"Не удалось найти игрока «{nick}»: нет ответа сервера");
+            request.Failed($"Не удалось найти игрока «{request.Nick}»: нет ответа сервера");
         }
         
         if (_initialized && MyId >= 0 && Time.unscaledTime >= _nextPresencePoll)
@@ -150,6 +161,8 @@ public class MenuChatService : MonoBehaviour
         _friendIds.Clear();
         _onlineUsers.Clear();
         _pending.Clear();
+        _spam.Reset();
+        _commands.ResetSession();
         _groupChannel = null;
         Active = null;
         Focus = null;
@@ -210,6 +223,8 @@ public class MenuChatService : MonoBehaviour
             .OrderBy(c => c.Title, StringComparer.CurrentCultureIgnoreCase);
     }
 
+    public bool IsFriend(int userId) => _friendIds.Contains(userId);
+
     public bool IsOnline(MenuChatChannel c)
     {
         return c.Type == MenuChatChannelType.Private && _onlineUsers.ContainsKey(c.UserId);
@@ -219,7 +234,7 @@ public class MenuChatService : MonoBehaviour
     {
         if (c.Type == MenuChatChannelType.Group) return true;
         if (c.UserId == MyId) return false;
-        if (c == Active) return true;
+        if (c == Active || c == Focus) return true;
         return c.HasConversation || c.Messages.Any(m => !m.IsSystem);
     }
 
@@ -325,31 +340,36 @@ public class MenuChatService : MonoBehaviour
         if (string.IsNullOrWhiteSpace(text)) return false;
         text = text.Trim();
 
-        if (text.StartsWith("/"))
-            return HandleCommand(text);
+        if (_commands.TryExecute(text))
+            return true;
 
-        return SendToFocus(text);
+        return SendTo(Focus, text);
     }
 
-    private bool SendToFocus(string text)
+    private bool SendTo(MenuChatChannel target, string text)
     {
-        if (Focus == null || string.IsNullOrWhiteSpace(text)) return false;
+        if (target == null || string.IsNullOrWhiteSpace(text)) return false;
+        if (_spam.IsBlocked)
+        {
+            NotifySpam();
+            return false;
+        }
         text = text.Trim();
         if (text.Length > MaxMessageLength) text = text.Substring(0, MaxMessageLength);
 
         if (WebSocketClient.Instance == null || !WebSocketClient.Instance.IsConnected)
         {
-            AddSystem(Focus, "Нет соединения с сервером");
+            AddSystem(Active, "Нет соединения с сервером");
             return false;
         }
 
         var payload = new Dictionary<string, object> { { "type", MSG_CHAT }, { "text", text } };
 
-        if (Focus.Type == MenuChatChannelType.Group)
+        if (target.Type == MenuChatChannelType.Group)
         {
             if (!IsInGroup)
             {
-                AddSystem(Focus, "Вы не состоите в группе");
+                AddSystem(Active, "Вы не состоите в группе");
                 return false;
             }
             payload["channelType"] = "group";
@@ -358,7 +378,7 @@ public class MenuChatService : MonoBehaviour
         {
             string clientId = Guid.NewGuid().ToString("N");
             payload["channelType"] = "private";
-            payload["targetId"] = Focus.UserId;
+            payload["targetId"] = target.UserId;
             payload["clientId"] = clientId;
 
             var msg = new MenuChatMessage
@@ -371,84 +391,59 @@ public class MenuChatService : MonoBehaviour
                 IsMine = true,
                 State = MenuChatMessageState.Pending
             };
-            _pending[clientId] = new PendingMessage { Channel = Focus, Message = msg, SentAt = Time.unscaledTime };
-            AddMessage(Focus, msg);
+            _pending[clientId] = new PendingMessage { Channel = target, Message = msg, SentAt = Time.unscaledTime };
+            AddMessage(target, msg);
         }
 
-        Debug.Log($"Chat -> {Focus.Type} '{Focus.Title}' (id {Focus.UserId}), {text.Length} симв.");
+        _spam.TrySend();
+        if (_spam.IsBlocked) NotifySpam();
+        Debug.Log($"Chat -> {target.Type} '{target.Title}' (id {target.UserId}), {text.Length} симв.");
         WebSocketClient.Instance.SendMessageToServer(JsonConvert.SerializeObject(payload));
         return true;
     }
 
-    private bool HandleCommand(string text)
+    private void RaiseChannelsChanged() => ChannelsChanged?.Invoke();
+
+    private void NotifySpam()
     {
-        string rest = text.Substring(1).TrimStart();
-        int sp = rest.IndexOf(' ');
-        string cmd = (sp < 0 ? rest : rest.Substring(0, sp)).ToLowerInvariant();
-        string args = sp < 0 ? string.Empty : rest.Substring(sp + 1).Trim();
+        if (!_spam.ShouldNotify()) return;
 
-        switch (cmd)
-        {
-            case "w":
-            case "whisper":
-                Whisper(args);
-                break;
-
-            default:
-                AddSystem(Active, $"Неизвестная команда «/{cmd}». Доступно: /w <ник> [сообщение]");
-                break;
-        }
-        return true;
+        string text = _spam.NoticeText;
+        AddSystem(Active, text);
+        SpamNotice?.Invoke(text);
     }
 
-    private void Whisper(string args)
+    public bool SendPrivate(int userId, string login, string text)
+    {
+        if (!_initialized) Initialize();
+        if (userId <= 0 || userId == MyId) return false;
+
+        var ch = GetOrCreatePrivate(userId, login);
+        bool ok = SendTo(ch, text);
+        ChannelsChanged?.Invoke();
+        return ok;
+    }
+    
+    public void ResolvePeer(string nick, Action<ChatPeer> found, Action<string> failed)
     {
         if (!_initialized) Initialize();
 
         if (MyId < 0)
         {
-            AddSystem(Active, "Личные сообщения недоступны в оффлайн-режиме");
+            failed("Личные сообщения недоступны в оффлайн-режиме");
             return;
         }
 
-        if (string.IsNullOrEmpty(args))
-        {
-            AddSystem(Active, "Использование: /w <ник> [сообщение]");
-            return;
-        }
-
-        int sp = args.IndexOf(' ');
-        string nick = sp < 0 ? args : args.Substring(0, sp);
-        string message = sp < 0 ? string.Empty : args.Substring(sp + 1).Trim();
-        
         var known = _channels.Values.FirstOrDefault(c =>
             c.Type == MenuChatChannelType.Private && string.Equals(c.Title, nick, StringComparison.OrdinalIgnoreCase));
 
         if (known != null)
-            StartWhisper(known.UserId, known.Title, message);
-        else
-            RequestUserLookup(nick, message);
-    }
-
-    private void StartWhisper(int userId, string login, string message)
-    {
-        if (userId == MyId)
         {
-            AddSystem(Active, "Нельзя написать самому себе");
+            found(new ChatPeer(known.UserId, known.Title));
             return;
         }
 
-        var ch = GetOrCreatePrivate(userId, login);
-        ChannelsChanged?.Invoke();
-        SetActive(ch);
-
-        if (!string.IsNullOrEmpty(message))
-            SendToFocus(message);
-    }
-
-    private void RequestUserLookup(string nick, string message)
-    {
-        var request = new LookupRequest { Nick = nick, Message = message, StartedAt = Time.unscaledTime };
+        var request = new LookupRequest { Nick = nick, Found = found, Failed = failed, StartedAt = Time.unscaledTime };
         _lookup = request;
 
         var data = new Dictionary<string, string> { { "login", nick } };
@@ -468,25 +463,77 @@ public class MenuChatService : MonoBehaviour
 
         if (resp == null)
         {
-            AddSystem(Active, $"Не удалось найти игрока «{request.Nick}»: некорректный ответ сервера");
+            request.Failed($"Не удалось найти игрока «{request.Nick}»: некорректный ответ сервера");
             return;
         }
         if (!resp.success)
         {
-            AddSystem(Active, resp.error == "not_found"
+            request.Failed(resp.error == "not_found"
                 ? $"Игрок «{request.Nick}» не найден"
                 : $"Не удалось найти игрока «{request.Nick}»");
             return;
         }
 
-        StartWhisper(resp.id, resp.login, request.Message);
+        request.Found(new ChatPeer(resp.id, resp.login));
     }
 
     private void OnLookupFailed(LookupRequest request, string reason)
     {
         if (_lookup != request) return;
         _lookup = null;
-        AddSystem(Active, $"Не удалось найти игрока «{request.Nick}»: {reason}");
+        request.Failed($"Не удалось найти игрока «{request.Nick}»: {reason}");
+    }
+    
+    private void OnBlockListChanged()
+    {
+        bool removed = false;
+        foreach (var ch in _channels.Values)
+            removed |= ch.Messages.RemoveAll(m => !m.IsSystem && !m.IsMine && ChatBlockList.IsBlocked(m.SenderId)) > 0;
+
+        if (!removed) return;
+        if (Active != null) ActiveChanged?.Invoke(Active);
+        ChannelsChanged?.Invoke();
+    }
+
+    private sealed class Commands : ChatCommandProvider
+    {
+        private readonly MenuChatService _s;
+
+        public Commands(MenuChatService service) { _s = service; }
+
+        protected override int LocalUserId => _s.MyId;
+        protected override bool HasGroup => _s.IsInGroup;
+
+        protected override void Say(string text) => _s.AddSystem(_s.Active, text);
+
+        protected override void Resolve(string nick, bool requireId, Action<ChatPeer> found, Action<string> failed)
+            => _s.ResolvePeer(nick, found, failed);
+
+        protected override void FocusPrivate(ChatPeer peer)
+        {
+            var ch = _s.GetOrCreatePrivate(peer.Id, peer.Name);
+            _s.SetFocus(ch);
+            _s.RaiseChannelsChanged();
+        }
+
+        protected override void SendPrivate(ChatPeer peer, string text)
+        {
+            var ch = _s.GetOrCreatePrivate(peer.Id, peer.Name);
+            _s.SendTo(ch, text);
+            _s.RaiseChannelsChanged();
+        }
+
+        protected override void FocusGroup()
+        {
+            _s.Initialize();
+            _s.SetFocus(_s._groupChannel);
+        }
+
+        protected override void SendGroup(string text)
+        {
+            _s.Initialize();
+            _s.SendTo(_s._groupChannel, text);
+        }
     }
 
     private void ExpirePending()
@@ -596,6 +643,9 @@ public class MenuChatService : MonoBehaviour
         string channelType = Get(d, "channelType");
         int.TryParse(Get(d, "senderId"), out int senderId);
 
+        if (senderId != MyId && ChatBlockList.IsBlocked(senderId))
+            return;
+
         string rawLogin = Get(d, "senderLogin");
         string login = !string.IsNullOrEmpty(rawLogin) ? rawLogin
                      : senderId == MyId ? "Вы" : "Игрок #" + senderId;
@@ -630,6 +680,9 @@ public class MenuChatService : MonoBehaviour
 
         AddMessage(ch, msg);
 
+        if (channelType == "private" && !msg.IsMine)
+            _commands.NoteIncomingPrivate(senderId, rawLogin);
+
         if (_channels.Count != channelsBefore)
             ChannelsChanged?.Invoke();
     }
@@ -644,6 +697,9 @@ public class MenuChatService : MonoBehaviour
         ch.Messages.Add(msg);
         if (ch.Messages.Count > MaxCachedMessages)
             ch.Messages.RemoveAt(0);
+
+        if (ch.Type == MenuChatChannelType.Private && !msg.IsSystem)
+            PrivateMessageAdded?.Invoke(ch, msg);
 
         if (ch == Active)
         {
@@ -743,6 +799,7 @@ public class MenuChatService : MonoBehaviour
             Time = ParseTime(m.created_at),
             IsMine = m.sender_id == MyId
         }).ToList();
+        history.RemoveAll(h => !h.IsMine && ChatBlockList.IsBlocked(h.SenderId));
 
         var ids = new HashSet<int>(history.Select(h => h.Id));
         var live = ch.Messages.Where(m => m.Id != 0

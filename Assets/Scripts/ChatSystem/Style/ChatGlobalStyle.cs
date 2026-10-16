@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class ChatGlobalStyle
+public static class G
 {
     private const string PalettePath = "ColorPalette";
 
@@ -16,7 +16,7 @@ public static class ChatGlobalStyle
 
                 if (_colors == null)
                 {
-                    Debug.LogWarning($"[ChatGlobalStyle]  Resources/{PalettePath}.asset не найден, используются цвета по умолчанию");
+                    Debug.LogWarning($"[G] Resources/{PalettePath}.asset не найден, используются цвета по умолчанию");
                     _colors = ScriptableObject.CreateInstance<ColorPalette>();
                 }
             }
