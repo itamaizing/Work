@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Extensions;
 
 namespace Game.Debug
 {
@@ -10,15 +11,8 @@ namespace Game.Debug
 
         private void Start()
         {
-            FillDropdownWithEnum<DebugAttributesCommand>(_comandDropdown);
-            _comandDropdown.onValueChanged.AddListener((index) => Module.Command = (DebugAttributesCommand)index);
-
+            _comandDropdown.FillWithEnum<DebugAttributesCommand>().onValueChanged.AddListener((index) => Module.Command = (DebugAttributesCommand)index);
             _valueDropdown.onValueChanged.AddListener((value) => Module.Value = float.Parse(value));
-        }
-
-        protected override DebugAttributesModule CreateModule()
-        {
-            return new DebugAttributesModule();
         }
     }
 }

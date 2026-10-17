@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Extensions;
 
 namespace Game.Debug
 {
@@ -12,19 +13,11 @@ namespace Game.Debug
 
         private void Start()
         {
-            FillDropdownWithEnum<States>(_stateDropdown);
-            _stateDropdown.onValueChanged.AddListener( (index) => Module.State = (States)index);
-
-            FillDropdownWithEnum<Schools>(_schoolDropdown);
-            _schoolDropdown.onValueChanged.AddListener( (index) => Module.School = (Schools)index);
+            _stateDropdown.FillWithEnum<States>().onValueChanged.AddListener( (index) => Module.State = (States)index);
+            _schoolDropdown.FillWithEnum<Schools>().onValueChanged.AddListener( (index) => Module.School = (Schools)index);
 
             _durationInputField.onEndEdit.AddListener( (value) => Module.Duration = float.Parse(value));
             _damageToExitInputField.onEndEdit.AddListener( (value) => Module.DamageForExit = float.Parse(value));
-        }
-
-        protected override DebugStateModule CreateModule()
-        {
-            return new DebugStateModule();
         }
     }
 }

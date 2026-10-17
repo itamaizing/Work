@@ -362,13 +362,13 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _regenerationPeriod /= value;
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdSetRegenValue(float value)
     {
         _regenerationValue = value;
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdSetValue(float value)
     {
         _currentValue = value;

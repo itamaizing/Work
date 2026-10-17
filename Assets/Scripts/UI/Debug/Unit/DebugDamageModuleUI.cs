@@ -1,3 +1,4 @@
+using Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,29 +18,15 @@ namespace Game.Debug
 
         private void Start()
         {
-            FillDropdownWithEnum<DamageType>(_damageTypeDropdown);
-            _damageTypeDropdown.onValueChanged.AddListener((index) => Module.DamageType = (DamageType)index);
-
-            FillDropdownWithEnum<Schools>(_schoolDropdown);
-            _schoolDropdown.onValueChanged.AddListener((index) => Module.School = (Schools)index);
-
-            FillDropdownWithEnum<AbilityForm>(_abilityFormDropdown);
-            _abilityFormDropdown.onValueChanged.AddListener((index) => Module.Form = (AbilityForm)index);
-
-            FillDropdownWithEnum<AttackRangeType>(_attackTypeFormDropdown);
-            _attackTypeFormDropdown.onValueChanged.AddListener((index) => Module.PhysicAttackType = (AttackRangeType)index);
-
-            FillDropdownWithEnum<SkillType>(_skillTypeFormDropdown);
-            _skillTypeFormDropdown.onValueChanged.AddListener((index) => Module.SkillType = (SkillType)index);
+            _damageTypeDropdown.FillWithEnum<DamageType>().onValueChanged.AddListener((index) => Module.DamageType = (DamageType)index);
+            _schoolDropdown.FillWithEnum<Schools>().onValueChanged.AddListener((index) => Module.School = (Schools)index);
+            _abilityFormDropdown.FillWithEnum<AbilityForm>().onValueChanged.AddListener((index) => Module.Form = (AbilityForm)index);
+            _attackTypeFormDropdown.FillWithEnum<AttackRangeType>().onValueChanged.AddListener((index) => Module.PhysicAttackType = (AttackRangeType)index);
+            _skillTypeFormDropdown.FillWithEnum<SkillType>().onValueChanged.AddListener((index) => Module.SkillType = (SkillType)index);
 
             _valueInputField.onEndEdit.AddListener((value) => Module.Value = float.Parse(value));
             _DamageKeyInputField.onEndEdit.AddListener((value) => Module.DamageKey = value);
             _fullyAbsorbedToggle.onValueChanged.AddListener((value) => Module.FullyAbsorbed = value);
-        }
-
-        protected override DebugDamageModule CreateModule()
-        {
-            return new DebugDamageModule();
         }
     }
 }

@@ -261373,10 +261373,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2156891295836399346, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156891295836399346, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156891295836399346, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104346497491116144, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00012207031
+      objectReference: {fileID: 0}
+    - target: {fileID: 5550223759952975770, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5550223759952975770, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5550223759952975770, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6952311958580988361, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
       propertyPath: _selectManager
       value: 
       objectReference: {fileID: 2087077431}
+    - target: {fileID: 7731770656822382547, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_Size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7731770656822382547, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161542427062439511, guid: d4f435c2e400d1f43ac134eca97c39c2, type: 3}
+      propertyPath: sceneId
+      value: 2677057319
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -84,10 +84,12 @@ public class UserNetworkSettings : NetworkBehaviour
         OnUpdateValue?.Invoke();
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdSetTeam(byte i)
     {
         TeamIndex = i;
+        RpcUpdateLayers();
+        OnUpdateValue?.Invoke();
     }
 
     public void MarkUpEnemiesOrAllies()

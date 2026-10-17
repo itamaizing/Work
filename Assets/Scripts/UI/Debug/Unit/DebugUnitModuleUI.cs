@@ -1,46 +1,14 @@
-using System;
-using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Debug
 {
-    public class DebugUnitPanelUI : MonoBehaviour
-    {
-        [SerializeField] private SelectManager _selectManager;
-        [SerializeField] private DebugUnitModuleUI[] _windows;
-
-        private void OnEnable()
-        {
-            _selectManager.CharacterSelected += OnCharacterSelected;
-        }
-
-        private void OnDisable()
-        {
-            _selectManager.CharacterSelected -= OnCharacterSelected;
-        }
-
-        [ContextMenu(nameof(UpdateWindowsList))]
-        public void UpdateWindowsList()
-        {
-            var list = GetComponentsInChildren<DebugUnitModuleUI>();
-            _windows = list.ToArray();
-        }
-
-        private void OnCharacterSelected(Character character)
-        {
-            foreach (var ui in _windows)
-                ui.SetUnit(character);
-        }
-    }
-
     public abstract class DebugUnitModuleUI : MonoBehaviour
     {
         public abstract void SetUnit(Character character);
     }
 
-    public abstract class DebugUnitModuleUI<TModule> : DebugUnitModuleUI where TModule : DebugUnitModule
+    public abstract class DebugUnitModuleUI<TModule> : DebugUnitModuleUI where TModule : DebugUnitModule, new()
     {
         [SerializeField]
         private Button _executeButton;
@@ -48,21 +16,10 @@ namespace Game.Debug
 
         protected TModule Module { get; private set; }
 
-        protected abstract TModule CreateModule();
-
-        private void Awake() => Module = CreateModule();
+        private void Awake() => Module = new TModule();
         private void OnEnable() => _executeButton.onClick.AddListener(OnClick);
         private void OnDisable() => _executeButton.onClick.RemoveListener(OnClick);
-
         public override void SetUnit(Character character) => _unit = character;
-
-        protected void FillDropdownWithEnum<TEnum>(TMP_Dropdown dropdown) where TEnum : Enum
-        {
-            dropdown.ClearOptions();
-            dropdown.AddOptions(Enum.GetNames(typeof(TEnum)).ToList());
-            dropdown.value = 0;
-        }
-
         private void OnClick() => Module.Execute(_unit);
     }
 
@@ -136,7 +93,7 @@ namespace Game.Debug
             {
                 skill.CmdSetTargetingAll();
                 skill.Targeting.Faction = TargetFaction.All;
-            }     
+            }
         }
     }
 
@@ -204,7 +161,7 @@ namespace Game.Debug
 
         private void OnSetMana(Character unit)
         {
-            unit.Resource.CmdSetValue(Value); ;
+            unit.Resource.CmdSetValue(Value);
         }
 
         private void OnSetManaRegen(Character unit)
