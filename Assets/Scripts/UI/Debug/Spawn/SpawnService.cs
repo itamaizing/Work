@@ -40,6 +40,9 @@ namespace Game.Debug
             GameObject prefabToSpawn = prefabs[prefabIndex];
             GameObject spawnedObject = Instantiate(prefabToSpawn, position, Quaternion.identity);
             NetworkServer.Spawn(spawnedObject);
+            
+            if (spawnedObject.TryGetComponent<HeroComponent>(out var hero))
+                hero.Initialize();
         }
     }
 }

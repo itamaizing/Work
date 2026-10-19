@@ -3542,7 +3542,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00012207031}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 1346.7875}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1682576159624934729
@@ -8173,8 +8173,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5977315141885992617}
   m_HandleRect: {fileID: 2156891295836399346}
   m_Direction: 2
-  m_Value: 1.0000005
-  m_Size: 0.8019826
+  m_Value: 1
+  m_Size: 0.8019824
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12733,7 +12733,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.000061035156, y: 0}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 13, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &4732991542162842560
 CanvasRenderer:
@@ -14500,9 +14500,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Debug.SpawnServiceUI
   _spawnService: {fileID: 4093808643255699552}
+  _spawnables:
+  - {fileID: 3009303187757147287, guid: 8b9a0582f6da25b4ea6881c63d5b3168, type: 3}
+  - {fileID: 3009303187757147287, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
+  - {fileID: 5311042088619458913, guid: e8f214e8238220749bbf66c7cca6a334, type: 3}
+  - {fileID: 1780458876409769317, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+  - {fileID: 4837027206785457420, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
+  - {fileID: 465973236533830398, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
+  - {fileID: 300637093874885484, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
+  - {fileID: 8143091671269686944, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+  - {fileID: 300637093874885484, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
   _dropdown: {fileID: 7098152728171070074}
   _inputField: {fileID: 6887453309572773821}
   _button: {fileID: 7880508663321155604}
+  _cursorPrepareTexture: {fileID: 2800000, guid: 198bb88c4b667914ba906a47d19af971, type: 3}
+  _cursorDefaultTexture: {fileID: 2800000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
 --- !u!114 &9161542427062439511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17257,7 +17269,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -17322,7 +17334,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: -0.3999985, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7390156523269805843
 MonoBehaviour:
