@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public enum MenuChatChannelType { Private, Group }
+public enum MenuChatChannelType { Private, Group, Custom }
 
 public enum MenuChatGroup { Users, Friends, Channels }
 
@@ -37,13 +37,41 @@ public class MenuChatChannel
     public bool HistoryLoaded;
     public bool HasConversation;
 
-    public string Key => Type == MenuChatChannelType.Group ? GroupKey : PrivateKey(UserId);
+    public readonly string ChannelId;
+    public int OwnerId;
+    public int Capacity;
+    public bool Joined;
+    public string Kind = string.Empty;
+    public readonly Dictionary<int, string> Members = new Dictionary<int, string>();
+
+    public bool IsSystemChannel => !string.IsNullOrEmpty(Kind) && Kind != "user";
+
+    public string Key
+    {
+        get
+        {
+            switch (Type)
+            {
+                case MenuChatChannelType.Group: return GroupKey;
+                case MenuChatChannelType.Custom: return CustomKey(ChannelId);
+                default: return PrivateKey(UserId);
+            }
+        }
+    }
+
     public static string PrivateKey(int userId) => "u:" + userId;
+    public static string CustomKey(string channelId) => "c:" + channelId;
 
     public MenuChatChannel(MenuChatChannelType type, int userId, string title)
     {
         Type = type;
         UserId = userId;
         Title = title;
+    }
+
+    public MenuChatChannel(string channelId, string title)
+        : this(MenuChatChannelType.Custom, 0, title)
+    {
+        ChannelId = channelId;
     }
 }

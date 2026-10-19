@@ -5,7 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public class MenuChatService : MonoBehaviour
+public partial class MenuChatService : MonoBehaviour
 {
     public const int MaxMessageLength = 300;
     private const int MaxCachedMessages = 200;
@@ -163,6 +163,7 @@ public class MenuChatService : MonoBehaviour
         _pending.Clear();
         _spam.Reset();
         _commands.ResetSession();
+        ResetChannelState();
         _groupChannel = null;
         Active = null;
         Focus = null;
@@ -171,6 +172,7 @@ public class MenuChatService : MonoBehaviour
 
     private void OnSocketDisconnected()
     {
+        ChannelsOnSocketDisconnected();
         _onlineUsers.Clear();
         foreach (var id in _pending.Keys.ToList())
             FailPending(id, "соединение потеряно");
@@ -180,6 +182,7 @@ public class MenuChatService : MonoBehaviour
 
     private void OnSocketReconnected()
     {
+        ChannelsOnSocketReconnected();
         AddSystem(Active, "Соединение восстановлено");
         if (_initialized && MyId >= 0)
         {
@@ -233,6 +236,7 @@ public class MenuChatService : MonoBehaviour
     private bool IsVisible(MenuChatChannel c)
     {
         if (c.Type == MenuChatChannelType.Group) return true;
+        if (c.Type == MenuChatChannelType.Custom) return c.Joined || c == Active || c == Focus;
         if (c.UserId == MyId) return false;
         if (c == Active || c == Focus) return true;
         return c.HasConversation || c.Messages.Any(m => !m.IsSystem);
@@ -240,7 +244,7 @@ public class MenuChatService : MonoBehaviour
 
     public MenuChatGroup GroupOf(MenuChatChannel c)
     {
-        if (c.Type == MenuChatChannelType.Group) return MenuChatGroup.Channels;
+        if (c.Type == MenuChatChannelType.Group || c.Type == MenuChatChannelType.Custom) return MenuChatGroup.Channels;
         return _friendIds.Contains(c.UserId) ? MenuChatGroup.Friends : MenuChatGroup.Users;
     }
 
@@ -345,7 +349,7 @@ public class MenuChatService : MonoBehaviour
 
         return SendTo(Focus, text);
     }
-
+    
     private bool SendTo(MenuChatChannel target, string text)
     {
         if (target == null || string.IsNullOrWhiteSpace(text)) return false;
@@ -373,6 +377,16 @@ public class MenuChatService : MonoBehaviour
                 return false;
             }
             payload["channelType"] = "group";
+        }
+        else if (target.Type == MenuChatChannelType.Custom)
+        {
+            if (!target.Joined)
+            {
+                AddSystem(Active, $"Вы не состоите в канале «{target.Title}»");
+                return false;
+            }
+            payload["channelType"] = "channel";
+            payload["channelId"] = target.ChannelId;
         }
         else
         {
@@ -412,7 +426,7 @@ public class MenuChatService : MonoBehaviour
         AddSystem(Active, text);
         SpamNotice?.Invoke(text);
     }
-
+    
     public bool SendPrivate(int userId, string login, string text)
     {
         if (!_initialized) Initialize();
@@ -423,7 +437,7 @@ public class MenuChatService : MonoBehaviour
         ChannelsChanged?.Invoke();
         return ok;
     }
-    
+
     public void ResolvePeer(string nick, Action<ChatPeer> found, Action<string> failed)
     {
         if (!_initialized) Initialize();
@@ -483,7 +497,8 @@ public class MenuChatService : MonoBehaviour
         _lookup = null;
         request.Failed($"Не удалось найти игрока «{request.Nick}»: {reason}");
     }
-    
+
+
     private void OnBlockListChanged()
     {
         bool removed = false;
@@ -503,12 +518,27 @@ public class MenuChatService : MonoBehaviour
 
         protected override int LocalUserId => _s.MyId;
         protected override bool HasGroup => _s.IsInGroup;
+        
+        protected override void RegisterCommands()
+        {
+            base.RegisterCommands();
+
+            Register(new[] { "join", "j", "channel", "канал" },
+                "/join <канал>  |  /channel <канал> <сообщение>",
+                "войти в канал и писать в него / отправить сообщение в канал", _s.CmdJoin);
+            Register(new[] { "create", "создать" }, "/create <название>", "создать свой канал", _s.CmdCreate);
+            Register(new[] { "leave", "выйти" }, "/leave [канал]", "выйти из канала", _s.CmdLeave);
+            Register(new[] { "delete", "удалить" }, "/delete [канал]", "удалить свой канал", _s.CmdDelete);
+            Register(new[] { "kick", "кик" }, "/kick <ник> [канал]", "исключить игрока из своего канала", _s.CmdKick);
+            Register(new[] { "members", "участники" }, "/members [канал]", "список участников канала", _s.CmdMembers);
+            Register(new[] { "channels", "каналы" }, "/channels", "список открытых каналов", _ => _s.RequestChannelList(true));
+        }
 
         protected override void Say(string text) => _s.AddSystem(_s.Active, text);
 
         protected override void Resolve(string nick, bool requireId, Action<ChatPeer> found, Action<string> failed)
             => _s.ResolvePeer(nick, found, failed);
-
+        
         protected override void FocusPrivate(ChatPeer peer)
         {
             var ch = _s.GetOrCreatePrivate(peer.Id, peer.Name);
@@ -629,6 +659,10 @@ public class MenuChatService : MonoBehaviour
             case MSG_USER_OFFLINE:
                 HandleUserOffline(d);
                 break;
+
+            default:
+                HandleChannelMessage(type, d);
+                break;
         }
     }
 
@@ -663,6 +697,11 @@ public class MenuChatService : MonoBehaviour
         {
             if (!int.TryParse(Get(d, "channelId"), out int otherId)) return;
             ch = GetOrCreatePrivate(otherId, senderId == otherId ? rawLogin : null);
+        }
+        else if (channelType == "channel")
+        {
+            ch = FindCustomById(Get(d, "channelId"));
+            if (ch == null) return;
         }
         else return;
 

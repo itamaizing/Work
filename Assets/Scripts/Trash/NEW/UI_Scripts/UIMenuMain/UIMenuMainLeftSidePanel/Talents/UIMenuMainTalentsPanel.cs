@@ -28,31 +28,22 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     public void ToggleWholePanel()
     {
-        _isCollapsed = !_isCollapsed;
-
-        if (_isCollapsed)
+        bool anyExpanded = false;
+        foreach (var group in ItemsPool)
         {
-            _savedGroupStates.Clear();
-            foreach (var group in ItemsPool)
+            if (group != null && group.IsExpanded)
             {
-                _savedGroupStates[group] = group.IsExpanded;
-                //group.SetGroupVisible(false);
-                group.SetItemsExpanded(false);
+                anyExpanded = true;
+                break;
             }
-            //if (_attributesPanel != null)
-            //    _attributesPanel.gameObject.SetActive(false);
         }
-        else
+
+        bool expand = !anyExpanded;
+
+        foreach (var group in ItemsPool)
         {
-            foreach (var group in ItemsPool)
-            {
-                group.SetGroupVisible(true);
-                group.SetItemsExpanded(true);
-                //if (_savedGroupStates.TryGetValue(group, out var wasExpanded))
-                //    group.SetItemsExpanded(wasExpanded);
-            }
-            //if (_attributesPanel != null)
-            //    _attributesPanel.gameObject.SetActive(true);
+            if (group == null) continue;
+            group.SetItemsExpanded(expand);
         }
     }
 

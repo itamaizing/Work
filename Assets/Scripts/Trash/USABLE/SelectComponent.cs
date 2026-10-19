@@ -14,6 +14,8 @@ public class SelectComponent : NetworkBehaviour
     private SkillRenderer _skillRenderer;
 
     private bool _isCurrentPLayer;
+    
+    public bool IsReady => _uiComponent != null && _abilitiesComponent != null && _moveComponent != null;
 
     public Vector3 OffsetInGroup { get; set; }
 

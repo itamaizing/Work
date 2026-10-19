@@ -7,7 +7,9 @@ public static class MenuChatMessageFormatter
         if (m.IsSystem)
             return FormatSystem(m);
 
-        ChatChannelStyle style = G.Colors.Chat.GetStyle(ToChatChannel(channel));
+        ChatChannelStyle style = channel.Type == MenuChatChannelType.Custom
+            ? G.Colors.Chat.Custom
+            : G.Colors.Chat.GetStyle(ToChatChannel(channel));
 
         var sb = new StringBuilder(160);
         sb.Append(FormatTime(m));
@@ -28,9 +30,13 @@ public static class MenuChatMessageFormatter
 
     private static string FormatChannel(MenuChatChannel channel, MenuChatMessage m, ChatChannelStyle style)
     {
-        string tag = channel.Type == MenuChatChannelType.Private && m.IsMine
-            ? $"[{style.Label} → {ChatMessageFormatter.Escape(channel.Title)}]"
-            : $"[{style.Label}]";
+        string tag;
+        if (channel.Type == MenuChatChannelType.Custom)
+            tag = $"[{ChatMessageFormatter.Escape(channel.Title)}]";
+        else if (channel.Type == MenuChatChannelType.Private && m.IsMine)
+            tag = $"[{style.Label} → {ChatMessageFormatter.Escape(channel.Title)}]";
+        else
+            tag = $"[{style.Label}]";
 
         return ChatMessageFormatter.Colorize(tag, style.TagColor);
     }
@@ -48,7 +54,7 @@ public static class MenuChatMessageFormatter
 
     private static string FormatText(MenuChatMessage m, ChatChannelStyle style) =>
         ChatMessageFormatter.Colorize(ChatRichText.Sanitize(m.Text), style.TextColor);
-
+    
     private static string FormatStatus(MenuChatChannel channel, MenuChatMessage m)
     {
         var colors = G.Colors.Chat;

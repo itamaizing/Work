@@ -31,7 +31,6 @@ public class MenuChatUI : MonoBehaviour
     [SerializeField] private TMP_Dropdown _focusDropdown;
 
     [Header("Channels panel")]
-    [SerializeField] private RectTransform _channelsPanel;
     [SerializeField] private List<GroupView> _groups;
     [SerializeField] private Button _channelButtonPrefab;
 
@@ -50,7 +49,7 @@ public class MenuChatUI : MonoBehaviour
         if (_bindRoutine != null) StopCoroutine(_bindRoutine);
         Unbind();
     }
-
+    
     private void Update()
     {
         if (!_bound) return;
@@ -157,6 +156,8 @@ public class MenuChatUI : MonoBehaviour
                 string title = Escape(ch.Title);
                 if (ch.Type == MenuChatChannelType.Private)
                     title = _service.IsOnline(ch) ? $"<color=#8BE28B>{title}</color>" : $"<color=#9A9A9A>{title}</color>";
+                if (_service.IsChannelOwner(ch)) title = "★ " + title;
+                if (ch.Type == MenuChatChannelType.Custom) title += $" <color=#888888>{ch.Members.Count}/{ch.Capacity}</color>";
                 if (ch == _service.Active) title = $"<b>{title}</b>";
                 if (ch.Unread > 0) title += $" <color=#FFB000>({ch.Unread})</color>";
                 label.text = title;
@@ -172,7 +173,6 @@ public class MenuChatUI : MonoBehaviour
         _focusDropdown.ClearOptions();
         _focusDropdown.AddOptions(ordered.Select(c => c.Title).ToList());
         SetDropdownValue(_service.Focus);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_channelsPanel);
     }
 
     private void SetDropdownValue(MenuChatChannel focus)

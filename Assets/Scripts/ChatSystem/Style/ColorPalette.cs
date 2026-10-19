@@ -26,7 +26,7 @@ public class ColorPalette : ScriptableObject
         public Color Team2 = new Color32(255, 100, 100, 255);
 
         [Header("Chat menu")]
-        [Tooltip("Ник по умолчанию (в меню нет команд)")]
+        [Tooltip("Ник по умолчанию")]
         public Color Name = Color.white;
         [Tooltip("Ник друга")]
         public Color Friend = new Color32(139, 226, 139, 255);
@@ -58,6 +58,15 @@ public class ColorPalette : ScriptableObject
             TagColor = new Color32(100, 170, 255, 255),
             ColorNameByTeam = true,
             TextColor = new Color32(200, 225, 255, 255)
+        };
+
+        [Tooltip("Каналы, созданные игроками. В теге сообщения показывается название канала")]
+        public ChatChannelStyle Custom = new ChatChannelStyle
+        {
+            Label = "Канал",
+            TagColor = new Color32(255, 214, 79, 255),
+            ColorNameByTeam = true,
+            TextColor = Color.white
         };
 
         public ChatChannelStyle Private = new ChatChannelStyle

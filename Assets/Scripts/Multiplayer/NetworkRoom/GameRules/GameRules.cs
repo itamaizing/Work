@@ -156,6 +156,7 @@ public abstract class GameRules : NetworkBehaviour
         base.OnStartClient();
         StartCoroutine(FoundGameManagerCorounite());
         StartCoroutine(InitializeChatRoutine());
+        StartCoroutine(AutoSelectLocalHeroRoutine());
     }
 
     public void CloseRoomOnClient()
@@ -203,6 +204,36 @@ public abstract class GameRules : NetworkBehaviour
         }
 
         if (_gameManager.TeamsPanel == null) return;
+    }
+    
+    private IEnumerator AutoSelectLocalHeroRoutine()
+    {
+        Character local = null;
+        while (NetworkClient.active)
+        {
+            if (_gameManager == null) FindGameManager();
+            local = FindLocalCharacter();
+
+            if (local != null && local.IsInitialized &&
+                _gameManager != null && _gameManager.TeamsPanel != null && _gameManager.Source != null)
+                break;
+
+            yield return new WaitForSecondsRealtime(0.25f);
+        }
+
+        if (local == null) yield break;
+
+        FocusAndSelect(local);
+
+        local.Reset += () => FocusAndSelect(local);
+    }
+    
+    private void FocusAndSelect(Character hero)
+    {
+        hero.SelectComponent.IsCurrentPlayer = true;
+        var selectManager = FindAnyObjectByType<SelectManager>();
+        if (selectManager != null) selectManager.SelectInArea(hero);
+        else hero.SelectComponent.Select();
     }
     
     protected virtual IEnumerator SplitTeams(HeroSpawnManager spawnPoints)

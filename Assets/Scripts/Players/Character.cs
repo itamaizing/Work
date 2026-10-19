@@ -113,6 +113,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		set => _isDisappeared = value;
 	}
 	public bool IsDead => _isDead;
+	
+	public bool IsInitialized => _initialized;
 
     public int KillCounter { get => _killCounter; set { _killCounter = value; Killed?.Invoke(); } }
     public int AssystCounter { get => _assystCounter; set => _assystCounter = value; }

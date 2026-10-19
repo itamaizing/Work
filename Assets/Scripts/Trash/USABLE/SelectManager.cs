@@ -18,6 +18,8 @@ public class SelectManager : MonoBehaviour
     private int _currentUnitNumber;
 
     private bool _isUIVisible = true;
+    
+    private bool _autoSelected;
 
     public event Action<bool> UIVisibilityToggled;
     public event Action<Character> CharacterSelected;
@@ -58,6 +60,7 @@ public class SelectManager : MonoBehaviour
                 Debug.LogWarning("NetworkComponent not found on client identity.");
                 return;
             }
+            TryAutoSelectLocal();
 
             _contoller.OnListUpdated += UpdateList;
             _canContollUnits = _contoller.controllableUnits;
@@ -142,6 +145,18 @@ public class SelectManager : MonoBehaviour
         SelectedControllableUnits.Add(character);
         character.SelectComponent.Select();
 	}
+    
+    private void TryAutoSelectLocal()
+    {
+        if (_autoSelected) return;
+
+        var local = Character.Local;
+        if (local == null || !local.SelectComponent.IsReady) return;
+        if (!_canContollUnits.Contains(local)) return;
+
+        _autoSelected = true;
+        SelectInArea(local);
+    }
 
     public void SelectInArea(Character character)
     {
