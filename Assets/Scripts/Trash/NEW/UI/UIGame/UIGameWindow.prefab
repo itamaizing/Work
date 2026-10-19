@@ -10717,7 +10717,7 @@ MonoBehaviour:
   _castLine: {fileID: 1384970838077230838}
   _queuePanel: {fileID: 8854864582392456380}
   _abilityNameBox: {fileID: 3464187881746360693}
-  _isMinionPanel: 0
+  _isMinionPanel: 1
 --- !u!114 &8676462038157850274
 MonoBehaviour:
   m_ObjectHideFlags: 0
