@@ -19,10 +19,12 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     [Header("Mode info")]
     [SerializeField] private AbilityInfo lightInfo;
     [SerializeField] private AbilityInfo darkInfo;
-    
+
     [Header("VFX Colors")]
     [SerializeField][ColorUsage(true, true)] private Color _lightColor = Color.white;
     [SerializeField][ColorUsage(true, true)] private Color _darkColor  = Color.yellow;
+
+    private const float MinTickInterval = 0.05f;
 
     private float _baseDamage = 5f;
     protected override int AnimTriggerPrepare => 0;
@@ -35,6 +37,8 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
     private Vector3 _clickPoint;
     
+    private readonly List<VisualEffect> _activeVfx = new();
+
     #region OverhealManaBooster
 
     private OverhealManaBooster _overhealMana;
@@ -50,13 +54,15 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
     private bool IsAllyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Allies");
-    
+
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        
+
+        if (_pillarVFX != null) _pillarVFX.gameObject.SetActive(false);
+
         UpdateMode();
-        
+
         _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
@@ -68,6 +74,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
+        DestroyActiveVfx();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -84,31 +91,32 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
         while (!GetMouseButton)
             yield return null;
-
-        _clickPoint = Targeting.GetMousePoint();
-        targetInfo.Points.Add(_clickPoint);
+        
+        targetInfo.Points.Add(Targeting.GetMousePoint());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        CmdPlayPillarVFX(_clickPoint);
-        yield return StartCoroutine(PillarTickJob(_clickPoint));
+        Vector3 point = _clickPoint;
+
+        float tick = Mathf.Max(_tickInterval, MinTickInterval);
+        int ticks = Mathf.Max(1, Mathf.CeilToInt(_pillarDuration / tick));
+        float lifetime = ticks * tick;
+
+        CmdSpawnPillarVFX(point, lifetime);
+        StartCoroutine(PillarTickJob(point, tick, ticks));
+
+        yield break;
     }
 
-    [Command]
-    private void CmdPlayPillarVFX(Vector3 position) => RpcPlayPillarVFX(position);
-
-    private IEnumerator PillarTickJob(Vector3 position)
+    private IEnumerator PillarTickJob(Vector3 position, float tick, int tickCount)
     {
         var targetTickCounts = new Dictionary<Character, int>();
 
-        float elapsed = 0f;
-
-        while (elapsed < _pillarDuration)
+        for (int i = 0; i < tickCount; i++)
         {
-            yield return new WaitForSeconds(_tickInterval);
-            elapsed += _tickInterval;
+            yield return new WaitForSeconds(tick);
 
             Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.Layer);
 
@@ -122,7 +130,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
             var toReset = new List<Character>();
             foreach (var kvp in targetTickCounts)
-                if (!currentTargets.Contains(kvp.Key))
+                if (kvp.Key == null || !currentTargets.Contains(kvp.Key))
                     toReset.Add(kvp.Key);
 
             foreach (var target in toReset)
@@ -156,40 +164,55 @@ public class PillarOfLight : Skill, IPolaritySwitchable
                         DamageableSkill = this,
                     };
                     CmdApplyHeal(heal, target.gameObject, this, nameof(PillarOfLight));
-                    _overhealMana.OnAnyHealTaken(target,heal.Value,this);
+                    _overhealMana.OnAnyHealTaken(target, heal.Value, this);
                 }
             }
         }
 
         _damageValue = _baseDamage;
-
-        CmdStopPillarVFX();
     }
+
+    #region VFX (по копии на столб, каждая живёт и уничтожается сама)
 
     [Command]
-    private void CmdStopPillarVFX() => RpcStopPillarVFX();
+    private void CmdSpawnPillarVFX(Vector3 position, float lifetime) => RpcSpawnPillarVFX(position, lifetime);
 
     [ClientRpc]
-    private void RpcPlayPillarVFX(Vector3 position)
+    private void RpcSpawnPillarVFX(Vector3 position, float lifetime)
     {
         if (_pillarVFX == null) return;
 
-        _pillarVFX.transform.SetParent(null);
-        _pillarVFX.transform.position = new Vector3(position.x, _pillarUpOffset, position.z);
-        _pillarVFX.gameObject.SetActive(true);
-        _pillarVFX.Stop();
-        _pillarVFX.Play();
+        var vfx = Instantiate(_pillarVFX, transform);
+        vfx.transform.SetParent(null);
+        vfx.transform.position = new Vector3(position.x, _pillarUpOffset, position.z);
+        vfx.gameObject.SetActive(true);
+        ApplyColor(vfx);
+        vfx.Play();
+
+        _activeVfx.Add(vfx);
+        Destroy(vfx.gameObject, lifetime);
     }
 
-    [ClientRpc]
-    private void RpcStopPillarVFX()
+    private void DestroyActiveVfx()
     {
-        if (_pillarVFX == null) return;
-
-        _pillarVFX.Stop();
-        _pillarVFX.gameObject.SetActive(false);
-        _pillarVFX.transform.SetParent(transform);
+        foreach (var vfx in _activeVfx)
+            if (vfx != null) Destroy(vfx.gameObject);
+        _activeVfx.Clear();
     }
+
+    private void ApplyColor(VisualEffect vfx)
+    {
+        if (vfx == null) return;
+        vfx.SetVector4("Color", isLightMode ? _lightColor : _darkColor);
+    }
+
+    private void UpdateVFXColors()
+    {
+        _activeVfx.RemoveAll(v => v == null);
+        foreach (var vfx in _activeVfx) ApplyColor(vfx);
+    }
+
+    #endregion
 
     public void SwitchMode() => CmdSwitchMode();
 
@@ -214,13 +237,5 @@ public class PillarOfLight : Skill, IPolaritySwitchable
         Cooldown.OnForceRefreshUI();
 
         UpdateVFXColors();
-    }
-
-    private void UpdateVFXColors()
-    {
-        if (_pillarVFX == null) return;
-        Color frontColor = isLightMode ? _lightColor : _darkColor;
-
-        _pillarVFX.SetVector4("Color", frontColor);
     }
 }

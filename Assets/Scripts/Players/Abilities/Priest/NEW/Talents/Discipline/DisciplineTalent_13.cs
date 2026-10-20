@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisciplineHpAuraTalent : Talent
+public class DisciplineTalent_13 : Talent
 {
     private readonly List<Skill> _disciplineSkills = new();
     private Character _priest;
@@ -33,6 +33,6 @@ public class DisciplineHpAuraTalent : Talent
     {
         if (_priest == null) return;
 
-        _priest.CharacterState.CmdAddState(States.DisciplineAura, 6f, 0f, _priest.gameObject, nameof(DisciplineHpAuraTalent));
+        _priest.CharacterState.CmdAddState(States.DisciplineAura, 6f, 0f, _priest.gameObject, nameof(DisciplineTalent_13));
     }
 }

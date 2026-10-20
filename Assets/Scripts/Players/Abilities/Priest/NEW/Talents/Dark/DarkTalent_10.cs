@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FearTalent : Talent
+public class DarkTalent_10 : Talent
 {
     [SerializeField] private SkillManager _skillManager;
     [SerializeField] private FearSkill _fear;

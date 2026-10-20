@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RisingShadowTalent : Talent
+public class DarkTalent_7 : Talent
 {
     [SerializeField] private SkillManager _skillManager;
     [SerializeField] private RisingOfShadows _risingOfShadows;

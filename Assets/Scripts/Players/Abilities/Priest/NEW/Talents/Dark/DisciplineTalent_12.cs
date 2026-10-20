@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ReverseDisciplineCostTalent : Talent
+public class DisciplineTalent_12 : Talent
 {
     public override void Enter()
     {

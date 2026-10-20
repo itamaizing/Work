@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class DisciplineTalent_7 : Talent
 {
-    [SerializeField] private EmeraldSkin emeraldSkin;
-    [SerializeField] private SkillManager ability;
-
     public override void Enter()
     {
-        ability.ActivateSkill(emeraldSkin);
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<DispelMagic>());
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(emeraldSkin);
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<DispelMagic>());
     }
 }

@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class CooldownReduceSoulAidTalent : Talent
+public class DisciplineTalent_14 : Talent
 {
     [SerializeField] private SoulAid _soulAid;
-    
+
     public override void Enter()
     {
         _soulAid.EnableCooldownReduce(true);

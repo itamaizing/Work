@@ -16643,11 +16643,13 @@ MonoBehaviour:
     _entries: []
   _player: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
+  _jumpBack: {fileID: 5778966895328886112}
   cooldownEnergy: {fileID: 5998867522025010555}
-  _cheliceraStrikeBaseDamage: 0
-  _damageMultiplier: 1.5
+  _damageMultiplierPerHit: 0.75
+  _secondHitDelay: 0.2
   _stunDuration: 1
   _stunDurationWithJumpBack: 2
+  _jumpBackStunWindow: 2
   cooldownEnergyCost: 5
 --- !u!114 &5998867522025010555
 MonoBehaviour:

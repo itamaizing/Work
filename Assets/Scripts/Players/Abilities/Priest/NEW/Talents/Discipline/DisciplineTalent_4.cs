@@ -6,14 +6,11 @@ public class DisciplineTalent_4 : Talent
 {
     public override void Enter()
     {
-
-        character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestShieldBoosterType.DisciplineShieldBoost, true);
-        character.Abilities.GetSkill<SoulAid>()?.EnableCooldownReduce(true);
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<SoulAid>());
     }
 
     public override void Exit()
     {
-        character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestShieldBoosterType.DisciplineShieldBoost, false);
-        character.Abilities.GetSkill<SoulAid>()?.EnableCooldownReduce(false);
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<SoulAid>());
     }
 }

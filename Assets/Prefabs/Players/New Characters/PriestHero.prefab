@@ -5975,7 +5975,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: 'managedReferences[-2]'
@@ -6055,15 +6055,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.size
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRows.Array.size
@@ -6094,22 +6094,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4688691370024449181}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRowss.Array.data[3]'
-      value: 
-      objectReference: {fileID: 529737604477222052}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRowss.Array.data[4]'
-      value: 
-      objectReference: {fileID: 2757403685024012163}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRowss.Array.data[5]'
-      value: 
-      objectReference: {fileID: 1960334501712407753}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRowss.Array.data[6]'
-      value: 
-      objectReference: {fileID: 1960334501712407753}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRowss.Array.data[0]'
       value: 
       objectReference: {fileID: 5432120872587217479}
@@ -6130,14 +6114,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7783918278128032343}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[1]._talentRowss.Array.data[5]'
-      value: 
-      objectReference: {fileID: 6447189447351944320}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[2]._talentRowss.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8152457869126807641}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRowss.Array.data[1]'
       value: 
       objectReference: {fileID: 6520106245208843862}
@@ -6145,18 +6121,6 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[2]._talentRowss.Array.data[2]'
       value: 
       objectReference: {fileID: 2917177749447327259}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[2]._talentRowss.Array.data[3]'
-      value: 
-      objectReference: {fileID: 3795806038531453358}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[2]._talentRowss.Array.data[4]'
-      value: 
-      objectReference: {fileID: 6148027053243259231}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[2]._talentRowss.Array.data[5]'
-      value: 
-      objectReference: {fileID: 6752882473827449485}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
       value: 3
@@ -6179,23 +6143,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[5].Talents.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[1]._talentRows.Array.data[2].Talents.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.data[2].Talents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.data[3].Talents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.data[4].Talents.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 13
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size
@@ -6203,6 +6175,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[2].Talents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRows.Array.data[3].Talents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRows.Array.data[4].Talents.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -6264,11 +6244,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 3177627248437086792}
+      objectReference: {fileID: 1620897168212950141}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 7612233333694750194}
+      objectReference: {fileID: 5181570234186880502}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[1].Talents.Array.data[3]'
       value: 
@@ -6276,15 +6256,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[2].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 1281202222772301622}
+      objectReference: {fileID: 7612233333694750194}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[2].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 1620897168212950141}
+      objectReference: {fileID: 6213938458790667722}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[2].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 5181570234186880502}
+      objectReference: {fileID: 366070555733763608}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[2].Talents.Array.data[3]'
       value: 
@@ -6292,11 +6272,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[3].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 6213938458790667722}
+      objectReference: {fileID: 3177627248437086792}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[3].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 366070555733763608}
+      objectReference: {fileID: 1892905678640223455}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[3].Talents.Array.data[2]'
       value: 
@@ -6304,27 +6284,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[4].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 1892905678640223455}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[4].Talents.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2757403685024012163}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[4].Talents.Array.data[2]'
-      value: 
-      objectReference: {fileID: 1960334501712407753}
+      objectReference: {fileID: 1281202222772301622}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[5].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 529737604477222052}
+      objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[5].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 2757403685024012163}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[5].Talents.Array.data[2]'
-      value: 
-      objectReference: {fileID: 1960334501712407753}
+      objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -6340,11 +6308,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 1255486327064035715}
+      objectReference: {fileID: 324435905908284838}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 4950409636944016261}
+      objectReference: {fileID: 7783918278128032343}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
@@ -6352,7 +6320,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 3478213680219408280}
+      objectReference: {fileID: 4509482585485726868}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
@@ -6360,39 +6328,63 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 3611811625373106224}
+      objectReference: {fileID: 3478213680219408280}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 4176941765033282452}
+      objectReference: {fileID: 6849414129597601330}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 2269395334650481872}
+      objectReference: {fileID: 324435905908284838}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 2269395334650481872}
+      objectReference: {fileID: 7783918278128032343}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 2269395334650481872}
+      objectReference: {fileID: 7435270414146612560}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[2].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 7585311711700827850}
+      objectReference: {fileID: 4509482585485726868}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[2].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 1255486327064035715}
+      objectReference: {fileID: 563115941158325563}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[2].Talents.Array.data[2]'
       value: 
+      objectReference: {fileID: 3478213680219408280}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[3].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6849414129597601330}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[3].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7750059677090892967}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[3].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 3535194576187798407}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[4].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1532170329898999614}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[4].Talents.Array.data[1]'
+      value: 
       objectReference: {fileID: 2269395334650481872}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[4].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 3535194576187798407}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 3668600976587566528}
+      objectReference: {fileID: 224450434947574136}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[1]'
       value: 
@@ -6400,7 +6392,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 5947597880137438549}
+      objectReference: {fileID: 2917177749447327259}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
@@ -6412,7 +6404,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 3625470232297120762}
+      objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
@@ -6432,35 +6424,59 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 3795806038531453358}
+      objectReference: {fileID: 7817105754564404268}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 6148027053243259231}
+      objectReference: {fileID: 8139570065210546635}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 6752882473827449485}
+      objectReference: {fileID: 6747766182818774668}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[2].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 8152457869126807641}
+      objectReference: {fileID: 4244215528697400128}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[2].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 4244215528697400128}
+      objectReference: {fileID: 3721933401981237356}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[2].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1195394457235852257}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[3].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1751634307066497890}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[3].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7295190237584266198}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[3].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1476416939872942239}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[4].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 564335671486160976}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[4].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7295190237584266198}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[4].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1476416939872942239}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 3668600976587566528}
+      objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[1]'
       value: 
       objectReference: {fileID: 6520106245208843862}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[2]'
-      value: 
-      objectReference: {fileID: 5947597880137438549}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
@@ -6469,10 +6485,6 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
       objectReference: {fileID: 8139570065210546635}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[5]'
-      value: 
-      objectReference: {fileID: 3625470232297120762}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
@@ -6489,22 +6501,6 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
       objectReference: {fileID: 1751634307066497890}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[3]._talentRows.Array.data[1].Talents.Array.data[0]'
-      value: 
-      objectReference: {fileID: 3795806038531453358}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[3]._talentRows.Array.data[1].Talents.Array.data[1]'
-      value: 
-      objectReference: {fileID: 6148027053243259231}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[3]._talentRows.Array.data[1].Talents.Array.data[2]'
-      value: 
-      objectReference: {fileID: 6752882473827449485}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_talents.Array.data[3]._talentRows.Array.data[2].Talents.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8152457869126807641}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -6524,7 +6520,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 2758643588401160248}
+      objectReference: {fileID: 7750059677090892967}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
@@ -7118,45 +7114,6 @@ PrefabInstance:
       addedObject: {fileID: 1891792751888252515}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8152457869126807641}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3668600976587566528}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2758643588401160248}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3535194576187798407}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3611811625373106224}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1532170329898999614}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4176941765033282452}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6520106245208843862}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2917177749447327259}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3795806038531453358}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6148027053243259231}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6752882473827449485}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5947597880137438549}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2455704407503805337}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -7166,13 +7123,34 @@ PrefabInstance:
       addedObject: {fileID: 4688691370024449181}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 529737604477222052}
+      addedObject: {fileID: 1440635593067955534}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2757403685024012163}
+      addedObject: {fileID: 1620897168212950141}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1960334501712407753}
+      addedObject: {fileID: 5181570234186880502}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7612233333694750194}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6213938458790667722}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 366070555733763608}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3177627248437086792}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1892905678640223455}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4440124965272578555}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1281202222772301622}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5432120872587217479}
@@ -7190,40 +7168,40 @@ PrefabInstance:
       addedObject: {fileID: 7783918278128032343}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6447189447351944320}
+      addedObject: {fileID: 7435270414146612560}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4950409636944016261}
+      addedObject: {fileID: 4509482585485726868}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1255486327064035715}
+      addedObject: {fileID: 563115941158325563}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3478213680219408280}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6849414129597601330}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7750059677090892967}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3535194576187798407}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1532170329898999614}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2269395334650481872}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3177627248437086792}
+      addedObject: {fileID: 224450434947574136}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1440635593067955534}
+      addedObject: {fileID: 6520106245208843862}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7612233333694750194}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1281202222772301622}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7585311711700827850}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4244215528697400128}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1751634307066497890}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 564335671486160976}
+      addedObject: {fileID: 2917177749447327259}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7817105754564404268}
@@ -7232,7 +7210,10 @@ PrefabInstance:
       addedObject: {fileID: 8139570065210546635}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3625470232297120762}
+      addedObject: {fileID: 6747766182818774668}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4244215528697400128}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3721933401981237356}
@@ -7241,37 +7222,16 @@ PrefabInstance:
       addedObject: {fileID: 1195394457235852257}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1751634307066497890}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 7295190237584266198}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1476416939872942239}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1620897168212950141}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5181570234186880502}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6213938458790667722}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 366070555733763608}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4440124965272578555}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1892905678640223455}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7435270414146612560}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3478213680219408280}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 563115941158325563}
+      addedObject: {fileID: 564335671486160976}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &300637093874885484 stripped
 GameObject:
@@ -9901,417 +9861,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 8127316380187346688}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8152457869126807641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1428e87ac4d16a642af1b5619c69b19f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0412 \u0440\u0430\u0437\u043C\u0435\u0440\u0435 10% \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0430 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u0441\u0435\u0431\u0435 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435 \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u043E\u0439 \u0442\u044C\u043C\u044B \u0438\u043B\u0438 \u0432\u044B\u043F\u043B\u0435\u0447\u0435\u043D\u043D\u043E\u0433\u043E \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0448\u043A\u043E\u043B\u043E\u0439 \u0441\u0432\u0435\u0442\u0430."
-    _stateInfos: []
-    Description: "\u0422\u044C\u043C\u0430 1"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 8db20962efa9e2045803d2d37ee0cf24, type: 3}
-    Group: 0
-    Row: 2
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833504
-  character: {fileID: 4534754468497973439}
-  stunMagicPassiveSkill: {fileID: 3842746931648952249}
-  manager: {fileID: 4092227064955680494}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833504
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &3668600976587566528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d184fd576acf0641987b632b09189d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DarkTalent_11
-  _data:
-    _descriptionsForInfoPanel:
-    - Dark talent 1
-    _stateInfos: []
-    Description: Dark Talent 1
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: b0e188c000d602d4fb9e4faef638d8bc, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833520
-  character: {fileID: 4534754468497973439}
-  _darkPassiveSkill: {fileID: 7714812283473049481}
-  _manager: {fileID: 4092227064955680494}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833520
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &2758643588401160248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e424efdc3efc9b849aa1efd6fa0c0d83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LightShieldManaRestoreTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - " \u0423\u0440\u043E\u043D \u043D\u0430\u043D\u043E\u0441\u0438\u043C\u044B\u0439 \u043E\u0442 \u0449\u0438\u0442\u0430 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u0432 \u0442\u043E\u043C \u0436\u0435 \u043E\u0431\u044A\u0451\u043C\u0435 \u043C\u0430\u043D\u043D\u0443"
-    _stateInfos: []
-    Description: 
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 40957c62b250799458fafb8f2403c271, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833524
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833524
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &3535194576187798407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20768221be14cc34990ad2892fb695fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ReverseDisciplineCostTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u043F\u0440\u0438 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438\u0437 \u0432\u0435\u0442\u043A\u0438 \u0434\u0438\u0441\u0446\u0438\u043F\u043B\u0438\u043D \u043D\u0435 \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u044E\u0442 \u043C\u0430\u043D\u043D\u0443 \u043D\u0430 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435"
-    _stateInfos: []
-    Description: 
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 6a0776508e81f27499dbf13e3ce0f3e0, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833523
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833523
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &3611811625373106224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f7a93da2c610bb498615bad3052a6e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpiritShieldReflectionTalent
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: "\u041E\u0442\u0440\u0430\u0436\u0430\u044E\u0449\u0438\u0439 \u0449\u0438\u0442 + \u043E\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u0438\u0435 \u0434\u0443\u0448\u0438"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 5f87305361922404b91845905135d326, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833526
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833526
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &1532170329898999614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a56614e7a0d4b764fa5521a806e44812, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DisciplineHpAuraTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - " \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043A\u0430\u043A \u0432\u044B \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0435\u0442\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438\u0437 \u0432\u0435\u0442\u043A\u0438 \u0434\u0438\u0441\u0446\u0438\u043F\u043B\u0438\u043D \u0443 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u044B \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0430\u0443\u0440\u0430 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C\u044E \u0440\u0430\u0434\u0438\u0443\u0441 10 \u043C\u0435\u0442\u0440\u043E\u0432, \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u043E\u0431\u0449\u0438\u0439 \u0437\u0430\u043F\u0430\u0441 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0435 \u043D\u0430 10% \u0438 \u0441\u043E\u044E\u0437\u043D\u044B\u043C \u0446\u0435\u043B\u044F\u043C \u043D\u0430 5% \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A"
-    _stateInfos: []
-    Description: 
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: aea9f397a0033a940a1f6f7e8555085d, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833522
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833522
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &4176941765033282452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36039400dcf1438cba80c24aff5f41fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmeraldSkinActiveTalent
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: EmeraldSkin
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: b96ef5c2db63f7047b341f92bbe584db, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833525
-  character: {fileID: 4534754468497973439}
-  _emeraldSkin: {fileID: 504324304728665980}
-  _ability: {fileID: 4092227064955680494}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833525
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &6520106245208843862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3eb81b4192e54847b3aa8b302bc381a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B - \u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u043F\u043E\u0442\u043E\u043A \u043F\u043E\u0432\u0440\u0435\u0436\u0434\u0430\u044E\u0449\u0438\u0439 \u0432\u0440\u0430\u0433\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 3 \u0441\u0435\u043A, \u043A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434 \u043F\u043E 8 \u0435\u0434\u0438\u043D\u0438\u0446.  \u0412 \u0441\u0432\u0435\u0442\u043B\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438: \u041F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430 - \u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u043F\u043E\u0442\u043E\u043A \u0432\u044B\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 3 \u0441\u0435\u043A, \u043A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A \u043F\u043E 8 \u0435\u0434\u0438\u043D\u0438\u0446. "
-    _stateInfos: []
-    Description: " \u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: fabecd4b12c76af489c2513b09c9acad, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833519
-  character: {fileID: 4534754468497973439}
-  flowOfLight: {fileID: 744928704386096395}
-  skillManager: {fileID: 4092227064955680494}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833519
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &2917177749447327259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3877b999b16db7e4eb17993aaef66b32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0418\u0441\u043A\u0440\u0430 \u0438 \u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430 \u0442\u044C\u043C\u043E\u0439 \u0438\u043C\u0435\u044E\u0442 20% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 \u0446\u0435\u043B\u044C \u0420\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435, \u0435\u0441\u043B\u0438 \u043D\u0430 \u0446\u0435\u043B\u0438 \u0438\u043C\u0435\u0435\u0442\u0441\u044F \u0420\u0430\u0437\u0440\u0443\u0448\u043D\u0438\u0435, \u0442\u043E \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u043F\u0440\u043E\u0434\u043B\u044F\u0435\u0442 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0412 \u0441\u0432\u0435\u0442\u043B\u043E\u0439 \u0441\u0443\u0449\u043D\u043E\u0441\u0442\u0438: \u0418\u0441\u043A\u0440\u0430 \u0438 \u041F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043F\u0440\u0438 \u0438\u0437\u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u0441\u0432\u0435\u0442\u043E\u043C \u0438\u043C\u0435\u044E\u0442 20% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 \u0446\u0435\u043B\u044C \u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435, \u0435\u0441\u043B\u0438 \u043D\u0430 \u0446\u0435\u043B\u0438 \u0438\u043C\u0435\u0435\u0442\u0441\u044F \u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435, \u0442\u043E \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u043F\u0440\u043E\u0434\u043B\u044F\u044E\u0442\u0441\u044F \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
-    _stateInfos: []
-    Description: "\u041D\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435\u043C"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: fe4df0145adb9c44b8d9aa3b1eddca61, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833555
-  character: {fileID: 4534754468497973439}
-  stunMagicPassiveSkill: {fileID: 3842746931648952249}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833555
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &3795806038531453358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce4446c53c3433f4a9a288d060376a60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u041A\u0430\u0436\u0434\u044B\u0435 10 \u0435\u0434\u0438\u043D\u0438\u0446 \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430 \u0442\u0435\u043C\u043D\u043E\u0439 \u043C\u0430\u0433\u0438\u0438,  \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C \u043D\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 50% \u043E\u0442 \u043E\u0431\u0449\u0435\u0439 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u0438 \u0429\u0438\u0442\u0430, \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u0429\u0438\u0442\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435  5 \u0441\u0435\u043A\u0443\u043D\u0434."
-    _stateInfos: []
-    Description: "\u0422\u044C\u043C\u0430 4"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 69173c48d46c4714590c13c26a289c33, type: 3}
-    Group: 0
-    Row: 1
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833507
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833507
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &6148027053243259231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 680fbcc8ee1c1b642985c88c310f76c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: '-'
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
-    Group: 0
-    Row: 1
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833506
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833506
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &6752882473827449485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eb222be29164bc4a8d77aac57e2e799, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: '-'
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
-    Group: 0
-    Row: 1
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833505
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833505
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &5947597880137438549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f251f3ea367bdf4428783c566bea3a64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DarkTalent_7
-  _data:
-    _descriptionsForInfoPanel:
-    - "\"\u0418\u0441\u043A\u0440\u0430 \u0442\u044C\u043C\u044B\" \u0438 \"\u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B\" \u043F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u044E\u0442 20% \u0448\u0430\u043D\u0441 \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C \u043A \u0446\u0435\u043B\u0438 \"\u0420\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435\". \u0415\u0441\u043B\u0438 \u0443\u0436\u0435 \u0435\u0441\u0442\u044C \"\u0420\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435\": \u043F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430 \u043E\u043D\u043E \u043F\u0440\u043E\u0434\u043B\u0435\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0412 \u0441\u0432\u0435\u0442\u043B\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438: \"\u0418\u0441\u043A\u0440\u0430 \u0441\u0432\u0435\u0442\u0430\" \u0438 \"\u041F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430\" \u043F\u0440\u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0438 \u0438\u043C\u0435\u044E\u0442 20% \u0448\u0430\u043D\u0441 \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C \u043A \u0446\u0435\u043B\u0438 \"\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435\"."
-    _stateInfos: []
-    Description: "\u041D\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435\u043C"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 893f912149befbd4980a4594fa3e744a, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833518
-  character: {fileID: 4534754468497973439}
-  _baffDuration: 12
-  _baffAdditionalTime: 3
-  _baffChance: 0.2
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833518
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
 --- !u!114 &2455704407503805337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10415,7 +9964,7 @@ MonoBehaviour:
     - rid: 1938344042130833548
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &529737604477222052
+--- !u!114 &1440635593067955534
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10424,29 +9973,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcad7409666555c408d755d26441673f, type: 3}
+  m_Script: {fileID: 11500000, guid: 55dfa4b7fc9e61849ae6df1c5b17f26f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::DomeOfLightTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\u041A\u0430\u0436\u0434\u044B\u0435 10 \u0435\u0434\u0438\u043D\u0438\u0446 \u0432\u044B\u043B\u0435\u0447\u0435\u043D\u043D\u044B\u0445 \u0436\u0438\u0437\u043D\u0435\u0439 \u043C\u0430\u0433\u0438\u0435\u0439 \u0441\u0432\u0435\u0442\u0430,  \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C \u043D\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 50% \u043E\u0442 \u043E\u0431\u0449\u0435\u0439 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u0438 \u0429\u0438\u0442\u0430, \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u0429\u0438\u0442\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435  5 \u0441\u0435\u043A\u0443\u043D\u0434."
+    - "\u043E\u0442 \u0441\u0432\u044F\u0449\u0435\u043D\u0438\u0446\u044B \u0440\u0430\u0441\u0448\u0438\u0440\u044F\u0435\u0442\u0441\u044F \u043A\u0443\u043F\u043E\u043B \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441, \u043D\u0430\u043D\u0441\u043E\u044F\u0449\u0438\u0439 \u0443\u0440\u043E\u043D \u0432\u0440\u0430\u0433\u0430\u043C \u043E\u0442 \u0441\u0432\u0435\u0442\u0430 4 \u0435\u0434., \u0438 \u0438\u0437\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432 \u043D\u0430 4 \u0435\u0434"
     _stateInfos: []
-    Description: "\u0421\u0432\u0435\u0442 4"
+    Description: "\u041A\u0443\u043F\u043E\u043B \u0441\u0432\u0435\u0442\u0430"
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: cf85a84bc37267344a14e23196eb804f, type: 3}
+    Icon: {fileID: 21300000, guid: 01ef8fbf398ab6348ba04e7bc29bf4a4, type: 3}
     Group: 0
-    Row: 1
+    Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833537
+    rid: 1938344042130833547
   character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _domeOfLight: {fileID: 3163430235383499094}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833537
+    - rid: 1938344042130833547
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &2757403685024012163
+--- !u!114 &1620897168212950141
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10455,57 +10006,280 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 590ff992e959ef84aa8b27dbfc6895a3, type: 3}
+  m_Script: {fileID: 11500000, guid: c7afe57f675e1eb4ab269939814e2e17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0441\u043B\u0435 \u0412\u0441\u043F\u044B\u0448\u043A\u0435 \u0441\u0432\u0435\u0442\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0430\u044F \u0418\u0441\u043A\u0440\u0430 \u0441\u0432\u0435\u0442\u0430 \u0431\u0443\u0434\u0435\u0442 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435 \u043D\u0430 2 \u0435\u0434\u0438\u043D\u0438\u0446\u044B, \u0441 \u043A\u0430\u0436\u0434\u044B\u043C \u043F\u043E\u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u043C \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0432 2 \u0440\u0430\u0437\u0430 \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E 4\u0451\u0445 \u0440\u0430\u0437. 1 \u0441\u0442\u0430\u043A-2 \u0435\u0434\u0438\u043D\u0438\u0446\u044B 2 \u0441\u0442\u0430\u043A-4 \u0435\u0434\u0438\u043D\u0438\u0446\u044B 3 \u0441\u0442\u0430\u043A-8 \u0435\u0434\u0438\u043D\u0438\u0446\u044B "
-    _stateInfos: []
-    Description: "\u0421\u0432\u0435\u0442 5"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
-    Group: 0
-    Row: 1
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833536
-  character: {fileID: 4534754468497973439}
-  _sparkOfLight: {fileID: 683463177557245195}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833536
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &1960334501712407753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b206cc051d4da7049a5d4e6e02f3c11b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::InstantFlashOfLightTalent
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    Description: '-'
+    Description: "\u041C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0439 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u0441\u043F\u044B\u0448\u043A\u0438 \u0441\u0432\u0435\u0442\u0430"
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
     Group: 0
-    Row: 1
+    Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833535
+    rid: 1938344042130833543
   character: {fileID: 4534754468497973439}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833535
+    - rid: 1938344042130833543
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &5181570234186880502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b1b36dd39612c2458aae4ac7861a519, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OverhealManaBoosterTalent
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    Description: "\u041E\u0432\u0435\u0440\u0445\u0438\u043B\u043B \u043C\u0430\u043D\u0430"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 5b53cad99487f0147be177f5009be820, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833542
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833542
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &7612233333694750194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8878b10e2ae42c046a7f2580afe6b3f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PillarOfLightTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0432 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u043E\u0439 \u043E\u0431\u043B\u0430\u0441\u0442\u0438 \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0441\u0442\u043E\u043B\u0431 \u0441\u0432\u0435\u0442\u0430 \u0438\u0437\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0441\u043E\u044E\u0437\u043D\u044B\u0435 \u0446\u0435\u043B\u0438 \u0438 \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0438\u0439 \u0443\u0440\u043E\u043D \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0446\u0435\u043B\u044F\u043C"
+    _stateInfos: []
+    Description: "\u0421\u0442\u043E\u043B\u0431 \u0421\u0432\u0435\u0442\u0430"
+    ConditionDescription: 
+    Icon: {fileID: -7687848835106167530, guid: fdc6082616e238544808bda9e4cd01f2, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833545
+  character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _pillarOfLight: {fileID: 9198197295651917431}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833545
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &6213938458790667722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32ec7f8cfd383f0449f8ee276c6ccde4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RestorationManaTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\"\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435\" \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u0446\u0435\u043B\u0438 \u043C\u0430\u043D\u043D\u0443 \u0432 \u0442\u043E\u043C \u0436\u0435 \u043E\u0431\u044A\u0451\u043C\u0435 \u0447\u0442\u043E \u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0435"
+    _stateInfos: []
+    Description: "\u041F\u043E\u043B\u043D\u043E\u0435 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: bb8ccd8b0e67e4c4b95fe511875e03dd, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833541
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833541
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &366070555733763608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72540eb11daa5048839e14fbe6504b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DomeProcTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\"\u041A\u0443\u043F\u043E\u043B \u0441\u0432\u0435\u0442\u0430\" \u0438\u043C\u0435\u0435\u0442 30% \u0448\u0430\u043D\u0441 \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438 \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043E\u0442 \u0446\u0435\u043B\u0438 \u043A\u0442\u043E\u0440\u0443\u044E \u043B\u0435\u0447\u0438\u043B \u0441 \u0442\u043E\u0439 \u0436\u0435 \u0441\u0438\u043B\u043E\u0439 \u0447\u0442\u043E \u043E\u0440\u0438\u0433\u0438\u043D\u0430\u043B\u044C\u043D\u044B\u0439 \u043A\u0443\u043F\u043E\u043B"
+    _stateInfos: []
+    Description: "\u0426\u0435\u043F\u043D\u043E\u0439 \u043A\u0443\u043F\u043E\u043B"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 0e863c62e1caec544a13d716449436e8, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833540
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833540
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &3177627248437086792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ae9ba4affbf9174396feebe85e4e929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RetributionLightTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0412 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E \u043E\u0431\u043B\u0430\u0441\u0442\u044C \u0447\u0435\u0440\u0435\u0437 \u0441\u0435\u043A\u0443\u043D\u0434\u0443 \u0441\u0432\u0435\u0440\u0445\u0443 \u043F\u0430\u0434\u0430\u0435\u0442 \u043B\u0443\u0447 \u0441\u0432\u0435\u0442\u0430, \u043D\u0430\u043D\u043E\u0441\u044F 40 \u0435\u0434. \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u043E\u0439 \u0441\u0432\u0435\u0442\u0430 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0446\u0435\u043B\u044F\u043C"
+    _stateInfos: []
+    Description: "\u0412\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435 \u0441\u0432\u0435\u0442\u0430"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833546
+  character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _retributionLight: {fileID: 2384888892488266055}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833546
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &1892905678640223455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 926505b4597c4bb42af09f2faec3cb4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RestorationHealBoosterTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u0438\u0435 \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0441\u0432\u043E\u044E \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u043D\u043E\u0432\u0442\u044C\u0441 \u043B\u0435\u0447\u0435\u043D\u0438\u0435\u044F \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0442\u0430\u043A\u0442 \u043D\u0430 20% \u043E\u0442 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E \u0446\u0435\u043B\u044C\u044E \u043B\u0435\u0447\u0435\u043D\u0438\u044F \u043E\u0442 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u044B \u043D\u0430 \u043E\u0441\u0432\u0442\u0430\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F. \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u044D\u0442\u0430 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u0430\u044F \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C \u0441\u043F\u0430\u0434\u0430\u0435\u0442."
+    _stateInfos: []
+    Description: "\u0423\u0441\u0438\u043B\u0438\u0432\u0430\u044E\u0449\u0435\u0435 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0432\u043B\u0435\u043D\u0438\u0435"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 31dbceb263cafaa458e7f30743b9267a, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833538
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833538
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &4440124965272578555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ebb5cd6c3cd52498bf7547dbdb40ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RetributionTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u0435\u0442 20% \u0448\u0430\u043D\u0441 \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \"\u0432\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435\" \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u044E\u0449\u0435\u0439 \u0443\u0440\u043E\u043D \u043C\u0430\u0433\u0438\u0435\u0439 \u0441\u0432\u0435\u0442\u0430 \u043D\u0430 15% \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E 3\u0451\u0445 \u0440\u0430\u0437 \u043D\u0430 6 \u0441\u0435\u043A., \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u043A\u0430\u0441\u0442\u0443\u044E\u0449\u0438\u0445\u0441\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439, \u043D\u0435 \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0438 \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439."
+    _stateInfos: []
+    Description: "\u0412\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 1dbf779255a5a4e43a5c2914a64be01f, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833539
+  character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _retribution: {fileID: 1383847730869930601}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833539
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &1281202222772301622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77776e0aa7bd94942a8d1c21241149ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RadianceOfLightTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0432\u043E\u043A\u0440\u0443\u0433 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0446\u044B \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 2 \u043A\u043B\u0435\u0442\u043E\u043A (4 \u0434\u0438\u0430\u043C\u0435\u0442\u0440) \u043E\u0441\u0432\u0435\u0449\u0430\u0435\u0442\u0441\u044F \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u043E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044F 20 \u0435\u0434 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0432 \u0441\u0435\u043A. \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0435 \u0438 \u0432\u0441\u0435\u043C \u0441\u043E\u044E\u0437\u043D\u044B\u043C \u0446\u0435\u043B\u044F\u043C \u0438 \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0430\u044F 20 \u0435\u0434. \u0443\u0440\u043E\u043D\u0430 \u0432\u0441\u0435\u043C \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0448\u043A\u043E\u043B\u043E\u0439 \u0441\u0432\u0435\u0442\u0430."
+    _stateInfos: []
+    Description: "\u0418\u0437\u043B\u0443\u0447\u0435\u043D\u0438\u0435 \u0441\u0432\u0435\u0442\u0430"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833544
+  character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _radianceOfLight: {fileID: 8095898515459106270}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833544
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
 --- !u!114 &5432120872587217479
@@ -10648,7 +10422,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd9748891b7afbb44968c24beb78440c, type: 3}
   m_Name: 
@@ -10675,7 +10449,7 @@ MonoBehaviour:
     - rid: 1938344042130833553
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &6447189447351944320
+--- !u!114 &7435270414146612560
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10684,61 +10458,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63563663bf2f36043b857f908462e30c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c9ace8e292cd884da17a2d8eb4648f0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: '-'
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
-    Group: 0
-    Row: 1
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833552
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833552
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &4950409636944016261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b28df2f668885e47bd02a337da14afe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DispelTiredSoulTalent
+  m_EditorClassIdentifier: Assembly-CSharp::ReversePolarityMovementTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\u041C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u0435\u0442 \u043A \u0441\u0432\u044F\u0449\u0435\u043D\u0438\u0446\u0435 \u0441\u043E\u044E\u0437\u043D\u0443\u044E \u0446\u0435\u043B\u044C \u0441 \u0434\u0435\u0431\u0430\u0444\u043E\u043C \xAB\u0443\u0441\u0442\u0430\u0432\u0448\u0430\u044F \u0434\u0443\u0448\u0430\xBB"
+    - " \u041F\u0440\u0438 \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438 \xAB\u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438\xBB \u0440\u0430\u0437\u043E\u0432\u043E \u0441\u043D\u0438\u043C\u0430\u044E\u0442\u0441\u044F \u0432\u0441\u0435 \u044D\u0444\u0444\u0435\u043A\u0442\u044B \u0437\u0430\u043C\u0435\u0434\u043B\u044F\u044E\u0449\u0438\u0435 \u043F\u0435\u0440\u0435\u0434\u0432\u0435\u0436\u0435\u043D\u0438\u0435 \u0438 \u043D\u0430 \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \xAB\u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438\xBB \u0441\u043A\u043E\u0440\u043E\u0441\u0442 \u044C\u043F\u0435\u0440\u0435\u0434\u0432\u0435\u0436\u0435\u043D\u0438\u044F \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0441\u044F \u043D\u0430 30%"
     _stateInfos: []
-    Description: "\u041F\u043E\u043C\u043E\u0449\u044C \u0434\u0443\u0448\u0435"
+    Description: 
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: a78251261ef4e80459022c6f987b7ee8, type: 3}
+    Icon: {fileID: 21300000, guid: 76dce41fe9615c848a5ea29307d7a56c, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833530
+    rid: 1938344042130833529
   character: {fileID: 4534754468497973439}
-  _soulAid: {fileID: 3096350181652607353}
-  _ability: {fileID: 4092227064955680494}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833530
+    - rid: 1938344042130833529
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &1255486327064035715
+--- !u!114 &4509482585485726868
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10747,26 +10489,212 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7e2c74252f68fd43bb8b311d6a5e1fa, type: 3}
+  m_Script: {fileID: 11500000, guid: bcab3906fab3d0a45ae2abe217496e45, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::D5TalentShield
+  m_EditorClassIdentifier: Assembly-CSharp::DisciplineTalent_7
   _data:
     _descriptionsForInfoPanel:
-    - "\u041A\u0430\u0436\u0434\u044B\u0435 10 \u0435\u0434\u0438\u043D\u0438\u0446 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C \u043D\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 50% \u043E\u0442 \u043E\u0431\u0449\u0435\u0439 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u0438 \u0429\u0438\u0442\u0430, \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u0429\u0438\u0442\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435  5 \u0441\u0435\u043A\u0443\u043D\u0434."
+    - "\u0421\u043D\u0438\u043C\u0430\u0435\u0442 \u0441 \u0446\u0435\u043B\u0438 1 \u0441\u0442\u0430\u043A \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0435\u0433\u043E \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u044D\u0444\u0444\u0435\u043A\u0442\u0430."
     _stateInfos: []
-    Description: "\u0414\u0438\u0441\u0446\u0438\u043F\u043B\u0438\u043D\u0430 5"
+    Description: "\u0420\u0430\u0437\u0432\u0435\u0438\u0432\u0430\u043D\u0438\u0435 \u043C\u0430\u0433\u0438\u0438 "
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 83cbe403e7272f749ad9c94b038f8bbf, type: 3}
+    Icon: {fileID: 21300000, guid: de1bca2bb34e47e4c98398017802a954, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833531
+    rid: 137597745213473060
   character: {fileID: 4534754468497973439}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833531
+    - rid: 137597745213473060
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &563115941158325563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71388dd7b4f98e244ae05c80640edbbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoulTiredDispelTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\xAB\u041F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435 \u0434\u0443\u0448\u0438\xBB \u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u0434\u0435\u0431\u0430\u0444\u0444 \xAB\u0443\u0441\u0442\u0430\u0432\u0448\u0430\u044F \u0434\u0443\u0448\u0430\xBB (\u043E\u0442 \u0449\u0438\u0442\u0430 \u0442\u0430\u043B 1\u0434), \xAB\u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435\xBB \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C \u043A \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0435 \u0434\u043B\u044F \u0441\u043D\u044F\u0442\u0438\u044F \u0434\u0435\u0431\u0430\u0444\u0430"
+    _stateInfos: []
+    Description: 
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 0856882a62b3faf409614fff9c27e700, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833527
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833527
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &3478213680219408280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b5b25f89e58fe40a6b0492391a1435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DispelMagicTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444 \u0438\u043B\u0438 \u0434\u0435\u0431\u0430\u0444 \u0441 \u0446\u0435\u043B\u0438. (\u0441 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430 \u0434\u0435\u0431\u0430\u0444, \u0441 \u0432\u0440\u0430\u0433\u0430 \u0431\u0430\u0444)"
+    _stateInfos: []
+    Description: "\u0420\u0430\u0437\u0432\u0435\u0438\u0432\u0430\u043D\u0438\u0438 \u043C\u0430\u0433\u0438\u0438"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: de1bca2bb34e47e4c98398017802a954, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833528
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833528
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &6849414129597601330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a68a42edf2d4cb3b513e6578984a344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisciplineTalent_10
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0441\u043E\u043F\u0440\u043E\u0442\u0438\u0432\u043B\u0435\u043D\u0438\u0438 \u043C\u0430\u0433\u0438\u0438 \u0438 \u0444\u0438\u0437. \u0437\u0430\u0449\u0438\u0442\u0443 \u043D\u0430 90%."
+    _stateInfos: []
+    Description: "\u0418\u0437\u0443\u043C\u0440\u0443\u0434\u043D\u0430\u044F \u043A\u043E\u0436\u0430"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: b96ef5c2db63f7047b341f92bbe584db, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 137597745213473061
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 137597745213473061
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &7750059677090892967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd43e0ebbfc479e8276c5b33c6530cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisciplineTalent_11
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D \u0449\u0438\u0442 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u043C\u0430\u043D\u0443 \u0432 \u0442\u043E\u043C \u0436\u0435 \u043E\u0431\u044A\u0435\u043C\u0435."
+    _stateInfos: []
+    Description: "\u0414\u0438\u0441\u0446\u0438\u043F\u043B\u0438\u043D\u0430 11"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 5b53cad99487f0147be177f5009be820, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 137597745213473062
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 137597745213473062
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &3535194576187798407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20768221be14cc34990ad2892fb695fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReverseDisciplineCostTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043F\u0440\u0438 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438\u0437 \u0432\u0435\u0442\u043A\u0438 \u0434\u0438\u0441\u0446\u0438\u043F\u043B\u0438\u043D \u043D\u0435 \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u044E\u0442 \u043C\u0430\u043D\u043D\u0443 \u043D\u0430 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435"
+    _stateInfos: []
+    Description: 
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 6a0776508e81f27499dbf13e3ce0f3e0, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833523
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833523
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &1532170329898999614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a56614e7a0d4b764fa5521a806e44812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisciplineHpAuraTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043A\u0430\u043A \u0432\u044B \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0435\u0442\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438\u0437 \u0432\u0435\u0442\u043A\u0438 \u0434\u0438\u0441\u0446\u0438\u043F\u043B\u0438\u043D \u0443 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u044B \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0430\u0443\u0440\u0430 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C\u044E \u0440\u0430\u0434\u0438\u0443\u0441 10 \u043C\u0435\u0442\u0440\u043E\u0432, \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u043E\u0431\u0449\u0438\u0439 \u0437\u0430\u043F\u0430\u0441 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0435 \u043D\u0430 10% \u0438 \u0441\u043E\u044E\u0437\u043D\u044B\u043C \u0446\u0435\u043B\u044F\u043C \u043D\u0430 5% \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A"
+    _stateInfos: []
+    Description: 
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: aea9f397a0033a940a1f6f7e8555085d, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833522
+  character: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833522
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
 --- !u!114 &2269395334650481872
@@ -10801,7 +10729,7 @@ MonoBehaviour:
     - rid: 1938344042130833521
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &3177627248437086792
+--- !u!114 &224450434947574136
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10810,31 +10738,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ae9ba4affbf9174396feebe85e4e929, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d184fd576acf0641987b632b09189d6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RetributionLightTalent
+  m_EditorClassIdentifier: Assembly-CSharp::DarkTalent_1
   _data:
     _descriptionsForInfoPanel:
-    - "\u0412 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E \u043E\u0431\u043B\u0430\u0441\u0442\u044C \u0447\u0435\u0440\u0435\u0437 \u0441\u0435\u043A\u0443\u043D\u0434\u0443 \u0441\u0432\u0435\u0440\u0445\u0443 \u043F\u0430\u0434\u0430\u0435\u0442 \u043B\u0443\u0447 \u0441\u0432\u0435\u0442\u0430, \u043D\u0430\u043D\u043E\u0441\u044F 40 \u0435\u0434. \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u043E\u0439 \u0441\u0432\u0435\u0442\u0430 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0446\u0435\u043B\u044F\u043C"
+    - "\u0413\u0435\u0440\u043E\u0439 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u0441\u0435\u0431\u0435 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435 \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435 10% \u043E\u0442 \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u043E\u0439 \u0442\u044C\u043C\u044B \u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u044F \u0448\u043A\u043E\u043B\u043E\u0439 \u0441\u0432\u0435\u0442\u0430"
     _stateInfos: []
-    Description: "\u0412\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435 \u0441\u0432\u0435\u0442\u0430"
+    Description: "\u0422\u0435\u043C\u043D\u043E\u0435 \u0431\u043B\u0430\u0433\u043E\u0441\u043B\u043E\u0432\u0435\u043D\u0438\u0435"
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
+    Icon: {fileID: 21300000, guid: 8db20962efa9e2045803d2d37ee0cf24, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833546
+    rid: 137597747693355008
   character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _retributionLight: {fileID: 2384888892488266055}
+  _darkPassiveSkill: {fileID: 7714812283473049481}
+  _manager: {fileID: 4092227064955680494}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833546
+    - rid: 137597747693355008
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &1440635593067955534
+--- !u!114 &6520106245208843862
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10843,31 +10771,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55dfa4b7fc9e61849ae6df1c5b17f26f, type: 3}
+  m_Script: {fileID: 11500000, guid: c3eb81b4192e54847b3aa8b302bc381a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DomeOfLightTalent
+  m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u043E\u0442 \u0441\u0432\u044F\u0449\u0435\u043D\u0438\u0446\u044B \u0440\u0430\u0441\u0448\u0438\u0440\u044F\u0435\u0442\u0441\u044F \u043A\u0443\u043F\u043E\u043B \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441, \u043D\u0430\u043D\u0441\u043E\u044F\u0449\u0438\u0439 \u0443\u0440\u043E\u043D \u0432\u0440\u0430\u0433\u0430\u043C \u043E\u0442 \u0441\u0432\u0435\u0442\u0430 4 \u0435\u0434., \u0438 \u0438\u0437\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432 \u043D\u0430 4 \u0435\u0434"
+    - "\u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B - \u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u043F\u043E\u0442\u043E\u043A \u043F\u043E\u0432\u0440\u0435\u0436\u0434\u0430\u044E\u0449\u0438\u0439 \u0432\u0440\u0430\u0433\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 3 \u0441\u0435\u043A, \u043A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434 \u043F\u043E 8 \u0435\u0434\u0438\u043D\u0438\u0446.  \u0412 \u0441\u0432\u0435\u0442\u043B\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438: \u041F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430 - \u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u043F\u043E\u0442\u043E\u043A \u0432\u044B\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 3 \u0441\u0435\u043A, \u043A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A \u043F\u043E 8 \u0435\u0434\u0438\u043D\u0438\u0446. "
     _stateInfos: []
-    Description: "\u041A\u0443\u043F\u043E\u043B \u0441\u0432\u0435\u0442\u0430"
+    Description: " \u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B"
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 01ef8fbf398ab6348ba04e7bc29bf4a4, type: 3}
+    Icon: {fileID: 21300000, guid: fabecd4b12c76af489c2513b09c9acad, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833547
+    rid: 1938344042130833519
   character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _domeOfLight: {fileID: 3163430235383499094}
+  flowOfLight: {fileID: 744928704386096395}
+  skillManager: {fileID: 4092227064955680494}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833547
+    - rid: 1938344042130833519
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &7612233333694750194
+--- !u!114 &2917177749447327259
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10876,192 +10804,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8878b10e2ae42c046a7f2580afe6b3f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 3877b999b16db7e4eb17993aaef66b32, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PillarOfLightTalent
+  m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0432 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u043E\u0439 \u043E\u0431\u043B\u0430\u0441\u0442\u0438 \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0441\u0442\u043E\u043B\u0431 \u0441\u0432\u0435\u0442\u0430 \u0438\u0437\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0441\u043E\u044E\u0437\u043D\u044B\u0435 \u0446\u0435\u043B\u0438 \u0438 \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0438\u0439 \u0443\u0440\u043E\u043D \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0446\u0435\u043B\u044F\u043C"
+    - "\u0418\u0441\u043A\u0440\u0430 \u0438 \u041F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438 \u0443\u0440\u043E\u043D\u0430 \u0442\u044C\u043C\u043E\u0439 \u0438\u043C\u0435\u044E\u0442 20% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 \u0446\u0435\u043B\u044C \u0420\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435, \u0435\u0441\u043B\u0438 \u043D\u0430 \u0446\u0435\u043B\u0438 \u0438\u043C\u0435\u0435\u0442\u0441\u044F \u0420\u0430\u0437\u0440\u0443\u0448\u043D\u0438\u0435, \u0442\u043E \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u043F\u0440\u043E\u0434\u043B\u044F\u0435\u0442 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0412 \u0441\u0432\u0435\u0442\u043B\u043E\u0439 \u0441\u0443\u0449\u043D\u043E\u0441\u0442\u0438: \u0418\u0441\u043A\u0440\u0430 \u0438 \u041F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043F\u0440\u0438 \u0438\u0437\u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u0441\u0432\u0435\u0442\u043E\u043C \u0438\u043C\u0435\u044E\u0442 20% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 \u0446\u0435\u043B\u044C \u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435, \u0435\u0441\u043B\u0438 \u043D\u0430 \u0446\u0435\u043B\u0438 \u0438\u043C\u0435\u0435\u0442\u0441\u044F \u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435, \u0442\u043E \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u043F\u0440\u043E\u0434\u043B\u044F\u044E\u0442\u0441\u044F \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
     _stateInfos: []
-    Description: "\u0421\u0442\u043E\u043B\u0431 \u0421\u0432\u0435\u0442\u0430"
+    Description: "\u041D\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435\u043C"
     ConditionDescription: 
-    Icon: {fileID: -7687848835106167530, guid: fdc6082616e238544808bda9e4cd01f2, type: 3}
+    Icon: {fileID: 21300000, guid: fe4df0145adb9c44b8d9aa3b1eddca61, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833545
+    rid: 1938344042130833555
   character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _pillarOfLight: {fileID: 9198197295651917431}
+  stunMagicPassiveSkill: {fileID: 3842746931648952249}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833545
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &1281202222772301622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77776e0aa7bd94942a8d1c21241149ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RadianceOfLightTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0432\u043E\u043A\u0440\u0443\u0433 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0446\u044B \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 2 \u043A\u043B\u0435\u0442\u043E\u043A (4 \u0434\u0438\u0430\u043C\u0435\u0442\u0440) \u043E\u0441\u0432\u0435\u0449\u0430\u0435\u0442\u0441\u044F \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u043E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044F 20 \u0435\u0434 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0432 \u0441\u0435\u043A. \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0435 \u0438 \u0432\u0441\u0435\u043C \u0441\u043E\u044E\u0437\u043D\u044B\u043C \u0446\u0435\u043B\u044F\u043C \u0438 \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0430\u044F 20 \u0435\u0434. \u0443\u0440\u043E\u043D\u0430 \u0432\u0441\u0435\u043C \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0448\u043A\u043E\u043B\u043E\u0439 \u0441\u0432\u0435\u0442\u0430."
-    _stateInfos: []
-    Description: "\u0418\u0437\u043B\u0443\u0447\u0435\u043D\u0438\u0435 \u0441\u0432\u0435\u0442\u0430"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833544
-  character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _radianceOfLight: {fileID: 8095898515459106270}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833544
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &7585311711700827850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d699bb1e49829448b19909409c10b0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShieldAttackTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0449\u0438\u0442 \u043D\u0430\u043D\u043E\u0441\u0438\u0442 \u0443\u0440\u043E\u043D \u0432 100% \u043E\u0431\u044A\u0451\u043C\u0435 \u0446\u0435\u043B\u0438 \u043A\u043E\u0442\u043E\u0440\u0430\u044F \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u043B\u0430 \u0442\u0435\u043C \u0436\u0435 \u0442\u0438\u043F\u043E\u043C \u0443\u0440\u043E\u043D\u0430"
-    _stateInfos: []
-    Description: "\u041E\u0442\u0440\u0430\u0436\u0430\u044E\u0449\u0438\u0439 \u0449\u0438\u0442"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 69173c48d46c4714590c13c26a289c33, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833551
-  character: {fileID: 4534754468497973439}
-  _priestShield: {fileID: 9090548113051291277}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833551
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &4244215528697400128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38086d4bc50904f4584ec7a066dfc07b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RisingShadowTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - " \u0412 \u043E\u0431\u043B\u0430\u0441\u0442\u0438 \u043E\u043A\u043E\u043B\u043E \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u0445 \u0446\u0435\u043B\u0435\u0439 \u043F\u043E\u044F\u0432\u044F\u043B\u044F\u044E\u0442\u0441\u044F \u0442\u0435\u043D\u0438 \u043D\u0430 6 \u0441\u0435\u043A\u0443\u043D\u0434, \u0438\u043C\u044E\u0449\u0438\u0435 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0435\u0434\u0432\u0435\u0436\u0435\u043D\u0438\u044F 50% \u043E\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0446\u0435\u043B\u0438, \u043A\u0430\u0436\u0434\u0430\u044F \u0442\u0435\u043D\u044C \u0434\u0432\u0438\u0436\u0435\u0442\u0441\u044F \u0438 \u0430\u0442\u0430\u043A\u0443\u0435\u0442 (\u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F \u0431\u044C\u0442\u0451 \u0440\u0443\u043A\u043E\u0439 1,2 \u0441\u0435\u043A \u043F\u0440\u0438\u043C\u0435\u043D) \u0442\u0443 \u0446\u0435\u043B\u044C \u0432\u043E\u0437\u043B\u0435 \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u043F\u043E\u044F\u0432\u0438\u043B\u0430\u0441\u044C, \u043D\u0430\u043D\u043E\u0441\u044F 2% \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u043E\u0439 \u0442\u044C\u043C\u044B \u043E\u0442 \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0446\u0435\u043B\u0438"
-    _stateInfos: []
-    Description: "\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0438\u0435 \u0442\u0435\u043D\u0435\u0439"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 3a4185520579a514291190bd487ed03e, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833514
-  character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _risingOfShadows: {fileID: 7665012576937268854}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833514
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &1751634307066497890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f3850712557c043860496440f685bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FearTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0441\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0430 \u0438\u0441\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0442\u0451\u043C\u043D\u0443\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u044E, \u0446\u0435\u043B\u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 1,5 \u043C\u0435\u0442\u0440\u0430 \u043E\u0442 \u0441\u0432\u044F\u0449\u0449\u0435\u043D\u0438\u0446\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438 \u0434\u0435\u0431\u0430\u0444\u0444 \u0442\u044C\u043C\u044B \"\u0441\u0442\u0440\u0430\u0445\", \u043D\u0430 6 \u0441\u0435\u043A\u0443\u043D\u0434, \u0446\u0435\u043B\u0438 \u043D\u0435 \u043C\u043E\u0433\u0443\u0442 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438 \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u0441\u044C\u044F"
-    _stateInfos: []
-    Description: "\u0421\u0442\u0440\u0430\u0445"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 9a7c0478b2a51454394162ee14c948b0, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833511
-  character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _fear: {fileID: 7650511108258493519}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833511
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &564335671486160976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e9b6c761dce71f488292d33c9a51bb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MergeDarkTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0441\u0432\u044F\u0449\u0435\u043D\u0438\u0446\u0430 \u0441\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0441 \u0442\u044C\u043C\u043E\u0439 \u043D\u0430 4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B, \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0448\u0430\u043D\u0441 \u043F\u0440\u043E\u043C\u0430\u0445\u0430 \u043F\u043E \u043D\u0435\u0439 \u043D\u0430 +30%, \u0448\u0430\u043D\u0441 \u0441\u043E\u043F\u0440\u043E\u0442\u0438\u0432\u043B\u0435\u043D\u0438\u044F \u043C\u0430\u0433\u0438\u0438 +30%, \u043C\u043E\u0436\u0435\u0442 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u0432\u0441\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0432 \u0442\u0451\u043C\u043D\u043E\u0439 \u043F\u043E\u043B\u0440\u044F\u043D\u043E\u0441\u0442\u0438 \u043A\u0430\u043A \u0432 \u0442\u0451\u043C\u043D\u043E\u0439 \u0444\u043E\u0440\u043C\u0435, \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F \u043D\u0435\u0432\u043E\u0441\u043F\u0440\u0438\u0438\u043C\u0447\u0438\u0432\u0430 \u043A \u044D\u0444\u0444\u0435\u0442\u043A\u0430\u043C \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044F"
-    _stateInfos: []
-    Description: "\u0421\u043B\u0438\u044F\u043D\u0438\u0435 \u0441 \u0442\u044C\u043C\u043E\u0439"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: f409fa50ae9f2e249b56d48431b78dc4, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833508
-  character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _mergeWithDarkness: {fileID: 1585020486036998203}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833508
+    - rid: 1938344042130833555
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
 --- !u!114 &7817105754564404268
@@ -11129,7 +10892,7 @@ MonoBehaviour:
     - rid: 1938344042130833516
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &3625470232297120762
+--- !u!114 &6747766182818774668
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11140,24 +10903,57 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3048c331764acd6448b24ce45a548b52, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AoeSparkTalent
+  m_EditorClassIdentifier: Assembly-CSharp::DarkTalent_6
   _data:
     _descriptionsForInfoPanel:
-    - "\u0418\u0441\u043A\u0440\u0430 \u0442\u044C\u043C\u044B \u0438 \u043F\u043E\u0442\u043E\u043A \u0442\u044C\u043C\u044B, \u043D\u0430\u043D\u043E\u0441\u044F\u0442 30% \u043E\u0442 \u0443\u0440\u043E\u043D\u0430 \u0446\u0435\u043B\u044F\u043C \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 1 \u043C\u0435\u0442\u0440\u0430 \u043E\u0442 \u043E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u0418\u0441\u043A\u0440\u0430 \u0441\u0432\u0435\u0442\u0430 \u0438 \u043F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430, \u0432\u044B\u043B\u0435\u0447\u0438\u0432\u0430\u044E\u0442 30% \u043E\u0442 \u043B\u0435\u0447\u0435\u043D\u0438\u044F \u0446\u0435\u043B\u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 1 \u043C\u0435\u0442\u0440\u0430 \u043E\u0442 \u043E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0446\u0435\u043B\u0438"
+    - "\u0418\u0441\u043A\u0440\u0430 \u0441\u0432\u0435\u0442\u0430/\u0442\u044C\u043C\u044B \u0438 \u043F\u043E\u0442\u043E\u043A \u0441\u0432\u0435\u0442\u0430/\u0442\u044C\u043C\u044B \u0441\u0440\u0430\u0431\u0430\u0442\u044B\u0432\u0430\u044E\u0442 \u0432 1 \u043C\u0435\u0442\u0440\u0435 \u0432\u043E\u043A\u0440\u0443\u0433 \u0446\u0435\u043B\u0438 \u0441 30% \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C\u044E."
     _stateInfos: []
-    Description: AOE SPARK TALENT
+    Description: "\u0422\u044C\u043C\u0430 6"
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 94cafd1c714d96c488b3a33d9a3c1083, type: 3}
+    Icon: {fileID: 21300000, guid: f409fa50ae9f2e249b56d48431b78dc4, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833515
+    rid: 137597747693355009
   character: {fileID: 4534754468497973439}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833515
+    - rid: 137597747693355009
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
+--- !u!114 &4244215528697400128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38086d4bc50904f4584ec7a066dfc07b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RisingShadowTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u0412 \u043E\u0431\u043B\u0430\u0441\u0442\u0438 \u043E\u043A\u043E\u043B\u043E \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u0445 \u0446\u0435\u043B\u0435\u0439 \u043F\u043E\u044F\u0432\u044F\u043B\u044F\u044E\u0442\u0441\u044F \u0442\u0435\u043D\u0438 \u043D\u0430 6 \u0441\u0435\u043A\u0443\u043D\u0434, \u0438\u043C\u044E\u0449\u0438\u0435 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0435\u0434\u0432\u0435\u0436\u0435\u043D\u0438\u044F 50% \u043E\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0446\u0435\u043B\u0438, \u043A\u0430\u0436\u0434\u0430\u044F \u0442\u0435\u043D\u044C \u0434\u0432\u0438\u0436\u0435\u0442\u0441\u044F \u0438 \u0430\u0442\u0430\u043A\u0443\u0435\u0442 (\u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F \u0431\u044C\u0442\u0451 \u0440\u0443\u043A\u043E\u0439 1,2 \u0441\u0435\u043A \u043F\u0440\u0438\u043C\u0435\u043D) \u0442\u0443 \u0446\u0435\u043B\u044C \u0432\u043E\u0437\u043B\u0435 \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u043F\u043E\u044F\u0432\u0438\u043B\u0430\u0441\u044C, \u043D\u0430\u043D\u043E\u0441\u044F 2% \u0443\u0440\u043E\u043D\u0430 \u0448\u043A\u043E\u043B\u043E\u0439 \u0442\u044C\u043C\u044B \u043E\u0442 \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u0446\u0435\u043B\u0438"
+    _stateInfos: []
+    Description: "\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0438\u0435 \u0442\u0435\u043D\u0435\u0439"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 3a4185520579a514291190bd487ed03e, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833514
+  character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _risingOfShadows: {fileID: 7665012576937268854}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833514
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
 --- !u!114 &3721933401981237356
@@ -11228,6 +11024,39 @@ MonoBehaviour:
     - rid: 1938344042130833512
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+--- !u!114 &1751634307066497890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f3850712557c043860496440f685bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FearTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0441\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0430 \u0438\u0441\u043F\u0443\u0441\u043A\u0430\u0435\u0442 \u0442\u0451\u043C\u043D\u0443\u044E \u044D\u043D\u0435\u0440\u0433\u0438\u044E, \u0446\u0435\u043B\u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 1,5 \u043C\u0435\u0442\u0440\u0430 \u043E\u0442 \u0441\u0432\u044F\u0449\u0449\u0435\u043D\u0438\u0446\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438 \u0434\u0435\u0431\u0430\u0444\u0444 \u0442\u044C\u043C\u044B \"\u0441\u0442\u0440\u0430\u0445\", \u043D\u0430 6 \u0441\u0435\u043A\u0443\u043D\u0434, \u0446\u0435\u043B\u0438 \u043D\u0435 \u043C\u043E\u0433\u0443\u0442 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438 \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u0441\u044C\u044F"
+    _stateInfos: []
+    Description: "\u0421\u0442\u0440\u0430\u0445"
+    ConditionDescription: 
+    Icon: {fileID: 21300000, guid: 9a7c0478b2a51454394162ee14c948b0, type: 3}
+    Group: 0
+    Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 1938344042130833511
+  character: {fileID: 4534754468497973439}
+  _skillManager: {fileID: 4092227064955680494}
+  _fear: {fileID: 7650511108258493519}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1938344042130833511
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7295190237584266198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11294,7 +11123,7 @@ MonoBehaviour:
     - rid: 1938344042130833509
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
---- !u!114 &1620897168212950141
+--- !u!114 &564335671486160976
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11303,275 +11132,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8908408265001011226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7afe57f675e1eb4ab269939814e2e17, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e9b6c761dce71f488292d33c9a51bb0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InstantFlashOfLightTalent
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: "\u041C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0439 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u0441\u043F\u044B\u0448\u043A\u0438 \u0441\u0432\u0435\u0442\u0430"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833543
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833543
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &5181570234186880502
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b1b36dd39612c2458aae4ac7861a519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OverhealManaBoosterTalent
-  _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
-    Description: "\u041E\u0432\u0435\u0440\u0445\u0438\u043B\u043B \u043C\u0430\u043D\u0430"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 5b53cad99487f0147be177f5009be820, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833542
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833542
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &6213938458790667722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32ec7f8cfd383f0449f8ee276c6ccde4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RestorationManaTalent
+  m_EditorClassIdentifier: Assembly-CSharp::MergeDarkTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\"\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435\" \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u0446\u0435\u043B\u0438 \u043C\u0430\u043D\u043D\u0443 \u0432 \u0442\u043E\u043C \u0436\u0435 \u043E\u0431\u044A\u0451\u043C\u0435 \u0447\u0442\u043E \u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0435"
+    - "\u0441\u0432\u044F\u0449\u0435\u043D\u0438\u0446\u0430 \u0441\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0441 \u0442\u044C\u043C\u043E\u0439 \u043D\u0430 4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B, \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0448\u0430\u043D\u0441 \u043F\u0440\u043E\u043C\u0430\u0445\u0430 \u043F\u043E \u043D\u0435\u0439 \u043D\u0430 +30%, \u0448\u0430\u043D\u0441 \u0441\u043E\u043F\u0440\u043E\u0442\u0438\u0432\u043B\u0435\u043D\u0438\u044F \u043C\u0430\u0433\u0438\u0438 +30%, \u043C\u043E\u0436\u0435\u0442 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u0432\u0441\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0432 \u0442\u0451\u043C\u043D\u043E\u0439 \u043F\u043E\u043B\u0440\u044F\u043D\u043E\u0441\u0442\u0438 \u043A\u0430\u043A \u0432 \u0442\u0451\u043C\u043D\u043E\u0439 \u0444\u043E\u0440\u043C\u0435, \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F \u043D\u0435\u0432\u043E\u0441\u043F\u0440\u0438\u0438\u043C\u0447\u0438\u0432\u0430 \u043A \u044D\u0444\u0444\u0435\u0442\u043A\u0430\u043C \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044F"
     _stateInfos: []
-    Description: "\u041F\u043E\u043B\u043D\u043E\u0435 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435"
+    Description: "\u0421\u043B\u0438\u044F\u043D\u0438\u0435 \u0441 \u0442\u044C\u043C\u043E\u0439"
     ConditionDescription: 
-    Icon: {fileID: 21300000, guid: bb8ccd8b0e67e4c4b95fe511875e03dd, type: 3}
+    Icon: {fileID: 21300000, guid: f409fa50ae9f2e249b56d48431b78dc4, type: 3}
     Group: 0
     Row: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 1938344042130833541
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833541
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &366070555733763608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e72540eb11daa5048839e14fbe6504b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DomeProcTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\"\u041A\u0443\u043F\u043E\u043B \u0441\u0432\u0435\u0442\u0430\" \u0438\u043C\u0435\u0435\u0442 30% \u0448\u0430\u043D\u0441 \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438 \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043E\u0442 \u0446\u0435\u043B\u0438 \u043A\u0442\u043E\u0440\u0443\u044E \u043B\u0435\u0447\u0438\u043B \u0441 \u0442\u043E\u0439 \u0436\u0435 \u0441\u0438\u043B\u043E\u0439 \u0447\u0442\u043E \u043E\u0440\u0438\u0433\u0438\u043D\u0430\u043B\u044C\u043D\u044B\u0439 \u043A\u0443\u043F\u043E\u043B"
-    _stateInfos: []
-    Description: "\u0426\u0435\u043F\u043D\u043E\u0439 \u043A\u0443\u043F\u043E\u043B"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 0e863c62e1caec544a13d716449436e8, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833540
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833540
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &4440124965272578555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1ebb5cd6c3cd52498bf7547dbdb40ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RetributionTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u041F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u0435\u0442 20% \u0448\u0430\u043D\u0441 \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \"\u0432\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435\" \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u044E\u0449\u0435\u0439 \u0443\u0440\u043E\u043D \u043C\u0430\u0433\u0438\u0435\u0439 \u0441\u0432\u0435\u0442\u0430 \u043D\u0430 15% \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E 3\u0451\u0445 \u0440\u0430\u0437 \u043D\u0430 6 \u0441\u0435\u043A., \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u043A\u0430\u0441\u0442\u0443\u044E\u0449\u0438\u0445\u0441\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439, \u043D\u0435 \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0438 \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439."
-    _stateInfos: []
-    Description: "\u0412\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 1dbf779255a5a4e43a5c2914a64be01f, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833539
+    rid: 1938344042130833508
   character: {fileID: 4534754468497973439}
   _skillManager: {fileID: 4092227064955680494}
-  _retribution: {fileID: 1383847730869930601}
+  _mergeWithDarkness: {fileID: 1585020486036998203}
   references:
     version: 2
     RefIds:
-    - rid: 1938344042130833539
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &1892905678640223455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 926505b4597c4bb42af09f2faec3cb4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RestorationHealBoosterTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u0438\u0435 \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0441\u0432\u043E\u044E \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u043D\u043E\u0432\u0442\u044C\u0441 \u043B\u0435\u0447\u0435\u043D\u0438\u0435\u044F \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0442\u0430\u043A\u0442 \u043D\u0430 20% \u043E\u0442 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E \u0446\u0435\u043B\u044C\u044E \u043B\u0435\u0447\u0435\u043D\u0438\u044F \u043E\u0442 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u044B \u043D\u0430 \u043E\u0441\u0432\u0442\u0430\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F. \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u044D\u0442\u0430 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u0430\u044F \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C \u0441\u043F\u0430\u0434\u0430\u0435\u0442."
-    _stateInfos: []
-    Description: "\u0423\u0441\u0438\u043B\u0438\u0432\u0430\u044E\u0449\u0435\u0435 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0432\u043B\u0435\u043D\u0438\u0435"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 31dbceb263cafaa458e7f30743b9267a, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833538
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833538
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &7435270414146612560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c9ace8e292cd884da17a2d8eb4648f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ReversePolarityMovementTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - " \u041F\u0440\u0438 \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438 \xAB\u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438\xBB \u0440\u0430\u0437\u043E\u0432\u043E \u0441\u043D\u0438\u043C\u0430\u044E\u0442\u0441\u044F \u0432\u0441\u0435 \u044D\u0444\u0444\u0435\u043A\u0442\u044B \u0437\u0430\u043C\u0435\u0434\u043B\u044F\u044E\u0449\u0438\u0435 \u043F\u0435\u0440\u0435\u0434\u0432\u0435\u0436\u0435\u043D\u0438\u0435 \u0438 \u043D\u0430 \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \xAB\u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u0438\xBB \u0441\u043A\u043E\u0440\u043E\u0441\u0442 \u044C\u043F\u0435\u0440\u0435\u0434\u0432\u0435\u0436\u0435\u043D\u0438\u044F \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0441\u044F \u043D\u0430 30%"
-    _stateInfos: []
-    Description: 
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 76dce41fe9615c848a5ea29307d7a56c, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833529
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833529
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &3478213680219408280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b5b25f89e58fe40a6b0492391a1435, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DispelMagicTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444 \u0438\u043B\u0438 \u0434\u0435\u0431\u0430\u0444 \u0441 \u0446\u0435\u043B\u0438. (\u0441 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430 \u0434\u0435\u0431\u0430\u0444, \u0441 \u0432\u0440\u0430\u0433\u0430 \u0431\u0430\u0444)"
-    _stateInfos: []
-    Description: "\u0420\u0430\u0437\u0432\u0435\u0438\u0432\u0430\u043D\u0438\u0438 \u043C\u0430\u0433\u0438\u0438"
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: de1bca2bb34e47e4c98398017802a954, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833528
-  character: {fileID: 4534754468497973439}
-  _skillManager: {fileID: 4092227064955680494}
-  _dispelMagic: {fileID: 1891792751888252515}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833528
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
---- !u!114 &563115941158325563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71388dd7b4f98e244ae05c80640edbbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoulTiredDispelTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\xAB\u041F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435 \u0434\u0443\u0448\u0438\xBB \u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u0434\u0435\u0431\u0430\u0444\u0444 \xAB\u0443\u0441\u0442\u0430\u0432\u0448\u0430\u044F \u0434\u0443\u0448\u0430\xBB (\u043E\u0442 \u0449\u0438\u0442\u0430 \u0442\u0430\u043B 1\u0434), \xAB\u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435\xBB \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C \u043A \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u0438\u0446\u0435 \u0434\u043B\u044F \u0441\u043D\u044F\u0442\u0438\u044F \u0434\u0435\u0431\u0430\u0444\u0430"
-    _stateInfos: []
-    Description: 
-    ConditionDescription: 
-    Icon: {fileID: 21300000, guid: 0856882a62b3faf409614fff9c27e700, type: 3}
-    Group: 0
-    Row: 0
-    MaxLvl: 0
-  OpenCondition:
-    rid: 1938344042130833527
-  character: {fileID: 4534754468497973439}
-  references:
-    version: 2
-    RefIds:
-    - rid: 1938344042130833527
+    - rid: 1938344042130833508
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 

@@ -1,18 +1,18 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class DomeOfLightTalent : Talent
+public class LightTalent_7 : Talent
 {
     [SerializeField] private SkillManager _skillManager;
-    [SerializeField] private DomeOfLight _domeOfLight;
+    [SerializeField] private PillarOfLight _pillarOfLight;
     
     public override void Enter()
     {
-        _skillManager.ActivateSkill(_domeOfLight);
+        _skillManager.ActivateSkill(_pillarOfLight);
     }
 
     public override void Exit()
     {
-        _skillManager.DeactivateSkill(_domeOfLight);
+        _skillManager.DeactivateSkill(_pillarOfLight);
     }
 }

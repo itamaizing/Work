@@ -1,22 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DarkTalent_4 : Talent
 {
+    [SerializeField] private SkillManager _skillManager;
+    [SerializeField] private DarkForm _darkForm;
+
     public override void Enter()
     {
-        var priestShield = character.Abilities.GetSkill<PriestShield>();
-        priestShield?.DarkMagicBoostBooster.Enable(true);
+        _skillManager.ActivateSkill(_darkForm);
     }
 
     public override void Exit()
     {
-        var priestShield = character.Abilities.GetSkill<PriestShield>();
-        if (priestShield != null)
-        {
-            priestShield.DarkMagicBoostBooster.Enable(false);
-            priestShield.DarkMagicBoostBooster.ResetAccumulator();
-        }
+        _skillManager.DeactivateSkill(_darkForm);
     }
 }

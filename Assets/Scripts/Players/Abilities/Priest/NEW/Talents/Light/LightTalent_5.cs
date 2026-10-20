@@ -1,20 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LightTalent_5 : Talent
 {
-    [SerializeField] private SparkOfLight _sparkOfLight;
+    private InstantFlashBooster _flowBooster;
+    private InstantFlashBooster _sparkBooster;
 
     public override void Enter()
     {
-        //_sparkOfLight.EnableLowHealthTalent(true);
-        _sparkOfLight.EnableHealingBuffTalent(true);
+        var flow = character.Abilities.GetSkill<FlowOfLight>();
+        var spark = character.Abilities.GetSkill<SparkOfLight>();
+
+        flow?.InstantFlashBooster?.Enable(true);
+        spark?.InstantFlashBooster?.Enable(true);
+        
+        _flowBooster = flow?.InstantFlashBooster;
+        _sparkBooster = spark?.InstantFlashBooster;
     }
 
     public override void Exit()
     {
-        //_sparkOfLight.EnableLowHealthTalent(false);
-        _sparkOfLight.EnableHealingBuffTalent(false);
+        _flowBooster?.Enable(false);
+        _sparkBooster?.Enable(false);
     }
 }

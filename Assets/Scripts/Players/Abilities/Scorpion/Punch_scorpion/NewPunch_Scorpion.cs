@@ -180,7 +180,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield break;
-        if (!IsTargetInRange()) yield break;
+        //if (!IsTargetInRange()) yield break;
         _hero.Move.LookAtTransform(Targeting.GetTarget()?.Targetable.Transform);
         _isRightKick = !_isRightKick;
         _lastTarget = Targeting.GetTarget()?.Character;
@@ -197,9 +197,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
         var target = Targeting.GetTarget().Object;
         if (target == null) return;
-
-        if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
-            return;
 
         Damage damage = new Damage
         {

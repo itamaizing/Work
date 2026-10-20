@@ -1,23 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LightTalent_4 : Talent
 {
+    [SerializeField] private SkillManager _skillManager;
+    [SerializeField] private DomeOfLight _domeOfLight;
+    
     public override void Enter()
     {
-        var priestShield = character.Abilities.GetSkill<PriestShield>();
-        if (priestShield != null)
-            priestShield.HealingBoostBooster.Enable(true);
+        _skillManager.ActivateSkill(_domeOfLight);
     }
 
     public override void Exit()
     {
-        var priestShield = character.Abilities.GetSkill<PriestShield>();
-        if (priestShield != null)
-        {
-            priestShield.HealingBoostBooster.Enable(false);
-            priestShield.HealingBoostBooster.ResetAccumulator();
-        }
+        _skillManager.DeactivateSkill(_domeOfLight);
     }
 }

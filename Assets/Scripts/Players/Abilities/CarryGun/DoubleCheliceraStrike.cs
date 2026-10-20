@@ -1,17 +1,24 @@
 ﻿using Mirror;
-using System;
 using System.Collections;
+using SkillSystem.States;
 using UnityEngine;
 
 public class DoubleCheliceraStrike : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike cheliceraStrike;
+    [SerializeField] private JumpBack _jumpBack;
     [SerializeField] private CooldownEnergy cooldownEnergy;
-    [SerializeField] private float _cheliceraStrikeBaseDamage;
-    [SerializeField] private float _damageMultiplier = 0.75f * 2f;
+
+    [Header("Damage")]
+    [SerializeField] private float _damageMultiplierPerHit = 0.75f;
+    [SerializeField] private float _secondHitDelay = 0.2f;
+
+    [Header("Stun")]
     [SerializeField] private float _stunDuration = 1f;
     [SerializeField] private float _stunDurationWithJumpBack = 2f;
+    [SerializeField] private float _jumpBackStunWindow = 2f;
+
     [SerializeField] private float cooldownEnergyCost = 5;
 
     private static readonly int DoubleCheliceraStrikeAnimTrigger = Animator.StringToHash("DoubleCheliceraStrikeAnimation");
@@ -21,25 +28,29 @@ public class DoubleCheliceraStrike : Skill
 
     protected override bool IsCanCast => IsTargetInRange() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 
-    private void OnEnable()
-    {
-        _cheliceraStrikeBaseDamage = cheliceraStrike.Damage;
-        OnSkillCanceled += HandleSkillCanceled;
-    }
-
+    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget()?.Character == null) yield return null;
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null) yield break;
 
-        DealDoubleCheliceraStrikeDamage(Targeting.GetTarget()?.Character);
-
+        bool afterJumpBack = _hero.Abilities.LastCastedSkill is JumpBack jump
+                             && jump.LastEndReason == SkillEndReason.Completed;
+        
+        cheliceraStrike.RollStrike(target, _damageMultiplierPerHit);
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
+        if (_secondHitDelay > 0f) yield return new WaitForSeconds(_secondHitDelay);
+
+        if (target != null && !target.IsDead)
+        {
+            cheliceraStrike.RollStrike(target, _damageMultiplierPerHit);
+            CmdApplyStun(target, afterJumpBack);
+        }
+
         ComboContext.ClawStrikeContext.Set(typeof(DoubleCheliceraStrike));
-        
-        yield return null;
     }
 
     private bool IsTargetInRange()
@@ -52,29 +63,10 @@ public class DoubleCheliceraStrike : Skill
     private void HandleSkillCanceled()
     {
         Targeting.ClearTarget();
-        //_target = null;
         _isCanCancel = true;
     }
 
-    private void DealDoubleCheliceraStrikeDamage(IDamageable targetCharacter)
-    {
-        float totalDamage = _cheliceraStrikeBaseDamage * _damageMultiplier;
-
-        Damage damage = new Damage
-        {
-            Value = totalDamage,
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack
-        };
-
-        CmdApplyDamage(damage, targetCharacter.gameObject);
-        if (targetCharacter is Character character) CmdApplyStun(character);
-    }
-
-    public void DoubleCheliceraStrikeCast()
-    {
-        AnimStartCastCoroutine();
-    }
+    public void DoubleCheliceraStrikeCast() => AnimStartCastCoroutine();
 
     public void DoubleCheliceraStrikeEnded()
     {
@@ -83,12 +75,11 @@ public class DoubleCheliceraStrike : Skill
     }
 
     [Command]
-    private void CmdApplyStun(Character target)
+    private void CmdApplyStun(Character target, bool afterJumpBack)
     {
-        var lastSkill = _player.Abilities.LastCastedSkill;
-
-        if ((lastSkill is JumpBack))  target.CharacterState.AddState(States.Stun, _stunDurationWithJumpBack, 0, _player.gameObject, null);
-        else target.CharacterState.AddState(States.Stun, _stunDuration, 0, _player.gameObject, null);
+        if (target == null) return;
+        float duration = afterJumpBack ? _stunDurationWithJumpBack : _stunDuration;
+        target.CharacterState.AddState(States.Stun, duration, 0, _player.gameObject, null);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -100,7 +91,5 @@ public class DoubleCheliceraStrike : Skill
     protected override void ClearData()
     {
         Targeting.ClearTarget();
-        //_target = null;
     }
 }
-

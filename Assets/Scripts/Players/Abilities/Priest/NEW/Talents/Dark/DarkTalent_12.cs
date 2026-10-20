@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GettingDispelTalent : Talent
+public class DarkTalent_12 : Talent
 {
     [SerializeField] private SkillManager _skillManager;
     [SerializeField] private GettingDispelPassive _gettingDispel;

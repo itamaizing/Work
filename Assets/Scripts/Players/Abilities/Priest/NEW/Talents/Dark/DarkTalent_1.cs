@@ -1,21 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DarkTalent_1 : Talent
 {
-    [SerializeField] StunMagicPassiveSkill stunMagicPassiveSkill;
-    [SerializeField] SkillManager manager;
+    [SerializeField] Dark1PassiveSkill _darkPassiveSkill;
+    [SerializeField] SkillManager _manager;
 
     public override void Enter()
     {
-        manager.ActivateSkill(stunMagicPassiveSkill);
-        //stunMagicPassiveSkill.DamageDarkHealLightAddHealth(true, Data.DescriptionsForInfoPanel[0]);
+        _manager.ActivateSkill(_darkPassiveSkill);
     }
 
     public override void Exit()
     {
-        manager.DeactivateSkill(stunMagicPassiveSkill);
-        //stunMagicPassiveSkill.DamageDarkHealLightAddHealth(false, Data.DescriptionsForInfoPanel[0]);
+        _manager.DeactivateSkill(_darkPassiveSkill);
     }
 }

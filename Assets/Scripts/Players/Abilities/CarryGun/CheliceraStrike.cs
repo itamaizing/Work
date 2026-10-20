@@ -152,18 +152,26 @@ public class CheliceraStrike : Skill
         Targeting.ClearTempTarget();
         AnimCastEnded();
     }
+    
+    public void DamageDealChelicera(IDamageable target) => DamageDealChelicera(target, 1f, true);
+    
+    public void RollStrike(IDamageable target, float damageMultiplier)
+    {
+        _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
+        DamageDealChelicera(target, damageMultiplier, false);
+    }
 
-    public void DamageDealChelicera(IDamageable target)
+    private void DamageDealChelicera(IDamageable target, float damageMultiplier, bool useJumpBonus)
     {
         if (target == null) return;
         Character targetCharacter = target as Character;
 
-        if (_jumpWithChelicera.IsJumpDone)
-        {
-            float bonusDamage = _baseDamage * _additionalDamageFromSkill;
-            Damage = _baseDamage + bonusDamage;
-        }
-        else Damage = _baseDamage;
+        if (useJumpBonus && _jumpWithChelicera.IsJumpDone)
+            Damage = _baseDamage + _baseDamage * _additionalDamageFromSkill;
+        else
+            Damage = _baseDamage;
+
+        Damage *= damageMultiplier;
 
         if (isEvolutionTalentTwo)
         {

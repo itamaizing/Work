@@ -2,16 +2,21 @@ using UnityEngine;
 
 public class DarkTalent_11 : Talent
 {
-    [SerializeField] Dark1PassiveSkill _darkPassiveSkill;
-    [SerializeField] SkillManager _manager;
+    [SerializeField] private DarkManaRestoreSkill _darkSkill;
+    [SerializeField] private SkillManager _skillManager;
 
     public override void Enter()
     {
-        _manager.ActivateSkill(_darkPassiveSkill);
+        _skillManager.ActivateSkill(_darkSkill);
+        
+        if(!_darkSkill.DarkManaEnabled)
+            _darkSkill.EnableDarkMana(true);
     }
 
     public override void Exit()
     {
-        _manager.DeactivateSkill(_darkPassiveSkill);
+        _skillManager.DeactivateSkill(_darkSkill);
+        
+        _darkSkill.EnableDarkMana(false);
     }
 }

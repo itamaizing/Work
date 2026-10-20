@@ -143,7 +143,6 @@ public class ClawStrike : Skill
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield break;
-        if (!IsTargetInRange()) yield break;
 
         Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
 
@@ -161,9 +160,7 @@ public class ClawStrike : Skill
 
         yield return null;
     }
-
-    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(_player.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius; }
-
+    
     private void DamageDeal(ITargetable target)
     {
         if (target == null) return;

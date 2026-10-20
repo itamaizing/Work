@@ -9,13 +9,11 @@ public class DisciplineTalent_5 : Talent
 
 	public override void Enter()
 	{
-		_ability.ActivateSkill(_soulAid);
-		_soulAid.EnableDoubleRange(true);
+		character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestShieldBoosterType.PhysicalShieldBoost, true);
 	}
 
 	public override void Exit()
 	{
-		_ability.DeactivateSkill(_soulAid);
-		_soulAid.EnableDoubleRange(false);
+		character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestShieldBoosterType.PhysicalShieldBoost, false);
 	}
 }

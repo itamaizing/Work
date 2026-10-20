@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MergeDarkTalent : Talent
+public class DarkTalent_13 : Talent
 {
     [SerializeField] private SkillManager _skillManager;
     [SerializeField] private MergeWithDarknessSkill _mergeWithDarkness;

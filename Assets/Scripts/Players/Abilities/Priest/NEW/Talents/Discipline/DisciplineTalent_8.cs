@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SoulTiredDispelTalent : Talent
+public class DisciplineTalent_8 : Talent
 {
     public override void Enter()
     {

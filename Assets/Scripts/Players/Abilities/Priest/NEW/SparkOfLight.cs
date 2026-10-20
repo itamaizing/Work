@@ -77,8 +77,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;
     
     #region Aoe Talent
-    private AoeTalentBooster _aoeBooster;
-    public AoeTalentBooster AoeBooster => _aoeBooster;
+    private AoeTalentBooster _darkTalent6;
+    public AoeTalentBooster DarkTalent_6 => _darkTalent6;
     #endregion
     #region SpiritHealthOnShadow
     private bool _spiritHealthIsEnabled;
@@ -117,7 +117,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         _instantFlash.Inject(flashSkill);
         
         _overhealMana = new OverhealManaBooster(this, Hero);
-        _aoeBooster = new AoeTalentBooster(this);
+        _darkTalent6 = new AoeTalentBooster(this);
     }
 
     private void OnEnable()
@@ -444,7 +444,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         if (isLight)
         {
-            var targets = _aoeBooster?.GetHealableTargets(target, _healAmount, this);
+            var targets = _darkTalent6?.GetHealableTargets(target, _healAmount, this);
             if (targets != null) {
                 foreach (var heal in targets)
                 {
@@ -455,7 +455,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         }
         else
         {
-            var targets = _aoeBooster?.GetDamagebleTarget(target, _healAmount, this);
+            var targets = _darkTalent6?.GetDamagebleTarget(target, _healAmount, this);
             if (targets != null) {
                 foreach (var heal in targets)
                 {

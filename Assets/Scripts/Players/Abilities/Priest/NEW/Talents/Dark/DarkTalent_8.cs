@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FlowLightDebaf : Talent
+public class DarkTalent_8 : Talent
 {
     [SerializeField] private FlowOfLight _flow;
     public override void Enter()

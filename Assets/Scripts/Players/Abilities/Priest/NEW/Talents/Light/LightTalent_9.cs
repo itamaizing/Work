@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DomeProcTalent : Talent
+public class LightTalent_9 : Talent
 {
     public override void Enter()
     {

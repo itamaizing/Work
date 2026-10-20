@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RestorationHealBoosterTalent : Talent
+public class LightTalent_11 : Talent
 {
     public override void Enter()
     {

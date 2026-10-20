@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SpiritHealthOnDestruction : Talent
+public class DarkTalent_9 : Talent
 {
     [SerializeField] private ShadowSkill _shadow;
     [SerializeField] private RisingOfShadows _risingOfShadows;

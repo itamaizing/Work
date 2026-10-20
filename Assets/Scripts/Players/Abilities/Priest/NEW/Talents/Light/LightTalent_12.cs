@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RetributionTalent : Talent
+public class LightTalent_12 : Talent
 {
     [SerializeField] private SkillManager _skillManager;
     [SerializeField] private RetributionSkill _retribution;
