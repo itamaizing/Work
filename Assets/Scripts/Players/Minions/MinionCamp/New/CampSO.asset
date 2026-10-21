@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29b1c1bf1277f1a498de80f807987cd3, type: 3}
+  m_Name: CampSO
+  m_EditorClassIdentifier: Assembly-CSharp::CampDataSO
+  _waves:
+  - Leader:
+      Prefab: {fileID: 3865645921422755466, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
+      XpReward: 5
+      RespawnTime: 25
+    Creeps:
+    - Unit:
+        Prefab: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+        XpReward: 3
+        RespawnTime: 25
+      Count: 2
+  - Leader:
+      Prefab: {fileID: 3865645921422755466, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
+      XpReward: 5
+      RespawnTime: 25
+    Creeps:
+    - Unit:
+        Prefab: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+        XpReward: 3
+        RespawnTime: 25
+      Count: 3
+  _timeToFirstSpawn: 30
+  _surrenderThreshold: 0.3
