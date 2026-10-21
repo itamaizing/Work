@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
 public class ChatWindowFrame : MonoBehaviour
 {
     [SerializeField] private RectTransform _dragZone;
+    [SerializeField] private RectMask2D unfocusedFade;
     [SerializeField, Range(0.1f, 1f)] private float _dragZoneHeightRatio = 0.5f;
 
     [SerializeField] private Vector2 _minSize = new Vector2(400f, 300f);
@@ -26,6 +28,7 @@ public class ChatWindowFrame : MonoBehaviour
 
         ConfigureDragZone();
         LoadLayout();
+        RecalcFade();
     }
 
     private void Start()
@@ -108,11 +111,19 @@ public class ChatWindowFrame : MonoBehaviour
             -applied.y * (1f - _rect.pivot.y));
     }
 
+    private void RecalcFade()
+    {
+        int border = (int)(_rect.rect.size.y / 3);
+        unfocusedFade.softness = new Vector2Int (0, border);
+        unfocusedFade.padding = new Vector4 (0, -border, 0, border); //left, btm, right, top
+    }
+
     #endregion
 
     public void EndInteraction()
     {
         ClampToParent();
+        RecalcFade();
         SaveLayout();
     }
 
