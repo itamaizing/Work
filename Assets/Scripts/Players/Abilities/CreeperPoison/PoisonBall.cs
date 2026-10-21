@@ -91,9 +91,7 @@ public class PoisonBall : Skill, IAltAbility
     private float _animTime;
     private float _baseMultiplierAnimationSpeed = 1f;
     private float _radiusFindTarget = 0.5f;
-    private float _increaseManaCostValue = 1.3f;
-    private float _baseIncreaseManaCostValue = 1f;
-    
+
     private double _serverLastCastTime = -999;
 
     #region BoolVariables
@@ -149,23 +147,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private bool _isBonusChargeApplied = false;
 
-    private bool _isTransparentPoisons = false;
-
-    public bool IsTransparentPoisons
-    {
-        get => _isTransparentPoisons;
-        set
-        {
-            if (_isTransparentPoisons != value)
-            {
-                _isTransparentPoisons = value;
-
-                if (_isTransparentPoisons) Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
-                else Buff.ManaCost.IncreasePercentage(_baseIncreaseManaCostValue);
-            }
-        }
-    }
-
     public bool IsPoisonCloudAddPoisonBone { get => _isPoisonCloudAddPoisonBone; set => _isPoisonCloudAddPoisonBone = value; }
 
     public bool IsIncreasingPoisonBallCharges
@@ -219,7 +200,8 @@ public class PoisonBall : Skill, IAltAbility
         _isPoisonCloudAddPoisonBone = value;
     }
 
-    public void TransparentPoisons(bool value) => IsTransparentPoisons = value;
+    private bool IsTransparentShot =>
+        _player.Abilities.GetSkill<CreeperInvisible>()?.IsTransparentPoisonsActive ?? false;
 
     #endregion
 
@@ -556,6 +538,10 @@ public class PoisonBall : Skill, IAltAbility
 
     private void ChooseWhichProjectileCreate()
     {
+        bool transparent = IsTransparentShot;
+        
+        Debug.LogError($"is transparent {IsTransparentShot}");
+        
         if (_isTarget)
         {
             CmdCreateProjectileForTarget(_activeCastTargetCharacter.gameObject, _activeCastTargetCharacter.transform.position,
@@ -564,7 +550,7 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
                 _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, _isTransparentPoisons);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent);
 
             if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
         }
@@ -576,7 +562,7 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
                 _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, _isTransparentPoisons);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent);
 
             if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
         }

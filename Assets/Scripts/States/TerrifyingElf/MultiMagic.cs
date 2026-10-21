@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class MultiMagic : StateStackingRefreshing
@@ -15,9 +14,10 @@ public class MultiMagic : StateStackingRefreshing
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }  
+    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }
     
     private readonly Dictionary<Skill, Action> _castSuccessHandlers = new();
+    private readonly Dictionary<Skill, Action> _targetCaptureHandlers = new();
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
@@ -38,6 +38,16 @@ public class MultiMagic : StateStackingRefreshing
             if (skill is not IMultiMagicSkill) continue;
             if (_castSuccessHandlers.ContainsKey(skill)) continue;
 
+            Skill capturedSkill = skill;
+            
+            Action capture = () =>
+            {
+                var target = capturedSkill.Targeting.GetTarget()?.Character;
+                if (target != null) _lastTarget = target;
+            };
+            capturedSkill.CastSuccess += capture;
+            _targetCaptureHandlers[skill] = capture;
+
             if (skill.ChannelingDuration > 0)
             {
                 skill.TargetingSuccess += OnTargetSkillCast;
@@ -45,7 +55,6 @@ public class MultiMagic : StateStackingRefreshing
             }
             else
             {
-                Skill capturedSkill = skill;
                 Action handler = () => OnTargetSkillCast(capturedSkill);
                 skill.CastFinished += handler;
                 _castSuccessHandlers[skill] = handler;
@@ -61,6 +70,9 @@ public class MultiMagic : StateStackingRefreshing
             {
                 if (skill is not IMultiMagicSkill) continue;
 
+                if (_targetCaptureHandlers.TryGetValue(skill, out var capture) && capture != null)
+                    skill.CastSuccess -= capture;
+
                 if (skill.ChannelingDuration > 0)
                     skill.TargetingSuccess -= OnTargetSkillCast;
                 else if (_castSuccessHandlers.TryGetValue(skill, out var handler) && handler != null)
@@ -69,6 +81,7 @@ public class MultiMagic : StateStackingRefreshing
         }
 
         _castSuccessHandlers.Clear();
+        _targetCaptureHandlers.Clear();
     }
 
     protected override void OnExit()
@@ -81,28 +94,34 @@ public class MultiMagic : StateStackingRefreshing
 
     private void OnTargetSkillCast(Skill skill)
     {
-        float distance = Mathf.Max(skill.AreaInfo.Radius,Skill.AreaInfo.CastLength);
-        LayerMask targetsMask = skill.Targeting.Layer;
+        var self = characterState.Character;
 
-        var colliders = Physics.OverlapSphere(characterState.transform.position, distance, targetsMask);
+        var colliders = Physics.OverlapSphere(
+            characterState.transform.position,
+            skill.CastDistance,
+            skill.Targeting.Layer);
+
+        var seen = new HashSet<Character>();
         var extraCharacters = new List<Character>();
 
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent(out Character character) && character != characterState.Character && character != _lastTarget)
-            {
-                extraCharacters.Add(character);
-            }
+            if (!collider.TryGetComponent(out Character character)) continue;
+            if (character == self || character == _lastTarget) continue;
+            if (!character.IsTargetable) continue;
+            if (seen.Add(character)) extraCharacters.Add(character);
         }
 
         if (extraCharacters.Count > 0 && skill is IMultiMagicSkill multiSkill)
         {
             foreach (var target in extraCharacters)
-            {
                 multiSkill.HandleExtraTarget(target);
-            }
         }
+
+        _lastTarget = null;
         
+        var state = characterState;
         ExitState();
+        state.CmdRemoveState(State);
     }
 }

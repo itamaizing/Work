@@ -7,13 +7,11 @@ public class NinjaPoisonTalent_8 : Talent
 
     public override void Enter()
     {
-        _spitPoison.TransparentPoisons(true);
-        _poison.TransparentPoisons(true);
+        character.Abilities.GetSkill<CreeperInvisible>().TransparentPoisons(true);
     }
 
     public override void Exit()
     {
-        _spitPoison.TransparentPoisons(false);
-        _poison.TransparentPoisons(false);
+        character.Abilities.GetSkill<CreeperInvisible>().TransparentPoisons(false);
     }
 }

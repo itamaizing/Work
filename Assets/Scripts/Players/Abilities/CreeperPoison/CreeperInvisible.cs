@@ -28,7 +28,7 @@ public class CreeperInvisible : Skill
     [Header("Ability Properties")]
     [SerializeField] private Character _player;
     [SerializeField] private SkinnedMeshRenderer _playerRenderer;
-    
+
     private SpitPoison _spitPoison;
     private PoisonBall _poisonBall;
 
@@ -83,6 +83,41 @@ public class CreeperInvisible : Skill
     }
 
     #endregion
+    
+    #region Transparent Poisons
+    [SerializeField] private float _transparentPoisonsCostMultiplier = 1.3f;
+    private bool _isTransparentPoisons;
+    public bool IsTransparentPoisonsActive =>
+        _isTransparentPoisons && _player.CharacterState.CheckForState(States.CreeperInvisible);
+    
+    public void TransparentPoisons(bool value)
+    {
+        if (_isTransparentPoisons == value) return;
+        _isTransparentPoisons = value;
+        RefreshPoisonCost();
+    }
+    
+    private void OnInvisibilityStateChanged(StateBasic state)
+    {
+        if (state.State == States.CreeperInvisible) RefreshPoisonCost();
+    }
+
+    private void RefreshPoisonCost() => ApplyPoisonCost(IsTransparentPoisonsActive);
+
+    private void ApplyPoisonCost(bool active)
+    {
+        foreach (var skill in _altAbilities)
+        {
+            if (skill == null) continue;
+
+            var cost = skill.Attributes[SkillAttributeName.ResourceCost];
+            cost.RemoveBySource(this);
+            if (active)
+                cost.AddModifier(new AttributeModifier(_transparentPoisonsCostMultiplier, ModifierType.Multiplier, this));
+        }
+    }
+    
+    #endregion
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerPrepare => 0;
@@ -97,6 +132,12 @@ public class CreeperInvisible : Skill
         if (_player != null && _player.Health != null)
         {
             _player.Health.DamageTaken += OnPlayerDamaged;
+        }
+        
+        if (_player != null && _player.CharacterState != null)
+        {
+            _player.CharacterState.OnStateAdded += OnInvisibilityStateChanged;
+            _player.CharacterState.OnStateRemoved += OnInvisibilityStateChanged;
         }
 
         InputHandler.OnCast += OnCastKeyPressed;
@@ -122,6 +163,13 @@ public class CreeperInvisible : Skill
             StopCoroutine(_stopDrawRadiusRoutine);
             _stopDrawRadiusRoutine = null;
         }
+        
+        if (_player != null && _player.CharacterState != null)
+        {
+            _player.CharacterState.OnStateAdded -= OnInvisibilityStateChanged;
+            _player.CharacterState.OnStateRemoved -= OnInvisibilityStateChanged;
+        }
+        ApplyPoisonCost(false);
     }
 
     #region PrepareAndCastJob

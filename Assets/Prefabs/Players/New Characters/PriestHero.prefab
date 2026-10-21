@@ -8579,9 +8579,10 @@ MonoBehaviour:
   _beamUpOffset: 8
   _delayBeforeFirstBeam: 1
   _delayBetweenBeams: 1
+  _maxCastLifetime: 15
   lightInfo: {fileID: 11400000, guid: 607da4e4c6a1ccc4eae1328d8b1b80ab, type: 2}
   darkInfo: {fileID: 11400000, guid: 47444e8d6469b4348802cfadc202776c, type: 2}
-  _damageCirclePrefab: {fileID: 0}
+  _damageCirclePrefab: {fileID: 1062103080400983297}
   _lightCenterColor: {r: 766.9961, g: 619.3136, b: 0, a: 0}
   _lightFresnelColor: {r: 1, g: 0.9137255, b: 0.050980393, a: 1}
   _lightVoronoiColor: {r: 5.3403134, g: 3.9702854, b: 0, a: 0.45490196}
@@ -9775,6 +9776,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+--- !u!1 &1062103080400983297 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9112855932003537409, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8127316380187346688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1110070738435946966 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

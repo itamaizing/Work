@@ -40,6 +40,9 @@ using UnityEngine;
     [SerializeField] private SoundComponent<Sfx_Skill> _soundComponent;
     #endregion InspectorSettings
 
+    public virtual float CastDistance => Mathf.Max(AreaInfo.Radius, AreaInfo.CastLength);
+
+
     #region CastReduction
     
     public event Action<float> PreparingRolledBack;

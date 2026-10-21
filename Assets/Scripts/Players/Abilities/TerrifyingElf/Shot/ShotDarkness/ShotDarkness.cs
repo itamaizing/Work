@@ -309,8 +309,7 @@ public class ShotDarkness : Skill, IMultiMagicSkill
     {
         TryPayCost();
         CmdUseMana(_magicDamage);
-        float castLengthAtCast = AreaInfo.CastLength;
-        CmdCreateProjectileAtPosition(target.transform.position, Damage, _magicDamage, castLengthAtCast);
+        CmdCreateProjectileAtPosition(target.transform.position, Damage, _magicDamage, CastDistance);
 
         if (_multiMagicSpell != null)
         {

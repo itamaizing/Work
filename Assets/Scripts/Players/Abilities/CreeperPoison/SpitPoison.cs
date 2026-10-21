@@ -39,8 +39,6 @@ public class SpitPoison : Skill, IAltAbility
 
     private float _originalCooldown;
     private float _radiusTargetCheck = 0.5f;
-    private float _increaseManaCostValue = 1.3f;
-    private float _baseIncreaseManaCostValue = 1f;
 
     private bool _isActiveRestorationOfGlands;
     private bool _isHealingPoisonCloud = false;
@@ -57,29 +55,13 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isActiveHealingSpitPoison = false;
     private bool _canSpawnPoisonCloud = false;
     private bool _isErodedArmorState = false;
-    private bool _isTransparentPoisons = false;
     private bool _isColdBloodCrit = false;
-
-    public bool IsTransparentPoisons
-    {
-        get => _isTransparentPoisons;
-        set
-        {
-            if (_isTransparentPoisons != value)
-            {
-                _isTransparentPoisons = value;
-
-                Debug.Log("талант прозрачности активен");
-                if (_isTransparentPoisons) Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
-                else Buff.ManaCost.IncreasePercentage(_baseIncreaseManaCostValue);
-            }
-        }
-    }
 
     public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     public void ActiveHealingSpitPoison(bool value) => _isActiveHealingSpitPoison = value;
-    public void TransparentPoisons(bool value) => IsTransparentPoisons = value;
+    private bool IsTransparentShot =>
+        _player.Abilities.GetSkill<CreeperInvisible>()?.IsTransparentPoisonsActive ?? false;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -271,6 +253,8 @@ public class SpitPoison : Skill, IAltAbility
 
     private void Shoot(IDamageable damageable, Vector3 spawnPosition)
     {
+        bool transparent = IsTransparentShot;
+        
         if (damageable != null)
         {
             CmdInstantiateProjectileToTarget(
@@ -283,7 +267,7 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer,
                 _isOriginalTargetEnemy,
                 _isOriginalTargetAllies,
-                _isTransparentPoisons
+                transparent
             );
         }
         else
@@ -298,7 +282,7 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer,
                 _isOriginalTargetEnemy,
                 _isOriginalTargetAllies,
-                _isTransparentPoisons
+                transparent
             );
         }
 

@@ -12200,6 +12200,7 @@ MonoBehaviour:
   - {fileID: 4719927588574066064}
   _player: {fileID: 2483674839823445686}
   _playerRenderer: {fileID: 4044327417522159226}
+  _transparentPoisonsCostMultiplier: 1.3
 --- !u!114 &8577860281443816807
 MonoBehaviour:
   m_ObjectHideFlags: 0
