@@ -788,7 +788,6 @@ MonoBehaviour:
   _input: {fileID: 3857947354618876443}
   _sendButton: {fileID: 4536050525802305166}
   _focusDropdown: {fileID: 1564736119928770267}
-  _channelsPanel: {fileID: 6775361378647778040}
   _groups:
   - Group: 0
     Title: "\"\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438\""
@@ -809,6 +808,7 @@ MonoBehaviour:
     HeaderLabel: {fileID: 3468835206525717866}
     Container: {fileID: 7629888975169986834}
   _channelButtonPrefab: {fileID: 872528969004326722, guid: 029395135828ab74f93a054fdbf9389e, type: 3}
+  _channelsPanel: {fileID: 6775361378647778040}
 --- !u!114 &4626071116604843851
 MonoBehaviour:
   m_ObjectHideFlags: 0
