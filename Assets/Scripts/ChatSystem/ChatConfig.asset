@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: ChatConfig
   m_EditorClassIdentifier: Assembly-CSharp::ChatConfig
   _maxMessageLength: 80
+  _maxHistory: 200
   _maxUnfocusedMessages: 3
-  _hideDelay: 3
+  _hideDelay: 5
