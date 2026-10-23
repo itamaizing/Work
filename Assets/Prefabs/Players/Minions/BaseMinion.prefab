@@ -35,7 +35,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 2343416407465911969}
+      objectReference: {fileID: 7742085869912657149}
     - target: {fileID: 474210790700046508, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -207,7 +207,7 @@ PrefabInstance:
     - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
       value: 
-      objectReference: {fileID: 2343416407465911969}
+      objectReference: {fileID: 7742085869912657149}
     - target: {fileID: 2582911868448374800, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -359,7 +359,7 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 2343416407465911969}
+      objectReference: {fileID: 7742085869912657149}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
       value: 1
@@ -777,8 +777,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: 9
-      addedObject: {fileID: 2343416407465911969}
+      insertIndex: 10
+      addedObject: {fileID: 7742085869912657149}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 22
       addedObject: {fileID: 1780925315992858912}
@@ -803,6 +803,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86614592001be724c8e1f0d3a24c0c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &242370089425684122 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6328070790821935180, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
 --- !u!114 &321208861123123196 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5834951345091717418, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -841,7 +852,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 6092456140968476374}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2343416407465911969
+--- !u!114 &7742085869912657149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -850,9 +861,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2335912879836011194}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40dfec2a078f1b44e8b717ef74584120, type: 3}
+  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CampMinionComponent
+  m_EditorClassIdentifier: Assembly-CSharp::MinionComponent
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
@@ -877,7 +888,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 5963193180723515438}
   _visionComponent: {fileID: 7614178594727784334}
   _auras: {fileID: 0}
-  _targetSeeker: {fileID: 0}
+  _targetSeeker: {fileID: 242370089425684122}
   _characterParent: {fileID: 0}
   _transformationComponent: {fileID: 7969626015849665324}
   _expForDieKill: 5

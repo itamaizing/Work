@@ -10,14 +10,15 @@ public enum CampPhase { Idle, WaitingFirstSpawn, Active, WaitingRespawn }
 public enum RespawnManagement { Self, Managed }
 public enum CampClearReason { LeaderKilled, LeaderTaken }
 public enum SurrenderChoice : byte { TakeCreeps, KeepLeader, Kill }
+public enum CampHpDisplay { Never, InCombat, Always }
 
-[DisallowMultipleComponent]
 public partial class MinionCamp : NetworkBehaviour
 {
     [Header("Data")]
     [SerializeField] private CampDataSO _data;
 
     [Header("Spawn zone")]
+    [Tooltip("Центр зоны спавна. Если не задан — позиция лагеря")]
     [SerializeField] private Transform _spawnCenter;
     [SerializeField, Min(0f)] private float _spawnRadius = 3f;
 
@@ -26,16 +27,28 @@ public partial class MinionCamp : NetworkBehaviour
     [SerializeField] private CampSurrenderUI _surrenderUI;
 
     [Header("Rules")]
+    [Tooltip("Сколько секунд после последнего действия игрок считается участником зачистки")]
     [SerializeField, Min(0f)] private float _attackerTimeout = 5f;
+    [Tooltip("Если никто не выбрал вариант за это время — окно закрывается как «Убить»")]
     [SerializeField, Min(1f)] private float _surrenderOfferTimeout = 15f;
+    [Tooltip("InCombat — пока есть участники зачистки или открыто окно захвата")]
+    [SerializeField] private CampHpDisplay _hpDisplay = CampHpDisplay.InCombat;
 
     [SyncVar(hook = nameof(OnOwnerTeamChanged))] private int _ownerTeam = CampTeam.Neutral;
     [SyncVar] private int _level = 1;
-    
+
+    [SyncVar] private bool _hpVisible;
+    [SyncVar] private float _hpCurrent;
+    [SyncVar] private float _hpMax;
+    [SyncVar] private double _campRespawnReadyAt;
+    [SyncVar] private float _campRespawnDuration;
+    [SyncVar] private int _pendingWaveLevel = 1;
+    private readonly SyncList<CreepRespawnInfo> _creepRespawns = new SyncList<CreepRespawnInfo>();
+
     private readonly CampPopulation _pop = new();
     private readonly CampAttackers _attackers = new();
-    private readonly Dictionary<int, List<CampMinionComponent>> _takenGroups = new();
-    private readonly List<CampMinionComponent> _unitBuffer = new();
+    private readonly Dictionary<int, List<MinionComponent>> _takenGroups = new();
+    private readonly List<MinionComponent> _unitBuffer = new();
     private readonly List<Character> _heroBuffer = new();
 
     private Character _owner;
@@ -47,12 +60,13 @@ public partial class MinionCamp : NetworkBehaviour
     private bool _offerActive;
     private bool _offerConsumed;
     private float _offerDeadline;
-    
+    private float _hpRefreshTimer;
+
     partial void TickSurrender(float dt);
     partial void EvaluateSurrender();
     partial void OnLeaderLost();
     partial void ResolveOffer(Character hero, SurrenderChoice choice);
-    
+
     public event Action<MinionCamp> Spawned;
     public event Action<MinionCamp, CampClearReason> Cleared;
 
@@ -63,19 +77,46 @@ public partial class MinionCamp : NetworkBehaviour
     public float DefaultRespawnDelay => CurrentWave.Leader.RespawnTime;
     public RespawnManagement RespawnMode { get; set; } = RespawnManagement.Self;
 
+    public bool HpVisible => _hpVisible;
+    public float HpCurrent => _hpCurrent;
+    public float HpMax => _hpMax;
+    public IReadOnlyList<CreepRespawnInfo> CreepRespawns => _creepRespawns;
+
+    public bool TryGetCampRespawn(out float remaining, out float duration, out Sprite icon)
+    {
+        remaining = 0f;
+        duration = _campRespawnDuration;
+        icon = null;
+        if (duration <= 0f || _data == null) return false;
+
+        remaining = Mathf.Max(0f, (float)(_campRespawnReadyAt - NetworkTime.time));
+        icon = _data.GetWave(_pendingWaveLevel).Leader.Icon;
+        return true;
+    }
+
+    public Sprite GetCreepIcon(CreepRespawnInfo info)
+    {
+        if (_data == null) return null;
+
+        var creeps = _data.GetWave(info.WaveLevel).Creeps;
+        return creeps != null && info.CreepIndex >= 0 && info.CreepIndex < creeps.Count
+            ? creeps[info.CreepIndex].Unit.Icon
+            : null;
+    }
+
     public CampStatus Status => _ownerTeam switch
     {
         CampTeam.DarkTeamIndex => CampStatus.DarkTeam,
         CampTeam.LightTeamIndex => CampStatus.LightTeam,
         _ => CampStatus.Neutral
     };
-    
+
     public float SurrenderThreshold
     {
         get => _surrenderThreshold;
         set => _surrenderThreshold = Mathf.Clamp01(value);
     }
-    
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -119,16 +160,14 @@ public partial class MinionCamp : NetworkBehaviour
     {
         _level = 1;
         _phase = CampPhase.WaitingFirstSpawn;
-        _timer = firstSpawnDelay >= 0f ? firstSpawnDelay : _data.TimeToFirstSpawn;
-        _timerActive = true;
+        StartCampTimer(firstSpawnDelay >= 0f ? firstSpawnDelay : _data.TimeToFirstSpawn, 1);
     }
 
     [Server]
     public void ScheduleRespawn(float delay)
     {
         if (_phase != CampPhase.WaitingRespawn) return;
-        _timer = Mathf.Max(0f, delay);
-        _timerActive = true;
+        StartCampTimer(Mathf.Max(0f, delay), _level + 1);
     }
 
     [Server]
@@ -140,16 +179,9 @@ public partial class MinionCamp : NetworkBehaviour
             case CampPhase.WaitingRespawn: SpawnWave(true); break;
         }
     }
-    
-    [Server]
-    public void AddAttacker(GameObject attacker)
-    {
-        if (attacker != null && attacker.TryGetComponent(out Character hero))
-            RegisterAttacker(hero);
-    }
 
     [Server]
-    public void NotifyUnitDamaged(CampMinionComponent unit, Character attacker)
+    public void NotifyUnitDamaged(MinionComponent unit, Character attacker)
     {
         RegisterAttacker(attacker);
     }
@@ -171,7 +203,7 @@ public partial class MinionCamp : NetworkBehaviour
 
         ResolveOffer(hero, choice);
     }
-    
+
     [ServerCallback]
     private void Update()
     {
@@ -179,6 +211,7 @@ public partial class MinionCamp : NetworkBehaviour
 
         _attackers.Tick(Time.time);
         TickSurrender(dt);
+        TickHpDisplay(dt);
 
         if (!_timerActive) return;
 
@@ -189,10 +222,11 @@ public partial class MinionCamp : NetworkBehaviour
         if (_phase == CampPhase.WaitingFirstSpawn) SpawnWave(false);
         else if (_phase == CampPhase.WaitingRespawn) SpawnWave(true);
     }
-
+    
     private void SpawnWave(bool levelUp)
     {
         _timerActive = false;
+        _campRespawnDuration = 0f;
         if (levelUp) _level++;
 
         var wave = CurrentWave;
@@ -202,13 +236,14 @@ public partial class MinionCamp : NetworkBehaviour
 
         if (wave.Creeps != null)
         {
-            foreach (var creep in wave.Creeps)
+            for (int c = 0; c < wave.Creeps.Count; c++)
             {
+                var creep = wave.Creeps[c];
                 int missing = creep.Count - _pop.CountAlive(creep.Unit.Prefab);
                 for (int i = 0; i < missing; i++)
                 {
                     var unit = SpawnUnit(creep.Unit, _level);
-                    if (unit != null) _pop.AddCreep(creep.Unit, _level, unit);
+                    if (unit != null) _pop.AddCreep(creep.Unit, _level, c, unit);
                 }
             }
         }
@@ -216,11 +251,12 @@ public partial class MinionCamp : NetworkBehaviour
         _maxHp = _pop.TotalMaxHp();
         _offerConsumed = false;
         _phase = CampPhase.Active;
+        RefreshHp();
 
         Spawned?.Invoke(this);
     }
 
-    private CampMinionComponent SpawnUnit(UnitData data, int level)
+    private MinionComponent SpawnUnit(UnitData data, int level)
     {
         if (data.Prefab == null)
         {
@@ -229,9 +265,9 @@ public partial class MinionCamp : NetworkBehaviour
         }
 
         var go = Instantiate(data.Prefab, GetSpawnPoint(), Quaternion.identity);
-        if (!go.TryGetComponent(out CampMinionComponent minion))
+        if (!go.TryGetComponent(out MinionComponent minion))
         {
-            Debug.LogError($"[Minion Camp] На префабе {data.Prefab.name} нет CampMinionComponent", this);
+            Debug.LogError($"[Minion Camp] На префабе {data.Prefab.name} нет MinionComponent", this);
             Destroy(go);
             return null;
         }
@@ -257,8 +293,8 @@ public partial class MinionCamp : NetworkBehaviour
             ? hit.position
             : center;
     }
-    
-    private void OnUnitDestroyed(CampMinionComponent unit)
+
+    private void OnUnitDestroyed(MinionComponent unit)
     {
         if (!isServer || unit == null) return;
         unit.Destroyed -= OnUnitDestroyed;
@@ -274,10 +310,16 @@ public partial class MinionCamp : NetworkBehaviour
 
         slot.Instance = null;
         if (slot.Controlled && _ownerTeam != CampTeam.Neutral)
+        {
             slot.RespawnTimer = slot.Data.RespawnTime;
+            TrackCreepRespawn(slot);
+        }
         else
+        {
             _pop.RemoveSlot(slot);
-        
+        }
+
+        RefreshHp();
         EvaluateSurrender();
     }
 
@@ -292,18 +334,74 @@ public partial class MinionCamp : NetworkBehaviour
     {
         _phase = CampPhase.WaitingRespawn;
         _timerActive = false;
+        _campRespawnDuration = 0f;
 
         if (RespawnMode == RespawnManagement.Self)
-        {
-            _timer = DefaultRespawnDelay;
-            _timerActive = true;
-        }
+            StartCampTimer(DefaultRespawnDelay, _level + 1);
+
+        RefreshHp();
 
         Cleared?.Invoke(this, reason);
     }
 
-    private void OnOwnerTeamChanged(int oldValue, int newValue) => RefreshVisuals(newValue);
+    private void StartCampTimer(float delay, int pendingWaveLevel)
+    {
+        _timer = delay;
+        _timerActive = true;
+        _pendingWaveLevel = pendingWaveLevel;
+        _campRespawnDuration = delay;
+        _campRespawnReadyAt = NetworkTime.time + delay;
+    }
+
+    private void TrackCreepRespawn(CreepSlot slot)
+    {
+        _creepRespawns.Add(new CreepRespawnInfo
+        {
+            SlotId = slot.Id,
+            WaveLevel = slot.Level,
+            CreepIndex = slot.CreepIndex,
+            ReadyAt = NetworkTime.time + slot.Data.RespawnTime,
+            Duration = slot.Data.RespawnTime
+        });
+    }
+
+    private void UntrackCreepRespawn(int slotId)
+    {
+        for (int i = _creepRespawns.Count - 1; i >= 0; i--)
+        {
+            if (_creepRespawns[i].SlotId != slotId) continue;
+            _creepRespawns.RemoveAt(i);
+            return;
+        }
+    }
+
+    private void TickHpDisplay(float dt)
+    {
+        _hpRefreshTimer -= dt;
+        if (_hpRefreshTimer > 0f) return;
+
+        _hpRefreshTimer = 0.2f;
+        RefreshHp();
+    }
+
+    private void RefreshHp()
+    {
+        bool active = _phase == CampPhase.Active && _ownerTeam == CampTeam.Neutral && _pop.Leader != null;
+
+        bool visible = active && _hpDisplay switch
+        {
+            CampHpDisplay.Never => false,
+            CampHpDisplay.Always => true,
+            _ => _offerActive || _attackers.Count > 0
+        };
+
+        _hpVisible = visible;
+        _hpCurrent = active ? _pop.TotalCurrentHp() : 0f;
+        _hpMax = active ? _maxHp : 0f;
+    }
     
+    private void OnOwnerTeamChanged(int oldValue, int newValue) => RefreshVisuals(newValue);
+
     private void RefreshVisuals(int ownerTeam)
     {
         if (_campRenderer == null) return;
@@ -314,6 +412,4 @@ public partial class MinionCamp : NetworkBehaviour
 
         _campRenderer.material.color = color;
     }
-    
-    public void SetPlayers(GameObject playersObject) { }
 }

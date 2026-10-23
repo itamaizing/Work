@@ -3,9 +3,11 @@ using UnityEngine;
 
 public sealed class CreepSlot
 {
+    public int Id;
+    public int CreepIndex;
     public UnitData Data;
     public int Level;
-    public CampMinionComponent Instance;
+    public MinionComponent Instance;
     public bool Controlled;
     public float RespawnTimer = -1f;
 
@@ -17,17 +19,26 @@ public sealed class CampPopulation
 {
     private readonly List<CreepSlot> _slots = new();
 
-    public CampMinionComponent Leader;
+    public MinionComponent Leader;
     public IReadOnlyList<CreepSlot> Slots => _slots;
 
-    public CreepSlot AddCreep(UnitData data, int level, CampMinionComponent instance)
+    private int _nextSlotId;
+
+    public CreepSlot AddCreep(UnitData data, int level, int creepIndex, MinionComponent instance)
     {
-        var slot = new CreepSlot { Data = data, Level = level, Instance = instance };
+        var slot = new CreepSlot
+        {
+            Id = ++_nextSlotId,
+            CreepIndex = creepIndex,
+            Data = data,
+            Level = level,
+            Instance = instance
+        };
         _slots.Add(slot);
         return slot;
     }
 
-    public CreepSlot FindSlot(CampMinionComponent minion)
+    public CreepSlot FindSlot(MinionComponent minion)
     {
         for (int i = 0; i < _slots.Count; i++)
             if (_slots[i].Instance == minion) return _slots[i];
@@ -35,7 +46,7 @@ public sealed class CampPopulation
     }
 
     public void RemoveSlot(CreepSlot slot) => _slots.Remove(slot);
-    
+
     public int CountAlive(GameObject prefab)
     {
         int count = 0;
@@ -44,7 +55,7 @@ public sealed class CampPopulation
         return count;
     }
 
-    public void CollectAlive(List<CampMinionComponent> buffer)
+    public void CollectAlive(List<MinionComponent> buffer)
     {
         buffer.Clear();
         if (Leader != null && !Leader.IsDead) buffer.Add(Leader);

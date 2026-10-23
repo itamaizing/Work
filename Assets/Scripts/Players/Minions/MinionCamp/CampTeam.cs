@@ -14,12 +14,11 @@ public static class CampTeam
     public static bool TryGetLocalTeam(out int team)
     {
         team = 0;
-        var identity = NetworkClient.localPlayer;
-        if (identity == null || !identity.TryGetComponent(out Character character))
-            return false;
+        var local = Character.Local;
+        if (local == null) return false;
 
-        team = character.NetworkSettings.TeamIndex;
-        return true;
+        team = local.NetworkSettings.TeamIndex;
+        return team > 0;
     }
 
     public static int LayerFor(int ownerTeam, int localTeam)

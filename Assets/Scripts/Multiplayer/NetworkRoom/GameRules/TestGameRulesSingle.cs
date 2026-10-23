@@ -18,6 +18,7 @@ public class TestGameRulesSingle : GameRules
     public override void GameStartServer(HeroSpawnManager spawnPoints)
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
+        CampManager.Instance?.StartMatch();
         if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
     }
 

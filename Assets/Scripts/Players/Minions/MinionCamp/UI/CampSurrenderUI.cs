@@ -39,7 +39,7 @@ public class CampSurrenderUI : MonoBehaviour
         if (_panel == null) return;
 
         _currentTween?.Kill();
-        gameObject.SetActive(true);
+        _panel.gameObject.SetActive(true);
 
         _panel.localScale = Vector3.zero;
         _currentTween = _panel.DOScale(Vector3.one, _showDuration).SetEase(_showEase);
@@ -47,9 +47,9 @@ public class CampSurrenderUI : MonoBehaviour
 
     public void Hide()
     {
-        if (_panel == null || !gameObject.activeInHierarchy)
+        if (_panel == null || !_panel.gameObject.activeInHierarchy)
         {
-            gameObject.SetActive(false);
+            _panel.gameObject.SetActive(false);
             return;
         }
 
@@ -57,7 +57,7 @@ public class CampSurrenderUI : MonoBehaviour
         _currentTween = _panel
             .DOScale(Vector3.zero, _hideDuration)
             .SetEase(_hideEase)
-            .OnComplete(() => gameObject.SetActive(false));
+            .OnComplete(() => _panel.gameObject.SetActive(false));
     }
 
     private void Choose(SurrenderChoice choice)

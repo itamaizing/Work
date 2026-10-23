@@ -17,21 +17,25 @@ MonoBehaviour:
       Prefab: {fileID: 3865645921422755466, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
       XpReward: 5
       RespawnTime: 25
+      Icon: {fileID: 21300000, guid: 97a313d2d87bc874f8055ee747725d6f, type: 3}
     Creeps:
     - Unit:
         Prefab: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
         XpReward: 3
         RespawnTime: 25
-      Count: 2
+        Icon: {fileID: 21300000, guid: 25ff3536eff4484439d29330c2365ed9, type: 3}
+      Count: 1
   - Leader:
       Prefab: {fileID: 3865645921422755466, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
       XpReward: 5
       RespawnTime: 25
+      Icon: {fileID: 21300000, guid: 97a313d2d87bc874f8055ee747725d6f, type: 3}
     Creeps:
     - Unit:
         Prefab: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
         XpReward: 3
         RespawnTime: 25
-      Count: 3
-  _timeToFirstSpawn: 30
-  _surrenderThreshold: 0.3
+        Icon: {fileID: 21300000, guid: 25ff3536eff4484439d29330c2365ed9, type: 3}
+      Count: 2
+  _timeToFirstSpawn: 20
+  _surrenderThreshold: 0.4

@@ -10,6 +10,7 @@ public struct UnitData
     [Min(0)] public int XpReward;
     [Tooltip("Лидер: время до респавна лагеря после смерти/захвата лидера.Рядовой: время возрождения, пока лагерь захвачен.")]
     [Min(0f)] public float RespawnTime;
+    public Sprite Icon;
 }
 
 [Serializable]

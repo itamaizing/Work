@@ -43,7 +43,7 @@ PrefabInstance:
     - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 3839917715093863057}
+      objectReference: {fileID: 9132796515251835085}
     - target: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_Name
       value: BaseMinionLead
@@ -203,7 +203,7 @@ PrefabInstance:
     - target: {fileID: 5963193180723515438, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 3839917715093863057}
+      objectReference: {fileID: 9132796515251835085}
     - target: {fileID: 6400541073820962625, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -245,9 +245,13 @@ PrefabInstance:
       value: 1996102757
       objectReference: {fileID: 0}
     - target: {fileID: 8629066331929730936, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8629066331929730936, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _character
       value: 
-      objectReference: {fileID: 3839917715093863057}
+      objectReference: {fileID: 9132796515251835085}
     m_RemovedComponents:
     - {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
     m_RemovedGameObjects: []
@@ -314,17 +318,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d37dcef6f152524f82c5c9cfc5288fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3839917715093863057 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2343416407465911969, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
-  m_PrefabInstance: {fileID: 1571576084551818288}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40dfec2a078f1b44e8b717ef74584120, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CampMinionComponent
 --- !u!95 &4135678494767741905 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 3218874933856675809, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -450,3 +443,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf32e0aadfc5644aa4e7eb739ccc477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9132796515251835085 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7742085869912657149, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 1571576084551818288}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionComponent
