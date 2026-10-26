@@ -45,6 +45,7 @@ public class TargetSelector : MonoBehaviour
     public void ClearTarget()
     {
         if (CurrentTarget == null) return;
+        CurrentTarget.Died -= OnTargetDied;
         CurrentTarget = null;
         TargetChanged?.Invoke(null);
     }

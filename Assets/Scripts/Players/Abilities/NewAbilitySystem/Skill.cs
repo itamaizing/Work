@@ -131,17 +131,15 @@ using UnityEngine;
     #region Properites
     public bool IsAutoMode
     {
-        get
-        {
-            return _isAutoMode;
-        }
+        get => _isAutoMode;
         set
         {
-            if (_isAutoMode != value)
-            {
-                _isAutoMode = value;
-                AutoModeChanged?.Invoke(_isAutoMode);
-            }
+            if (_isAutoMode == value) return;
+            _isAutoMode = value;
+            AutoModeChanged?.Invoke(_isAutoMode);
+
+            if (!value)
+                OnAutoModeDisabled();
         }
     }
     public bool IsCanCancel { get => _isCanCancel; set => _isCanCancel = value; }

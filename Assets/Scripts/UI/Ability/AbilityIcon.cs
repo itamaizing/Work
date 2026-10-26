@@ -15,6 +15,11 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _description;
     [SerializeField] private AutoCastParticles _autoCastEffectPrefab;
+    
+    [Header("Queue target (для очереди)")]
+    [SerializeField] private GameObject _targetRoot;
+    [SerializeField] private Image _targetImage;
+    [SerializeField] private TextMeshProUGUI _targetLabel;
 
 
     private FillAmountOverTime _castLine;
@@ -83,6 +88,30 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     {
         _cooldown.StartFill(dutarion, 1, 0, false);
         _cooldown.gameObject.SetActive(true);
+    }
+    
+    public void ShowTarget(Sprite sprite, string label)
+    {
+        if (_targetRoot == null) return;
+
+        _targetRoot.SetActive(true);
+
+        if (_targetImage != null)
+        {
+            _targetImage.sprite = sprite;
+            _targetImage.enabled = sprite != null;
+        }
+
+        if (_targetLabel != null)
+        {
+            _targetLabel.text = label ?? string.Empty;
+            _targetLabel.gameObject.SetActive(!string.IsNullOrEmpty(label));
+        }
+    }
+    
+    public void HideTarget()
+    {
+        if (_targetRoot != null) _targetRoot.SetActive(false);
     }
 
     public void Selected()

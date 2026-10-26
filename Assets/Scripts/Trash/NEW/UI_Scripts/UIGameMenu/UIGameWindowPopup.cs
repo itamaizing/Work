@@ -17,11 +17,14 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private GameObject _teamStatistics;
     [SerializeField] private GameObject[] _forHide;
     [SerializeField] private GameObject _teamSource; //test
+    [SerializeField] private RectTransform[] _clickIgnoreRects;
 
     private MinionSkillPanelController _minionSkillController;
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
+    
+    private bool _isHeroInfoOpen;
 
     private void Awake()
     {
@@ -72,6 +75,9 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.UIVisibilityToggled += TeamSourceSwich;
         _selectManager.CharacterSelected += OnCharacterSelected;
         _selectManager.CharacterDeselected += OnCharacterDeselected;
+
+        PlayerIconMain.OwnIconClicked += ShowHeroInfo;
+        InputHandler.OnClick += OnAnyClick;
     }
 
     private void OnDisable()
@@ -79,11 +85,52 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.UIVisibilityToggled -= TeamSourceSwich;
         _selectManager.CharacterSelected -= OnCharacterSelected;
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
+
+        PlayerIconMain.OwnIconClicked -= ShowHeroInfo;
+        InputHandler.OnClick -= OnAnyClick;
     }
     
     private void OnDestroy()
     {
         _minionSkillController?.Dispose();
+    }
+    
+    private void ShowHeroInfo(Character character)
+    {
+        if (character is not HeroComponent hero) return;
+
+        _attributesPanel.gameObject.SetActive(true);
+        _attributesPanel.Show(hero, false);
+        _attributesPanel.ShowHide(true);
+
+        _talentsPanel.gameObject.SetActive(true);
+        _talentsPanel.Show(hero.TalentManager, true);
+
+        _isHeroInfoOpen = true;
+    }
+
+    private void HideHeroInfo()
+    {
+        _attributesPanel.ShowHide(false);
+        _attributesPanel.gameObject.SetActive(false);
+        _talentsPanel.HidePanels();
+        _talentsPanel.gameObject.SetActive(false);
+
+        _isHeroInfoOpen = false;
+    }
+
+    private void OnAnyClick()
+    {
+        if (!_isHeroInfoOpen) return;
+
+        Vector2 pos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+        
+        foreach (var rect in _clickIgnoreRects)
+            if (rect != null && rect.gameObject.activeInHierarchy &&
+                RectTransformUtility.RectangleContainsScreenPoint(rect, pos))
+                return;
+
+        HideHeroInfo();
     }
     
     private void OnCharacterSelected(Character character)
@@ -110,31 +157,23 @@ public class UIGameWindowPopup : MonoBehaviour
         _playerIcon.IconHolder.SetActive(false);
         _minionPanel.OnCharacterDeselected(character);
         _skillPanel.OnCharacterDeselected(character);
-        _attributesPanel.ShowHide(false);
-        _attributesPanel.gameObject.SetActive(false);
-        _talentsPanel.HidePanels();
-        _talentsPanel.gameObject.SetActive(false);
+        HideHeroInfo();
         _skillMinionPanel.gameObject.SetActive(false);
 
         _currentCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
         _currentCharacter.SpawnComponent.UnitRemoved -= OnMinionRemoved;
     }
-    
+
     private void UpdateCharacterPanels()
     {
-        if(_currentHero == null)
-            return;
-        
+        if (_currentHero == null) return;
+
         _playerIcon.OnCharacterSelected(_currentHero);
         _minionPanel.OnCharacterSelected(_currentHero);
         _skillPanel.OnCharacterSelected(_currentHero);
 
-        _attributesPanel.gameObject.SetActive(true);
-        _attributesPanel.Show(_currentHero, false);
-        _attributesPanel.ShowHide(true);
-
-        _talentsPanel.gameObject.SetActive(true);
-        _talentsPanel.Show(_currentHero.TalentManager, true);
+        if (_isHeroInfoOpen) ShowHeroInfo(_currentHero);
+        else HideHeroInfo();
 
         UpdateMinionSkills();
 

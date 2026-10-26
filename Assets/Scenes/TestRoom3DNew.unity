@@ -105750,6 +105750,16 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!224 &772591735 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3323471891376011346, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+  m_PrefabInstance: {fileID: 2369399868655483647}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &772591736 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 661829373851923258, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+  m_PrefabInstance: {fileID: 2369399868655483647}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &774050053
 GameObject:
   m_ObjectHideFlags: 0
@@ -153081,7 +153091,6 @@ MonoBehaviour:
   _management: 1
   _firstSpawnDelay: 25
   _managedRespawnDelay: 5
-  _startOnStart: 0
   _interval: 20
 --- !u!1 &1120540102
 GameObject:
@@ -186019,7 +186028,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 320, y: 15}
+  m_AnchoredPosition: {x: 1469.4, y: 65.399994}
   m_SizeDelta: {x: 20.049988, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1418101874
@@ -274999,6 +275008,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 735
       objectReference: {fileID: 0}
+    - target: {fileID: 74571748687904974, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 106019526743862607, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -275111,6 +275124,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 778557419911741566, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _areaIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 0e863c62e1caec544a13d716449436e8, type: 3}
+    - target: {fileID: 778557419911741566, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _iconPref
+      value: 
+      objectReference: {fileID: 9202960188991424841, guid: 6b09c4162f173a94ba03ea95d7ed3a84, type: 3}
+    - target: {fileID: 778557419911741566, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _projectileIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: edea09779ef91484d9f8979f7b40069e, type: 3}
+    - target: {fileID: 778557419911741566, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _unknownTargetIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: e27a0648ebb86de49ae9df061a17942d, type: 3}
     - target: {fileID: 904148749778726027, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
@@ -275307,6 +275336,18 @@ PrefabInstance:
       propertyPath: _skillMinionPanel
       value: 
       objectReference: {fileID: 2369399868655483649}
+    - target: {fileID: 1906108907671255808, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _clickIgnoreRects.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1906108907671255808, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: '_clickIgnoreRects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 772591736}
+    - target: {fileID: 1906108907671255808, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: '_clickIgnoreRects.Array.data[1]'
+      value: 
+      objectReference: {fileID: 772591735}
     - target: {fileID: 1956681522326386400, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0

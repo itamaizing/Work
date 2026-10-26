@@ -10,6 +10,7 @@ public class AutoSkillCast
     private MonoBehaviour _parentForCoroutine;
 
     public bool IsBusy { get { return _currentSkill != null; } }
+    public Skill CurrentSkill => _currentSkill;
 
     public AutoSkillCast(MonoBehaviour parentForCoroutine)
     {
@@ -18,9 +19,11 @@ public class AutoSkillCast
 
     public void SetSkill(Skill skill, TargetInfo targetInfo)
     {
+        if (_currentSkill != null)
+            DeleteSkill();
+
         _currentSkill = skill;
         _targetInfo = new();
-     //   _targetInfo._targets = new(targetInfo._targets);
         _targetInfo.AddTargets(targetInfo.GetTargets());
         _targetInfo.Points = new(targetInfo.Points);
         _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
@@ -31,26 +34,34 @@ public class AutoSkillCast
     public void DeleteSkill()
     {
         if (_currentSkill == null) return;
-        _currentSkill.TryCancel(true);
 
-        _currentSkill.SkillRender.StopDrawAutoAttackRadius();
-
-        if (_currentSkill.Hero != null && _currentSkill.Hero.Move != null)  _currentSkill.Hero.Move.StopLookAt();
+        var skill = _currentSkill;
 
         StopTryCastCoroutine();
-
         _currentSkill = null;
+        _targetInfo = null;
+
+        skill.TryCancel(true);
+
+        if (skill.Hero != null && skill.Hero.Move != null)
+            skill.Hero.Move.StopLookAt();
     }
+
 
     public void Pause()
     {
         if (_currentSkill == null) return;
 
+        if (_tryCastCoroutine != null)
+        {
+            _parentForCoroutine.StopCoroutine(_tryCastCoroutine);
+            _tryCastCoroutine = null;
+        }
+
         _currentSkill.TryCancel(true);
 
         if (_currentSkill.Hero != null && _currentSkill.Hero.Move != null)
             _currentSkill.Hero.Move.StopLookAt();
-
     }
 
     public void Continue()

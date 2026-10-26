@@ -435,6 +435,16 @@ public abstract partial class Skill
         TriggerCast();
         EnterPostCast();
     }
+    
+    private void OnAutoModeDisabled()
+    {
+        ClearQueueTarget();
+
+        if (_isTargeting || _state == SkillState.Preparing)
+            TryCancel();
+        else if (!IsExecuting)
+            Targeting.ClearTempTarget();
+    }
 
     #endregion
 
@@ -663,6 +673,7 @@ public abstract partial class Skill
         StopCoro(ref _targetingWrapperCoroutine);
         StopCoro(ref _targetingCoroutine);
         _isTargeting = false;
+        IsAutoMode = false;
 
         ClearData();
     }

@@ -16,6 +16,7 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
+    private readonly Dictionary<Skill, Action<bool>> _autoModeHandlers = new();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
@@ -58,6 +59,10 @@ public class SkillManager : MonoBehaviour
             void Handler() => OnSkillCastEnded(skill);
             _castEndedHandlers[skill] = Handler;
             skill.CastEnded += Handler;
+
+            void AutoHandler(bool enabled) => OnSkillAutoModeChanged(skill, enabled);
+            _autoModeHandlers[skill] = AutoHandler;
+            skill.AutoModeChanged += AutoHandler;
         }
     }
 
@@ -66,11 +71,13 @@ public class SkillManager : MonoBehaviour
         foreach (var skill in _skills)
         {
             if (_castEndedHandlers.TryGetValue(skill, out var handler))
-            {
                 skill.CastEnded -= handler;
-            }
+
+            if (_autoModeHandlers.TryGetValue(skill, out var autoHandler))
+                skill.AutoModeChanged -= autoHandler;
         }
         _castEndedHandlers.Clear();
+        _autoModeHandlers.Clear();
     }
 
     public virtual void Initialize()
@@ -94,6 +101,14 @@ public class SkillManager : MonoBehaviour
         {
             _hero.Health.DamageTaken += HandleHeroDirectDamage;
         }
+    }
+    
+    private void OnSkillAutoModeChanged(Skill skill, bool enabled)
+    {
+        if (enabled) return;
+        
+        if (_autoSkillCast.IsBusy && _autoSkillCast.CurrentSkill == skill)
+            _autoSkillCast.DeleteSkill();
     }
 
     #region Test
@@ -206,6 +221,15 @@ public class SkillManager : MonoBehaviour
         _simpleSkills.Add(skill);
         skill.CastStarted += GlobalCooldown;
         skill.CastStarted += () => InterruptMinionOrdersIfNeeded(skill);
+        
+        skill.CastStarted += () =>
+        {
+            if (_autoSkillCast.CurrentSkill != skill) _autoSkillCast.Pause();
+        };
+        skill.CastEnded += () =>
+        {
+            if (_autoSkillCast.CurrentSkill != skill) _autoSkillCast.Continue();
+        };
     }
     
     private void InterruptMinionOrdersIfNeeded(Skill startedSkill)
@@ -490,15 +514,6 @@ public class SkillManager : MonoBehaviour
         if (_selectedSkill.IsAutoMode)
         {
             _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());
-
-            foreach (var item in _simpleSkills)
-            {
-                if (_selectedSkill == item)
-                    return;
-
-                item.CastStarted += _autoSkillCast.Pause;
-                item.CastEnded += _autoSkillCast.Continue;
-            }
             DeselectSkill();
         }
         else
