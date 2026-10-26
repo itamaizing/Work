@@ -636,11 +636,7 @@ public class PullingHealth : Skill, IMultiMagicSkill
 
     private void ApplyDamageToTarget()
     {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = Info.DamageType,
-        };
+        Damage damage = GetDamage();
 
         if (_cachedTarget != null) CmdApplyDamage(damage, _cachedTarget);
         foreach (var damageble in _extraTargets) CmdApplyDamage(damage, damageble.gameObject);
@@ -651,7 +647,7 @@ public class PullingHealth : Skill, IMultiMagicSkill
 
         Heal heal = new Heal
         {
-            Value = Damage,
+            Value = BaseDamage.GetValue(),
         };
 
         _health.CmdAdd(heal.Value);

@@ -145,7 +145,7 @@ public class ShotsIntoSky : Skill
 
         int projectileCount = 0;
 
-        CmdSpawnImpact(_targetPoint, Damage, false);
+        CmdSpawnImpact(_targetPoint, BaseDamage.GetValue(), false);
         projectileCount++;
 
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
@@ -158,21 +158,21 @@ public class ShotsIntoSky : Skill
             {
                 if (reconnaissanceFire.CurrentFireAura.StateDark)
                 {
-                    CmdSpawnImpact(_targetPoint, Damage / 2, false);
+                    CmdSpawnImpact(_targetPoint, BaseDamage.GetValue() / 2, false);
                     projectileCount++;
 
-                    CmdSpawnImpact(_targetPoint, Damage / 4, true);
+                    CmdSpawnImpact(_targetPoint, BaseDamage.GetValue() / 4, true);
                     projectileCount++;
                 }
                 else
                 {
-                    CmdSpawnImpact(_targetPoint, Damage / 2, true);
+                    CmdSpawnImpact(_targetPoint, BaseDamage.GetValue() / 2, true);
                     projectileCount++;
                 }
             }
         }
         
-        CmdSpawnImpact(_targetPoint, Damage, false);
+        CmdSpawnImpact(_targetPoint, BaseDamage.GetValue(), false);
         projectileCount++;
         
         CmdExecuteAllWaves();

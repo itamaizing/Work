@@ -34,7 +34,7 @@ public class StandartAutoAttack : AutoAttackSkill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
-            Type = Info.DamageType,
+            Type = _baseDamage.Type,
             School = Info.School,
             Form = Info.AbilityForm,
             PhysicAttackType = Info.AttackRangeType,

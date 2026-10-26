@@ -269,7 +269,9 @@ public class ArrowProjectile : Projectiles
 
     private void ApplyDamage(float value, DamageType type, GameObject target)
     {
-        var damage = new Damage { Value = value, Type = type };
+        Damage damage = _skill.GetDamage();
+        damage.Value = value;
+        damage.Type = type;
         _skill.ApplyDamage(damage, target);
     }
 

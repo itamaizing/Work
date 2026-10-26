@@ -309,6 +309,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -319,13 +320,15 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
   _damageValue: 5
+  _baseDamage:
+    rid: 7978062462951359474
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -337,14 +340,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 5
+  _preparingDuration: 5
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 2
     _area: 0
@@ -355,6 +355,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -366,7 +368,24 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
   shoter: {fileID: 1369531615380711236}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951359474
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 1
+        IsDot: 0
+        value: 5
 --- !u!114 &8132997403478518028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,6 +412,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
     type: 0
     _clickLayer: 0
@@ -403,13 +423,15 @@ MonoBehaviour:
     _targetLayer:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -421,14 +443,11 @@ MonoBehaviour:
     _baseCooldown: 0
     affectedByCDR: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -439,6 +458,8 @@ MonoBehaviour:
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
   maxCounter: 0
   _tags:
@@ -450,8 +471,21 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
   _agent: {fileID: 0}
   _stopDistance: 0.5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3009901119154364267
 MonoBehaviour:
   m_ObjectHideFlags: 0

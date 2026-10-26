@@ -65,9 +65,9 @@ using UnityEngine;
             Value = shouldModify ? CalculateDamage(table.GetValue()) : table.GetValue(),
             Type = table.Type,
             School = Info.School,
-            Form = Info.AbilityForm,        //Тип способности. В целом в уроне как будто бы не нужен
-            PhysicAttackType = Info.AttackRangeType,    //Дальность может быть только у физ?
-            SkillType = Targeting.SkillType,    //Вдруг захотим резать весь АоЕ урон
+            Form = Info.AbilityForm,
+            PhysicAttackType = Info.AttackRangeType,
+            SkillType = Targeting.SkillType,
             SourceSkill = this,
             DamageKey = this.name.ToString(),
             IsDot = table.IsDot,

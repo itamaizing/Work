@@ -16,8 +16,6 @@ public static class Vector3Extensions
 
 public class ChainBlade : Skill,IComboParticipatingSkill
 {
-    [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
-    [SerializeField] [Range(0, 100)] private float _maxDamage = 5f;
     [SerializeField] private float _arrowYOffset = 1.5f;
 
     [SerializeField] private ChainArrow _chainArrowPrefab;
@@ -56,7 +54,6 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_clickPoint, transform.position, Targeting.AdditionalObstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-    public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
 
     //private void OnDisable()
     //{
@@ -317,7 +314,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
         NetworkServer.Spawn(arrow.gameObject);
         //SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
-        arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
+        arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, BaseDamage.GetValue());
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
@@ -386,7 +383,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
 
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(_playerLinks, 0, false, this);
-        arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
+        arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, BaseDamage.GetValue());
         _currentChainArrowPrefab = arrow;
     }
 }

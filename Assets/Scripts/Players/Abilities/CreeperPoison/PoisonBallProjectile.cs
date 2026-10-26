@@ -98,7 +98,7 @@ public class PoisonBallProjectile : Test_Projectile
         if (!collision.TryGetComponent<Character>(out var targetHealth))
             return;
 
-        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales) && _skill.Info.DamageType == DamageType.Magical)
+        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales) && _skill.BaseDamage.Type == DamageType.Magical)
         {
             if (_isReflected) return;
             targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
@@ -273,6 +273,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     public override void DamageDeal()
     {
+        Damage _baseDamage = _skill.GetDamage();
         float multiplier = 1f;
         
         if (_isActiveBallEffect && _currentCountBall > 1)
@@ -280,15 +281,9 @@ public class PoisonBallProjectile : Test_Projectile
             multiplier += (_currentCountBall - 1) * 0.2f;
         }
 
-        float finalDamage = _skill.Buff.Damage.GetBuffedValue(_damage) * multiplier;
-        if (_isColdBloodCrit) finalDamage *= 2.5f;
+        _baseDamage.Value *= multiplier;
+        if (_isColdBloodCrit) _baseDamage.Value *= 2.5f;
 
-        Damage _baseDamage = new Damage
-        {
-            Value = finalDamage,
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.RangeAttack,
-        };
 
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
 

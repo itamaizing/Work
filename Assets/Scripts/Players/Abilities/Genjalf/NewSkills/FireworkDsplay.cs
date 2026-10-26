@@ -11,8 +11,6 @@ namespace Gangdollarff
     
     {
         [SerializeField] private Firework _firework;
-        [SerializeField] private float _damageRangeMin = -2;
-        [SerializeField] private float _damageRangeMax = 1;
         [SerializeField] private float _damageTickRate = 0.1f;
 
         private bool _isBlinding;
@@ -108,15 +106,8 @@ namespace Gangdollarff
                 if (modifier <= 0f)
                     break;
 
-                float currentDamage = Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
-                currentDamage *= modifier;
-
-                Damage damage = new Damage
-                {
-                    Value = Buff.Damage.GetBuffedValue(currentDamage),
-                    Type = Info.DamageType,
-                    PhysicAttackType = Info.AttackRangeType,
-                };
+                Damage damage = GetDamage();
+                damage.Value *= modifier;
 
                 CmdApplyDamage(damage, item.gameObject);
 

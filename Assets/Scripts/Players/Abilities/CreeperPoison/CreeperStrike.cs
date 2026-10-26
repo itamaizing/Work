@@ -167,7 +167,7 @@ public class CreeperStrike : Skill
         TryApplyWitheringPoison(character);
         TryConsumeAmbushPoison(character);
 
-        _currentDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
+        _currentDamage = BaseDamage.GetValue();
 
         TryApplyInvisibleCritBonus();
 
@@ -191,12 +191,7 @@ public class CreeperStrike : Skill
         }
         else
         {
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(_currentDamage),
-                Type = DamageType.Physical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
-            };
+            Damage damage = GetDamage();
 
             CmdDamageDeal(damage, character.gameObject);
         }
@@ -339,12 +334,8 @@ public class CreeperStrike : Skill
         if (isTalentCritDamage || CanDealPoisonBoneCriticalDamage(target))
             criticalDamage = CalculateCriticalDamage(baseDamage);
 
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(criticalDamage),
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
-        };
+        Damage damage = GetDamage();
+        damage.Value = criticalDamage;
 
         CmdApplyDamage(damage, target.gameObject);
     }

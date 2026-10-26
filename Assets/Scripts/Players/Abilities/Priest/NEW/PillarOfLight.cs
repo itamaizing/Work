@@ -26,7 +26,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
     private const float MinTickInterval = 0.05f;
 
-    private float _baseDamage = 5f;
+    //private float _baseDamage = 5f;
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
@@ -144,16 +144,12 @@ public class PillarOfLight : Skill, IPolaritySwitchable
                 targetTickCounts[target]++;
                 int ticks = targetTickCounts[target];
 
-                _damageValue = _baseDamage + _damageIncreasePerTick * (ticks - 1);
+                _damageValue = _baseDamage.GetValue() + _damageIncreasePerTick * (ticks - 1);
 
                 if (IsEnemyTarget(target))
                 {
-                    Damage damage = new Damage
-                    {
-                        Value = Buff.Damage.GetBuffedValue(_damageValue),
-                        Type  = Info.DamageType,
-                        School = Info.School
-                    };
+                    Damage damage = GetDamage();
+                    damage.Value = CalculateDamage(_damageValue);
                     CmdApplyDamage(damage, target.gameObject);
                 }
                 else if (isLightMode && IsAllyTarget(target))
@@ -169,7 +165,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
             }
         }
 
-        _damageValue = _baseDamage;
+        _damageValue = _baseDamage.GetValue();
     }
 
     #region VFX (по копии на столб, каждая живёт и уничтожается сама)

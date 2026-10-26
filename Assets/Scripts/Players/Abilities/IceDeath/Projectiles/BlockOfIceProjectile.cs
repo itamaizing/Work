@@ -16,11 +16,8 @@ public class BlockOfIceProjectile : Projectiles
         base.Init(dad, energy, lastHit, skill);
 
         _curDamage = energy;
-        _damage = new Damage
-        {
-            Value = _curDamage,
-            Type = DamageType.Magical,
-        };
+        _damage = _skill.GetDamage();
+        _damage.Value = _curDamage;
 
         _startPos = transform.position;
     }

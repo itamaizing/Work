@@ -65,12 +65,7 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
         var target = Targeting.GetTarget()?.Character;
         if (target == null) yield break;
 
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = DamageType.Physical,
-            School = Schools.Physical
-        };
+        Damage damage = GetDamage();
 
         CmdApplyDamage(damage, target.gameObject);
 

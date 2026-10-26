@@ -282,12 +282,8 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
             if (Vector3.Dot(direction, dirToTarget) <= 0) 
                 continue;
 
-            Damage damage = new Damage
-            {
-                Value = tickNumber,
-                Type = Info.DamageType,
-                School = Schools.Water
-            };
+            Damage damage = GetDamage();
+            damage.Value = tickNumber;
 
             CmdApplyDamage(damage, target.gameObject);
             CmdAddCooling(target);

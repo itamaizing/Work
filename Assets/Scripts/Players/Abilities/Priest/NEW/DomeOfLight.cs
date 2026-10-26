@@ -193,12 +193,7 @@ public class DomeOfLight : Skill, IPolaritySwitchable
 
             if (IsEnemyTarget(target))
             {
-                Damage damage = new Damage
-                {
-                    Value = Buff.Damage.GetBuffedValue(_damageValue),
-                    Type = Info.DamageType,
-                    School = Info.School
-                };
+                Damage damage = GetDamage();
                 CmdApplyDamage(damage, target.gameObject);
             }
             else if (isLightMode && IsAllyTarget(target) && target != Hero)

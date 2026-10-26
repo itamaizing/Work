@@ -66,13 +66,9 @@ public class ChainLightning : Skill
             if (hitTargets.Contains(current)) break;
     
             hitTargets.Add(current);
-    
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(Damage) * currentDamageMult,
-                Type = Info.DamageType,
-                School = Schools.Air
-            };
+
+            Damage damage = GetDamage();
+            damage.Value *= currentDamageMult;
     
             CmdCreateParticle(current.Position);
             CmdApplyDamage(damage, current.gameObject);

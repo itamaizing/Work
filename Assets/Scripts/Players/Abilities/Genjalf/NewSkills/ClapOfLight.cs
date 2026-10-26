@@ -64,12 +64,8 @@ namespace Gangdollarff
                     float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
                     float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.Radius);
 
-                    Damage scaledDamage = new Damage
-                    {
-                        Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
-                        Type = Info.DamageType,
-                        PhysicAttackType = Info.AttackRangeType,
-                    };
+                    Damage scaledDamage = GetDamage();
+                    scaledDamage.Value *= damageMul;
 
                     CmdApplyDamage(scaledDamage, enemy.gameObject);
 

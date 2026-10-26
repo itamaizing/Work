@@ -198,11 +198,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         var target = Targeting.GetTarget().Object;
         if (target == null) return;
 
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = Info.DamageType,
-        };
+        Damage damage = GetDamage();
 
         _wasDamageApplied = true;
 

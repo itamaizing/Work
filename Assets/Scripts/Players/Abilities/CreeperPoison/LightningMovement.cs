@@ -265,8 +265,6 @@ public class LightningMovement : Skill
             yield break;
         }
 
-        Damage damage = new Damage { Value = Damage, Type = Info.DamageType };
-
         _secondVectorLineInstance = Instantiate(_lineRendererPrefab.Start);
         _secondVectorLineInstance.transform.position = originPoint;
         _secondVectorLineInstance.SetColor(Color.yellow);
@@ -281,7 +279,7 @@ public class LightningMovement : Skill
 
             if (dynamicLength > 0.01f)
             {
-                _secondVectorLineInstance.SetSize(AreaInfo.CastWidth, dynamicLength, damage);
+                _secondVectorLineInstance.SetSize(AreaInfo.CastWidth, dynamicLength);
 
                 float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
                 _secondVectorLineInstance.transform.rotation = Quaternion.Euler(90, -angle + 90, 0);

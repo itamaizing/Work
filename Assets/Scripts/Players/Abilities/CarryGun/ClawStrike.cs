@@ -18,10 +18,6 @@ public class ClawStrike : Skill
     [SerializeField] private float _buffDurationAfterJump = 1f;
     [SerializeField] private float _chanceApplyBleedingIncrease = 0.4f;
     [SerializeField] private float _chanceApplyBleedingWithJump = 0.6f;
-
-    [Header("Damage")]
-    [SerializeField] private float _minDamage = 10f;
-    [SerializeField] private float _maxDamage = 11f;
     
     [Header("Evolution 10")]
     [SerializeField] private float _cheliceraStrikeCritBleedingChanceBonus = 0.8f;
@@ -51,7 +47,6 @@ public class ClawStrike : Skill
     private bool _isDurationChanceApplyBleedingWithJump = false;
     private bool _isLastClawStrike;
     private float _spentAttackingPsiEnergy;
-    private float _baseDamage;
     private float _castWindowDuration = 1f;
     private float _totalChanceApplyBleeding;
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
@@ -167,15 +162,8 @@ public class ClawStrike : Skill
 
         IDamageable damageable = target as IDamageable;
         Character targetCharacter = target as Character;
-        _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
-        Damage = _baseDamage;
 
-        var physicalDamage = new Damage
-        {
-            Value = _baseDamage,
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
-        };
+        Damage physicalDamage = GetDamage();
 
         CmdApplyDamage(physicalDamage, damageable.gameObject);
 

@@ -176,12 +176,8 @@ public class SneakySpit : Skill
         float critMultiplier = 2.5f;
         float finalDamage = baseDamage * critMultiplier;
 
-        Damage damage = new Damage
-        {
-            Value = finalDamage,
-            School = Info.School,
-            Type = Info.DamageType,
-        };
+        Damage damage = GetDamage();
+        damage.Value = finalDamage;
 
         CmdApplyDamage(damage, target.gameObject);
     }
@@ -256,13 +252,7 @@ public class SneakySpit : Skill
 
             else
             {
-                Damage damage = new Damage
-                {
-                    Value = Damage,
-                    School = Info.School,
-                    Type = Info.DamageType,
-                };
-
+                Damage damage = GetDamage();
                 CmdApplyDamage(damage, target.gameObject);
             }
 

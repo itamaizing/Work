@@ -58,11 +58,7 @@ public class LightningStrike : Skill
        
         if (target != null)
         {
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = Info.DamageType
-            };
+            Damage damage = GetDamage();
 
             CmdApplyDamage(damage, target.gameObject);
             CmdCreateParticle(target.Position);

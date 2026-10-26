@@ -33,7 +33,6 @@ public class PoisonSlap : Skill
 
     private float _creeperStrikeCastSpeedMultiplier = 1.5f;
     private float _lightningStrikesCastSpeedMultiplier = 2f;
-    private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
 
@@ -231,19 +230,14 @@ public class PoisonSlap : Skill
 
             if (isColdBloodCrit)
             {
-                DealCriticalDamage(target, _baseDamage);
+                DealCriticalDamage(target, _baseDamage.GetValue());
 
                 _coldBlood.IsCanCrit = false;
                 _coldBlood.IsCanCritLightningStrikes = false;
             }
             else
             {
-                Damage damage = new Damage
-                {
-                    Value = _baseDamage,
-                    Type = DamageType.Physical,
-                    PhysicAttackType = AttackRangeType.MeleeAttack,
-                };
+                Damage damage = GetDamage();
 
                 CmdApplyDamage(damage, target.gameObject);
             }
@@ -265,12 +259,7 @@ public class PoisonSlap : Skill
 
         if (Targeting.GetTarget()?.Character != null)
         {
-            Damage damage = new Damage
-            {
-                Value = _baseDamage,
-                Type = DamageType.Physical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
-            };
+            Damage damage = GetDamage();
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
@@ -281,7 +270,6 @@ public class PoisonSlap : Skill
 
     private void UseRecharge()
     {
-
         _isCanDamageDeal = false;
         Cost.TryPayMandatory();
         //TryPayCost(true);

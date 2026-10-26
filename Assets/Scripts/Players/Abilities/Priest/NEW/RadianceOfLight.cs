@@ -106,19 +106,14 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
 
             if (IsEnemyTarget(target))
             {
-                Damage damage = new Damage
-                {
-                    Value = Buff.Damage.GetBuffedValue(_damageValue),
-                    Type  = Info.DamageType,
-                    School = Info.School
-                };
+                Damage damage = GetDamage();
                 CmdApplyDamage(damage, target.gameObject);
             }
             else if (isLightMode && IsAllyTarget(target) && target != Hero)
             {
                 Heal heal = new Heal
                 {
-                    Value           = _damageValue,
+                    Value           = BaseDamage.GetValue(),
                     DamageableSkill = this,
                 };
                 CmdApplyHeal(heal, target.gameObject, this, nameof(RadianceOfLight));

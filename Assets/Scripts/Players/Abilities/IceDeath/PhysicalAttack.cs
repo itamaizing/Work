@@ -153,13 +153,9 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 	private void SingleHit(Character enemy)
 	{
 		OnSeriesDamaged?.Invoke(enemy.gameObject,this);
-		float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 
-		Damage damage = new Damage
-		{
-			Value = curDamage * _currentDamageMultiplier,
-			Type = DamageType.Physical,
-		};
+		Damage damage = GetDamage();
+		damage.Value *= _currentDamageMultiplier;
 		CmdApplyDamage(damage, enemy.gameObject);
 		_currentDamageMultiplier = 1;
 	}

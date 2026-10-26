@@ -15,12 +15,7 @@ public class IceShardProjectile : Projectiles
 
 	private void Start()
 	{
-		_curDamage = 3 + Random.Range(0, 3);
-		_damage = new Damage
-		{
-			Value = _curDamage,
-			Type = DamageType.Physical,
-		};
+		_damage = _skill.GetDamage();
 	}
 
 	public void SetMaxDistance(float distance) => _maxDistance = distance;

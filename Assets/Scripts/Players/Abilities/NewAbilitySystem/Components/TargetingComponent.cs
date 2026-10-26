@@ -265,7 +265,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         }
 
         if (!radius.HasValue)
-            radius = Mathf.Max(_skill.AreaInfo.Radius, _skill.AreaInfo.CastLength);
+            radius = _skill.CastDistance;
         switch (type)
         {
             case SkillType.Target:

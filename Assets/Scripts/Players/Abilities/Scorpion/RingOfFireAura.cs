@@ -110,12 +110,8 @@ public class RingOfFireAura : AuraStateHandler
                 float multiplier = _fireBreath?.GetExposureMultiplier(
                     target.GetComponent<Health>()) ?? 1f;
 
-                var damage = new Damage
-                {
-                    Value = Random.Range(1, 4) * multiplier,
-                    Type = DamageType.Magical,
-                    School = Schools.Fire
-                };
+                var damage = _fromSkill.GetDamage();
+                damage.Value *= multiplier;
                 _fromSkill.CmdApplyDamage(damage, target.gameObject);
                 CmdApplyScorched(target.gameObject, _owner.gameObject);
             }

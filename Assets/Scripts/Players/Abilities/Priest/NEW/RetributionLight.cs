@@ -380,12 +380,7 @@ public class RetributionLight : Skill, IPolaritySwitchable
             if (!targetGO.TryGetComponent<Character>(out var target)) continue;
             if (target.IsDead) continue;
 
-            Damage damage = new Damage
-            {
-                Value  = Buff.Damage.GetBuffedValue(Damage),
-                Type   = Info.DamageType,
-                School = school
-            };
+            Damage damage = GetDamage();
             
             float healthBefore = target.Health.CurrentValue;
             ApplyDamage(damage, targetGO);

@@ -7282,6 +7282,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -7334,6 +7336,11 @@ MonoBehaviour:
   _chargeAttackDelay: 0
   _damage: 5
   _animSpeed: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &683463177557245195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7384,6 +7391,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: 7978062462139499513
   _isSubjectToGlobalCooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -7450,6 +7459,15 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: 8a1e601722ba8fa4c9d5091b783ebe71, type: 3}
   stunMagicPassiveSkill: {fileID: 3842746931648952249}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462139499513
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 6
 --- !u!114 &2650038749754245899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7500,6 +7518,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: 7978062462546608202
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 12
@@ -7557,6 +7577,15 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: 5531a0cd7bf154f4b9803db442a17de9, type: 3}
   _reversePolarity: {fileID: 4397321495794393293}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462546608202
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 35
 --- !u!114 &4087625883292875692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7607,6 +7636,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -7672,6 +7703,11 @@ MonoBehaviour:
   _flowOfLight: {fileID: 744928704386096395}
   _sparkOfLight: {fileID: 683463177557245195}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &9090548113051291277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7722,6 +7758,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 4
@@ -7774,6 +7812,11 @@ MonoBehaviour:
   tiredSoulDuration: 12
   absorbAmount: 40
   audioClip: {fileID: 8300000, guid: b98d79eb8d8561741abaf46e6e955fb1, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &4397321495794393293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7824,6 +7867,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -7882,6 +7927,11 @@ MonoBehaviour:
   - {fileID: 9198197295651917431}
   - {fileID: 8095898515459106270}
   audioClip: {fileID: 8300000, guid: 2a5bdf6fd66e9564ca2db2bad82d4059, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &504324304728665980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7932,6 +7982,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -7980,6 +8032,11 @@ MonoBehaviour:
   _soundComponent:
     _entries: []
   _buffDuration: 2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3096350181652607353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8030,6 +8087,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 40
@@ -8083,6 +8142,11 @@ MonoBehaviour:
   _largeRadius: 8
   _priestShield: {fileID: 9090548113051291277}
   _restoration: {fileID: 4087625883292875692}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &4290408123772457770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8127,6 +8191,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -8186,6 +8252,11 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3842746931648952249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8230,6 +8301,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -8278,6 +8351,11 @@ MonoBehaviour:
   _soundComponent:
     _entries: []
   playerCharacter: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &744928704386096395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8322,6 +8400,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -8385,6 +8465,11 @@ MonoBehaviour:
   stunMagicPassiveSkill: {fileID: 3842746931648952249}
   _reversePolarity: {fileID: 4397321495794393293}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &7714812283473049481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8429,6 +8514,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -8476,6 +8563,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &2384888892488266055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8526,6 +8618,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 40
+  _baseDamage:
+    rid: 7978062462546608283
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 12
@@ -8590,6 +8684,15 @@ MonoBehaviour:
   _darkFresnelColor: {r: 0.5018867, g: 0.010416506, b: 0.22583991, a: 1}
   _darkVoronoiColor: {r: 4.2240343, g: 0.023909282, b: 1.1739932, a: 0.45490196}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462546608283
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 40
 --- !u!114 &3163430235383499094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8640,6 +8743,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 4
+  _baseDamage:
+    rid: 7978062462546608364
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -8696,6 +8801,15 @@ MonoBehaviour:
   _lightColor: {r: 1, g: 0.96862745, b: 0, a: 0.2509804}
   _darkColor: {r: 0.7132075, g: 0, b: 0.3794985, a: 0.2509804}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462546608364
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 4
 --- !u!114 &9198197295651917431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8746,6 +8860,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 5
+  _baseDamage:
+    rid: 7978062462546608445
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 10
@@ -8804,6 +8920,15 @@ MonoBehaviour:
   _lightColor: {r: 0.7490196, g: 0.60479844, b: 0, a: 0.53333336}
   _darkColor: {r: 0.6679245, g: 0.2709505, b: 0.6394586, a: 0.5019608}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462546608445
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 5
 --- !u!114 &8095898515459106270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8848,6 +8973,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 20
+  _baseDamage:
+    rid: 7978062462546608526
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 20
@@ -8909,6 +9036,15 @@ MonoBehaviour:
   lightInfo: {fileID: 11400000, guid: d5c1bd7747925fb4f97776a769ddeff0, type: 2}
   darkInfo: {fileID: 11400000, guid: f98aafbc2e1afc046b8e3c914571e938, type: 2}
   isLightMode: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462546608526
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 20
 --- !u!114 &7665012576937268854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8959,6 +9095,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 15
@@ -9010,6 +9148,11 @@ MonoBehaviour:
   _aoeRadius: 1.5
   _shadowSpeedMultiplier: 0.5
   _spawnOffset: {x: 2, y: 0, z: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &7650511108258493519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9060,6 +9203,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 18
@@ -9111,6 +9256,11 @@ MonoBehaviour:
   _fearEffect: {fileID: 7584423103798657176}
   _aoeRadius: 1.5
   _fearDuration: 6
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1585020486036998203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9155,6 +9305,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 22
@@ -9209,6 +9361,11 @@ MonoBehaviour:
   _soundComponent:
     _entries: []
   _duration: 4
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3445813803428500223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9259,6 +9416,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -9307,6 +9466,11 @@ MonoBehaviour:
   _soundComponent:
     _entries: []
   _manaCost: 20
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &813685758969075211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9351,6 +9515,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9403,6 +9569,11 @@ MonoBehaviour:
   _shadowSpeedMultiplier: 0.5
   _darkDamageThreshold: 50
   _maxShadowCharges: 3
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &5133618027215628989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9447,6 +9618,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9494,6 +9667,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6819494317702169821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9538,6 +9716,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9586,6 +9766,11 @@ MonoBehaviour:
   _soundComponent:
     _entries: []
   _shadowSkill: {fileID: 813685758969075211}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1383847730869930601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9630,6 +9815,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9678,6 +9865,11 @@ MonoBehaviour:
   _soundComponent:
     _entries: []
   _buffDuration: 6
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1891792751888252515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9728,6 +9920,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9776,6 +9970,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1062103080400983297 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9112855932003537409, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

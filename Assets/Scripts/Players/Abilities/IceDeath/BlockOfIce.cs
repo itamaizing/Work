@@ -16,9 +16,6 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 	private Energy _energy;
 	private RuneComponent _rune;
 
-	private float _baseDamageMin = 20f;
-	private float _baseDamageMax = 25f;
-
 	private bool _isSeriesComplete;
 
 	private const int ShardCount = 5;
@@ -134,8 +131,7 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 	{
 		BlockOfIceProjectile projectile = Instantiate(_iceArrow, transform.position, Quaternion.Euler(0, -angle, 0));
 
-		float baseDamage = UnityEngine.Random.Range(_baseDamageMin, _baseDamageMax);
-		float finalDamage = baseDamage + bonusDamage;
+		float finalDamage = BaseDamage.GetValue() + bonusDamage;
 
 		projectile.Init(_playerLinks, finalDamage, false, this);
 
@@ -179,8 +175,7 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 
 		BlockOfIceProjectile projectile = Instantiate(_iceArrow, shadowPosition, Quaternion.Euler(0, -angle, 0));
-		float baseDamage = UnityEngine.Random.Range(_baseDamageMin, _baseDamageMax);
-		float finalDamage = baseDamage + bonusDamage;
+		float finalDamage = BaseDamage.GetValue() + bonusDamage;
 
 		projectile.Init(_playerLinks, finalDamage, false, this);
 
@@ -206,7 +201,7 @@ public class BlockOfIce : Skill, IEnergyDamagable, IComboSeriesParticipatingSkil
 		if (_isSeriesComplete)
 		{
 			_isSeriesComplete = false;
-			float totalDamage = UnityEngine.Random.Range(_baseDamageMin, _baseDamageMax) + _bonusDamage;
+			float totalDamage = BaseDamage.GetValue() + _bonusDamage;
 			CmdSpawnShards(targetGo, totalDamage * ShardDamagePercent);
 		}
 	}

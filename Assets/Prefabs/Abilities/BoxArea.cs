@@ -12,7 +12,7 @@ public class BoxArea : MonoBehaviour
     private List<Character> _targets = new List<Character>();
     private Damage _damage;
 
-	public void SetSize(float width, float length, Damage damage)
+	public void SetSize(float width, float length, Damage? damage=null)
     {
         /*_sprite.size = new Vector2(width, length);
         
@@ -22,7 +22,10 @@ public class BoxArea : MonoBehaviour
         _colider.size = new Vector3(width, length, 5);
         _projector.size = new Vector3(width, length, 5);
         _projector.pivot = new Vector3(0, length/2, 0.01f);
-        _damage = damage;
+        if (damage.HasValue)
+            _damage = damage.Value;
+        else
+            _damage = new Damage() { Value = 0 };
     }
 
     public void SetColor(Color color)

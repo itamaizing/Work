@@ -7,7 +7,6 @@ public class BleedingSpell : Skill, IMultiMagicSkill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
-    [SerializeField] private float _baseDamage = 10;
 
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
@@ -18,7 +17,7 @@ public class BleedingSpell : Skill, IMultiMagicSkill
 
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
-        Damage = duration * _baseDamage;
+        Damage = duration * _baseDamage.GetValue();
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -40,7 +39,7 @@ public class BleedingSpell : Skill, IMultiMagicSkill
 
     protected override IEnumerator CastJob()
     {
-        Damage = _baseDamage;
+        Damage = _baseDamage.GetValue();
         if (Targeting.GetTarget()?.Character != null) CmdApplyAbsorptionState(Targeting.GetTarget()?.Character.gameObject);
         
         AfterCastJob();

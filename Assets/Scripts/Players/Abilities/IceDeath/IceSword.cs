@@ -89,14 +89,8 @@ public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 
 	private void ApplyDamage(Character targetCharacter)
 	{
-		float totalDamage = _damage + _additionalDamage;
-
-		Damage damage2 = new Damage
-		{
-			Value = totalDamage,
-			Type = DamageType.Physical,
-			PhysicAttackType = AttackRangeType.RangeAttack,
-		};
+		Damage damage2 = GetDamage();
+		damage2.Value += _additionalDamage;
 		
 		CmdApplyDamage(damage2, targetCharacter.gameObject);
 

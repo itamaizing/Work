@@ -46,11 +46,7 @@ public class InformationRenderComponent : BaseSkillComponent
     #region Methods
     public void ShowAOEIndicator(Vector3 position, bool isCommand=false)
     {
-        Damage damage = new Damage
-        {
-            Value = _skill.Damage,
-            Type = _skill.Info.DamageType,
-        };
+        Damage damage = _skill.GetDamage();
 
         if (isCommand)
         {
@@ -78,12 +74,8 @@ public class InformationRenderComponent : BaseSkillComponent
     {
         if (!_skill.SkillRender.TryClaimIndicator(_skill))
             return;
-        
-        Damage damage = new Damage
-        {
-            Value = _skill.Damage,
-            Type = _skill.Info.DamageType,
-        };
+
+        Damage damage = _skill.GetDamage();
 
         if (_isAutoRadiusRender)
             _skill.SkillRender.DrawRadius(_skill.AreaInfo.Radius);

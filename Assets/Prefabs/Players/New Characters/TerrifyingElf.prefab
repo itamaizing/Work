@@ -13178,6 +13178,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 8
+  _baseDamage:
+    rid: 7978062462951358634
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -13238,6 +13240,16 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 8192
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951358634
+      type: {class: DamageTableRange, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 1
+        IsDot: 0
+        min: 6
+        max: 10
 --- !u!114 &6009180366675701932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13282,6 +13294,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 12
+  _baseDamage:
+    rid: 7978062462951358758
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 8
@@ -13340,6 +13354,16 @@ MonoBehaviour:
   _terrifyingElfAura: {fileID: 6686568037796463366}
   impactPrefab: {fileID: 2350920691492312483, guid: cac1bddd67383cf44b63154f1d1cea37, type: 3}
   arrowIntoSkyEffect: {fileID: 215749735526849689}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951358758
+      type: {class: DamageTableRange, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 1
+        IsDot: 0
+        min: 12
+        max: 18
 --- !u!114 &3150488009405324217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13390,6 +13414,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 6
+  _baseDamage:
+    rid: 7978062462951358924
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -13451,6 +13477,16 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 8192
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951358924
+      type: {class: DamageTableRange, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 1
+        IsDot: 0
+        min: 6
+        max: 10
 --- !u!114 &4161291845396503115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13495,6 +13531,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 13
@@ -13556,6 +13594,11 @@ MonoBehaviour:
   _ghost: {fileID: 1718052129104348959}
   _damageMinoin: 60
   _skillQueue: {fileID: 4490336970382221666}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6063604074090390129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13606,6 +13649,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 10
@@ -13656,6 +13701,11 @@ MonoBehaviour:
     _entries: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &826193211731534654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13706,6 +13756,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 30
+  _baseDamage:
+    rid: 7978062462951359090
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 8
@@ -13764,6 +13816,15 @@ MonoBehaviour:
   reconnaissanceFire: {fileID: 2750012758126725032}
   impactPrefab: {fileID: -5983841691116529863, guid: d8aef2d7788484b45a62c1cb9ff2627a, type: 3}
   arrowsIntoSkyEffect: {fileID: 7120892110168633769}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951359090
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 30
 --- !u!114 &679409545534796012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13808,6 +13869,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 10
+  _baseDamage:
+    rid: 7978062462951359173
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -13871,6 +13934,15 @@ MonoBehaviour:
   _ghostSkill: {fileID: 1718052129104348959}
   _radiusIncreasePerGhost: 3
   _chainUnitRadiusPrefab: {fileID: 5857312309245348591, guid: 87d3b047a21aefc4d9aae1f8341dad18, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951359173
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 10
 --- !u!114 &1718052129104348959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13915,6 +13987,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 13
@@ -13979,6 +14053,11 @@ MonoBehaviour:
   treeVisionComponent: {fileID: 1555059839938612127, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
   heroVisionComponent: {fileID: 5614925148377618008}
   skillQueue: {fileID: 4490336970382221666}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6004029750635303333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14023,6 +14102,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -14073,6 +14154,11 @@ MonoBehaviour:
     _entries: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3491896792666520145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14123,6 +14209,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 13
@@ -14174,6 +14262,11 @@ MonoBehaviour:
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &8199207747846444516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14218,6 +14311,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 6
@@ -14280,6 +14375,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &2248569995468415066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14330,6 +14430,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 12
@@ -14394,6 +14496,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1612167112411553268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14444,6 +14551,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 6
@@ -14494,6 +14603,11 @@ MonoBehaviour:
   health: {fileID: 2320460443592093226}
   moveComponent: {fileID: 443563987953287420}
   disactiveResetTime: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &2750012758126725032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14538,6 +14652,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 12
@@ -14597,6 +14713,11 @@ MonoBehaviour:
   _arcHeight: 6
   _extendedRadiusCircle: {fileID: 7454699290023613669}
   _extendedRadiusColor: {r: 0.8, g: 0.3, b: 0, a: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6686568037796463366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14641,6 +14762,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -14706,6 +14829,11 @@ MonoBehaviour:
   _shotIntoSky: {fileID: 6009180366675701932}
   _shotDarkness: {fileID: 3150488009405324217}
   _darknessSkills: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6728227519922462803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14756,6 +14884,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 40
@@ -14806,6 +14936,11 @@ MonoBehaviour:
     _entries: []
   _subjugationMindPrefab: {fileID: 7744228389031826322, guid: 9b8d8a2206325ef4787d2a10b24b74a5, type: 3}
   _breakDistance: 6
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &5245378433989923716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14856,6 +14991,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -14907,6 +15044,11 @@ MonoBehaviour:
   playerLinks: {fileID: 4534754468497973439}
   drawCircle: {fileID: 6586971803846960611}
   duration: 6
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &5726345171651809113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14957,6 +15099,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -15004,6 +15148,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1094805825435644166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15054,6 +15203,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 36
@@ -15102,6 +15253,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &127445238161157264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15152,6 +15308,8 @@ MonoBehaviour:
       shouldModify: 1
       showInDescription: 1
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 8
@@ -15203,6 +15361,11 @@ MonoBehaviour:
   _playerLinks: {fileID: 4534754468497973439}
   _heroDuration: 6
   _creatureDuration: 40
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1457342243689941384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15247,6 +15410,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 10
+  _baseDamage:
+    rid: 7978062462951359256
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 2
@@ -15297,7 +15462,15 @@ MonoBehaviour:
     _entries: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 30
-  _baseDamage: 10
+  references:
+    version: 2
+    RefIds:
+    - rid: 7978062462951359256
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 10
 --- !u!114 &10595332369431687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15342,6 +15515,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -15389,6 +15564,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3083395416414514002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15433,6 +15613,8 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -15480,6 +15662,11 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &443563987953287420 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

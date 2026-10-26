@@ -16,7 +16,7 @@ public class ExplosionPoisonCloud : Skill
     private int _currentStacksPoisonCloud;
     private int _currentStacksHealingPoisonCloud;
 
-    private float _baseDamage = 6.0f;
+    private float _baseDamage_OLD = 6.0f;
     private float _currentDamage;
     private float _chanceApplyBonePoison = 0.9f;
     private float _radiusExplosion = 4f;
@@ -99,7 +99,7 @@ public class ExplosionPoisonCloud : Skill
         
         _isExploded = true;
 
-        _currentDamage = _baseDamage * _currentStacksPoisonCloud;
+        _currentDamage = _baseDamage_OLD * _currentStacksPoisonCloud;
 
         if (_isRestorativePoison) _currentHealValue = (_healValue + _additionalHealValue) * _currentStacksHealingPoisonCloud;
         else _currentHealValue = _healValue * _currentStacksHealingPoisonCloud;

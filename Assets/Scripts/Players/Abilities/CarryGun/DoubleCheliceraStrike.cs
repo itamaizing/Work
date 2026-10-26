@@ -31,6 +31,11 @@ public class DoubleCheliceraStrike : Skill
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
 
+    public override Damage GetDamage(DamageTable table = null, bool shouldModify = true)
+    {
+        return cheliceraStrike.GetDamage();
+    }
+
     protected override IEnumerator CastJob()
     {
         var target = Targeting.GetTarget()?.Character;

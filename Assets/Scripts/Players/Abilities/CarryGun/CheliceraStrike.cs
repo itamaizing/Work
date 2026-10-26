@@ -44,12 +44,9 @@ public class CheliceraStrike : Skill
 
     #endregion
 
-    private Damage _dealDamage;
-    private Animator _animator;
     private float _totalChanceApplyBleeding;
     private float _totalchanceCritDamage;
     private float _criticalDamage;
-    private float _baseDamage;
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
     private bool _isClawStrike_Right = true;
@@ -67,19 +64,12 @@ public class CheliceraStrike : Skill
 
     public event Action OnCriticalHit;
 
-    private void Start()
-    {
-        _animator = GetComponent<Animator>();
-    }
-
     private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
     }
     private void OnEnable()
     {
-        _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
-        Damage = _baseDamage;
         OnSkillCanceled += HandleSkillCanceled;
     }
 
@@ -111,9 +101,6 @@ public class CheliceraStrike : Skill
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield break;
-
-        _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
-        Damage = _baseDamage;
 
         IDamageable damageable = Targeting.GetTarget()?.Damageable;
 
@@ -157,7 +144,6 @@ public class CheliceraStrike : Skill
     
     public void RollStrike(IDamageable target, float damageMultiplier)
     {
-        _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
         DamageDealChelicera(target, damageMultiplier, false);
     }
 
@@ -165,13 +151,12 @@ public class CheliceraStrike : Skill
     {
         if (target == null) return;
         Character targetCharacter = target as Character;
+        Damage damage = GetDamage();
 
         if (useJumpBonus && _jumpWithChelicera.IsJumpDone)
-            Damage = _baseDamage + _baseDamage * _additionalDamageFromSkill;
-        else
-            Damage = _baseDamage;
+            damage.Value = damage.Value + damage.Value * _additionalDamageFromSkill;
 
-        Damage *= damageMultiplier;
+        damage.Value *= damageMultiplier;
 
         if (isEvolutionTalentTwo)
         {
@@ -184,7 +169,7 @@ public class CheliceraStrike : Skill
             if (_isChanceApplyBleedingIncrease && CheckStateForCrit(targetCharacter)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
             if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
-            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, CriticalDamageMultiplierDefault);
+            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(damage.Value, CriticalDamageMultiplierDefault);
 
             if (chanceBleedingValue <= _totalChanceApplyBleeding && targetCharacter != null) CmdAddState(targetCharacter);
         }
@@ -198,22 +183,17 @@ public class CheliceraStrike : Skill
 
             if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
-            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
+            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(damage.Value, chanceCritDamageValue);
         }
 
-        _dealDamage = new Damage()
-        {
-            Value = Damage + _criticalDamage,
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
-        };
+        damage.Value = damage.Value + _criticalDamage;
 
         if (_criticalDamage > 0)
         {
             OnCriticalHit?.Invoke();
         }
         
-        CmdApplyDamage(_dealDamage, target.gameObject);
+        CmdApplyDamage(damage, target.gameObject);
         
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && targetCharacter != null)
         {
@@ -223,8 +203,6 @@ public class CheliceraStrike : Skill
         if (_rechargeGlands != null && targetCharacter != null) _rechargeGlands.TryApplyDestructivePoison(targetCharacter, TryApplyDestructivePoisonChance, _player);
 
         _criticalDamage = 0f;
-        _dealDamage.Value = 0f;
-        Damage = _baseDamage;
     }
 
     private float CriticalDamageDeal(float criticalDamage, float multiplierCrit)

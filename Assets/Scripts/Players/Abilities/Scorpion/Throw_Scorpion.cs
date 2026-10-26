@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Throw_Scorpion : Skill, IComboParticipatingSkill
 {
-    private float _baseDamage = 15f;
+    //private float _baseDamage = 15f;
     private float _baseThrowDistance = 1f;
     private float _animationDuration = 1.2f;
     private float _liftHeight = 1.8f;
@@ -126,12 +126,8 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
         Vector3 liftPosition = target.transform.position + Vector3.up * _liftHeight;
         target.Move?.RpcDoLiftAndThrow(liftPosition, finalPosition, 1);
 
-        Damage damage = new Damage
-        {
-            Value = _baseDamage + _currentBonusDamage,
-            Type = DamageType.Physical,
-            School = Schools.Physical
-        };
+        Damage damage = GetDamage();
+        damage.Value = CalculateDamage(_baseDamage.GetValue() + _currentBonusDamage);
 
         ApplyDamage(damage, target.gameObject);
 

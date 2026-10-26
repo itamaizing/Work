@@ -102,13 +102,7 @@ public class FireBallSkill : Skill
     [TargetRpc]
     private void TargetRpcOnEndPointReached(GameObject target)
     {
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
-        };
-
+        Damage damage = GetDamage();
         CmdApplyDamage(damage, target);
         CmdApplyEffects(target);
     }

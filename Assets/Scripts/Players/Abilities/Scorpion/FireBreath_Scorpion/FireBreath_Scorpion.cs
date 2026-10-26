@@ -227,14 +227,10 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
                 float distanceMultiplier = Mathf.Lerp(DamageLerpStart, DamageLerpEnd, (distance / _maxDistance));
                 int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
 
-                float finalDamageValue = Buff.Damage.GetBuffedValue(Damage * damageScale * distanceMultiplier);
+                float finalDamageValue = CalculateDamage(Damage * damageScale * distanceMultiplier);
 
-                Damage damage = new Damage
-                {
-                    Value = finalDamageValue,
-                    Type = Info.DamageType,
-                    School = Schools.Fire
-                };
+                Damage damage = GetDamage();
+                damage.Value = finalDamageValue;
 
                 CmdApplyDamage(damage, enemy.gameObject);
                 

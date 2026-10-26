@@ -50,6 +50,11 @@ public class LightningStrikes : Skill
 
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
+    public override Damage GetDamage(DamageTable table = null, bool shouldModify = true)
+    {
+        return _creeperStrike.GetDamage();
+    }
+
     public event Action OnLightningStrikesEnd;
 
     protected override void Awake()

@@ -13,7 +13,7 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
     private AudioSource _audioSource;
     private bool _lastHit;
 	private Energy _energy;
-	private float _baseDamage = 10f;
+	//private float _baseDamage = 10f;
 	private float _energyToUse;
 
 	#region Constants
@@ -91,7 +91,7 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
     {
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * ProjectileSpawnOffset, Quaternion.Euler(0, -angle, 0));
 		projectile.Init(Hero, manaValue, false, this);
-		projectile.InitIceCloud(manaValue, Damage);
+		projectile.InitIceCloud(manaValue, BaseDamage.GetValue());
 		projectile.Talent(isLastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
@@ -106,7 +106,7 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 		if (obj.TryGetComponent<IceCloudProjectile>(out IceCloudProjectile ice))
         {
 			ice.Init(Hero, manaValue, false, this);
-			ice.InitIceCloud(manaValue, Damage);
+			ice.InitIceCloud(manaValue, BaseDamage.GetValue());
 			ice.Talent(isLastHit);
 		}
 	}

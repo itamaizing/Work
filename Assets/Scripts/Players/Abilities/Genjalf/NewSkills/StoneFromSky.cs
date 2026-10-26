@@ -121,11 +121,7 @@ public class StoneFromSky : Skill
             if (!IsEnemyTarget(target)) continue;
             if (target.IsDead) continue;
 
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = Info.DamageType,
-            };
+            Damage damage = GetDamage();
 
             CmdApplyDamage(damage, target.gameObject);
 

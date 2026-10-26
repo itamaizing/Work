@@ -86,6 +86,11 @@ public class JumpWithChelicera : Skill
         AnimCastEnded();
     }
 
+    public override Damage GetDamage(DamageTable table = null, bool shouldModify = true)
+    {
+        return _cheliceraeStrike.GetDamage();
+    }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)

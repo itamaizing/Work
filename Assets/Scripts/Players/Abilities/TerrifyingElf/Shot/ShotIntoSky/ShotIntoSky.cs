@@ -215,7 +215,7 @@ public class ShotIntoSky : Skill
         Hero.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
 
-        CmdSpawnImpact(_targetPoint, Damage, false);
+        CmdSpawnImpact(_targetPoint, BaseDamage.GetValue(), false);
 
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
         {
@@ -227,15 +227,15 @@ public class ShotIntoSky : Skill
             {
                 if (reconnaissanceFire.CurrentFireAura.StateDark)
                 {
-                    CmdSpawnImpact(_targetPoint, Damage / 2, false);
+                    CmdSpawnImpact(_targetPoint, BaseDamage.GetValue() / 2, false);
                     _secondShotPlanned = true;
 
-                    CmdSpawnImpact(_targetPoint, Damage / 4, true);
+                    CmdSpawnImpact(_targetPoint, BaseDamage.GetValue() / 4, true);
                     _tripleShootPlanned = true;
                 }
                 else
                 {
-                    CmdSpawnImpact(_targetPoint, Damage / 2, true);
+                    CmdSpawnImpact(_targetPoint, BaseDamage.GetValue() / 2, true);
                     _secondShotPlanned = true;
                 }
             }

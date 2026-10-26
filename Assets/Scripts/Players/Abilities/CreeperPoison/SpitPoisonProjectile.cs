@@ -23,7 +23,6 @@ public class SpitPoisonProjectile : Test_Projectile
     private int _ownerLayer;
 
     private float _energyDad;
-    private float _damage;
     private float _lifeTimePoisonBoneStacks = 60.0f;
     private float _buffer = 0.5f;
 
@@ -113,8 +112,6 @@ public class SpitPoisonProjectile : Test_Projectile
                     if (collision.TryGetComponent<Character>(out var target))
                     {
                         _target = target;
-                        _damage = Random.Range(4.0f, 12.0f);
-
                         DamageDeal();
                     }
                 }
@@ -132,9 +129,6 @@ public class SpitPoisonProjectile : Test_Projectile
                         if (collision.TryGetComponent<Character>(out var target))
                         {
                             _target = target;
-
-                            _damage = Random.Range(4.0f, 12.0f);
-
                             DamageDeal();
                         }
                     }
@@ -148,9 +142,6 @@ public class SpitPoisonProjectile : Test_Projectile
                 if (collision.TryGetComponent<Character>(out var target))
                 {
                     _target = target;
-
-                    _damage = Random.Range(4.0f, 12.0f);
-
                     DamageDeal();
                 }
             }
@@ -186,19 +177,12 @@ public class SpitPoisonProjectile : Test_Projectile
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
-        float finalDamage = _damage;
+        Damage damage = _skill.GetDamage();
 
-        if (_isColdBloodCrit) finalDamage *= 2.5f;
+        if (_isColdBloodCrit) damage.Value *= 2.5f;
 
-        Damage _baseDamage = new Damage
-        {
-            Value = _skill.Buff.Damage.GetBuffedValue(finalDamage),
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.RangeAttack,
-        };
-
-        _target.Health.TryTakeDamage(ref _baseDamage, _skill);
-        _target.DamageTracker.AddDamage(_baseDamage, null, isServerRequest: isServer);
+        _target.Health.TryTakeDamage(ref damage, _skill);
+        _target.DamageTracker.AddDamage(damage, null, isServerRequest: isServer);
 
         if (_isErodedArmorState)
         {

@@ -9,8 +9,6 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private ScorpionPassive _scorpionPassive;
-    [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
-    [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
 
     [Header("Talent Flags")]
     private bool _isKick_ScorpionRowTalent;
@@ -68,8 +66,6 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
 
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, Targeting.AdditionalObstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-
-    public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
 
     private void Start()
     {
@@ -180,12 +176,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         if (Vector3.Distance(_hero.transform.position, targetGO.transform.position) > AreaInfo.Radius)
             return;
 
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = Info.DamageType,
-            School = Schools.Physical
-        };
+        Damage damage = GetDamage();
 
         _wasDamageApplied = true;
 

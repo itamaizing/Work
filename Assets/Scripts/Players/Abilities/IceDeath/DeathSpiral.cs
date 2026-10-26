@@ -189,7 +189,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
     {
         float energyToUse = Mathf.Min(_energy.CurrentValue, _maxEnergyCost);
         float additionalDamage = energyToUse * _energyToDamage;
-        float totalDamage = Damage + additionalDamage;
+        float totalDamage = BaseDamage.GetValue() + additionalDamage;
 
         CmdShootProjectile(enemy, totalDamage, isCorpse: false,_isSecondaryProjectile,transform.position);
 

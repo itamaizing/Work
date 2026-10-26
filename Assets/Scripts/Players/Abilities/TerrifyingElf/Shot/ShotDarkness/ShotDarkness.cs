@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ShotDarkness : Skill, IMultiMagicSkill
 {
@@ -13,8 +12,6 @@ public class ShotDarkness : Skill, IMultiMagicSkill
     [SerializeField] private MultiMagicSpell _multiMagicSpell;
     [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
     [SerializeField] private AudioClip _audioClip;
-    [SerializeField] private float _minDamage;
-    [SerializeField] private float _maxDamage;
     [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private float _arrowYOffsetDown = 0.5f;
     [SerializeField] private LayerMask _groundLayerMask;
@@ -73,21 +70,21 @@ public class ShotDarkness : Skill, IMultiMagicSkill
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * HealthThresholdPercent;
         }
 
-        if (!_terrifyingElfAura) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
+        if (!_terrifyingElfAura) Damage = BaseDamage.GetValue();
         else
         {
-            if (!_isHealthAboveThreshold) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
+            if (!_isHealthAboveThreshold) Damage = BaseDamage.GetValue();
 
             else
             {
                 var elvenSkill = _playerLinks.CharacterState.GetState(States.ElvenSkill) as ElvenSkill;
 
-                if (elvenSkill == null) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
+                if (elvenSkill == null) Damage = BaseDamage.GetValue();
 
                 else
                 {
-                    float baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
-                    float extraDamage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset) * ExtraDamageMultiplier;
+                    float baseDamage = BaseDamage.GetValue();
+                    float extraDamage = BaseDamage.GetValue() * ExtraDamageMultiplier;
                     float total = baseDamage + extraDamage;
 
                     bool isCrit = UnityEngine.Random.value < CritChance;

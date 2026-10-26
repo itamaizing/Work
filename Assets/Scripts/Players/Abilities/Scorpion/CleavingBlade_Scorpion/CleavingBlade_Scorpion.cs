@@ -8,8 +8,6 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 {
     [Header("Ability settings")]
     [SerializeField] private ScorpionPassive _scorpionPassive;
-    [SerializeField] [Range(0, 100)] private float _minDamage = 18f;
-    [SerializeField] [Range(0, 100)] private float _maxDamage = 26f;
     [SerializeField] private GameObject _blade;
 
     [SyncVar] private int _counter = 1;
@@ -34,7 +32,6 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     private bool isCleavingBlade_ScorpionSecondTalent;
     private bool _wasDamageApplied = false;
 
-    public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
@@ -153,11 +150,8 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
         if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
             return;
 
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
-            Type = Info.DamageType,
-        };
+        Damage damage = GetDamage();
+        damage.Value *= damageMultiplier;
 
         _wasDamageApplied = true;
 
