@@ -15,6 +15,7 @@ public struct Damage : NetworkMessage
     public Skill SourceSkill;
     public string DamageKey;
     public bool FullyAbsorbed;
+    public bool IsDot;
 }
 
 public interface IDamageable

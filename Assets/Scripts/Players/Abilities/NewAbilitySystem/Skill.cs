@@ -21,6 +21,7 @@ using UnityEngine;
     [SerializeField] TargetingComponent _targetingComponent;
     [SerializeField] CostComponent _costComponent;
     [SerializeField] protected float _damageValue;
+    [SerializeReference, SubclassSelector] protected DamageTable _baseDamage = null;
     [Header("[Cooldown]")]
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
     [SerializeField] private CooldownComponent _cooldownComponent;
@@ -42,9 +43,46 @@ using UnityEngine;
 
     public virtual float CastDistance => Mathf.Max(AreaInfo.Radius, AreaInfo.CastLength);
 
+    #region Damage
+    public DamageTable BaseDamage => _baseDamage;
+
+    /// <summary>
+    /// Формирует настроенный Damage со значениями способности.
+    /// </summary>
+    /// <param name="table">Конкретная настройка урона. Меняет Value, DamageType, IsDot</param>
+    /// <param name="shouldModify">Нужно ли прогонять Value через CalculateDamage()</param>
+    /// <returns></returns>
+    public virtual Damage GetDamage(DamageTable table = null, bool shouldModify = true)
+    {
+        if (table == null)
+            table = _baseDamage;
+
+        if (table == null)
+            return new Damage();
+
+        Damage damage = new Damage()
+        {
+            Value = shouldModify ? CalculateDamage(table.GetValue()) : table.GetValue(),
+            Type = table.Type,
+            School = Info.School,
+            Form = Info.AbilityForm,        //Тип способности. В целом в уроне как будто бы не нужен
+            PhysicAttackType = Info.AttackRangeType,    //Дальность может быть только у физ?
+            SkillType = Targeting.SkillType,    //Вдруг захотим резать весь АоЕ урон
+            SourceSkill = this,
+            DamageKey = this.name.ToString(),
+            IsDot = table.IsDot,
+        };
+        return damage;
+    }
+
+    public virtual float CalculateDamage(float value)
+    {
+        return _skillAttributes[SkillAttributeName.Damage].CalculateFor(value);
+    }
+    #endregion Damage
 
     #region CastReduction
-    
+
     public event Action<float> PreparingRolledBack;
     public event Action<float> ChannelingRolledBack;
     
