@@ -100,7 +100,7 @@ public class LightningMovement : Skill
         Vector3 direction = (end - start).normalized;
         float distance = Vector3.Distance(start, end);
 
-        RaycastHit[] hits = Physics.SphereCastAll(start, _radiusAttack, direction, distance, Targeting.Layer);
+        RaycastHit[] hits = Physics.SphereCastAll(start, _radiusAttack, direction, distance, Targeting.InteractionMask);
         foreach (var hit in hits)
         {
             if (hit.collider.TryGetComponent<Character>(out var character) && character != _hero)

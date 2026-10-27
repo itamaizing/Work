@@ -51,7 +51,7 @@ public class StingingHitsPassive : Skill, IPassiveSkill
 
         foreach (var skill in abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Physical || skill.Info.AbilityForm == AbilityForm.Both)
+            if (skill.Info.AbilityForm == AbilityForm.Physical || skill.Info.AbilityForm == AbilityForm.Mixed)
             {
                 skill.OnBeforeApplyDamage += OnBeforePhysicalDamage;
 
@@ -69,7 +69,7 @@ public class StingingHitsPassive : Skill, IPassiveSkill
 
         foreach (var skill in abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Physical || skill.Info.AbilityForm == AbilityForm.Both)
+            if (skill.Info.AbilityForm == AbilityForm.Physical || skill.Info.AbilityForm == AbilityForm.Mixed)
             {
                 skill.OnBeforeApplyDamage -= OnBeforePhysicalDamage;
 

@@ -114,7 +114,7 @@ public class WaveSkill : Skill
             waveCenter,
             new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
             Quaternion.LookRotation(direction),
-            Targeting.Layer
+            Targeting.InteractionMask
         );
 
         foreach (var collider in colliders)

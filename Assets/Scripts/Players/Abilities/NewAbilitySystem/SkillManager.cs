@@ -162,13 +162,11 @@ public class SkillManager : MonoBehaviour
     
     private void HandleHeroDirectDamage(Damage damage, Skill skill)
     {
-        if (damage.Type == DamageType.DOTPhys || damage.Type == DamageType.DOTMag)
-            return;
-
+        if (damage.IsDot) return;
         if (!_hero.isOwned) return;
 
         if (CurrentCastingSkill != null)
-            CurrentCastingSkill.HandleDirectDamageDuringCast(damage.Value, damage.Type, damage.FullyAbsorbed);
+            CurrentCastingSkill.HandleDirectDamageDuringCast(damage);
     }
 
     public void CancleAllSkills()

@@ -76,7 +76,7 @@ public class Burn : StateBasic, ITickableState
     private void OnDamageTakenServer(Damage damage, Skill skill)
     {
         if (damage.Value <= 0f) return;
-        if (damage.Type != DamageType.Physical || damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
+        if (damage.Type != DamageType.Physical || damage.AttackRange != AttackRangeType.MeleeAttack) return;
 
         Character attacker = skill?.Hero;
         if (attacker == null || attacker == characterState.Character) return;

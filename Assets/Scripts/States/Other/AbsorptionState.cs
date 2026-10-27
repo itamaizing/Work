@@ -54,7 +54,7 @@ public class AbsorptionState : StateStackingRefreshing, IDamageable
         var tempDamage = new Damage
         {
             Form = damage.Form,
-            PhysicAttackType = damage.PhysicAttackType,
+            AttackRange = damage.AttackRange,
             School = damage.School,
             Type = damage.Type,
             Value = damageToAbsorb,

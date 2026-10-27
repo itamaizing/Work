@@ -28,8 +28,8 @@ public class DebugDamageModuleUI : DebugUnitModuleUI<DebugDamageModule>
         FillDropdownWithEnum<AttackRangeType>(_attackTypeFormDropdown);
         _attackTypeFormDropdown.onValueChanged.AddListener((index) => Module.PhysicAttackType = (AttackRangeType)index);
 
-        FillDropdownWithEnum<SkillType>(_skillTypeFormDropdown);
-        _skillTypeFormDropdown.onValueChanged.AddListener((index) => Module.SkillType = (SkillType)index);
+        FillDropdownWithEnum<TargetingType>(_skillTypeFormDropdown);
+        _skillTypeFormDropdown.onValueChanged.AddListener((index) => Module.SkillType = (TargetingType)index);
 
         _valueInputField.onEndEdit.AddListener((value) => Module.Value = float.Parse(value));
         _DamageKeyInputField.onEndEdit.AddListener((value) => Module.DamageKey = value);

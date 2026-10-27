@@ -32,6 +32,7 @@ public enum UnitType
     Hero = 1 << 0,
     Building = 1 << 1,
     Creep = 1 << 2,
+    Minion = 1 << 3, //ControlledCreep
 }
 
 public enum OutOfRangeClick // => Если за радиусом - всегда кастуем. Если за радиусом, но на цель - кастуем, когда цель будет в радиусе
@@ -48,8 +49,25 @@ public enum TargetType
     Point,
     Object,
 }
+public enum TargetingType
+{
+    /// <summary>
+    /// Target - скилл ГАРАНТИРОВАННО применяется к цели. Можно скастовать ТОЛЬКО когда цель в радиусе.
+    /// Вспышка света - снаряд, но он ТОЛЬКО таргетный и следует за целью => тип Target
+    /// </summary>
+    Target,
+    /// <summary>
+    /// Projectile - Летит по прямой в точку (будь-то клик или положение цели). Может промахнутся. Может попасть не в ту цель
+    /// Стрела эльфийки - снаряд. Да, его можно применить к цели, но это не гарантирует попадание
+    /// </summary>
+    Projectile,
+    Zone,
+    NonTarget,
+    NonTargetWithClick,
+}
 #endregion
 #endregion Enums
+
 [Serializable]
 #if UNITY_EDITOR
 public class TargetingComponent : BaseSkillComponent, ISerializationCallbackReceiver
@@ -61,39 +79,39 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// Б) Не затирались значения, если дергать тип туда-сюда
     /// По идее не живет между запусками Юнити, да и ладно
     /// </summary>
-    [SerializeField, HideInInspector] private Dictionary<SkillType, TargetLayer> editorBackupValue = new();
-    [SerializeField, HideInInspector] private SkillType oldType = new();
+    [SerializeField, HideInInspector] private Dictionary<TargetingType, TargetLayer> editorBackupValue = new();
+    [SerializeField, HideInInspector] private TargetingType oldType = new();
 
     public void OnBeforeSerialize()
     {
-        if (type != oldType)
+        if (_targetingType != oldType)
         {
             if (!editorBackupValue.TryAdd(oldType, _clickLayer))
                 editorBackupValue[oldType] = _clickLayer;
 
-            if (editorBackupValue.TryGetValue(type, out var oldLayer))
+            if (editorBackupValue.TryGetValue(_targetingType, out var oldLayer))
                 _clickLayer = oldLayer;
             else
-                switch (type)
+                switch (_targetingType)
                 {
-                    case SkillType.Target:
+                    case TargetingType.Target:
                         _clickLayer = TargetLayer.Unit;
                         break;
 
-                    case SkillType.Projectile:
+                    case TargetingType.Projectile:
                         _clickLayer = (TargetLayer.Unit | TargetLayer.Ground);
                         break;
 
-                    case SkillType.Zone:
+                    case TargetingType.Zone:
                         _clickLayer = TargetLayer.Ground;
                         break;
 
-                    case SkillType.NonTarget:
-                    case SkillType.NonTargetWithClick:
+                    case TargetingType.NonTarget:
+                    case TargetingType.NonTargetWithClick:
                         _clickLayer = TargetLayer.None;
                         break;
                 }
-            oldType = type;
+            oldType = _targetingType;
         }
     }
 
@@ -107,17 +125,18 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// <summary>
     /// ТОЛЬКО на кого можем нажать. Unit - применяется к цели, Ground - прменяется на землю
     /// </summary>
-    [SerializeField] protected SkillType type;
-    [SerializeField] protected TargetLayer _clickLayer; //возможно стоит разделить клик от физ. взаимодействия
-    [SerializeField] protected TargetFaction _faction;
-    [SerializeField] protected UnitType _unitType;
+    [SerializeField] protected TargetingType _targetingType;
+    [SerializeField] protected TargetLayer _clickLayer;
+    [SerializeField] protected TargetFaction _clickFaction;
+    [SerializeField] protected UnitType _clickUnit;
+    [SerializeField, Mirror.ReadOnly] protected LayerMask _clickMask;
+    [SerializeField] protected LayerMask _interactionMask;  //Если не указали вручную - формируется по _clickFaction
     [SerializeField] protected OutOfRangeClick _outOfRangeBehaviour;
     [SerializeField] protected bool _needLineOfSight;
     #endregion
 
     #region Runtime Variables
     protected const float _defaultSearchRadius = 0.3f;
-    [SerializeField, Mirror.ReadOnly] protected LayerMask _targetLayer;
     protected LayerMask _obstacles;
 
     protected TargetData _target;
@@ -128,26 +147,34 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     #endregion
 
     #region Properties
-    public SkillType SkillType { get => type; }
-    public LayerMask Layer {
-        get => _targetLayer;
-        set => _targetLayer = value;
+    public LayerMask InteractionMask
+    {
+        get => _interactionMask;
+        set => _interactionMask = value;
     }
-    public TargetFaction Faction { 
-        get => _faction;
+    public LayerMask ClickMask
+    {
+        get => _clickMask;
+        set => _clickMask = value;
+    }
+    public TargetingType SkillType { get => _targetingType; }
+    public TargetFaction Faction
+    {
+        get => _clickFaction;
         set
         {
-            _faction = value;
+            _clickFaction = value;
             SetUpPhysicLayers();
         }
     }
-    public UnitType Units { get => _unitType; }
+    public UnitType Units { get => _clickUnit; }
     public OutOfRangeClick OutRange { get => _outOfRangeBehaviour; }
-    
+
     public LayerMask AdditionalObstacle;
 
     public TargetData Target => _target;
-    public TargetData Temporary { 
+    public TargetData Temporary
+    {
         get => _tempTarget;
     }
     public TargetData ForDamage
@@ -162,7 +189,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     public override void Init(Skill skill)
     {
         base.Init(skill);
-        SetUpPhysicLayers();
+        SetUpPhysicLayers(_interactionMask.value==0);
     }
 
     #region Get-Set
@@ -243,15 +270,15 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
         if (targetInfo.Points.Count > 0)
             return new TargetData(targetInfo.Points[0]);
-        
+
         return null;
     }
 
-    public bool CanCast(TargetData target, float? radius=null)
+    public bool CanCast(TargetData target, float? radius = null)
     {
-        if (target == null && (type & (SkillType.NonTargetWithClick | SkillType.NonTarget)) == 0)
+        if (target == null && (_targetingType & (TargetingType.NonTargetWithClick | TargetingType.NonTarget)) == 0)
             return false;
-        
+
         Vector3 point = new();
         switch (target.Type)
         {
@@ -266,13 +293,13 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
         if (!radius.HasValue)
             radius = _skill.CastDistance;
-        switch (type)
+        switch (_targetingType)
         {
-            case SkillType.Target:
+            case TargetingType.Target:
                 return (IsPointInRadius(radius.Value, point));
 
-            case SkillType.Projectile:
-            case SkillType.Zone:
+            case TargetingType.Projectile:
+            case TargetingType.Zone:
                 if (!IsPointInRadius(radius.Value, point))
                 {
                     if (_outOfRangeBehaviour == OutOfRangeClick.Queue || target.Type == TargetType.Object)
@@ -280,8 +307,8 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
                 }
                 return true;
 
-            case SkillType.NonTargetWithClick:
-            case SkillType.NonTarget:
+            case TargetingType.NonTargetWithClick:
+            case TargetingType.NonTarget:
                 return true;
 
             default:
@@ -292,17 +319,19 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public TargetData GetTargetOrPoint(float searchRadius = _defaultSearchRadius, bool useLayerMask = true)
     {
-        if (SkillType == SkillType.NonTargetWithClick)
-            return new TargetData(Vector3.zero);
+        if (SkillType == TargetingType.NonTargetWithClick)
+            return new TargetData(GetMousePoint(useLayerMask: false));
+
         var clickPoint = GetMousePoint(useLayerMask: useLayerMask);
         if (clickPoint == null || clickPoint == Vector3.zero)
             return null;
+
         if (_clickLayer.HasFlag(TargetLayer.Ground) && !_clickLayer.HasFlag(TargetLayer.Unit)) //Если ждем только точку - возвращаем точку
         {
             return new TargetData(clickPoint);
         }
 
-        var targets = FindTargets(clickPoint, searchRadius, canTargetSelf: (_faction.HasFlag(TargetFaction.Self)));
+        var targets = FindTargets(clickPoint, searchRadius, canTargetSelf: (_clickFaction.HasFlag(TargetFaction.Self)));
         if (targets == null || targets.Count <= 0) //Если не нашли цель
         {
             if (_clickLayer.HasFlag(TargetLayer.Ground)) // и можно по земле
@@ -313,21 +342,21 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         }
         else if (_clickLayer.HasFlag(TargetLayer.Unit)) //Если нашли цель - проверяем команду
         {
-            foreach (var target in targets) 
+            foreach (var target in targets)
             {
-                if ((_targetLayer & (1 << target.Object.layer)) != 0)
+                if ((_clickMask & (1 << target.Object.layer)) != 0)
                     return target;
             }
         }
         return null;
     }
-    
+
     /// <summary>
     /// Находит и устанавливает tempTarget, берет текущую точку курсора и значение радиуса из скилла
     /// </summary>
     public TargetData FindTempTarget(bool? canTargetSelf = null, bool canTargetDead = false)
     {
-        return FindTempTarget(GetMousePoint(), _defaultSearchRadius, canTargetSelf.HasValue ? canTargetSelf.Value : _faction.HasFlag(TargetFaction.Self), canTargetDead);
+        return FindTempTarget(GetMousePoint(), _defaultSearchRadius, canTargetSelf.HasValue ? canTargetSelf.Value : _clickFaction.HasFlag(TargetFaction.Self), canTargetDead);
     }
 
     /// <summary>
@@ -335,7 +364,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// </summary>
     public TargetData FindTempTarget(Vector3 position, float radius, bool? canTargetSelf = null, bool canTargetDead = false)
     {
-        var targets = FindTargets(position, radius, canTargetSelf.HasValue ? canTargetSelf.Value : _faction.HasFlag(TargetFaction.Self), canTargetDead);
+        var targets = FindTargets(position, radius, canTargetSelf.HasValue ? canTargetSelf.Value : _clickFaction.HasFlag(TargetFaction.Self), canTargetDead);
         if (targets == null || targets.Count <= 0)
         {
             ClearTempTarget(); //Возможно отсюда нужно вынести ниже, но вроде нет.
@@ -348,9 +377,9 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// <summary>
     /// Предконечный метод поиска целей. Позволяет отфильтровать мертвых
     /// </summary>
-    public List<TargetData> FindTargets(Vector3 position, float radius, bool? canTargetSelf=null, bool canTargetDead=false)
+    public List<TargetData> FindTargets(Vector3 position, float radius, bool? canTargetSelf = null, bool canTargetDead = false)
     {
-        List<TargetData> targets = GetClosestTargets(position, radius, canTargetSelf.HasValue ? canTargetSelf.Value : _faction.HasFlag(TargetFaction.Self));
+        List<TargetData> targets = GetClosestTargets(position, radius, canTargetSelf.HasValue ? canTargetSelf.Value : _clickFaction.HasFlag(TargetFaction.Self));
         if (targets == null || targets.Count <= 0)
         {
             return null;
@@ -369,10 +398,10 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// <summary>
     /// Конечный метод поиска цели
     /// </summary>
-    public List<TargetData> GetClosestTargets(Vector3 position, float radius, bool? canTargetSelf = null, bool useLayerMask=true)
+    public List<TargetData> GetClosestTargets(Vector3 position, float radius, bool? canTargetSelf = null, bool useLayerMask = true)
     {
         var targets = _character.TargetSeeker.GetCloserTargets(position, radius,
-            canTargetSelf.HasValue ? canTargetSelf.Value : _faction.HasFlag(TargetFaction.Self), useLayerMask ? _targetLayer : null);
+            canTargetSelf.HasValue ? canTargetSelf.Value : _clickFaction.HasFlag(TargetFaction.Self), useLayerMask ? _clickMask : null);
         if (targets == null || targets.Count <= 0)
         {
             //return new();
@@ -405,7 +434,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     public Vector3 GetMousePoint(bool useLayerMask = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        LayerMask mask = useLayerMask ? _targetLayer : (LayerMask.GetMask("Default", "Ground", "Obstecls"));
+        LayerMask mask = useLayerMask ? _clickMask : (LayerMask.GetMask("Default", "Ground", "Obstecls"));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
         {
@@ -475,28 +504,38 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     }
     #endregion Helpers
 
-    private void SetUpPhysicLayers()
+    private void SetUpPhysicLayers(bool updateInteraction=true)
     {
-        LayerMask layerMask = 0;
-        if ((_clickLayer & TargetLayer.Ground) != 0 && (type & (SkillType.Zone | SkillType.Projectile)) != 0)
+        LayerMask clickMask = 0;
+        LayerMask interactionMask = 0;
+        if ((_clickLayer & TargetLayer.Ground) != 0 && (_targetingType & (TargetingType.Zone | TargetingType.Projectile)) != 0)
         {
-            layerMask |= LayerMask.GetMask("Ground");
+            clickMask |= LayerMask.GetMask("Ground");
         }
 
         if ((_clickLayer & TargetLayer.Unit) != 0)
         {
-            if ((_faction & TargetFaction.Enemy) != 0)
+            if ((_clickFaction & TargetFaction.Enemy) != 0)
             {
-                layerMask |= LayerMask.GetMask("Enemy");
+                clickMask |= LayerMask.GetMask("Enemy");
             }
-            if ((_faction & (TargetFaction.Self | TargetFaction.Ally)) != 0)
+            if ((_clickFaction & (TargetFaction.Self | TargetFaction.Ally)) != 0)
             {
-                layerMask |= LayerMask.GetMask("Allies");
+                clickMask |= LayerMask.GetMask("Allies");
             }
         }
-        _targetLayer = layerMask;
+        _clickMask = clickMask;
 
         _obstacles = LayerMask.GetMask("Obstecls");
+
+        if (!updateInteraction)
+            return;
+
+        if ((_clickFaction & (TargetFaction.Self | TargetFaction.Ally)) != 0)
+            interactionMask |= LayerMask.GetMask("Allies");
+        if ((_clickFaction & (TargetFaction.Self | TargetFaction.Enemy)) != 0)
+            interactionMask |= LayerMask.GetMask("Enemy");
+        _interactionMask = interactionMask;
     }
     #endregion Methods
 }

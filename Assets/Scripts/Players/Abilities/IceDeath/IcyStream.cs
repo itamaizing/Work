@@ -268,11 +268,11 @@ public class IcyStream : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         if (Vector3.Distance(originPosition, end) < radius)
             end = start;
 
-        Collider[] hits = Physics.OverlapCapsule(start, end, radius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapCapsule(start, end, radius, Targeting.InteractionMask);
 
         foreach (var col in hits)
         {
-            if ((Targeting.Layer.value & (1 << col.gameObject.layer)) == 0) continue;
+            if ((Targeting.InteractionMask.value & (1 << col.gameObject.layer)) == 0) continue;
             if (!col.TryGetComponent<Character>(out var target)) continue;
             if (target.IsDead) continue;
 

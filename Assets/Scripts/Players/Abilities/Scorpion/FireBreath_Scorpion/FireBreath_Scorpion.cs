@@ -206,11 +206,11 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
             transform.position,
             transform.position + transform.forward * _maxDistance,
             _coneAngle,
-            Targeting.Layer);
+            Targeting.InteractionMask);
 
         foreach (Collider collider in hitColliders)
         {
-            if ((Targeting.Layer.value & (1 << collider.gameObject.layer)) == 0)
+            if ((Targeting.InteractionMask.value & (1 << collider.gameObject.layer)) == 0)
                 continue;
 
             if (collider.TryGetComponent<Health>(out Health enemy))

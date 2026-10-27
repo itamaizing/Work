@@ -30,7 +30,7 @@ public class ScorchedSoulEnergyRestoreHandler : NetworkBehaviour
         if (!_isEnabled) return;
         if (!isOwned) return;
         if (skill == null) return;
-        if (damage.Type == DamageType.DOTMag || damage.Type == DamageType.DOTPhys) return;
+        if (damage.IsDot) return;
 
         var attacker = skill.Hero;
         if (attacker == null) return;

@@ -34,7 +34,7 @@ public class SpikeTentacle : NetworkBehaviour
         {
             Value = 30f,
             Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack
+            AttackRange = AttackRangeType.MeleeAttack
         };
 
         _skill.ApplyDamage(damage, _target.gameObject);

@@ -46,7 +46,7 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
+            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.InteractionMask);
 
             CmdSetActiveParticle(true);
 
@@ -104,7 +104,7 @@ namespace Gangdollarff
 
             while (elapsed < RepulsionDuration && _heroTransformClient != null)
             {
-                var hits = Physics.OverlapSphere(_heroTransformClient.position, RepulsionRange, Targeting.Layer);
+                var hits = Physics.OverlapSphere(_heroTransformClient.position, RepulsionRange, Targeting.InteractionMask);
 
                 List<uint> netIds = new();
 
@@ -168,11 +168,6 @@ namespace Gangdollarff
 
         protected override void ClearData()
         {
-        }
-
-        protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
-        {
-            yield return null;
         }
 
         [Command]

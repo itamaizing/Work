@@ -185,8 +185,8 @@ public class ImpatienceStateStacking : StateStackingRefreshing
                 Type = damage.Type,
                 School = damage.School,
                 Form = damage.Form,
-                PhysicAttackType = damage.PhysicAttackType,
-                SkillType = damage.SkillType,
+                AttackRange = damage.AttackRange,
+                TargetingType = damage.TargetingType,
                 SourceSkill = damage.SourceSkill,
                 DamageKey = ShareKey,
                 FullyAbsorbed = false

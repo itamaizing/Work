@@ -297,7 +297,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                     {
                         Value = damageValue,
                         Type = DamageType.None,
-                        PhysicAttackType = AttackRangeType.MeleeAttack,
+                        AttackRange = AttackRangeType.MeleeAttack,
                     };
 
                     CmdApplyDamageSwarm(damage, minion.gameObject);

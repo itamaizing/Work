@@ -76,7 +76,7 @@ public class FaceBlock_Scorpion : Skill
 
         Character attacker = skill.Hero;
 
-        if (damage.PhysicAttackType != AttackRangeType.MeleeAttack)
+        if (damage.AttackRange != AttackRangeType.MeleeAttack)
             return;
 
         Vector3 dirToAttacker = (attacker.transform.position - _hero.transform.position).normalized;

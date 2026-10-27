@@ -8,7 +8,7 @@ public class TargetSeeker : MonoBehaviour
 	[SerializeField] protected LayerMask _targetsLayers;
 	[SerializeField] private Character _hero;
 
-	private SkillType _skillType;
+	private TargetingType _skillType;
 	private float _radius = 0;
 	private Skill _skill;
 

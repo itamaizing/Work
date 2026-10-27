@@ -61,7 +61,7 @@ public class Explosion : MoveSkill
             {
                 Value = stacks * Buff.Damage.GetBuffedValue(Damage),
                 Type = Info.DamageType,
-                PhysicAttackType = Info.AttackRangeType,
+                AttackRange = Info.AttackRangeType,
             };
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 

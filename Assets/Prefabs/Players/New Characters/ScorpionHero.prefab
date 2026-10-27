@@ -9010,15 +9010,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9083,6 +9086,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _playerLinks: {fileID: 5458554383432203635}
   scorpionPassive: {fileID: 1595654106541851295}
   _hitsInRow: 1
@@ -9126,15 +9176,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9198,10 +9251,55 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _playerLinks: {fileID: 5458554383432203635}
   _scorpionPassive: {fileID: 1595654106541851295}
-  _minDamage: 10
-  _maxDamage: 15
   references:
     version: 2
     RefIds:
@@ -9240,15 +9338,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9305,6 +9406,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -9338,15 +9486,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9410,9 +9561,54 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _scorpionPassive: {fileID: 1595654106541851295}
-  _minDamage: 18
-  _maxDamage: 26
   _blade: {fileID: 3194135442258839960}
   references:
     version: 2
@@ -9450,17 +9646,22 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 0
-    type: 0
-    _clickLayer: 3
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    editorBackupValue:
+    - key: 0
+      value: 3
+    oldType: 2
+    _targetingType: 2
+    _clickLayer: 2
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 256
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9529,6 +9730,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _conePrefab: {fileID: 0}
   _prefab: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _duration: 3
@@ -9575,15 +9823,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9646,6 +9897,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _manaCostPerTile: 5
   _baseCost: 20
   _layerMask:
@@ -9687,15 +9985,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 3
-    _faction: 6
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9752,6 +10053,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _comboPoints: {fileID: 1147250939410812164}
   references:
     version: 2
@@ -9822,17 +10170,22 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 1
-    type: 1
-    _clickLayer: 3
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 1
-    _needLineOfSight: 1
-    _targetLayer:
+    editorBackupValue:
+    - key: 1
+      value: 3
+    oldType: 0
+    _targetingType: 0
+    _clickLayer: 1
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 1
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9902,8 +10255,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
-  _minDamage: 3
-  _maxDamage: 5
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _arrowYOffset: 0.8
   _chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
   _playerLinks: {fileID: 5458554383432203635}
@@ -9946,15 +10344,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10011,6 +10412,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   AdditionalAddStateChance: 30
   references:
     version: 2
@@ -10045,15 +10493,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10116,6 +10567,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -10147,17 +10645,22 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 3
-    type: 3
-    _clickLayer: 0
-    _faction: 1
-    _unitType: 1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    editorBackupValue:
+    - key: 3
+      value: 0
+    oldType: 0
+    _targetingType: 0
+    _clickLayer: 1
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10220,6 +10723,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _buffDuration: 3
   references:
     version: 2
@@ -10270,15 +10820,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10342,6 +10895,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -10395,17 +10995,22 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 3
-    type: 3
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    editorBackupValue:
+    - key: 3
+      value: 0
+    oldType: 0
+    _targetingType: 0
+    _clickLayer: 1
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10469,6 +11074,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _ringOfFireAura: {fileID: 4675390448830311774}
   references:
     version: 2
@@ -10506,17 +11158,22 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 3
-    type: 3
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    editorBackupValue:
+    - key: 3
+      value: 0
+    oldType: 0
+    _targetingType: 0
+    _clickLayer: 1
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10579,6 +11236,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -10625,17 +11329,22 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 3
-    type: 3
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    editorBackupValue:
+    - key: 3
+      value: 0
+    oldType: 0
+    _targetingType: 0
+    _clickLayer: 1
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10704,6 +11413,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _duration: 2
   references:
     version: 2
@@ -10738,15 +11494,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10810,6 +11569,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -10847,15 +11653,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10912,6 +11721,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -10945,15 +11801,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11010,6 +11869,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   scorpionPassive: {fileID: 1595654106541851295}
   references:
     version: 2
@@ -11044,15 +11950,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11115,6 +12024,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -11148,15 +12104,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11225,6 +12184,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _blockChance: 90
   _blockReduction: 90
   _blockAngle: 45
@@ -11261,15 +12267,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11327,6 +12336,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   references:
     version: 2
     RefIds:
@@ -11364,15 +12420,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: 1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 1
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11435,6 +12494,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _hellZonePrefab: {fileID: 212777845320910971, guid: 7a16bf7a430ddb444a53f1aabf8e1b29, type: 3}
   _duration: 4
   references:
@@ -11470,15 +12576,18 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11535,6 +12644,53 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   SkillCooldown: 6
   references:
     version: 2

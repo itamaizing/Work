@@ -79,7 +79,7 @@ public class ExplosionPoisonCloud : Skill, IColdBloodEmpowerable
         Collider[] hitEnemies = Physics.OverlapSphere(
             transform.position,
             _radiusExplosion,
-            Targeting.Layer
+            Targeting.InteractionMask
         );
 
         foreach (Collider enemy in hitEnemies)

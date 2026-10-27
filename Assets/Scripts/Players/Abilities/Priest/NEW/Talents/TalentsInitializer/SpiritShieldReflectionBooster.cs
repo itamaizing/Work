@@ -42,7 +42,7 @@ public class SpiritShieldReflectionBooster : SkillTalentHandler
             Type = originalDamage.Type,
             School = originalDamage.School,
             Form = originalDamage.Form,
-            PhysicAttackType = originalDamage.PhysicAttackType
+            AttackRange = originalDamage.AttackRange
         };
 
         attacker.Health.TryTakeDamage(ref reflectDamage, null);

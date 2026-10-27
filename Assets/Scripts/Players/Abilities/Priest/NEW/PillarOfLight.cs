@@ -118,7 +118,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
         {
             yield return new WaitForSeconds(tick);
 
-            Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.Layer);
+            Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.InteractionMask);
 
             var currentTargets = new HashSet<Character>();
             foreach (var hit in hits)

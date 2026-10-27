@@ -100,7 +100,7 @@ public class FocusingOnReflexes : Skill
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (damage.Type == DamageType.DOTMag || damage.Type == DamageType.DOTPhys) return;
+        if (damage.IsDot) return;
         CmdRemoveBuffLogic();
         Hero.Health.DamageTaken -= OnDamageTaken;
     }

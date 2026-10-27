@@ -82,7 +82,7 @@ public class WaveParalyzingPoison : Skill
 
     private void ExpandWave(Vector3 origin)
     {
-        Collider[] hits = Physics.OverlapSphere(origin, _currentRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(origin, _currentRadius, Targeting.InteractionMask);
 
         foreach (var hit in hits)
         {

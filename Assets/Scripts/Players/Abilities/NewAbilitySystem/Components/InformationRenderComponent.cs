@@ -82,24 +82,24 @@ public class InformationRenderComponent : BaseSkillComponent
 
         if (_isAutoAreaRender)
         {
-            _skill.SkillRender.DrawArea(_skill.AreaInfo.Area, damage, _skill.Targeting.Layer);
+            _skill.SkillRender.DrawArea(_skill.AreaInfo.Area, damage, _skill.Targeting.InteractionMask);
             _skill.SkillRender.StartDynamicRadiusColor(_skill.AreaInfo.Radius, _skill);
         }
 
-        _skill.SkillRender.StartPreview(_skill.AreaInfo.Area, damage, _skill.Targeting.Layer);
+        _skill.SkillRender.StartPreview(_skill.AreaInfo.Area, damage, _skill.Targeting.InteractionMask);
 
         if (_isAutoLineRender)
         {
             Debug.Log("Auto line " + _skill, _skill);
-            _skill.SkillRender.DrawLine(_skill.AreaInfo.CastLength, _skill.AreaInfo.CastWidth, damage, _skill.Targeting.Layer);
+            _skill.SkillRender.DrawLine(_skill.AreaInfo.CastLength, _skill.AreaInfo.CastWidth, damage, _skill.Targeting.InteractionMask);
         }
 
         switch (_skill.Targeting.SkillType)
         {
-            case SkillType.Target:
-                _skill.SkillRender.DrawClosestTarget(_skill.AreaInfo.Radius, _skill.Targeting.Layer, _character);
+            case TargetingType.Target:
+                _skill.SkillRender.DrawClosestTarget(_skill.AreaInfo.Radius, _skill.Targeting.InteractionMask, _character);
                 break;
-            case SkillType.Zone:
+            case TargetingType.Zone:
                 _skill.SkillRender.StartDrawLineForZone(_skill);
                 break;
         }
@@ -140,7 +140,7 @@ public class InformationRenderComponent : BaseSkillComponent
         _skill.SkillRender.StopDynamicRadiusColor();
         _skill.SkillRender.StopPreview();
 
-        if (_skill.Targeting.SkillType == SkillType.Zone)
+        if (_skill.Targeting.SkillType == TargetingType.Zone)
         {
             _skill.SkillRender.StopDrawLineForZone();
         }
@@ -170,7 +170,7 @@ public class InformationRenderComponent : BaseSkillComponent
         _skill.SkillRender.StopPreview();
         _skill.StopDynamicRender();
 
-        if (_skill.Targeting.SkillType == SkillType.Zone)
+        if (_skill.Targeting.SkillType == TargetingType.Zone)
         {
             _skill.SkillRender.StopDrawLineForZone();
         }

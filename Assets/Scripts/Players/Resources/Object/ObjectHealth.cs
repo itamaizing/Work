@@ -16,7 +16,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     [Header("Damage type ignored")]
     [SerializeField] private List<Schools> _ignoredSchools;
     [SerializeField] private List<AbilityForm> _ignoredForms;
-    [SerializeField] private List<SkillType> _ignoredSkillTypes;
+    [SerializeField] private List<TargetingType> _ignoredSkillTypes;
 
     [Header("AbilityBanDatabase")]
     [SerializeField] private AbilityBanDatabase _abilityBanDatabase;

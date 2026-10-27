@@ -139,7 +139,7 @@ public class FireBoll : MoveSkill
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
             Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
+            AttackRange = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target);
         CmdState(target,_debuffTime);

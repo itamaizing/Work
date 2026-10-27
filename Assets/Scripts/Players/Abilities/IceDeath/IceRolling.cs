@@ -264,7 +264,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
             RaycastHit[] hits = Physics.SphereCastAll(
                 origin, _castRadius, direction,
                 speed * Time.deltaTime + 0.1f,
-                Targeting.AdditionalObstacle | Targeting.Layer);
+                Targeting.AdditionalObstacle | Targeting.InteractionMask);
 
             bool shouldStop = false;
             Vector3 perpDirBase = Vector3.Cross(direction, Vector3.up).normalized;
@@ -452,7 +452,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
         foreach (var ability in _hero.Abilities.Abilities)
         {
             if (ability == this) continue;
-            bool isPhysical = ability.Info.AbilityForm is AbilityForm.Physical or AbilityForm.Both;
+            bool isPhysical = ability.Info.AbilityForm is AbilityForm.Physical or AbilityForm.Mixed;
             if (!isPhysical) continue;
             if (_isDamageAddFrosting) ability.OnDamageApplied += AddFrostingToPhysical;
             else ability.OnDamageApplied -= AddFrostingToPhysical;

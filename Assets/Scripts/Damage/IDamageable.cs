@@ -4,14 +4,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum DamageType
+{
+    Magical,
+    Physical,
+    Both,
+    Inner,
+    None
+}
+
 public struct Damage : NetworkMessage
 {
     public float Value;
     public DamageType Type;
     public Schools School;
     public AbilityForm Form;
-    public AttackRangeType PhysicAttackType;
-    public SkillType SkillType;
+    public AttackRangeType AttackRange;
+    public TargetingType TargetingType;
     public Skill SourceSkill;
     public string DamageKey;
     public bool FullyAbsorbed;

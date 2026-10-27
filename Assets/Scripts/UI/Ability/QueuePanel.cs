@@ -176,7 +176,7 @@ public class QueuePanel : MonoBehaviour
             return;
         }
 
-        bool isArea = skill.Targeting.SkillType == SkillType.Zone;
+        bool isArea = skill.Targeting.SkillType == TargetingType.Zone;
         icon.ShowTarget(isArea ? _areaIcon : _projectileIcon, null);
     }
 

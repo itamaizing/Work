@@ -14,7 +14,7 @@ public class UserNetworkSettings : NetworkBehaviour
     private Scene _myRoom;
     [SyncVar] private Vector3 spawnPosition;
 
-    [SyncVar] private byte _teamIndex;
+    [SyncVar, ReadOnly, SerializeField] private byte _teamIndex;
     [SyncVar] private string _roomName;
 
     public Scene MyRoom { get { return _myRoom; } set { _myRoom = value; _roomName = value.name; } }
@@ -85,7 +85,7 @@ public class UserNetworkSettings : NetworkBehaviour
         OnUpdateValue?.Invoke();
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdSetTeam(byte i)
     {
         TeamIndex = i;

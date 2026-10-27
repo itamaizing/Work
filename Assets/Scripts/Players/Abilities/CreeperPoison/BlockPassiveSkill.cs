@@ -110,8 +110,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         return false;
     }
 
-    private static bool IsDot(Damage damage) =>
-        damage.Type == DamageType.DOTPhys || damage.Type == DamageType.DOTMag;
+    private static bool IsDot(Damage damage) => damage.IsDot;
 
     private bool TryBlock(Damage damage, Character attacker)
     {

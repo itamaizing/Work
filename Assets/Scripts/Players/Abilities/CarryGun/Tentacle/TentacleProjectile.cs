@@ -316,12 +316,12 @@ public class TentacleProjectile : NetworkBehaviour
         {
             Value = totalDamage,
             Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.MeleeAttack
+            AttackRange = AttackRangeType.MeleeAttack
         };
 
         _skill.ApplyDamage(mainDamage, _target.gameObject);
 
-        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.Targeting.Layer);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.Targeting.InteractionMask);
 
         foreach (var collider in nearbyEnemies)
         {
@@ -331,7 +331,7 @@ public class TentacleProjectile : NetworkBehaviour
                 {
                     Value = totalDamage,
                     Type = DamageType.Magical,
-                    PhysicAttackType = AttackRangeType.MeleeAttack
+                    AttackRange = AttackRangeType.MeleeAttack
                 };
 
                 _skill.ApplyDamage(splashDamage, enemy.gameObject);

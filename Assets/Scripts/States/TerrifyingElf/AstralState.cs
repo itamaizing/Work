@@ -90,7 +90,7 @@ public class AstralStateStacking : StateStackingRefreshing
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Mixed)
             {
                 var damageMod = new AttributeModifier(0.5f, ModifierType.Percent, this);
                 skill.Attributes[SkillAttributeName.Damage].AddModifier(damageMod);

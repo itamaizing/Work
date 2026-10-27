@@ -108,7 +108,7 @@ public class HealingPoisonCloudState : StateStackingRefreshing
             {
                 if (creeperInvisible != null)
                 {
-                    _alliesLayer = creeperInvisible.Targeting.Layer;
+                    _alliesLayer = creeperInvisible.Targeting.InteractionMask;
                 }
             }
 

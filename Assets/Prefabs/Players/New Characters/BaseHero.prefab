@@ -18292,6 +18292,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _teamIndex: 0
 --- !u!114 &6438771747420870763
 MonoBehaviour:
   m_ObjectHideFlags: 0

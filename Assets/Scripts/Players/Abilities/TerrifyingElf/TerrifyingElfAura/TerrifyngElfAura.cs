@@ -787,7 +787,7 @@ public class TerrifyingElfAura : Skill
         if (_hero == null) return 0;
 
         float searchRadius = 10;
-        var colliders = Physics.OverlapSphere(_hero.transform.position, searchRadius, Targeting.Layer);
+        var colliders = Physics.OverlapSphere(_hero.transform.position, searchRadius, Targeting.InteractionMask);
 
         int count = 0;
         foreach (var col in colliders)

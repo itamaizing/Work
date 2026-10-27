@@ -132,7 +132,7 @@ public class CoolingDamaged : StateBasic
     {
         if (skill == null || skill.Hero == null) return;
         if (damage.Type != DamageType.Physical) return;
-        if (damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
+        if (damage.AttackRange != AttackRangeType.MeleeAttack) return;
 
         skill.Hero.CharacterState.AddState(
             States.Cooling, 

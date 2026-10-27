@@ -31,7 +31,7 @@ public class InnerDarkness : StateStackingRefreshing
                         if (skill == null || skill.Info == null) continue;
 
                         bool isDark = skill.Info.School == Schools.Dark;
-                        bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both;
+                        bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Mixed;
 
                         if (isDark && isSpellish && skill.Cooldown != null && skill.Cooldown.IsActive)
                         {

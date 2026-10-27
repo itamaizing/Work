@@ -42,7 +42,7 @@ public class EnergyFirstHitDamageBooster : Skill,IPassiveSkill
     {
         foreach (var skill in _hero.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm != AbilityForm.Physical && skill.Info.AbilityForm != AbilityForm.Both)
+            if (skill.Info.AbilityForm != AbilityForm.Physical && skill.Info.AbilityForm != AbilityForm.Mixed)
                 continue;
 
             if (skill is IComboParticipatingSkill)
@@ -60,7 +60,7 @@ public class EnergyFirstHitDamageBooster : Skill,IPassiveSkill
     {
         foreach (var skill in _hero.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm != AbilityForm.Physical && skill.Info.AbilityForm != AbilityForm.Both)
+            if (skill.Info.AbilityForm != AbilityForm.Physical && skill.Info.AbilityForm != AbilityForm.Mixed)
                 continue;
 
             if (skill is IComboParticipatingSkill)

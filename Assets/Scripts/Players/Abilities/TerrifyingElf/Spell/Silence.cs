@@ -149,7 +149,7 @@ public class Silence : Skill
 
         try
         {
-            int hitCount = Physics.OverlapSphereNonAlloc(target, AreaInfo.Area - SilenceAreaRadiusOffset, _overlapBuffer, Targeting.Layer);
+            int hitCount = Physics.OverlapSphereNonAlloc(target, AreaInfo.Area - SilenceAreaRadiusOffset, _overlapBuffer, Targeting.InteractionMask);
 
             int minionHitCount = 0;
             int ghostAuraMinionHitCount = 0;
@@ -354,7 +354,7 @@ public class Silence : Skill
         {
             Value = damage,
             Type = damageType,
-            PhysicAttackType = AttackRangeType.RangeAttack,
+            AttackRange = AttackRangeType.RangeAttack,
         };
 
         if (target is Component targetComponent)

@@ -181,7 +181,7 @@ public class DomeOfLight : Skill, IPolaritySwitchable
 
     private void CheckDomeHitsAtPosition(Vector3 position, float radius, HashSet<Character> hitTargets)
     {
-        Collider[] hits = Physics.OverlapSphere(position, radius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(position, radius, Targeting.InteractionMask);
 
         foreach (var hit in hits)
         {

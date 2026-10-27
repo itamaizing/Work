@@ -54,7 +54,7 @@ public class RisingOfShadows : Skill
 
     protected override IEnumerator CastJob()
     {
-        Collider[] hits = Physics.OverlapSphere(_clickPoint, _aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(_clickPoint, _aoeRadius, Targeting.InteractionMask);
 
         var targets = new List<GameObject>();
         foreach (var hit in hits)

@@ -56,7 +56,14 @@ public class SpitPoison : Skill, IAltAbility, IColdBloodEmpowerable
     private bool _canSpawnPoisonCloud = false;
     private bool _isErodedArmorState = false;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
-    public void ActiveHealingSpitPoison(bool value) => _isActiveHealingSpitPoison = value;
+    public void ActiveHealingSpitPoison(bool value)
+    {
+        _isActiveHealingSpitPoison = value;
+        if (value == true)
+            Targeting.Faction = (TargetFaction.Ally | TargetFaction.Self | TargetFaction.Enemy);
+        else
+            Targeting.Faction = TargetFaction.Enemy;
+    }
     private bool IsTransparentShot =>
         _player.Abilities.GetSkill<CreeperInvisible>()?.IsTransparentPoisonsActive ?? false;
 

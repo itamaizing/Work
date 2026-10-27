@@ -80,7 +80,7 @@ public class Health : Resource, IDamageable, IHealable
         OnBeforeTakeDamage?.Invoke(damage, skill);
         OnBeforeDamage?.Invoke(ref damage, skill);
 
-        if (TryEvade(damage.Type, damage.PhysicAttackType))
+        if (TryEvade(damage.Type, damage.AttackRange))
         {
             Evaded?.Invoke(skill);
             ClientRpcEvade();

@@ -92,7 +92,7 @@ public class ChainLightning : Skill
     {
         if (current == null) return null;
 
-        Collider[] nearby = Physics.OverlapSphere(current.transform.position, _jumpDistance, Targeting.Layer);
+        Collider[] nearby = Physics.OverlapSphere(current.transform.position, _jumpDistance, Targeting.InteractionMask);
 
         Character target = null;
         float bestDist = float.MaxValue;
@@ -119,7 +119,7 @@ public class ChainLightning : Skill
     {
         if (current == null) return null;
 
-        Collider[] nearby = Physics.OverlapSphere(current.transform.position, _jumpDistance, Targeting.Layer);
+        Collider[] nearby = Physics.OverlapSphere(current.transform.position, _jumpDistance, Targeting.InteractionMask);
         List<Character> targets = new();
 
         foreach (var col in nearby)

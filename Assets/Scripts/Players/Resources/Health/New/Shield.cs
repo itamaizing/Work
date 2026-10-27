@@ -42,7 +42,7 @@ public class Shield : Resource, IDamageable
                 var tempDamage = new Damage
                 {
                     Form = damage.Form,
-                    PhysicAttackType = damage.PhysicAttackType,
+                    AttackRange = damage.AttackRange,
                     School = damage.School,
                     Type = damage.Type,
                     Value = absorptionDamage,
@@ -57,7 +57,7 @@ public class Shield : Resource, IDamageable
                 var tempDamage = new Damage
                 {
                     Form = damage.Form,
-                    PhysicAttackType = damage.PhysicAttackType,
+                    AttackRange = damage.AttackRange,
                     School = damage.School,
                     Type = damage.Type,
                     Value = damage.Value - remainingDamage,

@@ -68,7 +68,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerStay(Collider other)
     {
-        if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
+        if (((1 << other.gameObject.layer) & _skill.Targeting.InteractionMask.value) == 0) return;
         if (!_damagedThisTick.Add(other)) return;
         
         ApplyDamageEnemy(other);
@@ -206,7 +206,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         {
             Value = damage,
             Type = damageType,
-            PhysicAttackType = AttackRangeType.RangeAttack,
+            AttackRange = AttackRangeType.RangeAttack,
         };
 
         if (target is Component targetComponent)

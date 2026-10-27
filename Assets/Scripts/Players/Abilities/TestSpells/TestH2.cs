@@ -43,7 +43,7 @@ public class TestH2 : Skill
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
             Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
+            AttackRange = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 

@@ -151,7 +151,7 @@ public class Restoration : Skill,IPolaritySwitchable
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
         PreparingDuration = isLightMode ? lightCastTime : darkCastTime;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
-        Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
+        Targeting.ClickMask = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
 
         Cooldown.OnForceRefreshUI();

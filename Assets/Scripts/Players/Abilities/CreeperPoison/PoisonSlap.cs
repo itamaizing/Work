@@ -420,7 +420,7 @@ public class PoisonSlap : Skill, IColdBloodEmpowerable
         {
             Value = Buff.Damage.GetBuffedValue(finalDamage),
             Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
+            AttackRange = AttackRangeType.MeleeAttack,
         };
 
         CmdApplyDamage(damage, target.gameObject);

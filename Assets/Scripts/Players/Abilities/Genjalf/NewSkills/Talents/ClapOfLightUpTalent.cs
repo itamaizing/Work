@@ -7,11 +7,11 @@ public class ClapOfLightUpTalent : Talent
     [SerializeField] private Gangdollarff.ClapOfLight _skill;
     public override void Enter()
     {
-        _skill.AreaInfo.Radius = _skill.AreaInfo.Radius * 1.5f;
+        _skill.Attributes[SkillAttributeName.Radius].AddModifier(new AttributeModifier(0.5f, ModifierType.Percent, this));
     }
 
     public override void Exit()
     {
-        _skill.AreaInfo.Radius = _skill.AreaInfo.Radius / 1.5f;
+        _skill.Attributes[SkillAttributeName.Radius].RemoveBySource(this);
     }
 }

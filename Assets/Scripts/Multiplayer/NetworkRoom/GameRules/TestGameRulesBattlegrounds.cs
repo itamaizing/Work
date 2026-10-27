@@ -292,7 +292,8 @@ public class TestGameRulesBattlegrounds : GameRules
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
         
-        RpcEnablePreparationAreas(5f); 
+        RpcEnablePreparationAreas(5f);
+        CampManager.Instance?.StartMatch();
     }
 
     private IEnumerator CloseJob()

@@ -36,7 +36,7 @@ public class BlindnessStateStacking : StateStackingRefreshing
         {
             abilities = ability.Abilities;
             foreach (var abil in abilities.Abilities)
-                if (abil.Targeting.SkillType == SkillType.Target)
+                if (abil.Targeting.SkillType == TargetingType.Target)
                     abil.Disactive = true;
         }
     }
@@ -54,7 +54,7 @@ public class BlindnessStateStacking : StateStackingRefreshing
         if (characterState.TryGetComponent<Character>(out var ability))
         {
             abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities) if (abil.Targeting.SkillType == SkillType.Target) abil.Disactive = false;
+            foreach (var abil in abilities.Abilities) if (abil.Targeting.SkillType == TargetingType.Target) abil.Disactive = false;
         }
     }
 

@@ -355,7 +355,7 @@ public class RetributionLight : Skill, IPolaritySwitchable
 
     private void ApplyAreaDamage(BeamCast cast)
     {
-        Collider[] hits = Physics.OverlapSphere(cast.Click, _aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(cast.Click, _aoeRadius, Targeting.InteractionMask);
 
         var targets = new List<GameObject>();
         foreach (var hit in hits)
@@ -407,7 +407,7 @@ public class RetributionLight : Skill, IPolaritySwitchable
     {
         if (totalHeal <= 0f) return;
 
-        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.InteractionMask);
 
         var aliveAllies = new List<Character>();
         foreach (var hit in hits)
@@ -440,7 +440,7 @@ public class RetributionLight : Skill, IPolaritySwitchable
     {
         if (totalDamage <= 0f) return;
 
-        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.InteractionMask);
 
         var aliveEnemies = new List<Character>();
         foreach (var hit in hits)

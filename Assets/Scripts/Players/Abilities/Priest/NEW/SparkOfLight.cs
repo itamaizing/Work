@@ -337,7 +337,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         {
             Value = Buff.Damage.GetBuffedValue(amount),
             Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.RangeAttack,
+            AttackRange = AttackRangeType.RangeAttack,
             School = this.Info.School
         };
     }

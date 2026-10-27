@@ -110,7 +110,7 @@ public class SongOfSleep : Skill
 
     private void ApplyStateEnemiesInZone()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(_centerPoint, AreaInfo.Radius, Targeting.Layer);
+        Collider[] hitColliders = Physics.OverlapSphere(_centerPoint, AreaInfo.Radius, Targeting.InteractionMask);
         foreach (var hitCollider in hitColliders) if (hitCollider.gameObject != Hero.gameObject) ApplyEnemiesZone(hitCollider);
     }
 
@@ -130,7 +130,7 @@ public class SongOfSleep : Skill
         var wait = new WaitForSeconds(0.1f);
         while (true)
         {
-            bool enemyInside = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer).Any(collider => collider.TryGetComponent<Character>(out var character)
+            bool enemyInside = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.InteractionMask).Any(collider => collider.TryGetComponent<Character>(out var character)
             && character != playerLinks);
 
             drawCircle.SetColor(enemyInside ? Color.green : Color.red);

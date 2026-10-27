@@ -230,7 +230,7 @@ namespace Game.Debug
         public Schools School { get; set; }
         public AbilityForm Form { get; set; }
         public AttackRangeType PhysicAttackType { get; set; }
-        public SkillType SkillType { get; set; }
+        public TargetingType SkillType { get; set; }
         public string DamageKey { get; set; }
         public bool FullyAbsorbed { get; set; }
 
@@ -242,8 +242,8 @@ namespace Game.Debug
                 Type = DamageType,
                 School = School,
                 Form = Form,
-                PhysicAttackType = PhysicAttackType,
-                SkillType = SkillType,
+                AttackRange = PhysicAttackType,
+                TargetingType = SkillType,
                 DamageKey = DamageKey,
                 FullyAbsorbed = FullyAbsorbed
             };

@@ -29,7 +29,7 @@ public class MinionArrowProjectile : MinionProjectile
     {
         if (other.gameObject != _dad.gameObject)
         {
-            if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) != 0)
+            if (((1 << other.gameObject.layer) & _skill.Targeting.InteractionMask.value) != 0)
             {
                 ApplyEnemy(other);
                 Destroy(gameObject);

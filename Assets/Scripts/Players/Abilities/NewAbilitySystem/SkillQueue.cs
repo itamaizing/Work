@@ -45,7 +45,7 @@ public class SkillQueue : MonoBehaviour
         
         if (_skills.TryPeek(out Skill skill))
         {
-            if (skill.Targeting.SkillType == SkillType.Zone)
+            if (skill.Targeting.SkillType == TargetingType.Zone)
                 Draw(skill);
 
             if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
@@ -172,7 +172,7 @@ public class SkillQueue : MonoBehaviour
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
 
-        if (temp.Targeting.SkillType == SkillType.Zone)
+        if (temp.Targeting.SkillType == TargetingType.Zone)
         {
             _skillRenderer.StopDrawRadius();
             _skillRenderer.StopDrawAllLineForZone();

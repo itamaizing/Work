@@ -99,7 +99,7 @@ public class MultiMagic : StateStackingRefreshing
         var colliders = Physics.OverlapSphere(
             characterState.transform.position,
             skill.CastDistance,
-            skill.Targeting.Layer);
+            skill.Targeting.InteractionMask);
 
         var seen = new HashSet<Character>();
         var extraCharacters = new List<Character>();

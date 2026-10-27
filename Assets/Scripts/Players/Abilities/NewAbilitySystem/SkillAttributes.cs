@@ -16,9 +16,10 @@ public enum SkillAttributeName
     ChanceModifier,
 }
 
+[Serializable]
 public class SkillAttributes
 {
-    private Dictionary<SkillAttributeName, Attribute> _attributes = new();
+    [SerializeField] private Dictionary<SkillAttributeName, Attribute> _attributes = new();
     private AttributeSystem _heroAttributes;
 
     #region Properties

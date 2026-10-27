@@ -229,7 +229,7 @@ public class CheliceraStrike : Skill
         {
             Value = mainTargetDamage,
             Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
+            AttackRange = AttackRangeType.MeleeAttack,
         };
 
         CmdApplyDamage(magicDamageToMain, targetCharacter.gameObject);
@@ -246,7 +246,7 @@ public class CheliceraStrike : Skill
             radius = (psiStacks - 1) + 1.0f;
         }
 
-        Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, radius, Targeting.Layer);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, radius, Targeting.InteractionMask);
 
         foreach (var enemyCollider in nearbyEnemies)
         {
@@ -259,7 +259,7 @@ public class CheliceraStrike : Skill
                 {
                     Value = nearbyDamage,
                     Type = DamageType.Magical,
-                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                    AttackRange = AttackRangeType.MeleeAttack,
                 };
 
                 CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);

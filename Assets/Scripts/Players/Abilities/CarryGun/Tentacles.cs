@@ -225,7 +225,7 @@ public class Tentacles : Skill
     {
         if (character == null) return false;
         if (((1 << character.gameObject.layer) & _alliesMask) != 0) return false;
-        if (((1 << character.gameObject.layer) & Targeting.Layer) == 0) return false;
+        if (((1 << character.gameObject.layer) & Targeting.InteractionMask) == 0) return false;
         return true;
     }
 

@@ -71,7 +71,7 @@ namespace Gangdollarff.EarthElemental
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
                 Type = Info.DamageType,
-                PhysicAttackType = Info.AttackRangeType,
+                AttackRange = Info.AttackRangeType,
                 School = Info.School,
                 Form = Info.AbilityForm,
              };

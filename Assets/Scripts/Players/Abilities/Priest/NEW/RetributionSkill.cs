@@ -33,7 +33,7 @@ public class RetributionSkill : Skill, IPassiveSkill
 
     private void OnDamageGet(Damage damage, Skill skill)
     {
-        if(damage.Form != AbilityForm.Physical) return;
+        if(damage.Type != DamageType.Physical) return;
 
         if (Random.value * 100f >= _retributionChance) 
             return;

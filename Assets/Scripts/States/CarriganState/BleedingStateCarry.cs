@@ -72,7 +72,8 @@ public class BleedingStateStackingCarry : StateStackingRefreshing
         Damage damage = new Damage()
         {
             Value = _baseDamage,
-            Type = DamageType.DOTPhys,
+            Type = DamageType.Physical,
+            IsDot = true,
             DamageKey = "bleeding"
         };
         if (characterState.isServer)

@@ -126,7 +126,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         {
             Value = damage,
             Type = damageType,
-            PhysicAttackType = AttackRangeType.RangeAttack,
+            AttackRange = AttackRangeType.RangeAttack,
         };
 
         if (target is Component targetComponent)

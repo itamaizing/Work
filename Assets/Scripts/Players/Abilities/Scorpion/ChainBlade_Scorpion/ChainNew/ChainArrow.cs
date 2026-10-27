@@ -83,7 +83,7 @@ public class ChainArrow : Projectiles
         if (_isReturning) return;
 
         if (other.gameObject == _dad.gameObject) return;
-        if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
+        if (((1 << other.gameObject.layer) & _skill.Targeting.InteractionMask.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character))
         {

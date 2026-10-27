@@ -73,7 +73,7 @@ public class DeadStrike : MoveSkill
         {
             Value = Buff.Damage.GetBuffedValue(damageValue),
             Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
+            AttackRange = Info.AttackRangeType,
             School = Info.School,
             Form = Info.AbilityForm,
         };

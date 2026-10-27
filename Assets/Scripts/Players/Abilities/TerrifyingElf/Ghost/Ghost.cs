@@ -471,7 +471,7 @@ public class Ghost : Skill
         target = null;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, Targeting.Layer))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, Targeting.InteractionMask))
         {
             target = hit.collider.GetComponent<Character>();
             return target != null;
@@ -663,7 +663,7 @@ public class Ghost : Skill
         ghost = null;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, Targeting.Layer))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, Targeting.InteractionMask))
         {
             ghost = _ghosts.FirstOrDefault(unit => unit != null && unit.gameObject == hit.collider.gameObject);
             return ghost != null;

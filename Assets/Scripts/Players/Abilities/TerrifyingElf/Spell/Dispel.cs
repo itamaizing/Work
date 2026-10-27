@@ -74,7 +74,7 @@ public class Dispel : Skill
 
     private Character GetNearestTargetInRadius()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.InteractionMask);
         Character nearestTarget = null;
         float shortestDistance = AreaInfo.Radius;
 

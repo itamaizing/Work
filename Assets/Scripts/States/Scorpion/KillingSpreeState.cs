@@ -27,7 +27,7 @@ public class KillingSpreeStateStacking : StateStackingRefreshing
     {
         foreach (var physSkill in characterState.Character.Abilities.Abilities)
         {
-            if (physSkill.Info.AbilityForm == AbilityForm.Physical || physSkill.Info.AbilityForm == AbilityForm.Both)
+            if (physSkill.Info.AbilityForm == AbilityForm.Physical || physSkill.Info.AbilityForm == AbilityForm.Mixed)
             {
                 if(physSkill is IComboParticipatingSkill comboParticipating)
                 {
@@ -43,7 +43,7 @@ public class KillingSpreeStateStacking : StateStackingRefreshing
     {
         foreach (var physSkill in characterState.Character.Abilities.Abilities)
         {
-            if (physSkill.Info.AbilityForm == AbilityForm.Physical || physSkill.Info.AbilityForm == AbilityForm.Both)
+            if (physSkill.Info.AbilityForm == AbilityForm.Physical || physSkill.Info.AbilityForm == AbilityForm.Mixed)
             {
                 if(physSkill is IComboParticipatingSkill comboParticipating)
                 {

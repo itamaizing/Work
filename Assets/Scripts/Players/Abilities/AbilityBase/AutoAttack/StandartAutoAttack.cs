@@ -37,7 +37,7 @@ public class StandartAutoAttack : AutoAttackSkill
             Type = _baseDamage.Type,
             School = Info.School,
             Form = Info.AbilityForm,
-            PhysicAttackType = Info.AttackRangeType,
+            AttackRange = Info.AttackRangeType,
 
         };
         CmdApplyDamage(damage, Targeting.GetTarget()?.Character.Transform.gameObject);

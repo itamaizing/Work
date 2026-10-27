@@ -102,7 +102,7 @@ public class IcePuddleObject : Projectiles
     private bool IsTeamAssigned(UserNetworkSettings s) => s.TeamIndex != 0;
 
     private bool IsEnemyByLayer(GameObject target) =>
-        ((1 << target.layer) & _skill.Targeting.Layer) != 0;
+        ((1 << target.layer) & _skill.Targeting.InteractionMask) != 0;
 
     private void Start() => _spriteRenderer.DOFade(1, 1);
 

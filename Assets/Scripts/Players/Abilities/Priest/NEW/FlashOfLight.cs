@@ -122,7 +122,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         AreaInfo.Radius = isLightMode ? _lightRange : _darkRange;
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
-        Targeting.Layer = isLightMode
+        Targeting.ClickMask = isLightMode
             ? LayerMask.GetMask("Allies", "Player")
             : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
@@ -254,7 +254,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         {
             Value = Buff.Damage.GetBuffedValue(_damageAmount),
             Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.RangeAttack,
+            AttackRange = AttackRangeType.RangeAttack,
             School = this.Info.School,
         };
 

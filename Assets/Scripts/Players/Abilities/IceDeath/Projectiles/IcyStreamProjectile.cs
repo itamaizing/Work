@@ -63,7 +63,7 @@ public class IcyStreamProjectile : Projectiles
 			{
 				Value = _damage,
 				Type = DamageType.Magical,
-				PhysicAttackType = AttackRangeType.RangeAttack,
+				AttackRange = AttackRangeType.RangeAttack,
 			};
 			//_skill.CmdApplyDamage(damage, target.gameObject);
 			target.Health.TryTakeDamage(ref damage, _skill);
@@ -108,7 +108,7 @@ public class IcyStreamProjectile : Projectiles
 				{
 					Value = _damage,
 					Type = DamageType.Magical,
-					PhysicAttackType = AttackRangeType.RangeAttack,
+					AttackRange = AttackRangeType.RangeAttack,
 				};
 				//_skill.CmdApplyDamage(damage, target.gameObject);
 				_enemyList[i].Health.TryTakeDamage(ref damage, _skill);

@@ -61,7 +61,7 @@ public class InjectionAdrenalineState : StateBasic
             {
                 Value = damageValue,
                 Type = DamageType.None,
-                PhysicAttackType = AttackRangeType.MeleeAttack
+                AttackRange = AttackRangeType.MeleeAttack
             };
 
             health.TryTakeDamage(ref damage, null);

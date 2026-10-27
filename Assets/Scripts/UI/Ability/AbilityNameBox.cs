@@ -187,10 +187,6 @@ public class AbilityNameBox : MonoBehaviour
             case DamageType.Physical:
                 _descriptionWithNumbers.text += " физический";
                 break;
-            case DamageType.DOTPhys:
-                break;
-            case DamageType.DOTMag:
-                break;
             case DamageType.Both:
                 _descriptionWithNumbers.text += "смешанный";
                 break;

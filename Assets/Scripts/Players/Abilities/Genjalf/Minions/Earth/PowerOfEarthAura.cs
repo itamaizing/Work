@@ -52,7 +52,7 @@ public class PowerOfEarth : StateBasic
 
         var randomInt = Random.Range(0, 100);
 
-        if (damage.PhysicAttackType != AttackRangeType.MeleeAttack || randomInt > _stanChance)
+        if (damage.AttackRange != AttackRangeType.MeleeAttack || randomInt > _stanChance)
             return;
         if(_character.isClient)
             skill.Hero.CharacterState.CmdAddState(States.Stun, _stanDuration, 0, skill.Hero.gameObject, "name");

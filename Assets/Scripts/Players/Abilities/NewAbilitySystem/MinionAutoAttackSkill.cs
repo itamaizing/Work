@@ -276,7 +276,7 @@ public class MinionAutoAttackSkill : Skill, IPassiveSkill
         {
             Value = UnityEngine.Random.Range(_minDamage, _maxDamage),
             Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
+            AttackRange = Info.AttackRangeType,
             School = Info.School,
             Form = Info.AbilityForm,
         };

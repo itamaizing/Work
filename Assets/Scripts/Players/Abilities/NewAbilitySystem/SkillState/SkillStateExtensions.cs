@@ -545,12 +545,11 @@ public abstract partial class Skill
 
     #region Cast time rollback
 
-    public void HandleDirectDamageDuringCast(float damageValue, DamageType type, bool fullyAbsorbed)
+    public void HandleDirectDamageDuringCast(Damage damage)
     {
-        if (fullyAbsorbed) return;
+        if (damage.FullyAbsorbed) return;
         if (!IsExecuting) return;
-        if (type == DamageType.DOTPhys || type == DamageType.DOTMag)
-            return;
+        if (damage.IsDot) return;
 
         bool isStream = _state == SkillState.Channeling;
         bool isPrepare = _state == SkillState.Preparing;
@@ -558,10 +557,12 @@ public abstract partial class Skill
 
         float totalDuration = isStream ? ChannelingDuration : PreparingDuration;
 
-        float rollbackPercent = type == DamageType.Physical
-            ? PhysRollbackBase + damageValue * RollbackPerDamage
-            : MagRollbackBase + damageValue * RollbackPerDamage;
-
+        float rollbackPercent = damage.Type switch
+        {
+            DamageType.Physical => PhysRollbackBase + damage.Value * RollbackPerDamage,
+            DamageType.Magical  => MagRollbackBase + damage.Value * RollbackPerDamage,
+            _                   => damage.Value * RollbackPerDamage
+        };
         float rollbackAmount = totalDuration * Mathf.Clamp01(rollbackPercent);
         _castTimeRollback += rollbackAmount;
 

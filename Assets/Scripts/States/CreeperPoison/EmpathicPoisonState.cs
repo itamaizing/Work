@@ -69,7 +69,7 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
             if (damage.Type == DamageType.Physical)
             {
                 var attrs = _player.AttributeSystem;
-                float evade = damage.PhysicAttackType == AttackRangeType.MeleeAttack
+                float evade = damage.AttackRange == AttackRangeType.MeleeAttack
                     ? attrs[CharacterAttributeName.EvasionPhysicalMelee].GetValue()
                     : attrs[CharacterAttributeName.EvasionPhysicalRange].GetValue();
 

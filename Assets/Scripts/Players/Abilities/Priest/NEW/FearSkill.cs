@@ -39,7 +39,7 @@ public class FearSkill : Skill
     {
         CmdPlayEffect();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, _aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(transform.position, _aoeRadius, Targeting.InteractionMask);
 
         foreach (var hit in hits)
         {

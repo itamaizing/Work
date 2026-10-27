@@ -66,8 +66,8 @@ using UnityEngine;
             Type = table.Type,
             School = Info.School,
             Form = Info.AbilityForm,
-            PhysicAttackType = Info.AttackRangeType,
-            SkillType = Targeting.SkillType,
+            AttackRange = Info.AttackRangeType,
+            TargetingType = Targeting.SkillType,
             SourceSkill = this,
             DamageKey = this.name.ToString(),
             IsDot = table.IsDot,
@@ -102,7 +102,7 @@ using UnityEngine;
     protected SkillRenderer _skillRender;
     protected Character _hero;
     private StatsBuff _statsBuff = new StatsBuff();
-    protected SkillAttributes _skillAttributes = new SkillAttributes();
+    [SerializeField] protected SkillAttributes _skillAttributes = new SkillAttributes();
     private readonly SyncDictionary<SkillAttributeName, float> _syncAttributes = new();
 
     #endregion
@@ -454,7 +454,7 @@ using UnityEngine;
     /// </summary>
     protected virtual IEnumerator TargetingBehaviour(Action<TargetInfo> callbackDataSaved)
     {
-        if (Targeting.SkillType == SkillType.NonTarget)
+        if (Targeting.SkillType == TargetingType.NonTarget)
             yield break;
 
         TargetData targetData = null;

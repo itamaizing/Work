@@ -13,7 +13,7 @@ public class PowerStrike : SkillCreatureCarryGun
         float baseDamage = Buff.Damage.GetBuffedValue(
             UnityEngine.Random.Range(minDamage, maxDamage));
 
-        Collider[] hits = Physics.OverlapSphere(mainTarget.transform.position, aoeRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(mainTarget.transform.position, aoeRadius, Targeting.InteractionMask);
 
         foreach (var hit in hits)
         {
@@ -27,7 +27,7 @@ public class PowerStrike : SkillCreatureCarryGun
             {
                 Value = final,
                 Type = Info.DamageType,
-                PhysicAttackType = Info.AttackRangeType
+                AttackRange = Info.AttackRangeType
             };
 
             CmdApplyDamage(damage, character.gameObject);

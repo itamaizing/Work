@@ -178,7 +178,7 @@ public class ClawStrike : Skill
             {
                 Value = psi,
                 Type = DamageType.Magical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
+                AttackRange = AttackRangeType.MeleeAttack,
                 School = Schools.Air,
                 Form = AbilityForm.Magic,
             };

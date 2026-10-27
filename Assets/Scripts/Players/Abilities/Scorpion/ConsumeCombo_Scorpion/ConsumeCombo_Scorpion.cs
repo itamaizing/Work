@@ -199,7 +199,7 @@ public class ConsumeCombo_Scorpion : Skill
 
     private List<GameObject> GetTargetWithCombo()
     {
-        return Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
+        return Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.InteractionMask)
             .Select(c => c.GetComponent<Character>())
             .Where(c => c != null && c != Hero && c.CharacterState.CheckForState(States.ComboState))
             .Select(c => c.gameObject).ToList();

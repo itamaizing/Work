@@ -20,25 +20,7 @@ public enum AbilityForm
 {
     Magic,
     Physical,
-    Both,
-    Passiv,
-}
-
-public enum SkillType
-{
-    /// <summary>
-    /// Target - скилл ГАРАНТИРОВАННО применяется к цели. Можно скастовать ТОЛЬКО когда цель в радиусе.
-    /// Вспышка света - снаряд, но он ТОЛЬКО таргетный и следует за целью => тип Target
-    /// </summary>
-    Target,
-    /// <summary>
-    /// Projectile - Летит по прямой в точку (будь-то клик или положение цели). Может промахнутся. Может попасть не в ту цель
-    /// Стрела эльфийки - снаряд. Да, его можно применить к цели, но это не гарантирует попадание
-    /// </summary>
-    Projectile,
-    Zone,
-    NonTarget,
-    NonTargetWithClick,
+    Mixed,
 }
 
 public enum Moving
@@ -52,16 +34,6 @@ public enum AutoAttack
 {
     autoAttack,
     nonAutoAttack
-}
-
-public enum DamageType
-{
-    Magical,
-    Physical,
-    DOTPhys,
-    DOTMag,
-    Both,
-    None
 }
 
 public enum AttackRangeType
