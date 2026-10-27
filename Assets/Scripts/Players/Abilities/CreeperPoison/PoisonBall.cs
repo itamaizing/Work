@@ -43,7 +43,7 @@ public struct PoisonBallSpawnPointInfo : NetworkMessage
     public float SpawnPointZ;
 }
 
-public class PoisonBall : Skill, IAltAbility
+public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
 {
     #region Variables
 
@@ -143,7 +143,6 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isIncreasingPoisonBallCharges = false;
     private bool _isPoisonCloudAddPoisonBone = false;
     private bool _isHealingPoisonBall = false;
-    private bool _isColdBloodCrit = false;
 
     private bool _isBonusChargeApplied = false;
 
@@ -160,8 +159,6 @@ public class PoisonBall : Skill, IAltAbility
             _isIncreasingPoisonBallCharges = value;
         }
     }
-
-    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
 
     public void HealingPoisonBall(bool value)
     {
@@ -419,7 +416,7 @@ public class PoisonBall : Skill, IAltAbility
     protected override IEnumerator CastJob()
     {
         SetSpawnPointPosition(_player.transform.position.x, _player.transform.position.y, _player.transform.position.z);
-        ChooseWhichProjectileCreate();
+        ChooseWhichProjectileCreate(Targeting.GetTarget().Character);
 
         ResetAbilityParameters?.Invoke();
 
@@ -515,31 +512,15 @@ public class PoisonBall : Skill, IAltAbility
         }
     }
 
-    private bool CheckCanCast()
-    {
-        if (Charges != null && Charges.RemainingCharges <= 1 && (IsTargeting || IsCasting))
-        {
-            return false;
-        }
-
-        if (_activeCastTargetCharacter == null)
-            return Vector3.Distance(_activeCastPoint, transform.position) <= AreaInfo.CastLength
-                   && Targeting.NoObstacles(_activeCastPoint, Targeting.AdditionalObstacle);
-
-        return Vector3.Distance(_activeCastPoint, transform.position) <= AreaInfo.CastLength
-               && Targeting.NoObstacles(_activeCastPoint, Targeting.AdditionalObstacle)
-               || Vector3.Distance(_activeCastTargetCharacter.transform.position, transform.position) <= AreaInfo.CastLength
-               && Targeting.NoObstacles(_activeCastTargetCharacter.transform.position, Targeting.AdditionalObstacle);
-    }
-
     #endregion
 
     #region ChooseMoveSpeedProjectile
 
-    private void ChooseWhichProjectileCreate()
+    private void ChooseWhichProjectileCreate(Character character)
     {
         bool transparent = IsTransparentShot;
-        
+        bool coldBloodCrit = _coldBlood != null && _coldBlood.TryConsumeForPoison(character);
+
         Debug.LogError($"is transparent {IsTransparentShot}");
         
         if (_isTarget)
@@ -550,7 +531,7 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
                 _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent, coldBloodCrit);
 
             if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
         }
@@ -562,7 +543,7 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
                 _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent,coldBloodCrit);
 
             if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
         }
@@ -737,7 +718,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
         bool isActiveBallEffect,
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons)
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons, bool isColdBloodCrit)
     {
         int ownerLayer = _player.gameObject.layer;
 
@@ -761,26 +742,13 @@ public class PoisonBall : Skill, IAltAbility
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        if (_isColdBloodCrit)
-        {
-            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-                multiplierForPushDistance, poisonBoneStack,
-                isTargetPlayer, isTargetEnemy, isTargetAllies,
-                isActiveFootInstincts, isActiveRestorationOfGlands,
-                isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-                isPushTarget, isPlayerInvisible,
-                isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
-        }
-        else
-        {
-            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-                multiplierForPushDistance, poisonBoneStack,
-                isTargetPlayer, isTargetEnemy, isTargetAllies,
-                isActiveFootInstincts, isActiveRestorationOfGlands,
-                isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-                isPushTarget, isPlayerInvisible,
-                isTransparentPoisons, ownerLayer, false);
-        }
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+            multiplierForPushDistance, poisonBoneStack,
+            isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isActiveFootInstincts, isActiveRestorationOfGlands,
+            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+            isPushTarget, isPlayerInvisible,
+            isTransparentPoisons, ownerLayer, isColdBloodCrit);
 
         poisonBallProjectile.MoveBallToTarget(targetPosition, isFast);
 
@@ -797,7 +765,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
         bool isActiveBallEffect,
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons)
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons, bool isColdBloodCrit)
     {
         int ownerLayer = _player.gameObject.layer;
 
@@ -851,26 +819,13 @@ public class PoisonBall : Skill, IAltAbility
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        if (_isColdBloodCrit)
-        {
-            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-                multiplierForPushDistance, poisonBoneStack,
-                isTargetPlayer, isTargetEnemy, isTargetAllies,
-                isActiveFootInstincts, isActiveRestorationOfGlands,
-                isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-                isPushTarget, isPlayerInvisible,
-                isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
-        }
-        else
-        {
-            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-                multiplierForPushDistance, poisonBoneStack,
-                isTargetPlayer, isTargetEnemy, isTargetAllies,
-                isActiveFootInstincts, isActiveRestorationOfGlands,
-                isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-                isPushTarget, isPlayerInvisible,
-                isTransparentPoisons, ownerLayer, false);
-        }
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+            multiplierForPushDistance, poisonBoneStack,
+            isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isActiveFootInstincts, isActiveRestorationOfGlands,
+            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+            isPushTarget, isPlayerInvisible,
+            isTransparentPoisons, ownerLayer, isColdBloodCrit);
 
         poisonBallProjectile.MoveBallOnMaxDistance(finalPoint, isFast);
 

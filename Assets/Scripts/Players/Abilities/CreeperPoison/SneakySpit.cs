@@ -23,9 +23,6 @@ public class SneakySpit : Skill
     #region Talent
 
     private bool _isErodedArmorState = false;
-    private bool _isColdBloodCrit = false;
-
-    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     #endregion
 
@@ -244,12 +241,10 @@ public class SneakySpit : Skill
         {
             CmdAddState(target);
 
-            if (_isColdBloodCrit && _coldBlood.IsCanCrit)
+            if (_coldBlood != null && _coldBlood.TryConsumeForPoison(target))
             {
                 DealCriticalDamage(target, Damage);
-                _coldBlood.IsCanCrit = false;
             }
-
             else
             {
                 Damage damage = GetDamage();

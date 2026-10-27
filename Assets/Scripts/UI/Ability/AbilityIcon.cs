@@ -129,6 +129,25 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         _autoAttackBoxFrame.gameObject.SetActive(true);
         _autoAttackBoxFrame.StartBlink(.5f);
     }
+    
+    public void SetAutoCast(bool active)
+    {
+        if (active)
+        {
+            if (_autoCastEffect == null && _autoCastEffectPrefab != null)
+                _autoCastEffect = Instantiate(_autoCastEffectPrefab, transform);
+
+            if (_autoCastEffect == null) return;
+
+            _autoCastEffect.gameObject.SetActive(true);
+            _autoCastEffect.Play();
+        }
+        else if (_autoCastEffect != null)
+        {
+            _autoCastEffect.Stop();
+            _autoCastEffect.gameObject.SetActive(false);
+        }
+    }
 
     public void AutoAttackDeselected()
     {

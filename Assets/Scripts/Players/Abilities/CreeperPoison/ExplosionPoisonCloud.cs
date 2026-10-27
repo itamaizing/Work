@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class ExplosionPoisonCloud : Skill
+public class ExplosionPoisonCloud : Skill, IColdBloodEmpowerable
 {
     [SerializeField] private Character _player;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
@@ -100,6 +100,9 @@ public class ExplosionPoisonCloud : Skill
         _isExploded = true;
 
         _currentDamage = _baseDamage_OLD * _currentStacksPoisonCloud;
+
+        if (_hero.Abilities.GetSkill<ColdBlood>().TryConsumeForPoison(_enemies))
+            _currentDamage *= ColdBlood.PoisonCritMultiplier;
 
         if (_isRestorativePoison) _currentHealValue = (_healValue + _additionalHealValue) * _currentStacksHealingPoisonCloud;
         else _currentHealValue = _healValue * _currentStacksHealingPoisonCloud;

@@ -19,34 +19,119 @@ public class QueuePanel : MonoBehaviour
 
     private readonly List<Entry> _entries = new();
     private SkillQueue _skillQueue;
+    private AutoSkillCast _autoCast;
 
-    public void Init(SkillQueue queue)
+    private AbilityIcon _autoIcon;
+    private Skill _autoSkill;
+
+    public void Init(SkillQueue queue, AutoSkillCast autoCast)
     {
         Unsubscribe();
+        ClearAll();
+
         _skillQueue = queue;
+        _autoCast = autoCast;
 
         _skillQueue.SkillAdded += OnSkillAdded;
         _skillQueue.SkillDeleted += OnSkillDeleted;
+        
+        var occurrences = new Dictionary<Skill, int>();
+        foreach (var skill in _skillQueue.Skills)
+        {
+            occurrences.TryGetValue(skill, out int n);
+            occurrences[skill] = n + 1;
+            AddEntry(skill, FindQueuedInfo(skill, n));
+        }
+
+        if (_autoCast != null)
+        {
+            _autoCast.SkillSet += OnAutoSkillSet;
+            _autoCast.SkillCleared += OnAutoSkillCleared;
+            if (_autoCast.IsBusy) SetAutoSkill(_autoCast.CurrentSkill, _autoCast.CurrentTargetInfo);
+        }
     }
 
-    private void OnDestroy() => Unsubscribe();
+    private void OnAutoSkillSet(Skill skill, TargetInfo info) => SetAutoSkill(skill, info);
+    private void OnAutoSkillCleared() => ClearAutoSkill();
+
+    private void ClearAll()
+    {
+        foreach (var entry in _entries)
+            if (entry.Icon != null) Destroy(entry.Icon.gameObject);
+        _entries.Clear();
+        ClearAutoSkill();
+    }
+
+    private static TargetInfo FindQueuedInfo(Skill skill, int occurrence)
+    {
+        var infos = skill.TargetInfoQueue.ToArray();
+        return occurrence < infos.Length ? infos[occurrence] : null;
+    }
+
+    private void OnDestroy()
+    {
+        Unsubscribe();
+        ClearAutoSkill();
+    }
 
     private void Unsubscribe()
     {
         if (_skillQueue == null) return;
         _skillQueue.SkillAdded -= OnSkillAdded;
         _skillQueue.SkillDeleted -= OnSkillDeleted;
+        _skillQueue = null;
+
+        if (_autoCast != null)
+        {
+            _autoCast.SkillSet -= OnAutoSkillSet;
+            _autoCast.SkillCleared -= OnAutoSkillCleared;
+            _autoCast = null;
+        }
     }
 
     private void OnSkillAdded(Skill skill)
     {
+        TargetInfo info = skill.TargetInfoQueue.Count > 0 ? skill.TargetInfoQueue.Last() : null;
+        AddEntry(skill, info);
+    }
+
+    private void AddEntry(Skill skill, TargetInfo info)
+    {
         var icon = Instantiate(_iconPref, transform);
         icon.Init(skill);
-        ShowTarget(icon, skill);
+        ShowTarget(icon, skill, info);
 
         _entries.Add(new Entry { Skill = skill, Icon = icon });
     }
     
+    public void SetAutoSkill(Skill skill, TargetInfo info)
+    {
+        if (skill == null)
+        {
+            ClearAutoSkill();
+            return;
+        }
+
+        if (_autoIcon == null || _autoSkill != skill)
+        {
+            ClearAutoSkill();
+            _autoIcon = Instantiate(_iconPref, transform);
+            _autoIcon.Init(skill);
+            _autoSkill = skill;
+        }
+
+        _autoIcon.transform.SetAsFirstSibling();
+        _autoIcon.SetAutoCast(true);
+        ShowTarget(_autoIcon, skill, info);
+    }
+
+    public void ClearAutoSkill()
+    {
+        if (_autoIcon != null) Destroy(_autoIcon.gameObject);
+        _autoIcon = null;
+        _autoSkill = null;
+    }
+
     private void OnSkillDeleted(Skill skill)
     {
         int index = _entries.FindIndex(e => e.Skill == skill);
@@ -57,10 +142,8 @@ public class QueuePanel : MonoBehaviour
         if (icon != null) Destroy(icon.gameObject);
     }
 
-    private void ShowTarget(AbilityIcon icon, Skill skill)
+    private void ShowTarget(AbilityIcon icon, Skill skill, TargetInfo info)
     {
-        TargetInfo info = skill.TargetInfoQueue.Count > 0 ? skill.TargetInfoQueue.Last() : null;
-
         Character firstCharacter = null;
         string fallbackName = null;
         int count = 0;
@@ -85,7 +168,7 @@ public class QueuePanel : MonoBehaviour
             icon.ShowTarget(firstCharacter != null ? GetTargetSprite(firstCharacter) : _unknownTargetIcon, label);
             return;
         }
-        
+
         bool hasPoints = info != null && info.Points != null && info.Points.Count > 0;
         if (!hasPoints)
         {

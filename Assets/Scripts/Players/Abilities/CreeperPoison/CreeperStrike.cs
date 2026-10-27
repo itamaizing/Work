@@ -36,7 +36,6 @@ public class CreeperStrike : Skill
     private bool _isHit;
     private bool _isTwoHit;
     private bool _isSpeedOfReptileActive;
-    private bool _isColdBloodStrike;
     private bool _isCheckForStatePoisonBone;
 
     private bool _isCreeperStrikeDamageAppliedThisCast;
@@ -104,13 +103,7 @@ public class CreeperStrike : Skill
     }
 
     public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
-
-    public void ColdBloodStrike(bool value)
-    {
-        if (value == _isColdBloodStrike) return;
-            
-        _isColdBloodStrike = value;
-    }
+    
     public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
     public void AnimCreeperStrikeCast()
@@ -168,19 +161,22 @@ public class CreeperStrike : Skill
         TryConsumeAmbushPoison(character);
 
         _currentDamage = BaseDamage.GetValue();
+        
+        bool coldBloodCrit = CanDealColdBloodCriticalDamage();
+        bool strikeEndsInvisibility = coldBloodCrit
+                                      && _player != null && _player.IsInvisible
+                                      && _creeperInvisible != null;
 
-        TryApplyInvisibleCritBonus();
+        TryApplyInvisibleCritBonus(strikeEndsInvisibility);
 
         _lastHitTarget = character;
 
         _isHit = true;
         OnHit?.Invoke();
 
-        //TryReduceColdBloodCooldown(character);
-
-        if (CanDealColdBloodCriticalDamage())
+        if (coldBloodCrit)
         {
-            if (_player != null && _player.IsInvisible && _creeperInvisible != null)
+            if (strikeEndsInvisibility)
                 _creeperInvisible.ExitingInvisible();
 
             DealCriticalDamage(character, _currentDamage, true);
@@ -192,7 +188,6 @@ public class CreeperStrike : Skill
         else
         {
             Damage damage = GetDamage();
-
             CmdDamageDeal(damage, character.gameObject);
         }
 
@@ -204,44 +199,16 @@ public class CreeperStrike : Skill
         _isHit = false;
     }
 
-    private void TryApplyInvisibleCritBonus()
+    private void TryApplyInvisibleCritBonus(bool strikeEndsInvisibility)
     {
-        if (_creeperInvisible == null)
+        if (_creeperInvisible == null || !_creeperInvisible.IsInvisibilitStrike)
             return;
 
-        if (!_creeperInvisible.IsInvisibilitStrike)
-            return;
-
-        if (_creeperInvisible.StrikeCrit == 0)
+        if (!strikeEndsInvisibility && _creeperInvisible.StrikeCrit == 0)
             return;
 
         _currentDamage *= 4f;
         _creeperInvisible.StrikeCrit = 0;
-
-        Debug.Log("CreeperStrike: invisible crit x4 applied");
-    }
-
-    private void TryReduceColdBloodCooldown(Character target)
-    {
-        if (!_isColdBloodStrike)
-            return;
-
-        if (_coldBlood == null)
-            return;
-
-        if (!_coldBlood.IsCanCrit)
-            return;
-
-        if (target == null)
-            return;
-
-        if (!target.CharacterState.CheckForState(States.Blind))
-            return;
-
-        _coldBlood.ReducingAbilityCooldown();
-        _isColdBloodStrike = false;
-
-        Debug.Log("CreeperStrike: ColdBlood cooldown reduced");
     }
 
     private bool CanDealColdBloodCriticalDamage()

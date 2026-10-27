@@ -15116,9 +15116,7 @@ MonoBehaviour:
   OpenCondition:
     rid: 1000
   character: {fileID: 2483674839823445686}
-  _sneakySpit: {fileID: 1964640632880337021}
   _poisonSlap: {fileID: 8577860281443816807}
-  _poisonBall: {fileID: 4719927588574066064}
   references:
     version: 2
     RefIds:

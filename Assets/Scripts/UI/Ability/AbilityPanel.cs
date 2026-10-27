@@ -73,7 +73,7 @@ public class AbilityPanel : MonoBehaviour
     {
         ClearPanel();
         Fill(_currentCharacter.Abilities);
-        _queuePanel.Init(_currentCharacter.Abilities.SkillQueue);
+        _queuePanel.Init(_currentCharacter.Abilities.SkillQueue, _currentCharacter.Abilities.AutoSkillCast);
     }
 
     private void OnCharacterSelected(Character character)
@@ -86,7 +86,7 @@ public class AbilityPanel : MonoBehaviour
         gameObject.SetActive(true);
         _currentCharacter = character;
         Fill(_currentCharacter.Abilities);
-        _queuePanel.Init(character.Abilities.SkillQueue);
+        _queuePanel.Init(character.Abilities.SkillQueue, character.Abilities.AutoSkillCast);
     } 
 
     private void OnCharacterDeselected(Character character)

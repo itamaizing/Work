@@ -292,7 +292,7 @@ public class SkillPanel : MonoBehaviour
             else
                 Fill(_currentCharacter.Abilities);
 
-            _queuePanel.Init(character.Abilities.SkillQueue);
+            _queuePanel.Init(character.Abilities.SkillQueue, character.Abilities.AutoSkillCast);
         }
     }
 

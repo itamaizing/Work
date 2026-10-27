@@ -391,7 +391,7 @@ public class CreeperInvisible : Skill
     {
         Cooldown.SetIncreased(_cooldown, shouldModify: false);
         if (!_isInvisible) return;
-        CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
+        CmdRemoveInvisible(_player.gameObject, false);
     }
 
     #endregion
@@ -428,7 +428,7 @@ public class CreeperInvisible : Skill
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
 
-        RpcReturnTransparencyMaterialsPlayer(player);
+        RpcReturnTransparencyMaterialsPlayer(player,creeperStrikeIsHit);
 
         RpcRemoveInvisible(creeperStrikeIsHit);
     }
@@ -490,7 +490,7 @@ public class CreeperInvisible : Skill
     }
 
     [ClientRpc]
-    private void RpcReturnTransparencyMaterialsPlayer(GameObject player)
+    private void RpcReturnTransparencyMaterialsPlayer(GameObject player, bool exitedByStrike)
     {
         var playerLayer = player.layer;
 
@@ -532,7 +532,7 @@ public class CreeperInvisible : Skill
             }
         }
 
-        _strikeCrit = 1;
+        _strikeCrit = exitedByStrike ? 0 : 1;
         playerMaterial.Clear();
     }
     

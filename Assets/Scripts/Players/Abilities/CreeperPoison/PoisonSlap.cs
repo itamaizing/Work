@@ -4,7 +4,7 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
-public class PoisonSlap : Skill
+public class PoisonSlap : Skill, IColdBloodEmpowerable
 {
     #region Variables
 
@@ -43,9 +43,6 @@ public class PoisonSlap : Skill
     #region Talent
 
     private bool _canSpawnPoisonCloud = false;
-    private bool _isColdBloodCrit = false;
-
-    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -224,21 +221,15 @@ public class PoisonSlap : Skill
     {
         if (target != null)
         {
-            bool isColdBloodCrit =
-                _coldBlood != null && _isColdBloodCrit &&
-                (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes);
+            bool isColdBloodCrit = _coldBlood != null && _coldBlood.TryConsumeForPoison(target);
 
             if (isColdBloodCrit)
             {
                 DealCriticalDamage(target, _baseDamage.GetValue());
-
-                _coldBlood.IsCanCrit = false;
-                _coldBlood.IsCanCritLightningStrikes = false;
             }
             else
             {
                 Damage damage = GetDamage();
-
                 CmdApplyDamage(damage, target.gameObject);
             }
 

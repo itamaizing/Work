@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 
-public class SpitPoison : Skill, IAltAbility
+public class SpitPoison : Skill, IAltAbility, IColdBloodEmpowerable
 {
     [Header("Talents")]
     //[SerializeField] private RestorationOfGlands _restorationOfGlands;
@@ -55,9 +55,6 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isActiveHealingSpitPoison = false;
     private bool _canSpawnPoisonCloud = false;
     private bool _isErodedArmorState = false;
-    private bool _isColdBloodCrit = false;
-
-    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     public void ActiveHealingSpitPoison(bool value) => _isActiveHealingSpitPoison = value;
     private bool IsTransparentShot =>
@@ -254,7 +251,9 @@ public class SpitPoison : Skill, IAltAbility
     private void Shoot(IDamageable damageable, Vector3 spawnPosition)
     {
         bool transparent = IsTransparentShot;
-        
+        Character poisonTarget = damageable as Character;
+        bool coldBloodCrit = poisonTarget != null && _coldBlood != null && _coldBlood.TryConsumeForPoison(poisonTarget);
+
         if (damageable != null)
         {
             CmdInstantiateProjectileToTarget(
@@ -267,7 +266,7 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer,
                 _isOriginalTargetEnemy,
                 _isOriginalTargetAllies,
-                transparent
+                transparent, coldBloodCrit
             );
         }
         else
@@ -282,7 +281,7 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer,
                 _isOriginalTargetEnemy,
                 _isOriginalTargetAllies,
-                transparent
+                transparent, coldBloodCrit
             );
         }
 
@@ -301,7 +300,7 @@ public class SpitPoison : Skill, IAltAbility
     #region Command Methods
     [Command]
     private void CmdInstantiateProjectileToTarget(GameObject target, Vector3 spawnPosition, float manaValue, bool isActiveHealingSpitPoison,
-        bool isActiveRestorationOfGlands, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
+        bool isActiveRestorationOfGlands, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons, bool isColdBloodCrit)
     {
         int ownerLayer = _player.gameObject.layer;
 
@@ -326,12 +325,9 @@ public class SpitPoison : Skill, IAltAbility
             _creeperPoisonAura.IsFeelingPoisoning,
             isTransparentPoisons,
             ownerLayer,
-            _isColdBloodCrit && _coldBlood.IsCanCrit,
+            isColdBloodCrit,
             _isErodedArmorState
         );
-
-        if (_isColdBloodCrit)
-            _coldBlood.IsCanCrit = false;
 
         projectile.MoveBallToTarget(target.transform.position);
 
@@ -341,7 +337,7 @@ public class SpitPoison : Skill, IAltAbility
 
     [Command]
     private void CmdInstantiateProjectileToPoint(Vector3 point, Vector3 spawnPosition, float manaValue, bool isActiveHealingSpitPoison,
-    bool isActiveRestorationOfGlands, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
+    bool isActiveRestorationOfGlands, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons, bool isColdBloodCrit)
     {
         int ownerLayer = _player.gameObject.layer;
 
@@ -368,12 +364,9 @@ public class SpitPoison : Skill, IAltAbility
             _creeperPoisonAura.IsFeelingPoisoning,
             isTransparentPoisons,
             ownerLayer,
-            _isColdBloodCrit && _coldBlood.IsCanCrit,
+            isColdBloodCrit,
             _isErodedArmorState
         );
-
-        if (_isColdBloodCrit)
-            _coldBlood.IsCanCrit = false;
 
         point = spawnPosition + direction * AreaInfo.CastLength;
         point.y = spawnPosition.y;

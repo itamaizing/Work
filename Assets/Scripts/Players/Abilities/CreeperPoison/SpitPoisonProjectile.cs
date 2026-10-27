@@ -157,15 +157,11 @@ public class SpitPoisonProjectile : Test_Projectile
 
     public void MoveBallToTarget(Vector3 target)
     {
-        Debug.Log("SpitPoisonProj / MoveBallToTarget / Start");
-
         MoveToTarget(target, _speed);
     }
 
     public void MoveBallOnMaxDistance(Vector3 point)
     {
-        Debug.Log("SpitPoisonProj / MoveBallOnMaxDistance / point = " + point);
-
         MoveToPoint(point, _speed);
     }
     #endregion
@@ -179,7 +175,10 @@ public class SpitPoisonProjectile : Test_Projectile
 
         Damage damage = _skill.GetDamage();
 
-        if (_isColdBloodCrit) damage.Value *= 2.5f;
+        if (_isColdBloodCrit)
+        {
+            damage.Value *= 2.5f;
+        }
 
         _target.Health.TryTakeDamage(ref damage, _skill);
         _target.DamageTracker.AddDamage(damage, null, isServerRequest: isServer);
@@ -367,7 +366,6 @@ public class SpitPoisonProjectile : Test_Projectile
 
         if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
-            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
             restorationOfGlands.ReductionCooldown();
         }
     }

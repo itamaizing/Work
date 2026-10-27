@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,10 @@ public class AutoSkillCast
     private TargetInfo _targetInfo;
     private Coroutine _tryCastCoroutine;
     private MonoBehaviour _parentForCoroutine;
+    
+    public TargetInfo CurrentTargetInfo => _targetInfo;
+    public event Action<Skill, TargetInfo> SkillSet;
+    public event Action SkillCleared;
 
     public bool IsBusy { get { return _currentSkill != null; } }
     public Skill CurrentSkill => _currentSkill;
@@ -29,6 +34,8 @@ public class AutoSkillCast
         _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
 
         _currentSkill.SkillRender.StartDrawAutoAttackRadius(_currentSkill.AreaInfo.Radius);
+        
+        SkillSet?.Invoke(skill, _targetInfo);
     }
 
     public void DeleteSkill()
@@ -45,6 +52,7 @@ public class AutoSkillCast
 
         if (skill.Hero != null && skill.Hero.Move != null)
             skill.Hero.Move.StopLookAt();
+        SkillCleared?.Invoke();
     }
 
 
