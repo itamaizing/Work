@@ -47,6 +47,7 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void ShowSettings()
     {
+        Debug.Log(_settings);   //почему-то без дерганья _settings, они не находятся
         if (_settings.activeSelf)
         {
             _settings.SetActive(false);
