@@ -32,6 +32,8 @@ public class MinionSkillPanelController
         var skillManager = minion.GetComponent<SkillManager>();
         if (skillManager == null) return;
 
+        PruneDestroyed();
+        
         var ownSkills = new List<Skill>();
 
         foreach (var skill in skillManager.SelectedSkills)
@@ -61,18 +63,14 @@ public class MinionSkillPanelController
 
     private void InsertIntoGroup(Skill skill, object key)
     {
-        Debug.Log($"[MinionPanel] InsertIntoGroup: skill={skill.GetEntityId()} ({skill.GetType().Name}) key={key}");
-
         if (!_groups.TryGetValue(key, out var group))
         {
             group = new MinionSkillGroup { GroupKey = key };
             _groups[key] = group;
-            Debug.Log($"[MinionPanel] Created NEW group for key={key}");
         }
 
         if (group.Instances.Contains(skill))
         {
-            Debug.Log($"[MinionPanel] skill={skill.GetEntityId()} already in group key={key}, skip");
             return;
         }
 
@@ -80,30 +78,21 @@ public class MinionSkillPanelController
         group.Instances.Add(skill);
         _skillGroupKey[skill] = key;
 
-        Debug.Log(
-            $"[MinionPanel] Added skill={skill.GetEntityId()} to group key={key}, group now has {group.Instances.Count} instances");
-
         if (isNewGroup)
             AddGroupIcon(group);
     }
 
     private void RegroupSkill(Skill skill)
     {
-        Debug.Log($"[MinionPanel] RegroupSkill called for skill={skill.GetEntityId()}");
-
         if (!_skillGroupKey.TryGetValue(skill, out var oldKey))
         {
-            Debug.LogWarning(
-                $"[MinionPanel] RegroupSkill: skill={skill.GetEntityId()} has NO oldKey recorded, aborting");
             return;
         }
 
         var newKey = skill.GroupKey;
-        Debug.Log($"[MinionPanel] RegroupSkill: oldKey={oldKey}, newKey={newKey}");
 
         if (Equals(oldKey, newKey))
         {
-            Debug.Log($"[MinionPanel] RegroupSkill: keys equal, no-op");
             return;
         }
 
@@ -111,25 +100,16 @@ public class MinionSkillPanelController
         {
             bool wasRepresentative = oldGroup.Representative == skill;
             oldGroup.Instances.Remove(skill);
-            Debug.Log(
-                $"[MinionPanel] Removed skill={skill.GetEntityId()} from oldGroup key={oldKey}, remaining={oldGroup.Instances.Count}, wasRepresentative={wasRepresentative}");
 
             if (oldGroup.Instances.Count == 0)
             {
                 _panel.RemoveSkill(skill);
                 _groups.Remove(oldKey);
-                Debug.Log($"[MinionPanel] oldGroup key={oldKey} now empty, removed group + icon");
             }
             else if (wasRepresentative)
             {
                 _panel.GetIcon(skill)?.Rebind(oldGroup.Representative);
-                Debug.Log(
-                    $"[MinionPanel] Rebound icon to new representative={oldGroup.Representative?.GetEntityId()}");
             }
-        }
-        else
-        {
-            Debug.LogWarning($"[MinionPanel] RegroupSkill: oldKey={oldKey} not found in _groups!");
         }
 
         InsertIntoGroup(skill, newKey);
@@ -138,13 +118,11 @@ public class MinionSkillPanelController
 
     public void UnregisterMinion(Character minion)
     {
-        if (minion == null || !_byMinion.TryGetValue(minion, out var ownSkills))
+        if (ReferenceEquals(minion, null) || !_byMinion.TryGetValue(minion, out var ownSkills))
             return;
 
         foreach (var skill in ownSkills)
         {
-            if (skill == null) continue;
-
             if (!_skillRefCount.TryGetValue(skill, out var count))
                 continue;
 
@@ -198,6 +176,12 @@ public class MinionSkillPanelController
         _byMinion.Clear();
         _skillRefCount.Clear();
     }
+    
+    private void PruneDestroyed()
+    {
+        var dead = _byMinion.Keys.Where(m => m == null).ToList();
+        foreach (var m in dead) UnregisterMinion(m);
+    }
 
     private void AddGroupIcon(MinionSkillGroup group)
     {
@@ -208,13 +192,12 @@ public class MinionSkillPanelController
     }
 
     private void IssueGroupOrder(MinionSkillGroup group)
-    { 
-        Debug.Log($"[MinionPanel] IssueGroupOrder for key={group.GroupKey}, {group.Instances.Count} instances: [{string.Join(", ", group.Instances.Select(s => s?.GetEntityId().ToString() ?? "null"))}]");
-
+    {
+        PruneDestroyed();
+        
         foreach (var skill in group.Instances.ToList())
         {
             if (skill == null || skill.Hero == null || skill.Hero.IsDead) continue;
-            Debug.Log($"[MinionPanel] IssueGroupOrder -> SelectAndPrepareSkill on skill={skill.GetEntityId()}");
             skill.Hero.GetComponent<SkillManager>()?.SelectAndPrepareSkill(skill, group);
         }
     }

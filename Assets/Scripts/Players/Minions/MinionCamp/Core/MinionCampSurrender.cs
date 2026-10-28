@@ -123,7 +123,7 @@ public partial class MinionCamp
         }
 
         _pop.Clear();
-        _takenGroups[team] = group;
+        _takenGroups[team] = (hero, group);
 
         EnterWaitingRespawn(CampClearReason.LeaderTaken);
     }
@@ -171,11 +171,16 @@ public partial class MinionCamp
 
     private void DismissTakenGroup(int team)
     {
-        if (!_takenGroups.TryGetValue(team, out var group)) return;
+        if (!_takenGroups.TryGetValue(team, out var entry)) return;
 
-        foreach (var unit in group)
+        foreach (var unit in entry.units)
         {
-            if (unit != null && !unit.IsDead)
+            if (unit == null || unit.IsDead) continue;
+
+            var spawn = entry.owner != null ? entry.owner.SpawnComponent : null;
+            if (spawn != null && spawn.connectionToClient != null && spawn.Units.Contains(unit))
+                spawn.RemoveUnitServer(unit);
+            else
                 NetworkServer.Destroy(unit.gameObject);
         }
 

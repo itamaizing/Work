@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SpellMoveTo : Skill
+public class SpellMoveTo : Skill, SkillQueue.IPreemptsQueue
 {
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private float _stopDistance = 0.5f;
@@ -18,6 +18,7 @@ public class SpellMoveTo : Skill
     private float _clickDetectTime = 0;
     private Vector3 _tempPoint;
     private Character _tempTarget;
+    private float stuckTime = 0f;
 
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
@@ -46,7 +47,7 @@ public class SpellMoveTo : Skill
         {
             if (_target != null)
                 _targetPoint = _target.transform.position;
-
+            
             _currentDamageDeley = 0;
 
             if (_isHolding && Input.GetMouseButton(0))
@@ -78,8 +79,25 @@ public class SpellMoveTo : Skill
 
             yield return null;
         }
+        
+        
+        if (!_isHolding && !_agent.pathPending)
+        {
+            float arriveDistance = Mathf.Max(_stopDistance, _agent.stoppingDistance);
+            if (_agent.remainingDistance <= arriveDistance) yield break;
+
+            stuckTime = _agent.velocity.sqrMagnitude < 0.01f ? stuckTime + Time.deltaTime : 0f;
+            if (stuckTime >= 0.5f) yield break;
+        }
+
+        yield return null;
 
         ClearData();
+    }
+    
+    public bool TryPreemptCurrentCast(Skill busySkill)
+    {
+        return busySkill.TryCancel(true);
     }
 
     protected override void ClearData()

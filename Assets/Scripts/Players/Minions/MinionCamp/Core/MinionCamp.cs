@@ -47,7 +47,7 @@ public partial class MinionCamp : NetworkBehaviour
 
     private readonly CampPopulation _pop = new();
     private readonly CampAttackers _attackers = new();
-    private readonly Dictionary<int, List<MinionComponent>> _takenGroups = new();
+    private readonly Dictionary<int, (Character owner, List<MinionComponent> units)> _takenGroups = new();
     private readonly List<MinionComponent> _unitBuffer = new();
     private readonly List<Character> _heroBuffer = new();
 

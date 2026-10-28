@@ -282,13 +282,7 @@ public class CreeperStrike : Skill
         if (UnityEngine.Random.value > finalChance)
             return;
 
-        target.CharacterState.AddState(
-            States.WitheringPoison,
-            10f,
-            0f,
-            gameObject,
-            Name
-        );
+        target.CharacterState.AddState(States.WitheringPoison, 10f, 0f, _player.gameObject, Name);
     }
 
     private void DealCriticalDamage(Character target, float baseDamage, bool isTalentCritDamage = false)

@@ -584,6 +584,7 @@ public class CharacterState : NetworkBehaviour
 		[States.OtherForces] = new OtherForceStateStacking(),
 		[States.MagicShield] = new MagicShieldState(),
 		[States.VampirismBuff] = new VampirismBuffStateStacking(),
+		[States.MetabolismReptile] = new MetabolismReptileState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -1233,7 +1234,8 @@ public enum States
 	KillingSpree,
 	OtherForces,
 	MagicShield,
-	VampirismBuff
+	VampirismBuff,
+	MetabolismReptile
 }
 public enum BaffDebaff
 {

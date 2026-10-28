@@ -1310,8 +1310,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CampSurrenderUI
   _panel: {fileID: 8006241882977513557}
-  _takeCreepsButton: {fileID: 2750489777202737525}
-  _keepLeaderButton: {fileID: 1575417533297652900}
+  _takeCreepsButton: {fileID: 1575417533297652900}
+  _keepLeaderButton: {fileID: 2750489777202737525}
   _killButton: {fileID: 6235701592079455633}
   _showDuration: 0.3
   _hideDuration: 0.25

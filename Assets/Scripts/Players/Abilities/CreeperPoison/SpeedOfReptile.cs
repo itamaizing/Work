@@ -8,25 +8,24 @@ public class SpeedOfReptile : Skill
     [SerializeField] private Character _player;
     [SerializeField] private CreeperStrike _creeperStrike;
 
-    [SerializeField]private float _duration = 3f;
-
-    private float _increaseMoveSpeed = 2f;
-    private float _increaseAttackSpeed = 2f;
-    private float _increaseEvasion = 2f;
-    private AttributeModifier _modif;
+    [SerializeField] private float _duration = 3f;
+    [SerializeField] private float _castSpeedMultiplier = 2f;
+    [SerializeField] private float _moveSpeedMultiplier = 2f;
+    [SerializeField] private float _evasionMultiplier = 2f;
     
-    private readonly AttributeModifier _evadeMeleeModifier = new(1, ModifierType.Multiplier);
-    private readonly AttributeModifier _evadeRangeModifier = new(1, ModifierType.Multiplier);
-    private readonly AttributeModifier _evadeMagicModifier = new(1, ModifierType.Multiplier);
+    private AttributeModifier _castSpeedModifier;
+    private Coroutine _durationJob;
+
+    private AttributeModifier _moveModifier;
+    private AttributeModifier _evadeMeleeModifier;
+    private AttributeModifier _evadeRangeModifier;
+    private AttributeModifier _evadeMagicModifier;
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerPrepare => 0;
     protected override bool IsCanCast => true;
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        
-    }
+    public override void LoadTargetData(TargetInfo targetInfo) { }
 
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -35,62 +34,100 @@ public class SpeedOfReptile : Skill
 
     protected override IEnumerator CastJob()
     {
-        IncreaseValues();
+        ApplyBuff();
         yield return null;
     }
 
-    protected override void ClearData()
+    protected override void ClearData() { }
+
+    private void OnDisable()
     {
+        if (_durationJob != null) StopCoroutine(_durationJob);
+        _durationJob = null;
+        if (_castSpeedModifier != null) RemoveBuff();
     }
 
-    private void IncreaseValues()
+    private void ApplyBuff()
     {
-        _creeperStrike.SetSpeedOfReptile(true);
+        if (_castSpeedModifier != null) RemoveBuff();
 
-        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increaseAttackSpeed);
-        CmdIncreaseValues();
+        if (_creeperStrike != null) _creeperStrike.SetSpeedOfReptile(true);
 
-        Invoke("ResetValues", _duration);
+        _castSpeedModifier = new AttributeModifier(_castSpeedMultiplier, ModifierType.Multiplier, this);
+        _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(_castSpeedModifier);
+
+        CmdApplyServerBuffs();
+
+        if (_durationJob != null) StopCoroutine(_durationJob);
+        _durationJob = StartCoroutine(DurationJob());
     }
 
-    private void ResetValues()
+    private IEnumerator DurationJob()
     {
-        _creeperStrike.SetSpeedOfReptile(false);
+        yield return new WaitForSeconds(_duration);
+        _durationJob = null;
+        RemoveBuff();
+    }
 
-        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increaseAttackSpeed);
-        CmdResetValues();
+    private void RemoveBuff()
+    {
+        if (_castSpeedModifier != null)
+        {
+            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].RemoveModifier(_castSpeedModifier);
+            _castSpeedModifier = null;
+        }
+
+        if (_creeperStrike != null) _creeperStrike.SetSpeedOfReptile(false);
+
+        CmdRemoveServerBuffs();
     }
 
     [Command]
-    private void CmdIncreaseValues()
+    private void CmdApplyServerBuffs()
     {
+        RemoveServerBuffs();
+
         var attrs = _player.AttributeSystem;
 
-        _evadeMeleeModifier.Source = this;
-        _evadeMeleeModifier.Value = _increaseEvasion;
+        _evadeMeleeModifier = new AttributeModifier(_evasionMultiplier, ModifierType.Multiplier, this);
         attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(_evadeMeleeModifier);
 
-        _evadeRangeModifier.Source = this;
-        _evadeRangeModifier.Value = _increaseEvasion;
+        _evadeRangeModifier = new AttributeModifier(_evasionMultiplier, ModifierType.Multiplier, this);
         attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(_evadeRangeModifier);
 
-        _evadeMagicModifier.Source = this;
-        _evadeMagicModifier.Value = _increaseEvasion;
+        _evadeMagicModifier = new AttributeModifier(_evasionMultiplier, ModifierType.Multiplier, this);
         attrs[CharacterAttributeName.EvasionMagical].AddModifier(_evadeMagicModifier);
 
-        _modif.Value = _increaseMoveSpeed;
-        _modif.Type = ModifierType.Multiplier;
-        _player.Move.AddModifier(_modif);
+        _moveModifier = new AttributeModifier(_moveSpeedMultiplier, ModifierType.Multiplier, this);
+        _player.Move.AddModifier(_moveModifier);
     }
 
     [Command]
-    private void CmdResetValues()
+    private void CmdRemoveServerBuffs() => RemoveServerBuffs();
+
+    private void RemoveServerBuffs()
     {
         var attrs = _player.AttributeSystem;
-        attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveModifier(_evadeMeleeModifier);
-        attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveModifier(_evadeRangeModifier);
-        attrs[CharacterAttributeName.EvasionMagical].RemoveModifier(_evadeMagicModifier);
 
-        _player.Move.RemoveModifier(_modif);
+        if (_evadeMeleeModifier != null)
+        {
+            attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveModifier(_evadeMeleeModifier);
+            _evadeMeleeModifier = null;
+        }
+        if (_evadeRangeModifier != null)
+        {
+            attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveModifier(_evadeRangeModifier);
+            _evadeRangeModifier = null;
+        }
+        if (_evadeMagicModifier != null)
+        {
+            attrs[CharacterAttributeName.EvasionMagical].RemoveModifier(_evadeMagicModifier);
+            _evadeMagicModifier = null;
+        }
+        if (_moveModifier != null)
+        {
+            _player.Move.RemoveModifier(_moveModifier);
+            _moveModifier = null;
+        }
     }
 }
