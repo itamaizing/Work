@@ -16,8 +16,6 @@ public class IceCloudProjectile : Projectiles
 	private float _usedEnergy;
 	private float _maxDistance = 4.5f;
 
-	private bool _isReflected;
-
 	private void Start()
 	{
 		_startPos = transform.position;
@@ -47,24 +45,12 @@ public class IceCloudProjectile : Projectiles
 	[Server]
 	private void OnTriggerEnter(Collider collision)
 	{
-		if (!_initialized) return;
-		if (_dad == null) return;
-
-		if (!collision.TryGetComponent<Character>(out var target)) return;
-
-		if (target.CharacterState.CheckForState(States.ReflectiveScales) &&	_damage.Type == DamageType.Magical)
-		{
-			if (_isReflected) return;
-
-			target.CharacterState.RemoveState(States.ReflectiveScales);
-			Reflect(target);
-			return;
-		}
-
+		if (!_initialized || _dad == null) return;
 		if (collision.gameObject == _dad.gameObject) return;
+		if (!collision.TryGetComponent<Character>(out var target)) return;
+		if (TryReflect(target)) return; 
 
-		if (!collision.TryGetComponent<IDamageable>(out var damageable))
-			return;
+		if (!collision.TryGetComponent<IDamageable>(out _)) return;
 
 		if (target != _dad)
 		{
@@ -130,25 +116,9 @@ public class IceCloudProjectile : Projectiles
 		}
 	}
 
-	private void Reflect(Character reflector)
-	{
-		_isReflected = true;
-
-		Character oldOwner = _dad;
-		_dad = reflector;
-
-		if (oldOwner == null) return;
-
-		_startPos = transform.position;
-
-		if (_rb != null)
-		{
-			_rb.linearVelocity = Vector3.zero;
-			_rb.angularVelocity = Vector3.zero;
-		}
-
-		Vector3 direction = (oldOwner.transform.position - transform.position).normalized;
-
-		_rb.AddForce(direction * _force, ForceMode.Impulse);
-	}
+    protected override void Reflect(Character reflector)
+    {
+	    base.Reflect(reflector);
+	    _startPos = transform.position;
+    }
 }

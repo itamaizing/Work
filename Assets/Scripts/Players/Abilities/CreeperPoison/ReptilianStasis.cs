@@ -18,22 +18,21 @@ public class ReptilianStasis : Skill
     }
 
     protected override void ClearData() { }
-
-    protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
-    {
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Hero);
-        callbackDataSaved(targetInfo);
-
-        yield break;
-    }
-
     protected override IEnumerator CastJob()
     {
         if (Hero == null || Hero.CharacterState == null)
             yield break;
 
         Hero.CharacterState.CmdAddState(States.ReptilianStasis, Duration, 0f, Hero.gameObject, name);
+
+        yield return null; 
+
+        foreach (var skill in Hero.Abilities.Skills)
+        {
+            if (skill == null || skill == this) continue;
+            if (skill.IsTargeting || skill.IsExecuting)
+                skill.TryCancel(true);
+        }
     }
 }
 

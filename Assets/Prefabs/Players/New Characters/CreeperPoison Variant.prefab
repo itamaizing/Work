@@ -10714,7 +10714,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 19
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -10792,6 +10792,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[18]'
       value: 
       objectReference: {fileID: 6363943866240832142}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[19]'
+      value: 
+      objectReference: {fileID: 4320175696667952190}
     - target: {fileID: 5263749372223534569, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -13346,6 +13350,9 @@ MonoBehaviour:
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _duration: 10
+  _castSpeedMultiplier: 2
+  _moveSpeedMultiplier: 2
+  _evasionMultiplier: 2
   references:
     version: 2
     RefIds:
@@ -13497,8 +13504,6 @@ MonoBehaviour:
         _cachedValue: 0
         _modifiers: []
   _player: {fileID: 2483674839823445686}
-  _poisonBall: {fileID: 4719927588574066064}
-  _spitPoison: {fileID: 4992365342693795224}
   _duration: 3
   references:
     version: 2
@@ -14642,11 +14647,13 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: -1
-    _clickFaction: 0
+    editorBackupValue:
+    - key: 0
+      value: -1
+    oldType: 3
+    _targetingType: 3
+    _clickLayer: 0
+    _clickFaction: 1
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
@@ -14687,9 +14694,9 @@ MonoBehaviour:
     _castLength: 0
     _castWidth: 0
   _informationRenderComponent:
-    _isAutoRadiusRender: 1
-    _isAutoAreaRender: 1
-    _isAutoLineRender: 1
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
     _isDynamicRenderer: 0
     _prepareBarVisibility: 1
     _castBarVisibility: 1
@@ -15326,7 +15333,6 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   _metabolismReptile: {fileID: 1218428867352848936}
   _skillManager: {fileID: 2617687491934927079}
-  _creeperPoisonAura: {fileID: 2161342997938470374}
   references:
     version: 2
     RefIds:

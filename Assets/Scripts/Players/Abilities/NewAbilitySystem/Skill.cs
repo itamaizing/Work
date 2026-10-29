@@ -641,6 +641,15 @@ using UnityEngine;
         if (duration >= 1) // чтобы не спамило ГКД/скиллы без КД
             Debug.Log("CD STARTED " + duration);
     }
+    
+    [Server]
+    public void ServerReduceCooldown(double seconds)
+    {
+        double now = NetworkTime.time;
+        if (_cooldownEndTime <= now) return;
+
+        _cooldownEndTime = Math.Max(now, _cooldownEndTime - seconds);
+    }
 
     [Command]
     public void CmdCooldownModify(double delta)

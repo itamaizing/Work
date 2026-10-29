@@ -16,8 +16,9 @@ public class ArrowProjectile : Projectiles
     private Transform _followTarget;
     private Vector3 _startPosition;
     private bool _isFollowingTarget = false;
-
-    private bool _isReflected;
+    
+    protected override float ReflectSpeed => _speed;
+    
     private bool _isElvenSkillCrit;
 
     #region Constants
@@ -128,32 +129,11 @@ public class ArrowProjectile : Projectiles
         }
     }
 
-    private void Reflect(Character reflector)
+    protected override void Reflect(Character reflector)
     {
-        _isReflected = true;
-
-        CancelInvoke();
-        Destroy(gameObject, _lifeTime);
-
-        Character oldOwner = _dad;
-        _dad = reflector;
-
-        if (oldOwner == null) return;
-
         _isFollowingTarget = false;
         StopAllCoroutines();
-
-        if (_rb != null)
-        {
-            _rb.linearVelocity = Vector3.zero;
-            _rb.angularVelocity = Vector3.zero;
-        }
-
-        Vector3 targetPos = oldOwner.transform.position + Vector3.up * _arrowYOffset;
-        Vector3 dir = (targetPos - transform.position).normalized;
-
-        if (_rb != null) _rb.linearVelocity = dir * _speed;
-
+        base.Reflect(reflector);
         _startPosition = transform.position;
     }
 
@@ -199,14 +179,7 @@ public class ArrowProjectile : Projectiles
 
         other.TryGetComponent<Character>(out var target);
 
-        if (target != null && target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
-        {
-            if (_isReflected) return;
-
-            target.CharacterState.RemoveState(States.ReflectiveScales);
-            Reflect(target);
-            return;
-        }
+        if (TryReflect(target)) return;
 
         if (_arrowDark && other.GetComponentInParent<ReconnaissanceFireAura>() != null)
         {

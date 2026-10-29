@@ -1,44 +1,13 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ReflectiveScalesStateStacking : StateStacking
 {
-    private float _durationRemaining;
-
-    private List<StatusEffect> _effects = new()
-    {
-        StatusEffect.Strengthening
-    };
+    private static readonly List<StatusEffect> _effects = new() { StatusEffect.Strengthening };
 
     public override States State => States.ReflectiveScales;
-    public override StateType Type => StateType.Magic;
+    public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    public override float RemainingDuration => _durationRemaining;
-
-    public override void Apply(CharacterState character,
-        float durationToExit,
-        float damageToExit,
-        Character personWhoMadeBuff,
-        string skillName)
-    {
-        characterState = character;
-        health = character.Character.Health;
-        this.sourceCaster = personWhoMadeBuff;
-
-        _durationRemaining = durationToExit;
-    }
-
-    public override bool Stack(float time)
-    {
-        _durationRemaining = time;
-        return true;
-    }
-
-    private bool TryReflect(Damage damage)
-    {
-        ExitState();
-
-        return true;
-    }
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName) { }
 }

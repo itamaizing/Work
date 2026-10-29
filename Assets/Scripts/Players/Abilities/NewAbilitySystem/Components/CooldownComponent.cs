@@ -199,6 +199,21 @@ public class CooldownComponent : BaseSkillComponent
     public void OnServerCooldownChanged(double oldValue, double newValue)
     {
         isSyncronized = true;
+
+        if (!IsActive) return;
+
+        float remaining = Mathf.Max(0f, (float)(newValue - NetworkTime.time));
+
+        if (remaining <= 0f)
+        {
+            _isActive = false;
+            _currentMax = _skillAttributes != null ? _skillAttributes.Cooldown : _baseCooldown;
+            OnEnd?.Invoke();
+            return;
+        }
+
+        if (remaining > _currentMax) _currentMax = remaining;
+        OnModify?.Invoke(remaining, _currentMax);
     }
     
     public void OnForceRefreshUI()

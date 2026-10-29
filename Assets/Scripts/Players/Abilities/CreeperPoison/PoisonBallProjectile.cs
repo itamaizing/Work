@@ -95,10 +95,10 @@ public class PoisonBallProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
-        if (!collision.TryGetComponent<Character>(out var targetHealth))
-            return;
+        if (!collision.TryGetComponent<Character>(out var targetHealth)) return;
+        if (targetHealth.gameObject == _player.gameObject) return;
 
-        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales) && _skill.BaseDamage.Type == DamageType.Magical)
+        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
         {
             if (_isReflected) return;
             targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
@@ -241,6 +241,9 @@ public class PoisonBallProjectile : Test_Projectile
 
         MoveToTarget(target, speed);
         RpcInitTransparent(_isTransparentPoisons, _playerLayer);
+        
+        float dist = Vector3.Distance(transform.position, target);
+        Invoke(nameof(DestroyProjectile), (dist + _buffer) / speed);
     }
 
     #region MovementBall

@@ -27,6 +27,8 @@ public class Projectiles : NetworkBehaviour
     protected bool _lastHit = false;
 
     private AudioHandle _flyHandle;
+    
+    protected bool _isReflected;
 
     public Skill Skill => _skill;
     public Rigidbody Rigidbody {get => _rb; set => _rb = value;}
@@ -50,6 +52,37 @@ public class Projectiles : NetworkBehaviour
     {
         _energy.SumDamageMake(value);
        _rune.SumDamageMake(value);
+    }
+    
+    protected bool TryReflect(Character target)
+    {
+        if (_isReflected || target == null || _dad == null || target == _dad) return false;
+
+        var state = target.CharacterState;
+        if (state == null || !state.CheckForState(States.ReflectiveScales)) return false;
+
+        state.RemoveState(States.ReflectiveScales);
+        Reflect(target);
+        return true;
+    }
+    
+    protected virtual float ReflectSpeed => _rb != null ? _rb.linearVelocity.magnitude : 0f;
+    
+    protected virtual void Reflect(Character reflector)
+    {
+        Character oldOwner = _dad;
+        _isReflected = true;
+        _dad = reflector;
+
+        if (oldOwner == null || _rb == null) return;
+
+        Vector3 targetPos = oldOwner.transform.position + Vector3.up;
+        Vector3 dir = (targetPos - transform.position).normalized;
+        if (dir == Vector3.zero) return;
+
+        _rb.angularVelocity = Vector3.zero;
+        _rb.linearVelocity = dir * ReflectSpeed;
+        transform.rotation = Quaternion.LookRotation(dir);
     }
 
     #region Sound

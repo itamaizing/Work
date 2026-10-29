@@ -35,8 +35,25 @@ public class CreeperPoisonAura : NetworkBehaviour
     public bool IsFeelingPoisoning { get => _isFeelingPoisoning; set => _isFeelingPoisoning = value; }
     public bool IsActiveWitheringPoison { get => _isActiveWitheringPoison; set => _isActiveWitheringPoison = value; }
     public bool IsActiveWitheringPoisonMetabolism { get => _isActiveWitheringPoisonMetabolism; set => _isActiveWitheringPoisonMetabolism = value; }
+    
+    #region Reptile11
+    private GameObject _lastCooldownTarget;
+    public void DecreaseCooldownDamage(bool value)
+    {
+        if (_isDecreaseCooldownDamage == value) return;
+        _isDecreaseCooldownDamage = value;
 
-    public void DecreaseCooldownDamage(bool value) => _isDecreaseCooldownDamage = value;
+        if (isServer) _lastCooldownTarget = null;
+        else if (isClient) CmdDecreaseCooldownDamage(value);
+    }
+    
+    [Command]
+    private void CmdDecreaseCooldownDamage(bool value)
+    {
+        _isDecreaseCooldownDamage = value;
+        _lastCooldownTarget = null;
+    }
+    #endregion
     public void ActiveWitheringPoisonMetabolism(bool value) => _isActiveWitheringPoisonMetabolism = value;
     public void ActiveWitheringPoison(bool value) => _isActiveWitheringPoison = value;
 
@@ -173,15 +190,16 @@ public class CreeperPoisonAura : NetworkBehaviour
     private void OnDamageDealt(Damage damage, GameObject target)
     {
         if (!_isDecreaseCooldownDamage) return;
-
         if (_owner == null || _owner.Abilities == null) return;
+        if (target == null || target == gameObject) return;
 
-        float reduction = 1f;
+        if (target == _lastCooldownTarget) return;
+        _lastCooldownTarget = target;
 
         foreach (var skill in _owner.Abilities.Skills)
         {
             if (skill == null) continue;
-            if (skill.Cooldown.IsActive) skill.Cooldown.Modify(-reduction);
+            skill.ServerReduceCooldown(1.0);
         }
     }
 
