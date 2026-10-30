@@ -79,6 +79,14 @@ public class PoisonBallProjectile : Test_Projectile
 
         return ownerSettings.TeamIndex != targetSettings.TeamIndex;
     }
+    
+    private bool IsAlly(Character target)
+    {
+        if (_player == null || target == null || target == _player) return false;
+        int a = _player.NetworkSettings.TeamIndex;
+        int b = target.NetworkSettings.TeamIndex;
+        return a != 0 && a == b;
+    }
 
     private bool IsTeamAssigned(UserNetworkSettings settings)
     {
@@ -95,122 +103,44 @@ public class PoisonBallProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
-        if (!collision.TryGetComponent<Character>(out var targetHealth)) return;
-        if (targetHealth.gameObject == _player.gameObject) return;
+        if (_player == null) return;
+        if (!collision.TryGetComponent<Character>(out var target)) return;
 
-        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+        bool isOwner = target.gameObject == _player.gameObject;
+        bool isAlly = IsAlly(target);
+        bool healShot = _isActiveHealingPoisonBall && !_isReflected && (_isPlayer || _isAllies);
+
+        if (isOwner && !(healShot && _isPlayer)) return;
+
+        if (!isOwner && !isAlly && target.CharacterState.CheckForState(States.ReflectiveScales))
         {
             if (_isReflected) return;
-            targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
-            Reflect(targetHealth);
+            target.CharacterState.RemoveState(States.ReflectiveScales);
+            Reflect(target);
+            return;
+        }
+
+        if (healShot)
+        {
+            bool hit = (isOwner && _isPlayer) || (isAlly && _isAllies);
+            if (!hit) return;
+
+            if (_isFast)
+                target.CharacterState.AddState(States.InstantHealingPoison, 0.5f, 0, _player.gameObject, _skill.Name);
+            else
+                target.CharacterState.AddState(States.HealingPoisonPerSecond, 6f, 0, _player.gameObject, _skill.Name);
+
+            DestroyProjectile();
             return;
         }
 
         if (!IsEnemy(collision.gameObject)) return;
 
-        if (_isActiveHealingPoisonBall)
-        {
-            if (_isPlayer)
-            {
-                if (collision.gameObject == _player.gameObject)
-                {
-                    if (!_isFast)
-                    {
-                        _player.CharacterState.AddState(States.HealingPoisonPerSecond, 7.0f, 0, _player.gameObject, _skill.Name);
-                    }
-                    else
-                    {
-                        _player.CharacterState.AddState(States.InstantHealingPoison, 0.5f, 0, _player.gameObject, _skill.Name);
-                    }
+        _target = target;
+        DamageDeal();
 
-                    DestroyProjectile();
-                }
-            }
-            else if (_isAllies)
-            {
-                if (collision.transform != _player.transform && _playerLayer == LayerMask.NameToLayer("Allies"))
-                {
-                    if (collision.TryGetComponent<Character>(out var alliesHealth))
-                    {
-                        if (_isFast)
-                        {
-                            alliesHealth.CharacterState.AddState(States.HealingPoisonPerSecond, 7.0f, 0, _player.gameObject, _skill.Name);
-                        }
-                        else
-                        {
-                            alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 0.5f, 0, _player.gameObject, _skill.Name);
-                        }
-
-                        DestroyProjectile();
-                    }
-                }
-                else if (!_isEnemy && collision.transform != _player.transform)
-                {
-                    return;
-                }
-            }
-            else if (_isEnemy)
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (targetHealth != null)
-                    {
-                        _target = targetHealth;
-                        DamageDeal();
-
-                        if (_isActiveFootInstincts)
-                        {
-                            RpcReductionCooldownAtFootInstincts(_player.gameObject);
-                        }
-
-                        _poisonBall.LastTarget = targetHealth.gameObject;
-                    }
-                }
-                else if (_isAlly && collision.gameObject != _player.gameObject)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (targetHealth != null)
-                    {
-                        _target = targetHealth;
-
-                        DamageDeal();
-
-                        if (_isActiveFootInstincts)
-                        {
-                            RpcReductionCooldownAtFootInstincts(_player.gameObject);
-                        }
-
-                        _poisonBall.LastTarget = targetHealth.gameObject;
-                    }
-                }
-            }
-        }
-
-        else
-        {
-            if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
-            {
-                if (targetHealth != null)
-                {
-                    _target = targetHealth;
-
-                    DamageDeal();
-
-                    if (_isActiveFootInstincts)
-                    {
-                        RpcReductionCooldownAtFootInstincts(_player.gameObject);
-                    }
-
-                    _poisonBall.LastTarget = targetHealth.gameObject;
-                }
-            }
-        }
+        if (_isActiveFootInstincts) RpcReductionCooldownAtFootInstincts(_player.gameObject);
+        if (_poisonBall != null) _poisonBall.LastTarget = target.gameObject;
     }
 
     #endregion

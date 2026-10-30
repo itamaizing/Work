@@ -102,7 +102,55 @@ public class CreeperStrike : Skill
         StopReptileTalent();
     }
 
+    #region Reptile13
+    
+    [SerializeField] private float _poisonCritChancePerStack = 0.05f;
+    [SerializeField] private float _poisonCritBaseMultiplier = 2.5f;
+    [SerializeField] private float _poisonCritBonusPerBoneStack = 1f;
+    [SerializeField] private bool _countPoisonInRadius = false;
+    [SerializeField] private float _poisonCritRadius = 6f;
+    
     public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
+    
+    private bool TryRollPoisonCrit(Character target, out float multiplier)
+    {
+        multiplier = 1f;
+        if (!_isCheckForStatePoisonBone || target == null) return false;
+
+        int total = 0, bone = 0;
+
+        if (_countPoisonInRadius)
+        {
+            var enemies = Physics.OverlapSphere(transform.position, _poisonCritRadius, _enemyLayer);
+            foreach (var enemy in enemies)
+                if (enemy.TryGetComponent<CharacterState>(out var s))
+                    CountPoisonStacks(s, ref total, ref bone);
+        }
+        else if (target.CharacterState != null)
+        {
+            CountPoisonStacks(target.CharacterState, ref total, ref bone);
+        }
+
+        if (total <= 0) return false;
+        if (UnityEngine.Random.value > Mathf.Clamp01(total * _poisonCritChancePerStack)) return false;
+
+        multiplier = _poisonCritBaseMultiplier + bone * _poisonCritBonusPerBoneStack;
+        return true;
+    }
+
+    private static void CountPoisonStacks(CharacterState state, ref int total, ref int bone)
+    {
+        if (state.GetState(States.PoisonBone) is PoisonBoneStateStacking pb)
+        {
+            total += pb.CurrentStacks;
+            bone += pb.CurrentStacks;
+        }
+        if (state.GetState(States.BindingPoison) is BindingPoisonState bp) total += bp.CurrentStacks;
+        if (state.GetState(States.EmpathicPoisons) is EmpathicPoisonsState ep) total += ep.CurrentStacks;
+        if (state.GetState(States.WitheringPoison) is WitheringPoisonStateStacking wp) total += wp.CurrentStacksCount;
+    }
+    
+    #endregion
     
     public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
@@ -181,9 +229,11 @@ public class CreeperStrike : Skill
 
             DealCriticalDamage(character, _currentDamage, true);
         }
-        else if (CanDealPoisonBoneCriticalDamage(character))
+        else if (TryRollPoisonCrit(character, out float critMultiplier))
         {
-            DealCriticalDamage(character, _currentDamage);
+            Damage damage = GetDamage();
+            damage.Value *= critMultiplier;
+            CmdApplyDamage(damage, character.gameObject);
         }
         else
         {
@@ -292,8 +342,7 @@ public class CreeperStrike : Skill
 
         float criticalDamage = baseDamage;
 
-        if (isTalentCritDamage || CanDealPoisonBoneCriticalDamage(target))
-            criticalDamage = CalculateCriticalDamage(baseDamage);
+        if (isTalentCritDamage) criticalDamage = CalculateCriticalDamage(baseDamage);
 
         Damage damage = GetDamage();
         damage.Value = criticalDamage;

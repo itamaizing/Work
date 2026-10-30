@@ -10,12 +10,16 @@ public class ExplosionPoisonCloud : Skill, IColdBloodEmpowerable
 {
     [SerializeField] private Character _player;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+    [SerializeField] private float _explosionDamage = 6f;
+    [SerializeField] private float _healPerStack = 3f;
+    [SerializeField] private float _explosionRadius = 4f;
 
     private List<Character> _enemies = new();
 
     private int _currentStacksPoisonCloud;
     private int _currentStacksHealingPoisonCloud;
 
+    
     private float _baseDamage_OLD = 6.0f;
     private float _currentDamage;
     private float _chanceApplyBonePoison = 0.9f;
@@ -93,92 +97,79 @@ public class ExplosionPoisonCloud : Skill, IColdBloodEmpowerable
         }
     }
 
+    private float CalculateHeal(Character target)
+    {
+        int cloudStacks = _player.CharacterState.CheckStateStacks(States.HealingPoisonCloud);
+        if (cloudStacks <= 0) return 0f;
+
+        float perStack = _healValue;
+
+        if (_isRestorativePoison)
+        {
+            int regenStacks = target.CharacterState.CheckStateStacks(States.RegeneratingPoison);
+            perStack += _additionalHealValue * regenStacks;
+        }
+
+        return perStack * cloudStacks;
+    }
+
     private void ExplosionCloud()
     {
-        Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
-        
         _isExploded = true;
 
-        _currentDamage = _baseDamage_OLD * _currentStacksPoisonCloud;
+        var state = _player.CharacterState;
+        bool hasPoison = state.CheckStateStacks(States.PoisonCloud) > 0;
 
-        if (_hero.Abilities.GetSkill<ColdBlood>().TryConsumeForPoison(_enemies))
-            _currentDamage *= ColdBlood.PoisonCritMultiplier;
-
-        if (_isRestorativePoison) _currentHealValue = (_healValue + _additionalHealValue) * _currentStacksHealingPoisonCloud;
-        else _currentHealValue = _healValue * _currentStacksHealingPoisonCloud;
-
-        Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
-
-        foreach (Character target in _enemies)
+        bool crit = false;
+        if (hasPoison)
         {
-            Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
-            if (target != null)
-            {
-                CmdDamageDeal(target, _currentDamage);
-                CmdApplyRestorativeHeal(target, _currentHealValue);
+            FindEnemies();
+            crit = _hero.Abilities.GetSkill<ColdBlood>().TryConsumeForPoison(_enemies);
+        }
 
-                //for (int i = 0; i < _currentStacksPoisonCloud; i++)
-                //{
-                //    if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)
-                //    {
-                //        ApplyPoisonBone(target.gameObject);
-                //    }
-                //}
+        CmdExplode(crit);
+    }
+    
+    [Command]
+    private void CmdExplode(bool crit)
+    {
+        var state = _player.CharacterState;
+        int poisonStacks = state.CheckStateStacks(States.PoisonCloud);
+        int healStacks = state.CheckStateStacks(States.HealingPoisonCloud);
+        if (poisonStacks <= 0 && healStacks <= 0) return;
+
+        int team = _player.NetworkSettings.TeamIndex;
+        float damageValue = Buff.Damage.GetBuffedValue(_explosionDamage) * (crit ? ColdBlood.PoisonCritMultiplier : 1f);
+        float healValue = _healPerStack * healStacks;
+
+        var visited = new HashSet<Character>();
+        foreach (var col in Physics.OverlapSphere(_player.transform.position, _explosionRadius))
+        {
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (!visited.Add(target) || target.IsDead) continue;
+
+            bool ally = target.NetworkSettings.TeamIndex == team;
+
+            if (!ally && poisonStacks > 0)
+            {
+                var damage = new Damage { Value = damageValue, Type = DamageType.Physical };
+                ApplyDamage(damage, target.gameObject);
+            }
+            else if (ally && healStacks > 0)
+            {
+                var heal = new Heal { Value = healValue, DamageableSkill = null };
+                ApplyHeal(heal, target.gameObject, this, Name);
             }
         }
 
-        //_currentStacksPoisonCloud = 0;
+        if (_creeperPoisonAura != null) _creeperPoisonAura.ConsumeClouds();
     }
 
-    public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
-    {
-        _currentStacksPoisonCloud = currentStacks;
-        Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
-        _radiusExplosion = radiusExplosion;
-    }
 
     public void CurrentStacksHealingPoisonCloud(int currentStacks, float radiusExplosion)
     {
         _currentStacksHealingPoisonCloud = currentStacks;
         Debug.Log("ExplosionPoisonCloud / _currentStacksHealingPoisonCloud = " + _currentStacksHealingPoisonCloud);
         _radiusExplosion = radiusExplosion;
-    }
-
-    private void ApplyPoisonBone(GameObject target)
-    {
-        CmdApplyPoisonBone(target.gameObject);
-    }
-
-    [Command]
-    private void CmdDamageDeal(Character target , float currentDamage)
-    {
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(currentDamage),
-            Type = DamageType.Physical,
-        };
-        
-        ApplyDamage(damage, target.gameObject);
-    }
-
-    [Command]
-    private void CmdApplyPoisonBone(GameObject target)
-    {
-        target.GetComponent<CharacterState>().AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
-        if (_creeperPoisonAura.IsFeelingPoisoning)  Hero.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, Name);
-    }
-
-    [Command]
-    private void CmdApplyRestorativeHeal(Character target, float healValue)
-    {
-        Heal heal = new Heal
-        {
-            Value = healValue,
-            DamageableSkill = null
-        };
-
-        Debug.Log($"healValue: {healValue}");
-
-        ApplyHeal(heal, target.gameObject, this, Name);
     }
 }

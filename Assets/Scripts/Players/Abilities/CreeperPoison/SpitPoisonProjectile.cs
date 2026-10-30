@@ -51,6 +51,14 @@ public class SpitPoisonProjectile : Test_Projectile
 
         return ownerSettings.TeamIndex != targetSettings.TeamIndex;
     }
+    
+    private bool IsAlly(Character target)
+    {
+        if (_player == null || target == null || target == _player) return false;
+        int a = _player.NetworkSettings.TeamIndex;
+        int b = target.NetworkSettings.TeamIndex;
+        return a != 0 && a == b;
+    }
 
     private bool IsTeamAssigned(UserNetworkSettings settings)
     {
@@ -67,86 +75,37 @@ public class SpitPoisonProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
-        if (!collision.TryGetComponent<Character>(out var targetHealth)) return;
-        if (targetHealth.gameObject == _player.gameObject) return;
+        if (_player == null) return;
+        if (!collision.TryGetComponent<Character>(out var target)) return;
 
-        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+        bool isOwner = target.gameObject == _player.gameObject;
+        bool isAlly = IsAlly(target);
+        bool healShot = _isActiveHealingSpitPoison && !_isReflected && (_isPlayer || _isAllies);
+
+        if (isOwner && !(healShot && _isPlayer)) return;
+
+        if (!isOwner && !isAlly && target.CharacterState.CheckForState(States.ReflectiveScales))
         {
             if (_isReflected) return;
-            targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
-            Reflect(targetHealth);
+            target.CharacterState.RemoveState(States.ReflectiveScales);
+            Reflect(target);
             return;
         }
 
-        if (_isActiveHealingSpitPoison)
+        if (healShot)
         {
-            if (_isPlayer)
-            {
-                if (collision.gameObject == _player.gameObject)
-                {
-                    //_player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
-                    Destroy(gameObject);
-                }
-            }
-            else if (_isAllies)
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer == LayerMask.NameToLayer("Allies"))
-                {
-                    if (collision.TryGetComponent<Character>(out var alliesHealth))
-                    {
-                        //alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
-                        Destroy(gameObject);
-                    }
-                }
-                else if (!_isEnemy && collision.gameObject != _player.gameObject)
-                {
-                    return;
-                }
-            }   
-            else if (_isEnemy)
-            {
-                if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (collision.TryGetComponent<Character>(out var target))
-                    {
-                        _target = target;
-                        DamageDeal();
-                    }
-                }
-                else if (!_isAllies && collision.gameObject != _player.gameObject)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (collision.transform != _player.transform)
-                    {
-                        if (collision.TryGetComponent<Character>(out var target))
-                        {
-                            _target = target;
-                            DamageDeal();
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
-            {
-                if (collision.TryGetComponent<Character>(out var target))
-                {
-                    _target = target;
-                    DamageDeal();
-                }
-            }
-            
+            bool hit = (isOwner && _isPlayer) || (isAlly && _isAllies);
+            if (!hit) return;
+
+            target.CharacterState.AddState(States.RegeneratingPoison, 6f, 0, _player.gameObject, _skill.Name);
+            Destroy(gameObject);
+            return;
         }
 
-        //if (_isFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, _skill.Name);
+        if (!IsEnemy(collision.gameObject)) return;
+
+        _target = target;
+        DamageDeal();
     }
 
     #endregion

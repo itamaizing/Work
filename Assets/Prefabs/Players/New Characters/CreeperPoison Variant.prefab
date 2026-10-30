@@ -11736,6 +11736,11 @@ MonoBehaviour:
   _poisonSearchRadius: 30
   _baseIncreaseAttackSpeed: 0.1
   _maxMinimumAttackSpeed: 0.1
+  _poisonCritChancePerStack: 0.05
+  _poisonCritBaseMultiplier: 2.5
+  _poisonCritBonusPerBoneStack: 1
+  _countPoisonInRadius: 0
+  _poisonCritRadius: 6
   references:
     version: 2
     RefIds:
@@ -12067,8 +12072,6 @@ MonoBehaviour:
   _creeperPoisonAura: {fileID: 2161342997938470374}
   _coldBlood: {fileID: 4616268591970552908}
   durationErodedArmor: 6
-  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
-  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
   references:
     version: 2
     RefIds:
@@ -12127,11 +12130,11 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 0
   _costComponent:
-    _base: 10
+    _base: 30
     _costs:
-    - nameToShow: 10 Mana - Mandatory mod desc
+    - nameToShow: 30 Mana - Mandatory mod desc
       type: 1
-      value: 10
+      value: 30
       costType: 0
       shouldModify: 1
       showInDescription: 1
@@ -12241,8 +12244,6 @@ MonoBehaviour:
   pointArrowRender: {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
   _creeperPoisonAura: {fileID: 2161342997938470374}
   _coldBlood: {fileID: 4616268591970552908}
-  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
-  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
   references:
     version: 2
     RefIds:
@@ -12732,8 +12733,6 @@ MonoBehaviour:
   _poisonBall: {fileID: 4719927588574066064}
   _lightningMovement: {fileID: 7013613396998518356}
   _skillManager: {fileID: 2617687491934927079}
-  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
-  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
   _creeperPoisonAura: {fileID: 2161342997938470374}
   references:
     version: 2
@@ -14469,6 +14468,8 @@ MonoBehaviour:
     m_Bits: 256
   _attackSpeedPerStack: 0.8
   _tickRate: 0.2
+  _damagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
+  _healingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &565901441313688860
 MonoBehaviour:
   m_ObjectHideFlags: 0

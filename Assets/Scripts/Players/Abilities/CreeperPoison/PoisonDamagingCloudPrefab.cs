@@ -5,120 +5,83 @@ using UnityEngine;
 public class PoisonDamagingCloudPrefab : NetworkBehaviour
 {
     [SerializeField] private ParticleSystem _poisonDamagingCloudParticle;
-    private ParticleSystem _instancePoisonDamagingCloud;
-
-    private Coroutine _lifetimeCoroutine;
-    private Coroutine _activateParticleCoroutine;
-
-    private float _baseDuration;
-    private float _duration;
-
-    private PoisonDamagingCloudPrefab _poisonDamageCloud;
-    private Character _player;
     [ReadOnly][SerializeField] private Skill _skill;
 
-    public PoisonDamagingCloudPrefab PoisonDamageCloud { get => _poisonDamageCloud; set => _poisonDamageCloud = value; }
+    private ParticleSystem _instance;
+    private Coroutine _lifetimeCoroutine;
+    private float _baseDuration;
+    private Character _player;
 
     private void Update()
     {
-        if (_instancePoisonDamagingCloud != null && _player != null)
-        {
-            _instancePoisonDamagingCloud.transform.position = _player.transform.position;
-        }
+        if (_instance != null && _player != null)
+            _instance.transform.position = _player.transform.position;
     }
 
-    public void InitializationProjectile(Character player, float duration, Skill skill, bool isFeelingPoisoning)
+    [Server]
+    public void ServerInit(Character player, float duration, Skill skill)
     {
         _player = player;
         _skill = skill;
-
-        _duration = duration;
         _baseDuration = duration;
     }
 
-    public void AddStack()
+    [Server]
+    public void ServerAddStack()
     {
-        if (_activateParticleCoroutine == null && _poisonDamageCloud == null)
+        if (_player == null) return;
+
+        ShowParticle();
+        _player.CharacterState.AddState(States.PoisonCloud, _baseDuration, 0f,
+            _player.gameObject, _skill != null ? _skill.Name : null);
+
+        if (_lifetimeCoroutine != null) StopCoroutine(_lifetimeCoroutine);
+        _lifetimeCoroutine = StartCoroutine(LifeTimeJob());
+
+        RpcRefresh(_player.gameObject, _baseDuration);
+    }
+
+    [ClientRpc]
+    private void RpcRefresh(GameObject playerObject, float duration)
+    {
+        if (isServer) return;
+        if (playerObject == null) return;
+
+        _player = playerObject.GetComponent<Character>();
+        _baseDuration = duration;
+        ShowParticle();
+    }
+
+    private void ShowParticle()
+    {
+        if (!NetworkClient.active || _player == null) return;
+
+        if (_instance == null)
         {
-            _activateParticleCoroutine = StartCoroutine(ActivatePoisonCloud());
+            _instance = Instantiate(_poisonDamagingCloudParticle, _player.transform);
         }
         else
         {
-            UpdateInstanceCloud();
-        }
-        
-        if (_player != null)
-        {
-            _player.CharacterState.CmdAddState(
-                States.PoisonCloud, 
-                _baseDuration, 
-                0, 
-                _player.gameObject, 
-                _skill != null ? _skill.Name : null
-            );
+            _instance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
-        if (_lifetimeCoroutine != null) StopCoroutine(_lifetimeCoroutine);
-
-        _duration = _baseDuration;
-        _lifetimeCoroutine = StartCoroutine(LifeTimeJob());
-    }
-
-    private void InstantiateCloud()
-    {
-        if (_instancePoisonDamagingCloud == null && _player != null)
-        {
-            _instancePoisonDamagingCloud = Instantiate(_poisonDamagingCloudParticle, _player.transform);
-            _instancePoisonDamagingCloud.Play();
-        }
-    }
-
-    private void UpdateInstanceCloud()
-    {
-        if (_instancePoisonDamagingCloud != null)
-        {
-            _instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            ParticleSystem.MainModule main = _instancePoisonDamagingCloud.main;
-            main.duration = _baseDuration;
-            _instancePoisonDamagingCloud.Play();
-        }
-    }
-
-    private IEnumerator ActivatePoisonCloud()
-    {
-        InstantiateCloud();
-        yield return null;
+        var main = _instance.main;
+        main.duration = _baseDuration;
+        _instance.Play();
     }
 
     private IEnumerator LifeTimeJob()
     {
-        float time = _duration;
+        yield return new WaitForSeconds(_baseDuration);
+        _lifetimeCoroutine = null;
+        NetworkServer.Destroy(gameObject);
+    }
 
-        while (time > 0)
-        {
-            time -= Time.deltaTime;
-            yield return null;
-        }
+    private void OnDestroy()
+    {
+        if (_instance != null) Destroy(_instance.gameObject);
 
-        if (_activateParticleCoroutine != null)
-        {
-            StopCoroutine(_activateParticleCoroutine);
-            _activateParticleCoroutine = null;
-        }
-
-        if (_lifetimeCoroutine != null)
-        {
-            StopCoroutine(_lifetimeCoroutine);
-            _lifetimeCoroutine = null;
-        }
-
-        if (_instancePoisonDamagingCloud != null)
-        {
-            _instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            Destroy(_instancePoisonDamagingCloud.gameObject);
-        }
-
-        Destroy(gameObject);
-        PoisonDamageCloud = null;
+        if (NetworkServer.active && _player != null && _player.CharacterState != null)
+            _player.CharacterState.RemoveState(States.PoisonCloud);
     }
 }

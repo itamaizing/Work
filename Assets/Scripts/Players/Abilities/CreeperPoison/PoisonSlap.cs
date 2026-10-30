@@ -18,14 +18,7 @@ public class PoisonSlap : Skill, IColdBloodEmpowerable
     [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private SkillManager _skillManager;
 
-    [Header("Talents")]
-    [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
-    [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
-
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
-
-    private PoisonDamagingCloudPrefab _poisonDamagingCloud;
-    private PoisonHealingCloudPrefab _poisonHealingCloud;
 
     private float _durationPoisonCloud = 6f;
 
@@ -349,64 +342,11 @@ public class PoisonSlap : Skill, IColdBloodEmpowerable
 
         targetMove.SetFlyState(false);
     }
+    
     [Command]
     private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
     {
-        if (!isHealingCloud)
-        {
-            if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
-            {
-                _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
-                _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
-
-                _poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-                _poisonDamagingCloud.AddStack();
-
-                NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
-            }
-            else
-            {
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
-            }
-        }
-        else
-        {
-            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
-            {
-                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
-
-                _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
-                _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
-
-                _poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-                _poisonHealingCloud.AddStack();
-
-                NetworkServer.Spawn(_poisonHealingCloud.gameObject);
-            }
-            else
-            {
-                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
-                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
-            }
-        }
-
-        RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
-    }
-
-    [ClientRpc]
-    private void RpcApply(PoisonDamagingCloudPrefab dmg, PoisonHealingCloudPrefab heal, float duration, bool isHealing)
-    {
-        if (dmg != null)
-        {
-            dmg.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-            dmg.AddStack();
-        }
-
-        if (heal != null && isHealing)
-        {
-            heal.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-            heal.AddStack();
-        }
+        _creeperPoisonAura.ApplyCloud(isHealingCloud, duration, this);
     }
     #endregion
 

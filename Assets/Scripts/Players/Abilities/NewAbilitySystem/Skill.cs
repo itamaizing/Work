@@ -1071,6 +1071,15 @@ using UnityEngine;
             OnHealApply(hp);
         }
     }
+    
+    [Server]
+    public void ServerApplyHeal(Heal heal, GameObject target)
+    {
+        if (target == null || !target.TryGetComponent<IHealable>(out _)) return;
+
+        ApplyHeal(heal, target, this, name);
+        OnHealApply(target);
+    }
 
     [ClientRpc]
     private void OnHealApply(GameObject target)

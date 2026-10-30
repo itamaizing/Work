@@ -83,6 +83,75 @@ public class CreeperPoisonAura : NetworkBehaviour
     public void EvadePoison(bool value) => _isEvadePoison = value;
     #endregion
 
+    #region PoisonClouds
+    
+    [Header("Poison clouds")]
+    [SerializeField] private PoisonDamagingCloudPrefab _damagingCloudPrefab;
+    [SerializeField] private PoisonHealingCloudPrefab _healingCloudPrefab;
+
+    private PoisonDamagingCloudPrefab _damagingCloud;
+    private PoisonHealingCloudPrefab _healingCloud;
+
+    [Server]
+    public void ApplyCloud(bool healing, float duration, Skill skill)
+    {
+        if (_owner == null) _owner = GetComponent<Character>();
+        if (_owner == null || _damagingCloudPrefab == null || _healingCloudPrefab == null)
+        {
+            Debug.LogError("[CreeperPoisonAura] Не назначены префабы облаков", this);
+            return;
+        }
+
+        if (healing)
+        {
+            if (_damagingCloud != null) NetworkServer.Destroy(_damagingCloud.gameObject);
+            _damagingCloud = null;
+
+            if (_healingCloud == null)
+            {
+                _healingCloud = Instantiate(_healingCloudPrefab, _owner.transform.position, Quaternion.identity);
+                _healingCloud.ServerInit(_owner, duration, skill);
+                NetworkServer.Spawn(_healingCloud.gameObject);
+            }
+
+            _owner.CharacterState.AddState(States.HealingPoisonCloud, duration, 0f, _owner.gameObject, skill.Name);
+            _healingCloud.ServerAddStack();
+        }
+        else
+        {
+            if (_healingCloud != null)
+            {
+                NetworkServer.Destroy(_healingCloud.gameObject);
+                _owner.CharacterState.RemoveState(States.HealingPoisonCloud);
+            }
+            _healingCloud = null;
+
+            if (_damagingCloud == null)
+            {
+                _damagingCloud = Instantiate(_damagingCloudPrefab, _owner.transform.position, Quaternion.identity);
+                _damagingCloud.ServerInit(_owner, duration, skill);
+                NetworkServer.Spawn(_damagingCloud.gameObject);
+            }
+
+            _damagingCloud.ServerAddStack();
+        }
+    }
+    
+    [Server]
+    public void ConsumeClouds()
+    {
+        if (_damagingCloud != null) NetworkServer.Destroy(_damagingCloud.gameObject);
+        if (_healingCloud != null) NetworkServer.Destroy(_healingCloud.gameObject);
+        _damagingCloud = null;
+        _healingCloud = null;
+
+        if (_owner == null) return;
+        _owner.CharacterState.RemoveState(States.PoisonCloud);
+        _owner.CharacterState.RemoveState(States.HealingPoisonCloud);
+    }
+    
+    #endregion
+    
     public override void OnStartServer()
     {
         base.OnStartServer();

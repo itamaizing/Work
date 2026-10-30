@@ -5,138 +5,90 @@ using UnityEngine;
 public class PoisonHealingCloudPrefab : NetworkBehaviour
 {
     [SerializeField] private ParticleSystem _poisonHealingCloudParticle;
-    private ParticleSystem _instancePoisonHealingCloud;
-
     [SerializeField] private int _maxStacks = 5;
-    private int _currentStacks;
-
     [SerializeField] private float _radiusCloud;
-    private float _baseDuration;
-    private float _duration;
-
     [SerializeField] private LayerMask _alliesLayer;
     [SerializeField] private float _healTickRate = 1f;
     [SerializeField] private float _healModifier = 0.01f;
+    [ReadOnly][SerializeField] private Skill _skill;
 
-    [ReadOnly] [SerializeField] private Skill _skill;
-
-    private bool _isFeelingPoisoning;
-
+    private ParticleSystem _instance;
     private Coroutine _healCoroutine;
-
-    private PoisonHealingCloudPrefab _poisonHealCloud;
+    private Coroutine _lifetimeCoroutine;
+    private float _baseDuration;
+    private int _currentStacks;
     private Character _player;
-
-    private Coroutine _lifetimeStacksCoroutine;
-    private Coroutine _activateParticlePoisonCloudCoroutine;
-    public PoisonHealingCloudPrefab PoisonHealingCloud { get => _poisonHealCloud; set => _poisonHealCloud = value; }
 
     private void Update()
     {
-        if (_instancePoisonHealingCloud != null)
-        {
-            _instancePoisonHealingCloud.transform.position = _player.transform.position;
-        }
+        if (_instance != null && _player != null)
+            _instance.transform.position = _player.transform.position;
     }
 
-    public void InitializationProjectile(Character player, float duration, Skill skill, bool isFeelingPoisoning)
+    [Server]
+    public void ServerInit(Character player, float duration, Skill skill)
     {
         _player = player;
         _skill = skill;
-        _isFeelingPoisoning = isFeelingPoisoning;
-
-        _duration = duration;
         _baseDuration = duration;
     }
 
-    public void AddStack()
-    {
-        if (_currentStacks < _maxStacks)
-        {
-            _currentStacks++;
-            if (_activateParticlePoisonCloudCoroutine == null && _poisonHealCloud == null)
-            {
-                _activateParticlePoisonCloudCoroutine = StartCoroutine(ActivatePoisonCloud());
-            }
-            else
-            {
-                UpdateInstanceCloud();
-
-            }
-
-            if (_lifetimeStacksCoroutine != null)
-            {
-                StopCoroutine(_lifetimeStacksCoroutine);
-            }
-
-            _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
-        }
-        else
-        {
-            UpdateInstanceCloud();
-
-            if (_lifetimeStacksCoroutine != null)
-            {
-                StopCoroutine(_lifetimeStacksCoroutine);
-            }
-
-            _duration = _baseDuration;
-            _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
-        }
-
-        if (_healCoroutine == null) _healCoroutine = StartCoroutine(HealAllies());
-    }
-
-    private void InstantiateCloud()
-    {
-        if (_instancePoisonHealingCloud == null)
-        {
-            _instancePoisonHealingCloud = Instantiate(_poisonHealingCloudParticle, _player.transform);
-            _instancePoisonHealingCloud.Play();
-        }
-
-    }
-
-    private void UpdateInstanceCloud()
-    {        
-        if (_instancePoisonHealingCloud != null)
-        {
-            _instancePoisonHealingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            ParticleSystem.MainModule main = _instancePoisonHealingCloud.main;
-            main.duration = _baseDuration;
-            _instancePoisonHealingCloud.Play();
-        }
-    }
-
-    private void HealInRadius()
+    [Server]
+    public void ServerAddStack()
     {
         if (_player == null) return;
 
-        Collider[] targets = Physics.OverlapSphere(
-            _player.transform.position,
-            _radiusCloud,
-            _alliesLayer
-        );
+        if (_currentStacks < _maxStacks) _currentStacks++;
 
+        ShowParticle();
+
+        if (_lifetimeCoroutine != null) StopCoroutine(_lifetimeCoroutine);
+        _lifetimeCoroutine = StartCoroutine(LifeTimeJob());
+
+        if (_healCoroutine == null) _healCoroutine = StartCoroutine(HealAllies());
+
+        RpcRefresh(_player.gameObject, _baseDuration);
+    }
+
+    [ClientRpc]
+    private void RpcRefresh(GameObject playerObject, float duration)
+    {
+        if (isServer) return;
+        if (playerObject == null) return;
+
+        _player = playerObject.GetComponent<Character>();
+        _baseDuration = duration;
+        ShowParticle();
+    }
+
+    private void ShowParticle()
+    {
+        if (!NetworkClient.active || _player == null) return;
+
+        if (_instance == null)
+            _instance = Instantiate(_poisonHealingCloudParticle, _player.transform);
+        else
+            _instance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        var main = _instance.main;
+        main.duration = _baseDuration;
+        _instance.Play();
+    }
+
+    [Server]
+    private void HealInRadius()
+    {
+        if (_player == null || _skill == null) return;
+
+        Collider[] targets = Physics.OverlapSphere(_player.transform.position, _radiusCloud, _alliesLayer);
         foreach (var col in targets)
         {
             if (col == null) continue;
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (target.IsDead || target == _player) continue;
 
-            Character target = col.GetComponent<Character>();
-            if (target == null) continue;
-            if (target.IsDead) continue;
-
-            if (target == _player) continue;
-
-            float healValue = target.Health.MaxValue * _healModifier;
-
-            Heal heal = new Heal
-            {
-                Value = healValue,
-                DamageableSkill = null
-            };
-
-            _skill.CmdApplyHeal(heal, target.gameObject, _skill, _skill.name);
+            var heal = new Heal { Value = target.Health.MaxValue * _healModifier, DamageableSkill = null };
+            _skill.ServerApplyHeal(heal, target.gameObject);
         }
     }
 
@@ -149,42 +101,15 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         }
     }
 
-    private IEnumerator ActivatePoisonCloud()
+    private IEnumerator LifeTimeJob()
     {
-        InstantiateCloud();
-        yield return null;
+        yield return new WaitForSeconds(_baseDuration);
+        _lifetimeCoroutine = null;
+        NetworkServer.Destroy(gameObject);
     }
 
-    private IEnumerator LifeTimeStacks()
+    private void OnDestroy()
     {
-        yield return new WaitForSecondsRealtime(_duration);
-
-        while (_currentStacks > 0)
-        {
-            _currentStacks = 0;
-        }
-
-        if (_instancePoisonHealingCloud != null)
-        {
-            _instancePoisonHealingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            Destroy(_instancePoisonHealingCloud.gameObject);
-            _instancePoisonHealingCloud = null;
-
-        }
-
-        if (_activateParticlePoisonCloudCoroutine != null)
-        {
-            StopCoroutine(_activateParticlePoisonCloudCoroutine);
-            _activateParticlePoisonCloudCoroutine = null;
-        }
-        if (_lifetimeStacksCoroutine != null)
-        {
-            StopCoroutine(_lifetimeStacksCoroutine);
-            _lifetimeStacksCoroutine = null;
-        }
-        Destroy(gameObject);
-        PoisonHealingCloud = null;
+        if (_instance != null) Destroy(_instance.gameObject);
     }
-
-
 }

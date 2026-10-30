@@ -58,10 +58,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     [SerializeField] private ColdBlood _coldBlood;
 
     #region PoisonCloud
-    [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
-    [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
-    private PoisonDamagingCloudPrefab _poisonDamagingCloud;
-    private PoisonHealingCloudPrefab _poisonHealingCloud;
     private float _durationPoisonCloud = 6f;
     #endregion
 
@@ -148,18 +144,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
 
     public bool IsPoisonCloudAddPoisonBone { get => _isPoisonCloudAddPoisonBone; set => _isPoisonCloudAddPoisonBone = value; }
 
-    public bool IsIncreasingPoisonBallCharges
-    {
-        get => _isIncreasingPoisonBallCharges;
-
-        set
-        {
-            if (_isIncreasingPoisonBallCharges == value) return;
-
-            _isIncreasingPoisonBallCharges = value;
-        }
-    }
-
     public void HealingPoisonBall(bool value)
     {
         _isHealingPoisonBall = value;
@@ -176,6 +160,14 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     public void IncreasingPoisonBallCharges(bool value)
     {
         _isIncreasingPoisonBallCharges = value;
+        
+        if (value == _isBonusChargeApplied) return;
+        if (!Charges.UsesCharges) return;
+
+        Charges.ModifyMax(value ? 1 : -1);
+        _isBonusChargeApplied = value;
+
+        _poisonBallInfo.MaxCountProjectile = Charges.MaxCharges;
     }
 
     public void ActiveBallEffect(bool value)
@@ -520,6 +512,9 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     {
         bool transparent = IsTransparentShot;
         bool coldBloodCrit = _coldBlood != null && _coldBlood.TryConsumeForPoison(character);
+        bool healCloud = _isHealingPoisonBall &&
+                         (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer);
+        if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(healCloud, _durationPoisonCloud);
 
         Debug.LogError($"is transparent {IsTransparentShot}");
         
@@ -833,49 +828,11 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
 
         poisonBallProjectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
     }
-
+    
     [Command]
     private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
     {
-        if (!isHealingCloud)
-        {
-            if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
-            {
-                _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, _player.transform.position, Quaternion.identity);
-
-                _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
-
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
-
-                NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
-            }
-            else
-            {
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
-            }
-        }
-        else
-        {
-            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
-            {
-                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
-
-                _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
-                _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
-
-                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
-
-                NetworkServer.Spawn(_poisonHealingCloud.gameObject);
-            }
-            else
-            {
-                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
-                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
-            }
-        }
-        RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
+        _creeperPoisonAura.ApplyCloud(isHealingCloud, duration, this);
     }
 
     [Command]
@@ -887,22 +844,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     }
 
     #endregion
-
-    [ClientRpc]
-    private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
-    {
-        if (poisonDamagingCloud != null)
-        {
-            poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-            poisonDamagingCloud.AddStack();
-        }
-
-        if (poisonHealingCloud != null && isHealingCloud)
-        {
-            poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
-            poisonHealingCloud.AddStack();
-        }
-    }
 
     [TargetRpc]
     private void RpcIsThreeProjectileOnOneTarget(bool isThreePorjectileOnOneTarget)

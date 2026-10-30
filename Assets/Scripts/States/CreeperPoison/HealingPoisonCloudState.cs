@@ -1,169 +1,73 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HealingPoisonCloudState : StateStackingRefreshing
 {
+    private const int MaxStacks = 5;
+    private const float Radius = 2.5f;
+    private const float HealPercentPerStack = 0.005f;
+    private const float TickRate = 1f;
 
-    private int _maxStacks = 5;
-    private float _radiusCloud = 2.5f;
-
-    private float _baseHeal = 0.005f;
-    private float _increasedHeal;
-    private float _endHeal;
+    private static readonly List<StatusEffect> _effects = new() { StatusEffect.Healing };
+    private readonly HashSet<Character> _visited = new();
 
     private ExplosionPoisonCloud _explosion;
-
-    private float _timeBetweenHeal;
-    private float _startTimeBetweenHeal = 1f;
-
-    private static float _baseDuration;
-
-    private LayerMask _alliesLayer;
-
-    private List<Skill> _skills = new();
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+    private float _tickTimer;
+    private int _lastNotifiedStacks = -1;
 
     public override States State => States.HealingPoisonCloud;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName)
     {
-        _baseDuration = durationToExit;
-
-        SetMaxStacks(_maxStacks);
-        
-        if (characterState != null)
-        {
-            _skills = characterState.Character.Abilities.Abilities;
-
-            SearchAbilities();
-        }
-
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            AddStacks();
-        }
+        SetMaxStacks(MaxStacks);
+        _explosion = abilities != null ? abilities.GetSkill<ExplosionPoisonCloud>() : null;
+        _tickTimer = TickRate;
+        _lastNotifiedStacks = -1;
     }
 
     public override void UpdateState()
     {
-        _timeBetweenHeal -= Time.deltaTime;
-        if (_timeBetweenHeal <= 0)
+        if (CurrentStacksCount != _lastNotifiedStacks)
         {
-            RpcSearchingEnemies(_alliesLayer, characterState.gameObject);
-            _timeBetweenHeal = _startTimeBetweenHeal;
+            _lastNotifiedStacks = CurrentStacksCount;
+            _explosion?.CurrentStacksHealingPoisonCloud(CurrentStacksCount, Radius);
         }
+
+        if (characterState == null || !characterState.isServer) return;
+
+        _tickTimer -= Time.deltaTime;
+        if (_tickTimer > 0f) return;
+        _tickTimer = TickRate;
+
+        HealInRadius();
     }
 
-    protected override void OnExit()
+    private void HealInRadius()
     {
-        ResetValues();
-    }
+        var owner = characterState.Character;
+        if (owner == null || owner.IsDead) return;
 
-    public override bool Stack(float time)
-    {
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            AddStacks();
-            return true;
-        }
-        else
-        {
-            RemainingDuration = _baseDuration;
-            return true;
-        }
+        int team = owner.NetworkSettings.TeamIndex;
+        _visited.Clear();
 
-        if (_explosion != null)
+        foreach (var col in Physics.OverlapSphere(owner.transform.position, Radius))
         {
-            _explosion.CurrentStacksHealingPoisonCloud(CurrentStacksCount, _radiusCloud);
-        }
-    }
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (!_visited.Add(target)) continue;
+            if (target.IsDead || target.NetworkSettings.TeamIndex != team) continue;
 
-    public void AddStacks()
-    {
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            CurrentStacksCount++;
-            RemainingDuration = _baseDuration;
-        }
-        else
-        {
-            RemainingDuration = _baseDuration;
-        }
-
-        if (_explosion != null)
-        {
-            _explosion.CurrentStacksHealingPoisonCloud(CurrentStacksCount, _radiusCloud);
-        }
-    }
-
-    private void SearchAbilities()
-    {
-        foreach (Skill ability in _skills)
-        {
-            if (ability is CreeperInvisible creeperInvisible)
+            var heal = new Heal
             {
-                if (creeperInvisible != null)
-                {
-                    _alliesLayer = creeperInvisible.Targeting.InteractionMask;
-                }
-            }
-
-            if (ability is ExplosionPoisonCloud explosion)
-            {
-                _explosion = explosion;
-            }
-
+                Value = target.Health.MaxValue * HealPercentPerStack * CurrentStacksCount,
+                DamageableSkill = null
+            };
+            target.Health.Heal(ref heal, "HealingPoisonCloud");
         }
     }
 
-    [ClientRpc]
-    private void RpcSearchingEnemies(LayerMask alliesLayer, GameObject player)
-    {
-        Collider[] hitsAllies = Physics.OverlapSphere(player.transform.position, _radiusCloud, alliesLayer);
-
-        foreach (Collider alliesOrPlayer in hitsAllies)
-        {
-            if (alliesOrPlayer != null)
-            {
-                if (alliesOrPlayer.TryGetComponent<Character>(out var target))
-                {
-                    CmdApplyHealing(target.gameObject);
-
-                    _timeBetweenHeal = _startTimeBetweenHeal;
-                }
-            }
-        }
-    }
-
-    [Command]
-    private void CmdApplyHealing(GameObject target)
-    {
-        Character targetCharacter = target.GetComponent<Character>();
-
-        _increasedHeal = _baseHeal * CurrentStacksCount;
-        _endHeal = targetCharacter.Health.MaxValue * _increasedHeal;
-
-        Heal heal = new Heal
-        {
-            Value = _endHeal,
-            DamageableSkill = null,
-        };
-
-        targetCharacter.Health.Heal(ref heal, null);
-        //targetHealth.DamageTracker.AddHeal(heal);
-    }
-
-    private void ResetValues()
-    {
-        CurrentStacksCount = 0;
-        _baseDuration = 0;
-        RemainingDuration = 0;
-        _endHeal = 0;
-        _increasedHeal = 0;
-        _baseHeal = 0.005f;
-    }
+    public override void ReduceStack() => ExitState();
 }

@@ -1,136 +1,85 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PoisonCloudStateStacking : StateStackingRefreshing
 {
+    private const int MaxStacks = 5;
+    private const float BaseDamagePercent = 0.005f;
+    private const float AuraRadius = 5f;
+    private const float TickRate = 1f;
+    private const float TimeToApplyPoisonBone = 3f;
+
+    private static readonly List<StatusEffect> _effects = new();
+    private readonly HashSet<Character> _visited = new();
+
     private PoisonBall _poisonBall;
     private Character _caster;
-
-    private int _maxStacks = 5;
-    private float _baseDamagePercent = 0.005f;
-    private float _auraRadius = 5f;
-
-    private float _tickRate = 1f;
-    private float _timeToNextTick;
-
-    private float _baseDuration;
-
-    private float _timeToApplyPoisonBone = 3f;
+    private float _tickTimer;
     private float _poisonBoneTimer;
-
-    private LayerMask _enemyLayer;
-
-    private List<StatusEffect> _effects = new List<StatusEffect>();
 
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    
-
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName)
     {
-        characterState = character;
-        health = character.Character.Health;
-        this.sourceCaster = personWhoMadeBuff;
-
-        _enemyLayer = LayerMask.GetMask("Enemy");
+        SetMaxStacks(MaxStacks);
 
         _caster = character.Character;
-        _poisonBall = _caster != null ? _caster.GetComponent<PoisonBall>() : null;
+        _poisonBall = abilities != null ? abilities.GetSkill<PoisonBall>() : null;
 
-        _baseDuration = durationToExit;
-        RemainingDuration = durationToExit;
-
-        _timeToNextTick = _tickRate;
+        _tickTimer = TickRate;
         _poisonBoneTimer = 0f;
     }
 
     public override void UpdateState()
     {
-        if (!characterState.isServer) return;
+        if (characterState == null || !characterState.isServer) return;
 
-        _timeToNextTick -= Time.deltaTime;
+        _tickTimer -= Time.deltaTime;
+        if (_tickTimer > 0f) return;
+        _tickTimer = TickRate;
 
-        if (_timeToNextTick <= 0f)
-        {
-            DealAuraDamage();
-            _timeToNextTick = _tickRate;
-        }
-    }
-
-    public override void ReduceStack()
-    {
-        CurrentStacksCount = 0;
-        ExitState();
-    }
-
-    public override bool Stack(float time)
-    {
-        RemainingDuration = _baseDuration;
-
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            CurrentStacksCount++;
-        }
-
-        return true;
+        DealAuraDamage();
     }
 
     private void DealAuraDamage()
     {
         if (_caster == null || _caster.IsDead) return;
 
-        Collider[] targets = Physics.OverlapSphere(_caster.transform.position, _auraRadius, _enemyLayer);
+        int team = _caster.NetworkSettings.TeamIndex;
+        bool applyBone = _poisonBoneTimer >= TimeToApplyPoisonBone
+                         && _poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone;
+        bool dealt = false;
+        _visited.Clear();
 
-        bool dealtDamageThisTick = false;
-
-        foreach (var col in targets)
+        foreach (var col in Physics.OverlapSphere(_caster.transform.position, AuraRadius))
         {
-            if (col == null) continue;
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (!_visited.Add(target)) continue;
+            if (target == _caster || target.IsDead) continue;
+            if (target.NetworkSettings.TeamIndex == team) continue;
 
-            Character target = col.GetComponent<Character>();
-            if (target == null || target == _caster || target.IsDead) continue;
-            
-            float percentDamage = _baseDamagePercent * CurrentStacksCount;
-            float endDamageValue = target.Health.MaxValue * percentDamage;
-
-            Damage damage = new Damage()
+            var damage = new Damage
             {
-                Value = endDamageValue,
+                Value = target.Health.MaxValue * BaseDamagePercent * CurrentStacksCount,
                 Type = DamageType.Physical,
             };
-
             target.Health.TryTakeDamage(ref damage, _poisonBall);
-            dealtDamageThisTick = true;
+            dealt = true;
 
-            if (_poisonBoneTimer >= _timeToApplyPoisonBone && _poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone)
-            {
-                target.CharacterState.AddState(States.PoisonBone, 6f, 0, _caster.gameObject, null);
-            }
+            if (applyBone)
+                target.CharacterState.AddState(States.PoisonBone, 6f, 0f, _caster.gameObject, null);
         }
 
-        if (dealtDamageThisTick)
+        if (dealt)
         {
-            _poisonBoneTimer += _tickRate;
-            if (_poisonBoneTimer >= _timeToApplyPoisonBone)
-            {
-                _poisonBoneTimer = 0f;
-            }
+            _poisonBoneTimer += TickRate;
+            if (_poisonBoneTimer >= TimeToApplyPoisonBone) _poisonBoneTimer = 0f;
         }
     }
 
-    protected override void OnExit()
-    {
-        ResetValues();
-    }
-
-    private void ResetValues()
-    {
-        CurrentStacksCount = 0;
-        _baseDuration = 0;
-        RemainingDuration = 0;
-    }
+    public override void ReduceStack() => ExitState();
 }
