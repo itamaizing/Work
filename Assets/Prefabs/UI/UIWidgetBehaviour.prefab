@@ -307,7 +307,7 @@ MonoBehaviour:
   _dragBehaviour:
     rid: 7978062517189214320
   _resizeBehaviour:
-    rid: 7978062517189214321
+    rid: 7978062560989544555
   references:
     version: 2
     RefIds:
@@ -315,9 +315,11 @@ MonoBehaviour:
       type: {class: UIWidget_Drag, ns: UIWidget, asm: Assembly-CSharp}
       data:
         _moveHandle: {fileID: 3992178114116760349}
-    - rid: 7978062517189214321
-      type: {class: UIWidget_Resize, ns: UIWidget, asm: Assembly-CSharp}
+    - rid: 7978062560989544555
+      type: {class: UIWidget_AllowResize, ns: UIWidget, asm: Assembly-CSharp}
       data:
+        _resizeType: 2
+        _scalingPreserveAspectRatio: 0
         _borderSize: 0
         _cornerSize: 0
         _minSize: {x: 0, y: 0}

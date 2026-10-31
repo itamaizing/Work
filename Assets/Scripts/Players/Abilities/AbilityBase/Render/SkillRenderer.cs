@@ -74,9 +74,13 @@ public class SkillRenderer : NetworkBehaviour
         _cursorDefaultHotspot = Vector2.zero;
     }
 
-    public void SetPrepareCursorLight() => UnityEngine.Cursor.SetCursor(_cursorPrepareLightTexture, _cursorPrepareHotspot, CursorMode.Auto);
-    public void SetPrepareCursor() => UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
-    public void ResetCursor() => UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
+    //public void SetPrepareCursorLight() => UnityEngine.Cursor.SetCursor(_cursorPrepareLightTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    //public void SetPrepareCursor() => UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    //public void ResetCursor() => UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
+
+    public void SetPrepareCursorLight() => CursorService.SetState(CursorState.TargetingHighlight);
+    public void SetPrepareCursor() => CursorService.SetState(CursorState.Targeting);
+    public void ResetCursor() => CursorService.SetState(CursorState.Default);
 
     public void MultiplyCastVisuals(float mod)
     {

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SocialPlatforms;
 
 namespace UIWidget
 {
@@ -21,27 +23,54 @@ namespace UIWidget
     }
 
 
-    public abstract class UIWidget_AllowResize : UIWidget_ResizeBehaviour
+    public class UIWidget_AllowResize : UIWidget_ResizeBehaviour
     {
         protected class HandleEvents
         {
             public Action<PointerEventData> Start;
             public Action<PointerEventData> Active;
             public Action<PointerEventData> End;
+            public Action<PointerEventData> HoverStart;
+            public Action<PointerEventData> HoverEnd;
         }
+
+        [Serializable]
+        protected class SizeClamping
+        {
+            public Vector2 Min = Vector2.zero;
+            public Vector2 Max = Vector2.zero;
+        }
+
+        protected enum AxisAnchor { Min, Center, Max }
+
+        public enum ResizeType { Resize, Scale, ResizeAndScale }
         
+
+        [SerializeField] protected ResizeType _resizeType;
         [SerializeField] protected float _borderSize = 0;
         [SerializeField] protected float _cornerSize = 0;
-        [SerializeField] protected Vector2 _minSize = Vector2.zero;
-        [SerializeField] protected Vector2 _maxSize = Vector2.zero;
-
+        [SerializeField] protected SizeClamping _sizeClamp;
+        [SerializeField] private bool _resizingPreserveAspectRatio = false;
+        [SerializeField] protected SizeClamping _scaleClamp;
+        [SerializeField] private bool _scalingPreserveAspectRatio = false;
         [SerializeField] protected Dictionary<ResizeHandleType, List<UIWidget_Handle>> _resizeHandles;
 
-        protected Dictionary<UIWidget_Handle, HandleEvents> _resizeEvents = new();
         protected UIWidget_Panel _widget;
+        bool cursorLockState = false;
+        protected AxisAnchor _anchorX;
+        protected AxisAnchor _anchorY;
+        protected Vector3 _grabWorld;
+        protected Vector3 _anchorWorld;
+        protected Vector3 _baseScale;
+        protected float _baseVisualW;
+        protected float _baseVisualH;
+        protected float _baseLocalW;
+        protected float _baseLocalH;
+        protected Dictionary<UIWidget_Handle, HandleEvents> _resizeEvents = new();
 
         protected RectTransform Panel => _widget.Panel;
-        
+
+
         #region Initialization
         public override void Init(UIWidget_Panel panel)
         {
@@ -67,10 +96,14 @@ namespace UIWidget
                     events.Start = evt => HandleResizeStart(evt, TypeList.Key);
                     events.Active = evt => HandleResizeActive(evt, TypeList.Key);
                     events.End = evt => HandleResizeEnd(evt, TypeList.Key);
+                    events.HoverStart = evt => HandleHoverStart(evt, TypeList.Key);
+                    events.HoverEnd = evt => HandleHoverEnd(evt, TypeList.Key);
 
                     handle.DragStart += events.Start;
                     handle.DragActive += events.Active;
                     handle.DragEnd += events.End;
+                    handle.HoverStart += events.HoverStart;
+                    handle.HoverEnd += events.HoverEnd;
 
                     _resizeEvents[handle] = events;
                 }
@@ -83,6 +116,8 @@ namespace UIWidget
                 handleEvent.Key.DragStart -= handleEvent.Value.Start;
                 handleEvent.Key.DragActive -= handleEvent.Value.Active;
                 handleEvent.Key.DragEnd -= handleEvent.Value.End;
+                handleEvent.Key.HoverStart += handleEvent.Value.HoverStart;
+                handleEvent.Key.HoverEnd += handleEvent.Value.HoverEnd;
 
                 _resizeEvents.Clear();
             }
@@ -116,226 +151,207 @@ namespace UIWidget
         }
         #endregion
 
-        protected virtual void HandleResizeStart(PointerEventData e, ResizeHandleType type) { }
-        protected virtual void HandleResizeActive(PointerEventData e, ResizeHandleType type) { }
-        protected virtual void HandleResizeEnd(PointerEventData e, ResizeHandleType type)
-        {
-            _widget.ClampToParent();
-        }
-    }
-
-    public class UIWidget_Resize : UIWidget_AllowResize
-    {
-        private bool _anchorIsRight;
-        private bool _anchorIsTop;
-        private bool _allowResizeX;
-        private bool _allowResizeY;
-
-
-        private void SetUpAnchors(Vector2 local, ResizeHandleType type)
-        {
-            Rect r = Panel.rect;
-            _allowResizeX = type is ResizeHandleType.Corner or ResizeHandleType.BorderHorizontal;
-            _allowResizeY = type is ResizeHandleType.Corner or ResizeHandleType.BorderVertical;
-
-            if (_allowResizeX)
-                _anchorIsRight = local.x < r.center.x;
-            if (_allowResizeY)
-                _anchorIsTop = local.y < r.center.y;
-        }
-
-        protected override void HandleResizeStart(PointerEventData e, ResizeHandleType type)
-        {
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    Panel, e.position, e.pressEventCamera, out Vector2 local))
-                return;
-
-            SetUpAnchors(local, type);
-        }
-
-        protected override void HandleResizeActive(PointerEventData e, ResizeHandleType type)
-        {
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    Panel, e.position, e.pressEventCamera, out Vector2 local))
-                return;
-
-            Rect r = Panel.rect;
-
-            Vector2 anchorLocal = new Vector2(
-                _anchorIsRight ? r.xMax : r.xMin,
-                _anchorIsTop ? r.yMax : r.yMin);
-
-            float desiredW = r.width;
-            float desiredH = r.height;
-
-            if (_allowResizeX)
-                desiredW = Mathf.Abs(local.x - anchorLocal.x);
-            if (_allowResizeY)
-                desiredH = Mathf.Abs(local.y - anchorLocal.y);
-
-            Vector2 maxAllowed = ClampSize();
-
-            float newW = Mathf.Clamp(desiredW, _minSize.x, Mathf.Max(_minSize.x, maxAllowed.x));
-            float newH = Mathf.Clamp(desiredH, _minSize.y, Mathf.Max(_minSize.y, maxAllowed.y));
-
-            Vector2 newSize = new Vector2(
-                _allowResizeX ? newW : r.width,
-                _allowResizeY ? newH : r.height);
-
-            ResizeFromAnchor(newSize);
-        }
-
-        private void ResizeFromAnchor(Vector2 newSize)
-        {
-            Vector2 oldAnchorLocal = new Vector2(
-                _anchorIsRight ? Panel.rect.xMax : Panel.rect.xMin,
-                _anchorIsTop ? Panel.rect.yMax : Panel.rect.yMin);
-            Vector3 anchorWorldBefore = Panel.TransformPoint(oldAnchorLocal);
-
-            Panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newSize.x);
-            Panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newSize.y);
-
-            Vector2 newAnchorLocal = new Vector2(
-                _anchorIsRight ? Panel.rect.xMax : Panel.rect.xMin,
-                _anchorIsTop ? Panel.rect.yMax : Panel.rect.yMin);
-            Vector3 anchorWorldAfter = Panel.TransformPoint(newAnchorLocal);
-
-            Panel.position += anchorWorldBefore - anchorWorldAfter;
-        }
-
-        private Vector2 ClampSize()
-        {
-            Vector2 anchorLocal = new Vector2(
-                _anchorIsRight ? Panel.rect.xMax : Panel.rect.xMin,
-                _anchorIsTop ? Panel.rect.yMax : Panel.rect.yMin);
-            Vector2 anchorInConfine = _widget.ConfineArea.InverseTransformPoint(
-                Panel.TransformPoint(anchorLocal));
-
-            Rect bounds = _widget.ConfineArea.rect;
-
-            float maxW = _anchorIsRight
-                ? anchorInConfine.x - bounds.xMin
-                : bounds.xMax - anchorInConfine.x;
-            float maxH = _anchorIsTop
-                ? anchorInConfine.y - bounds.yMin
-                : bounds.yMax - anchorInConfine.y;
-
-            if (_maxSize.x > 0f) maxW = Mathf.Min(maxW, _maxSize.x);
-            if (_maxSize.y > 0f) maxH = Mathf.Min(maxH, _maxSize.y);
-
-            return new Vector2(maxW, maxH);
-        }
-    }
-
-    public class UIWidget_Scale : UIWidget_AllowResize
-    {
-        private enum AxisAnchor { Min, Center, Max }
-
-        [SerializeField] private bool _preserveAspectRatio = false;
-
-        private Vector3 _baseScale;
-        private float _baseVisualW;
-        private float _baseVisualH;
-        private Vector3 _anchorWorld;
-        private AxisAnchor _anchorX;
-        private AxisAnchor _anchorY;
-
-        private void SetUpAnchors(Vector2 local, ResizeHandleType type)
+        protected virtual void SetUpAnchors(Vector2 local, ResizeHandleType type)
         {
             Rect r = Panel.rect;
 
             _baseScale = Panel.localScale;
             Vector3 lossy = Panel.lossyScale;
+
+            _baseLocalW = r.width;
+            _baseLocalH = r.height;
             _baseVisualW = r.width * Mathf.Abs(lossy.x);
             _baseVisualH = r.height * Mathf.Abs(lossy.y);
 
-            switch (type)
-            {
-                case ResizeHandleType.Corner:
-                    _anchorX = local.x < r.center.x ? AxisAnchor.Max : AxisAnchor.Min;
-                    _anchorY = local.y < r.center.y ? AxisAnchor.Max : AxisAnchor.Min;
-                    break;
-                case ResizeHandleType.BorderHorizontal:
-                    _anchorX = local.x < r.center.x ? AxisAnchor.Max : AxisAnchor.Min;
-                    _anchorY = AxisAnchor.Center;
-                    break;
-                case ResizeHandleType.BorderVertical:
-                    _anchorX = AxisAnchor.Center;
-                    _anchorY = local.y < r.center.y ? AxisAnchor.Max : AxisAnchor.Min;
-                    break;
-            }
+            bool allowX = type is ResizeHandleType.Corner or ResizeHandleType.BorderHorizontal;
+            bool allowY = type is ResizeHandleType.Corner or ResizeHandleType.BorderVertical;
+
+            _anchorX = !allowX ? AxisAnchor.Center
+                      : local.x < r.center.x ? AxisAnchor.Max
+                                             : AxisAnchor.Min;
+            _anchorY = !allowY ? AxisAnchor.Center
+                      : local.y < r.center.y ? AxisAnchor.Max
+                                             : AxisAnchor.Min;
 
             _anchorWorld = Panel.TransformPoint(GetAnchorLocal(r));
-
         }
 
-        protected override void HandleResizeStart(PointerEventData e, ResizeHandleType type)
+        protected Vector2 GetAnchorLocal(Rect r) => new(
+            _anchorX == AxisAnchor.Max ? r.xMax : _anchorX == AxisAnchor.Min ? r.xMin : r.center.x,
+            _anchorY == AxisAnchor.Max ? r.yMax : _anchorY == AxisAnchor.Min ? r.yMin : r.center.y);
+
+        protected virtual void HandleResizeStart(PointerEventData e, ResizeHandleType type)
+        {
+            cursorLockState = true;
+            
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    Panel, e.position, e.pressEventCamera, out Vector2 local))
+                return;
+
+            if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                Panel, e.position, e.pressEventCamera, out Vector3 grabWorld))
+                _grabWorld = grabWorld;
+            SetUpAnchors(local, type);
+        }
+
+        protected virtual void HandleResizeActive(PointerEventData e, ResizeHandleType type)
+        {
+            switch (_resizeType)
+            {
+                case ResizeType.Resize:
+                    Resizing(e);
+                    break;
+
+                case ResizeType.Scale:
+                    Scaling(e);
+                    break;
+
+                case ResizeType.ResizeAndScale:
+                    if (Input.GetKey(KeyCode.LeftControl))
+                        Scaling(e);
+                    else
+                        Resizing(e);
+                    break;
+            }
+        }
+
+        protected virtual void HandleResizeEnd(PointerEventData e, ResizeHandleType type)
+        {
+            _widget.ClampToParent();
+            cursorLockState = false;
+            CursorService.SetState(CursorState.Default);
+        }
+
+        #region Resizing
+        protected void Resizing(PointerEventData e)
         {
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     Panel, e.position, e.pressEventCamera, out Vector2 local))
                 return;
 
-            SetUpAnchors(local, type);
+            Rect r = Panel.rect;
+            Vector2 anchorLocal = GetAnchorLocal(r);
+
+            bool allowX = _anchorX != AxisAnchor.Center;
+            bool allowY = _anchorY != AxisAnchor.Center;
+
+            float rawW = _baseLocalW;
+            float rawH = _baseLocalH;
+
+            if (allowX)
+                rawW = Mathf.Abs(local.x - anchorLocal.x);
+            if (allowY)
+                rawH = Mathf.Abs(local.y - anchorLocal.y);
+
+            Vector2 maxAllowed = ClampSize();
+            float minW = _sizeClamp.Min.x, maxW = Mathf.Max(_sizeClamp.Min.x, maxAllowed.x);
+            float minH = _sizeClamp.Min.y, maxH = Mathf.Max(_sizeClamp.Min.y, maxAllowed.y);
+
+            bool preserveAspect = _resizingPreserveAspectRatio || Input.GetKey(KeyCode.LeftShift);
+
+            Vector2 target = GetTargetSize(
+                rawW, rawH, _baseLocalW, _baseLocalH,
+                minW, maxW, minH, maxH,
+                allowX, allowY, preserveAspect);
+
+            bool applyX = allowX || preserveAspect;
+            bool applyY = allowY || preserveAspect;
+
+            ResizeFromAnchor(new Vector2(
+                applyX ? target.x : r.width,
+                applyY ? target.y : r.height));
         }
 
-        protected override void HandleResizeActive(PointerEventData e, ResizeHandleType type)
+        protected void ResizeFromAnchor(Vector2 newSize)
+        {
+            Vector3 anchorWorldBefore = Panel.TransformPoint(GetAnchorLocal(Panel.rect));
+
+            Panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newSize.x);
+            Panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newSize.y);
+
+            Vector3 anchorWorldAfter = Panel.TransformPoint(GetAnchorLocal(Panel.rect));
+            Panel.position += anchorWorldBefore - anchorWorldAfter;
+        }
+
+        protected Vector2 ClampSize()
+        {
+            Vector2 anchorInConfine = _widget.ConfineArea.InverseTransformPoint(
+                Panel.TransformPoint(GetAnchorLocal(Panel.rect)));
+
+            Rect bounds = _widget.ConfineArea.rect;
+
+            float maxW = _anchorX switch
+            {
+                AxisAnchor.Max => anchorInConfine.x - bounds.xMin,
+                AxisAnchor.Min => bounds.xMax - anchorInConfine.x,
+                _ => 2f * Mathf.Min(anchorInConfine.x - bounds.xMin, bounds.xMax - anchorInConfine.x),
+            };
+            float maxH = _anchorY switch
+            {
+                AxisAnchor.Max => anchorInConfine.y - bounds.yMin,
+                AxisAnchor.Min => bounds.yMax - anchorInConfine.y,
+                _ => 2f * Mathf.Min(anchorInConfine.y - bounds.yMin, bounds.yMax - anchorInConfine.y),
+            };
+
+            if (_sizeClamp.Max.x > 0f) maxW = Mathf.Min(maxW, _sizeClamp.Max.x);
+            if (_sizeClamp.Max.y > 0f) maxH = Mathf.Min(maxH, _sizeClamp.Max.y);
+
+            return new Vector2(maxW, maxH);
+        }
+        #endregion
+
+        #region Scaling
+        protected void Scaling(PointerEventData e)
         {
             if (!RectTransformUtility.ScreenPointToWorldPointInRectangle(
                     Panel, e.position, e.pressEventCamera, out Vector3 pointerWorld))
                 return;
 
-            bool allowX = type is ResizeHandleType.Corner or ResizeHandleType.BorderHorizontal;
-            bool allowY = type is ResizeHandleType.Corner or ResizeHandleType.BorderVertical;
+            bool allowX = _anchorX != AxisAnchor.Center;
+            bool allowY = _anchorY != AxisAnchor.Center;
+
+            float deltaX = pointerWorld.x - _grabWorld.x;
+            float deltaY = pointerWorld.y - _grabWorld.y;
 
             float rawW = _baseVisualW;
             float rawH = _baseVisualH;
 
             if (allowX)
             {
-                float d = Mathf.Abs(pointerWorld.x - _anchorWorld.x);
-                rawW = _anchorX == AxisAnchor.Center ? 2f * d : d;
+                float scaleX = _anchorX switch
+                {
+                    AxisAnchor.Min => 1f,
+                    AxisAnchor.Max => -1f,
+                    AxisAnchor.Center => 2f,
+                    _ => 1f
+                };
+                rawW = Mathf.Max(0f, _baseVisualW + scaleX * deltaX);
             }
             if (allowY)
             {
-                float d = Mathf.Abs(pointerWorld.y - _anchorWorld.y);
-                rawH = _anchorY == AxisAnchor.Center ? 2f * d : d;
+                float scaleY = _anchorY switch
+                {
+                    AxisAnchor.Min => 1f,
+                    AxisAnchor.Max => -1f,
+                    AxisAnchor.Center => 2f,
+                    _ => 1f
+                };
+                rawH = Mathf.Max(0f, _baseVisualH + scaleY * deltaY);
             }
 
             Vector2 maxWorld = GetMaxWorldSize();
-            float minW = _minSize.x, maxW = Mathf.Max(_minSize.x, maxWorld.x);
-            float minH = _minSize.y, maxH = Mathf.Max(_minSize.y, maxWorld.y);
+            float minW = _scaleClamp.Min.x, maxW = Mathf.Max(_scaleClamp.Min.x, maxWorld.x);
+            float minH = _scaleClamp.Min.y, maxH = Mathf.Max(_scaleClamp.Min.y, maxWorld.y);
 
-            float targetW, targetH;
+            bool preserveAspect = _scalingPreserveAspectRatio || Input.GetKey(KeyCode.LeftShift);
 
-            if (_preserveAspectRatio)
-            {
-                float ratioX = _baseVisualW > 1e-6f ? rawW / _baseVisualW : 1f;
-                float ratioY = _baseVisualH > 1e-6f ? rawH / _baseVisualH : 1f;
+            Vector2 target = GetTargetSize(
+                rawW, rawH, _baseVisualW, _baseVisualH,
+                minW, maxW, minH, maxH,
+                allowX, allowY, preserveAspect);
 
-                float leading =
-                    (allowX && allowY) ? (Mathf.Abs(ratioX - 1f) >= Mathf.Abs(ratioY - 1f) ? ratioX : ratioY) :
-                    allowX ? ratioX :
-                                         ratioY;
-
-                float rMinX = _baseVisualW > 1e-6f ? minW / _baseVisualW : 0f;
-                float rMaxX = _baseVisualW > 1e-6f ? maxW / _baseVisualW : float.MaxValue;
-                float rMinY = _baseVisualH > 1e-6f ? minH / _baseVisualH : 0f;
-                float rMaxY = _baseVisualH > 1e-6f ? maxH / _baseVisualH : float.MaxValue;
-                float rMin = Mathf.Max(rMinX, rMinY);
-                float rMax = Mathf.Min(rMaxX, rMaxY);
-                leading = Mathf.Clamp(leading, rMin, Mathf.Max(rMin, rMax));
-
-                targetW = _baseVisualW * leading;
-                targetH = _baseVisualH * leading;
-            }
-            else
-            {
-                targetW = Mathf.Clamp(rawW, minW, maxW);
-                targetH = Mathf.Clamp(rawH, minH, maxH);
-            }
-
-            float ratioFX = _baseVisualW > 1e-6f ? targetW / _baseVisualW : 1f;
-            float ratioFY = _baseVisualH > 1e-6f ? targetH / _baseVisualH : 1f;
+            float ratioFX = _baseVisualW > 1e-6f ? target.x / _baseVisualW : 1f;
+            float ratioFY = _baseVisualH > 1e-6f ? target.y / _baseVisualH : 1f;
 
             Vector3 newScale = new(
                 _baseScale.x * ratioFX,
@@ -348,10 +364,6 @@ namespace UIWidget
             Vector3 anchorAfter = Panel.TransformPoint(GetAnchorLocal(Panel.rect));
             Panel.position += _anchorWorld - anchorAfter;
         }
-
-        private Vector2 GetAnchorLocal(Rect r) => new(
-            _anchorX == AxisAnchor.Max ? r.xMax : _anchorX == AxisAnchor.Min ? r.xMin : r.center.x,
-            _anchorY == AxisAnchor.Max ? r.yMax : _anchorY == AxisAnchor.Min ? r.yMin : r.center.y);
 
         private Vector2 GetMaxWorldSize()
         {
@@ -375,10 +387,84 @@ namespace UIWidget
                 _ => 2f * Mathf.Min(_anchorWorld.y - cMinY, cMaxY - _anchorWorld.y),
             };
 
-            if (_maxSize.x > 0) maxW = Mathf.Min(maxW, _maxSize.x);
-            if (_maxSize.y > 0) maxH = Mathf.Min(maxH, _maxSize.y);
+            if (_scaleClamp.Max.x > 0) maxW = Mathf.Min(maxW, _scaleClamp.Max.x);
+            if (_scaleClamp.Max.y > 0) maxH = Mathf.Min(maxH, _scaleClamp.Max.y);
 
             return new Vector2(maxW, maxH);
+        }
+        #endregion
+
+        private Vector2 GetTargetSize(
+            float rawW, float rawH, float baseW, float baseH,
+            float minW, float maxW, float minH, float maxH,
+            bool allowX, bool allowY, bool preserve)
+        {
+            if (!preserve)
+            {
+                return new Vector2(
+                    allowX ? Mathf.Clamp(rawW, minW, maxW) : baseW,
+                    allowY ? Mathf.Clamp(rawH, minH, maxH) : baseH);
+            }
+
+            float ratioX = baseW > 1e-6f ? rawW / baseW : 1f;
+            float ratioY = baseH > 1e-6f ? rawH / baseH : 1f;
+
+            float scaleFactor;
+            if (allowX && allowY)
+            {
+                float deltaX = Mathf.Abs(ratioX - 1f);
+                float deltaY = Mathf.Abs(ratioY - 1f);
+                scaleFactor = deltaX >= deltaY ? ratioX : ratioY;
+            }
+            else if (allowX)
+                scaleFactor = ratioX;
+            else
+                scaleFactor = ratioY;
+
+            float rMinX = baseW > 1e-6f ? minW / baseW : 0f;
+            float rMaxX = baseW > 1e-6f ? maxW / baseW : float.MaxValue;
+            float rMinY = baseH > 1e-6f ? minH / baseH : 0f;
+            float rMaxY = baseH > 1e-6f ? maxH / baseH : float.MaxValue;
+
+            float rMin = Mathf.Max(rMinX, rMinY);
+            float rMax = Mathf.Min(rMaxX, rMaxY);
+            scaleFactor = Mathf.Clamp(scaleFactor, rMin, Mathf.Max(rMin, rMax));
+
+            return new Vector2(baseW * scaleFactor, baseH * scaleFactor);
+        }
+
+        protected virtual void HandleHoverStart(PointerEventData e, ResizeHandleType type)
+        {
+            if (cursorLockState)
+                return;
+
+            Rect r = Panel.rect;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                Panel, e.position, e.pressEventCamera, out Vector2 local))
+                return;
+
+            switch (type)
+            {
+                case ResizeHandleType.Corner:
+                    bool left = _anchorX == AxisAnchor.Max;
+                    bool bottom = _anchorY == AxisAnchor.Max;
+                    CursorService.SetState(left == bottom ? CursorState.ResizeCorner_LB_RT
+                        : CursorState.ResizeCorner_RB_LT);
+                    break;
+                case ResizeHandleType.BorderHorizontal:
+                    CursorService.SetState(CursorState.ResizeHorizontal);
+                    break;
+                case ResizeHandleType.BorderVertical:
+                    CursorService.SetState(CursorState.ResizeVertical);
+                    break;
+            }
+        }
+
+        protected virtual void HandleHoverEnd(PointerEventData e, ResizeHandleType type)
+        {
+            if (cursorLockState)
+                return;
+            CursorService.SetState(CursorState.Default);
         }
     }
 }

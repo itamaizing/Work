@@ -4803,7 +4803,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -547.75995, y: -388}
-  m_SizeDelta: {x: 254.48, y: 375.13}
+  m_SizeDelta: {x: 230, y: 186}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6127423739498392247
 CanvasRenderer:
@@ -17156,9 +17156,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 175030183844216948}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
-      propertyPath: _confineArea
-      value: 
-      objectReference: {fileID: 7766898104544555454}
+      propertyPath: managedReferences[7978062560989544555]._sizeClamp.Max.x
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._sizeClamp.Max.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._sizeClamp.Min.x
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._sizeClamp.Min.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._scaleClamp.Max.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._scaleClamp.Max.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._scaleClamp.Min.x
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._scaleClamp.Min.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
+      propertyPath: managedReferences[7978062560989544555]._scalingPreserveAspectRatio
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2547828714332640735, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: m_Name
       value: UIWidgetBehaviour
