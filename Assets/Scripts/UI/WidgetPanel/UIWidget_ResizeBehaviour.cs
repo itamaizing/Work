@@ -44,7 +44,7 @@ namespace UIWidget
         protected enum AxisAnchor { Min, Center, Max }
 
         public enum ResizeType { Resize, Scale, ResizeAndScale }
-        
+
 
         [SerializeField] protected ResizeType _resizeType;
         [SerializeField] protected float _borderSize = 0;
@@ -192,6 +192,7 @@ namespace UIWidget
                 Panel, e.position, e.pressEventCamera, out Vector3 grabWorld))
                 _grabWorld = grabWorld;
             SetUpAnchors(local, type);
+            ApplyCursor(e, type);
         }
 
         protected virtual void HandleResizeActive(PointerEventData e, ResizeHandleType type)
@@ -437,7 +438,11 @@ namespace UIWidget
         {
             if (cursorLockState)
                 return;
+            ApplyCursor(e, type);
+        }
 
+        protected virtual void ApplyCursor(PointerEventData e, ResizeHandleType type)
+        {
             Rect r = Panel.rect;
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 Panel, e.position, e.pressEventCamera, out Vector2 local))
@@ -446,8 +451,8 @@ namespace UIWidget
             switch (type)
             {
                 case ResizeHandleType.Corner:
-                    bool left = _anchorX == AxisAnchor.Max;
-                    bool bottom = _anchorY == AxisAnchor.Max;
+                    bool left = local.x < r.center.x;
+                    bool bottom = local.y < r.center.y;
                     CursorService.SetState(left == bottom ? CursorState.ResizeCorner_LB_RT
                         : CursorState.ResizeCorner_RB_LT);
                     break;
