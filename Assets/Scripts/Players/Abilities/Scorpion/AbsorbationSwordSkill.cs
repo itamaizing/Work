@@ -171,7 +171,6 @@ public class AbsorbationSwordSkill : Skill
     private void UpdateDisactiveFromCharges()
     {
         Disactive = !Charges.HasCharges;
-        Charges.SendCurrentChange(Charges.RemainingCharges);
     }
 
     protected override void UseCooldownOrCharges()

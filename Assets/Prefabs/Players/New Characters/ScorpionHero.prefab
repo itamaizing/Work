@@ -9012,8 +9012,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 4
+    _clickUnit: -1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9047,6 +9047,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 6
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9178,8 +9179,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 4
+    _clickUnit: -1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9213,6 +9214,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 6
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9369,6 +9371,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9523,6 +9526,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 6
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9687,6 +9691,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9860,6 +9865,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10016,6 +10022,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10217,6 +10224,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 6
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10375,6 +10383,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10530,6 +10539,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10686,6 +10696,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10857,6 +10868,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 1.8
   _channelComponent:
@@ -11036,6 +11048,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11199,6 +11212,7 @@ MonoBehaviour:
     _maxCharges: 2
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 1
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11376,6 +11390,7 @@ MonoBehaviour:
     _maxCharges: 2
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11531,6 +11546,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 6
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11684,6 +11700,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11832,6 +11849,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11987,6 +12005,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -12147,6 +12166,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -12298,6 +12318,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -12422,8 +12443,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 4
+    _clickUnit: 13
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -12457,6 +12478,7 @@ MonoBehaviour:
     _maxCharges: 1
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 1
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -12607,6 +12629,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:

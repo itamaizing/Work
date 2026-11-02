@@ -50,10 +50,10 @@ public class RestorativeAttacks_Scorpion : Skill
         _hero.Health.DamageTaken -= TrackPhysDamage;
     }
     
-    private void TrackPhysDamage(Damage damage, Skill skill)
+    private void TrackPhysDamage(Damage damage, Skill sourceSkill)
     {
-        if(!isOwned) return;
-        if (damage.Type != DamageType.Physical) return;
+        if (!isOwned || damage.Type != DamageType.Physical || damage.Value <= 0f)
+            return;
 
         _accumulatedPhysDamage += damage.Value;
 
@@ -61,26 +61,23 @@ public class RestorativeAttacks_Scorpion : Skill
         {
             _accumulatedPhysDamage -= _physDamageThreshold;
             AddCharge();
-
-            if (Charges.RemainingCharges > 0)
-            {
-                Disactive = false;
-            }
         }
+
+        Charges.SetRecoveryProgress(_accumulatedPhysDamage / _physDamageThreshold);
     }
     
     private void AddCharge()
     {
-        if (Charges.RemainingCharges >= Charges.MaxCharges) return;
+        if (Charges.RemainingCharges >= Charges.MaxCharges)
+            return;
+
         if (Charges.RechargeTimers.Count > 0)
             Charges.RestoreCharge(0);
-        UpdateDisactiveFromCharges();
     }
 
     private void UpdateDisactiveFromCharges()
     {
         Disactive = !Charges.HasCharges;
-        Charges.SendCurrentChange(Charges.RemainingCharges);
     }
 
     protected override void UseCooldownOrCharges()

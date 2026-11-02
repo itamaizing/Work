@@ -11,6 +11,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] Image _image;
 
     [SerializeField] private ChargeCDUI _chargeCD;
+    [SerializeField] private ChargeRecoveryUI _chargeRecoveryPrefab;
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TMP_Text _cooldownNum;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
@@ -27,6 +28,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private float _pendingCooldown = -1f;
     private bool _isMenu = false;
 
+    private ChargeRecoveryUI _chargeRecoveryInstance;
+    
     public Transform ParentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
@@ -73,6 +76,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         SubscribingSkillOnEvents(_skill);
+        RefreshChargeRecoveryUI();
 
         UpdateAllInfo();
     }
@@ -80,6 +84,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnDestroy()
     {
         UnsubscribingSkillOnEvents(_skill);
+        DestroyChargeRecoveryUI();
         _skill.OnSkillStateChanged -= UpdateIconState;
         //_skill.ChargeCooldownEnded -= OnChargeCooldownEnded;
         _skill.Charges.OnRechargeEnd -= OnChargeCooldownEnded; //new
@@ -119,6 +124,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     
     public void Rebind(Skill newSkill)
     {
+        DestroyChargeRecoveryUI();
         if (_skill != null)
         {
             UnsubscribingSkillOnEvents(_skill);
@@ -142,9 +148,72 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         SubscribingSkillOnEvents(_skill);
+        RefreshChargeRecoveryUI();
         UpdateAllInfo();
     }
+    
+    #region RecoveryUI
+    private void RefreshChargeRecoveryUI()
+    {
+        bool shouldShow = !_isMenu && _skill != null && _skill.Charges.UsesCharges && _skill.Charges.ShowRecoveryProgress
+                          && _skill.Charges.MaxCharges > 0 && _skill.Charges.RemainingCharges < _skill.Charges.MaxCharges;
 
+        if (!shouldShow)
+        {
+            DestroyChargeRecoveryUI();
+            return;
+        }
+
+        if (_chargeRecoveryInstance == null)
+        {
+            if (_chargeRecoveryPrefab == null)
+                return;
+
+            _chargeRecoveryInstance = Instantiate(_chargeRecoveryPrefab, _image.rectTransform, false);
+
+            var rect = _chargeRecoveryInstance.transform as RectTransform;
+
+            if (rect != null)
+            {
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.pivot = new Vector2(0.5f, 0.5f);
+
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+
+                rect.localScale = Vector3.one;
+                rect.localRotation = Quaternion.identity;
+            }
+
+            _chargeRecoveryInstance.transform.SetAsLastSibling();
+            _chargeRecoveryInstance.gameObject.SetActive(true);
+        }
+
+        _chargeRecoveryInstance.SetProgress(_skill.Charges.RecoveryProgress);
+    }
+
+    private void DestroyChargeRecoveryUI()
+    {
+        if (_chargeRecoveryInstance == null)
+            return;
+
+        _chargeRecoveryInstance.gameObject.SetActive(false);
+        Destroy(_chargeRecoveryInstance.gameObject);
+        _chargeRecoveryInstance = null;
+    }
+
+    private void OnRecoveryProgressChanged(float progress)
+    {
+        RefreshChargeRecoveryUI();
+    }
+
+    private void OnMaxChargesChanged(int maxCharges)
+    {
+        RefreshChargeRecoveryUI();
+    }
+    #endregion
+    
     public void OnBeginDrag(PointerEventData eventData)
     {
         _isDragging = true;
@@ -273,6 +342,10 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.Cooldown.OnModify += OnModifyCooldown;
         ability.Charges.OnRechargeStart += OnChargeStartCooldown;
         ability.Charges.OnCurrentChange += OnCurrentChargeChanged;
+        
+        ability.Charges.OnRecoveryProgressChanged += OnRecoveryProgressChanged;
+
+        ability.Charges.OnMaxChange += OnMaxChargesChanged;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -298,6 +371,10 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.Cooldown.OnModify -= OnModifyCooldown;
         ability.Charges.OnRechargeStart -= OnChargeStartCooldown;
         ability.Charges.OnCurrentChange -= OnCurrentChargeChanged;
+        
+        ability.Charges.OnRecoveryProgressChanged -= OnRecoveryProgressChanged;
+
+        ability.Charges.OnMaxChange -= OnMaxChargesChanged;
     }
 
     private void OnBoostDisabled()
@@ -344,6 +421,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             _chargeCounter.color = Color.red;
         }
         _chargeCounter.text = value.ToString();
+        RefreshChargeRecoveryUI();
     }
 
     private void OnStartCooldown(float duration)

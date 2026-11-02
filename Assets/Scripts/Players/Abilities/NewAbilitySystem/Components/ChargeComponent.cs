@@ -34,6 +34,8 @@ public class ChargeComponent : BaseSkillComponent
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _baseCooldown;
     [SerializeField] protected bool affectedByCDR;
+    
+    [SerializeField] private bool _showRecoveryProgress;
     #endregion
 
     #region RuntimeVariables
@@ -47,6 +49,24 @@ public class ChargeComponent : BaseSkillComponent
     public ChargeCooldownType CooldownType => _cooldownType;
     public float BaseCooldown => _baseCooldown;
     public float CooldownTime => affectedByCDR ? _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown) : _baseCooldown;
+    
+    private float _recoveryProgress;
+
+    public float RecoveryProgress => _recoveryProgress;
+    public bool ShowRecoveryProgress => _showRecoveryProgress;
+
+    public event Action<float> OnRecoveryProgressChanged;
+
+    public void SetRecoveryProgress(float progress)
+    {
+        progress = Mathf.Clamp01(progress);
+
+        if (Mathf.Approximately(_recoveryProgress, progress))
+            return;
+
+        _recoveryProgress = progress;
+        OnRecoveryProgressChanged?.Invoke(_recoveryProgress);
+    }
 
     public void EnableChargers(bool value,int maxChargers,float baseCooldown, bool isComboPart=false)
     {
@@ -148,12 +168,11 @@ public class ChargeComponent : BaseSkillComponent
 
     public void RestoreCharge(int index)
     {
-        if (RemainingCharges < _maxCharges)
-        {
-            Debug.Log("Recharged " + index);
-            _skill.CmdEndRecharge(index);
-            _skill.LinkedChargeCDUI?.RemoveChargeCD(index); //Возможно не стоит
-        }
+        if (index < 0 || index >= RechargeTimers.Count)
+            return;
+        
+        Debug.Log("Recharged " + index);
+        _skill.CmdEndRecharge(index);
     }
 
     public void ModifyDuration(float delta, bool tickAll = false)
@@ -166,17 +185,15 @@ public class ChargeComponent : BaseSkillComponent
         if (RemainingCharges <= 0)
             return false;
 
-        float cdTime = customTime.HasValue ? customTime.Value : _baseCooldown;
+        float duration = customTime ?? _baseCooldown;
+        bool modify = shouldModify ?? affectedByCDR;
 
-        if (!shouldModify.HasValue)
-            shouldModify = affectedByCDR;
-        
-        if (shouldModify.Value)
+        if (modify)
         {
-            cdTime = _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown);
+            duration = _skillAttributes.GetCombined(skill_attr, char_attr, duration);
         }
 
-        StartRecharge(cdTime);
+        StartRecharge(duration);
         return true;
     }
 
@@ -190,8 +207,10 @@ public class ChargeComponent : BaseSkillComponent
         switch (op)
         {
             case SyncList<double>.Operation.OP_ADD:
-                OnRechargeStart?.Invoke((float) (newTime - NetworkTime.time));
-                //Debug.Log("RECHARGE STARTED " + (newTime - NetworkTime.time));
+                if (CooldownType != ChargeCooldownType.Infinite)
+                {
+                    OnRechargeStart?.Invoke(Mathf.Max(0f, (float)(newTime - NetworkTime.time)));
+                }
                 break;
 
             case SyncList<double>.Operation.OP_REMOVEAT:

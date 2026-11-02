@@ -13196,6 +13196,9 @@ MonoBehaviour:
         _modifiers: []
   _player: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  _explosionDamage: 6
+  _healPerStack: 3
+  _explosionRadius: 4
   references:
     version: 2
     RefIds:
@@ -14318,11 +14321,15 @@ MonoBehaviour:
     editorBackupValue:
     - key: 4
       value: 0
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    - key: 0
+      value: 1
+    - key: 3
+      value: 0
+    oldType: 4
+    _targetingType: 4
+    _clickLayer: -1
+    _clickFaction: -1
+    _clickUnit: -1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -14441,7 +14448,7 @@ MonoBehaviour:
   _radiusStep: 1
   _particleSystem: {fileID: 700704565593199441}
   _creeperPoisonAura: {fileID: 2161342997938470374}
-  _paralyzingPoisonDuration: 2
+  _paralyzingPoisonDuration: 1
   references:
     version: 2
     RefIds:

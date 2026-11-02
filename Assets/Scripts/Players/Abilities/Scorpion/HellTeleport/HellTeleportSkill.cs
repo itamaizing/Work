@@ -28,9 +28,10 @@ public class HellTeleportSkill : Skill
         Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
     #region ChargeCounter
-    private void TrackFireDamage(Damage damage, GameObject obj)
+    private void TrackFireDamage(Damage damage, GameObject target)
     {
-        if (damage.School != Schools.Fire) return;
+        if (damage.School != Schools.Fire || damage.Value <= 0f)
+            return;
 
         _accumulatedFireDamage += damage.Value;
 
@@ -38,12 +39,15 @@ public class HellTeleportSkill : Skill
         {
             _accumulatedFireDamage -= _fireDamageThreshold;
             TargetAddCharge(_hero.gameObject);
-
-            if (Charges.RemainingCharges > 0)
-            {
-                Disactive = false;
-            }
         }
+
+        TargetSetRecoveryProgress(_accumulatedFireDamage / _fireDamageThreshold);
+    }
+    
+    [TargetRpc]
+    private void TargetSetRecoveryProgress(float progress)
+    {
+        Charges.SetRecoveryProgress(progress);
     }
     
     private void OnChargesChanged(int remaining) => UpdateDisactiveFromCharges();
@@ -68,7 +72,6 @@ public class HellTeleportSkill : Skill
     private void UpdateDisactiveFromCharges()
     {
         Disactive = !Charges.HasCharges;
-        Charges.SendCurrentChange(Charges.RemainingCharges);
     }
 
     protected override void UseCooldownOrCharges()
@@ -82,9 +85,14 @@ public class HellTeleportSkill : Skill
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
+
+        hero.DamageTracker.OnDamageTracked -= TrackFireDamage;
         hero.DamageTracker.OnDamageTracked += TrackFireDamage;
-        
+
+        Charges.OnCurrentChange -= OnChargesChanged;
         Charges.OnCurrentChange += OnChargesChanged;
+
+        UpdateDisactiveFromCharges();
     }
 
     private void OnDisable()

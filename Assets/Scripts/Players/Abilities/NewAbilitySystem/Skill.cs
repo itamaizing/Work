@@ -367,8 +367,13 @@ using UnityEngine;
             Cooldown?.ForceEnd();
 
         for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
-            if (_rechargeEndTime[i] <= time && Charges.CooldownType != ChargeCooldownType.Infinite)
+        {
+            if (_rechargeEndTime[i] <= time
+                && Charges.CooldownType != ChargeCooldownType.Infinite)
+            {
                 _rechargeEndTime.RemoveAt(i);
+            }
+        }
     }
 
     protected virtual bool IsCanCast
@@ -622,6 +627,9 @@ using UnityEngine;
     [Command]
     public void CmdEndRecharge(int index)
     {
+        if (index < 0 || index >= _rechargeEndTime.Count)
+            return;
+
         _rechargeEndTime.RemoveAt(index);
     }
     #endregion CHARGES
