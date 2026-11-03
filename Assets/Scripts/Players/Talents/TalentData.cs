@@ -53,6 +53,8 @@ public class TalentData
     public void Init()
     {
         _dependentTalents = new();
+        
+        MaxLvl = Mathf.Max(1, MaxLvl);
     }
 
 	public TalentData(string name, bool isOpen)

@@ -210,6 +210,8 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (SaveManager.Instance.HasPendingRequests)
+            return;
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             OnLeftClick();

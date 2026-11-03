@@ -123,12 +123,17 @@ public class TalentSystem : NetworkBehaviour
     
     private void RefreshTalentVisuals()
     {
-        foreach (var talentRow in _talents.SelectMany(g => g.TalentRows))
-        foreach (var talent in talentRow.Talents)
+        if (!IsPreview && !isServer && !isClient)
+            return;
+
+        foreach (var group in _talents)
+        foreach (var row in group.TalentRows)
+        foreach (var talent in row.Talents)
         {
             talent.Data.Name = talent.GetType().Name;
-            if (talent.Data.IsOpen) talent.Enter();
-            else talent.Exit();
+
+            talent.ApplyEffect(
+                talent.Data.IsOpen && talent.OpenCondition.CanOpen);
         }
     }
 
@@ -174,12 +179,80 @@ public class TalentSystem : NetworkBehaviour
         _pointsLoaded = true;
     }
 
-   /* public void SetActive(int row, int id, bool value)
+    public bool ApplyTalentPage(TalentSnapshotEntry[] entries, int freePoints)
     {
-        _talents[row].TalentsData[id].SetActive(value);
-    }*/
+        var levels = new Dictionary<Talent, int>();
 
-   public bool SetActive(int group, int row, string name, bool value, int lvl)
+        foreach (var entry in entries ?? Array.Empty<TalentSnapshotEntry>())
+        {
+            var group = _talents.FirstOrDefault(g => g.ID == entry.group);
+
+            if (group == null ||
+                entry.row < 0 ||
+                entry.row >= group.TalentRows.Count)
+            {
+                Debug.LogWarning("Некорректная строка страницы талантов.", this);
+                return false;
+            }
+
+            var talent = group.TalentRows[entry.row].Talents
+                .FirstOrDefault(t => t.Data.Name == entry.name);
+
+            if (talent == null || entry.lvl < 1 || entry.lvl > Mathf.Max(1, talent.Data.MaxLvl) || levels.ContainsKey(talent))
+            {
+                Debug.LogWarning("Некорректный талант в странице прокачки.", this);
+                return false;
+            }
+
+            levels.Add(talent, entry.lvl);
+        }
+
+        foreach (var group in _talents)
+        foreach (var row in group.TalentRows)
+        foreach (var talent in row.Talents)
+        {
+            bool open = levels.TryGetValue(talent, out int level);
+
+            talent.Data.SetLevel(open ? level : 0);
+            talent.Data.SetOpen(open);
+        }
+
+        SetPoints(freePoints);
+
+        RefreshTalentVisuals();
+        return true;
+    }
+
+    public void SyncSavedTalentPage(TalentSnapshotEntry[] entries, int freePoints)
+    {
+        if (IsPreview || !isClient || !isOwned || netId == 0)
+            return;
+
+        CmdSyncSavedTalentPage(entries, freePoints);
+    }
+
+    [Command]
+    private void CmdSyncSavedTalentPage(TalentSnapshotEntry[] entries, int freePoints)
+    {
+        if (IsPreview)
+            return;
+
+        if (!ApplyTalentPage(entries, freePoints))
+            return;
+
+        RpcSyncSavedTalentPage(entries, freePoints);
+    }
+
+    [ClientRpc]
+    private void RpcSyncSavedTalentPage(TalentSnapshotEntry[] entries, int freePoints)
+    {
+        if (isServer || isOwned)
+            return;
+
+        ApplyTalentPage(entries, freePoints);
+    }
+    
+    public bool SetActive(int group, int row, string name, bool value, int lvl)
    {
        var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
        if (talentGroup == null) return false;

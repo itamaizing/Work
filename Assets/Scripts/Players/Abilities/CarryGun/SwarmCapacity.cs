@@ -111,7 +111,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             Hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
         }
 
-        ResetBoostState();
+        ResetBoostStateLocal();
     }
 
     private void UpdateCounter(Character _) => UpdateCounter();
@@ -125,18 +125,38 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         if (target == null) return;
         if (damage.Type != DamageType.Physical) return;
         
-        ActivateTargetSpeedBoost(_hero.gameObject, target);
+        ActivateTargetSpeedBoost(target);
+    }
+
+    [Server]
+    private void ActivateTargetSpeedBoost(GameObject target)
+    {
+        ResetBoostStateLocal();
+
+        _currentTarget = target;
+        ApplySpeedBoostToUnits();
+
+        TargetActivateSpeedBoost(target);
+
+        _targetBoostRoutine = StartCoroutine(TargetBoostTimer());
+    }
+    
+    [TargetRpc]
+    private void TargetActivateSpeedBoost(GameObject target)
+    {
+        if (isServer) return;
+
+        ResetBoostStateLocal();
+        _currentTarget = target;
+        ApplySpeedBoostToUnits();
     }
 
     [TargetRpc]
-    private void ActivateTargetSpeedBoost(GameObject hero,GameObject target)
+    private void TargetResetSpeedBoost()
     {
-        ResetBoostState();
-        _currentTarget = target;
+        if (isServer) return;
 
-        ApplySpeedBoostToUnits();
-
-        _targetBoostRoutine = StartCoroutine(TargetBoostTimer());
+        ResetBoostStateLocal();
     }
 
     private void ApplySpeedBoostToUnits()
@@ -184,6 +204,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private void OnUnitDamageTracked(Damage damage, GameObject unitTarget)
     {
+        if (!isServer) return;
+
         if (_currentTarget != null && unitTarget == _currentTarget)
         {
             ResetBoostState();
@@ -193,10 +215,18 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private IEnumerator TargetBoostTimer()
     {
         yield return new WaitForSeconds(TargetWindowDuration);
-        ResetBoostState();
+        ResetBoostStateLocal();
+    }
+    
+    private void ResetBoostState()
+    {
+        ResetBoostStateLocal();
+
+        if (isServer && NetworkServer.active && netId != 0)
+            TargetResetSpeedBoost();
     }
 
-    private void ResetBoostState()
+    private void ResetBoostStateLocal()
     {
         if (_targetBoostRoutine != null)
         {

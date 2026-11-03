@@ -16,7 +16,12 @@ public class AttackingPsionicEnergy : Resource
     private bool _isAttackingPsiActive = false;
 
     private float _currentMaxAttackingPsiEnergy;
-    private float _remainingTime;
+    [SyncVar]
+    private double _expiresAt;
+
+    public float RemainingTime => _isAttackingPsiActive
+        ? Mathf.Max(0f, (float)(_expiresAt - NetworkTime.time))
+        : 0f;
 
     private Coroutine _attackingPsiEnergyCoroutine;
 
@@ -74,7 +79,7 @@ public class AttackingPsionicEnergy : Resource
     [Server]
     public void ReceiveAttackingEnergy(float transferAmount)
     {
-        _remainingTime = _timeAttackingPsiEnergy;
+        _expiresAt = NetworkTime.time + _timeAttackingPsiEnergy;
 
         Add(transferAmount);
         CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
@@ -96,17 +101,24 @@ public class AttackingPsionicEnergy : Resource
 
     private IEnumerator AttackingPsiEnergyJob()
     {
-        while (_remainingTime > 0)
-        {
-            _remainingTime -= Time.deltaTime;
+        while (NetworkTime.time < _expiresAt)
             yield return null;
-        }
 
+        _attackingPsiEnergyCoroutine = null;
         AttackingPsiEnergyReset();
     }
 
     private void AttackingPsiEnergyReset()
     {
+        if (!isServer) return;
+
+        if (_attackingPsiEnergyCoroutine != null)
+        {
+            StopCoroutine(_attackingPsiEnergyCoroutine);
+            _attackingPsiEnergyCoroutine = null;
+        }
+
+        _expiresAt = 0;
         CurrentValue = 0;
         _isAttackingPsiActive = false;
 
@@ -122,8 +134,12 @@ public class AttackingPsionicEnergy : Resource
     [Server]
     public void ExtendDuration(float amount)
     {
-        if (CurrentValue <= 0) return;
+        if (amount <= 0f
+            || !_isAttackingPsiActive
+            || CurrentValue <= 0f
+            || _expiresAt <= NetworkTime.time)
+            return;
 
-        _remainingTime += amount;
+        _expiresAt += amount;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +34,22 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private float MaxPsi => _heroCharacter.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
+    
+    private float CurrentPsiDissipationRadius
+    {
+        get
+        {
+            if (_heroCharacter is not HeroComponent hero)
+                return PsiDissipationRadius;
+
+            var talent = hero.TalentManager.FindTalentByName(
+                nameof(PsionicsTalent_7));
+
+            bool hasTalent = talent != null && talent.Data.IsOpen;
+
+            return PsiDissipationRadius * (hasTalent ? 2f : 1f);
+        }
+    }
     
     public static float PsiPerMeter => 1f;
     
@@ -323,52 +340,77 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (damage.Value == 0) return true;
-
-        if (CurrentValue > 0)
-        {
-            float absorbingDamage = Mathf.Min(CurrentValue, damage.Value);
-            damage.Value -= absorbingDamage * 0.5f;
-            UsePsiEnergy(absorbingDamage);
-
-            _isInternalPsiEnergy = CurrentValue > 0;
-            RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-            UpdatePsionicaBar();
-
-            if (_isDissipatingPsi) DissipatePsiDamage(absorbingDamage, skill);
-
-            return true;
-        }
-
-        return false;
+        return TryTakeDamage(ref damage, skill, _heroCharacter.transform.position);
     }
 
-    private void DissipatePsiDamage(float absorbedAmount, Skill skill)
+    [Server]
+    public bool TryTakeDamage(ref Damage damage, Skill skill, Vector3 receiverPosition)
     {
-        if (!isServer) return;
+        if (damage.Value <= 0f) return true;
+        if (CurrentValue <= 0f) return false;
 
-        float splashDamageValue = absorbedAmount * PsiDissipationPercent;
-        if (splashDamageValue <= 0f) return;
+        float energySpent = Mathf.Min(CurrentValue, damage.Value);
 
-        Collider[] hits = Physics.OverlapSphere(_heroCharacter.transform.position, PsiDissipationRadius);
+        damage.Value = Mathf.Max(0f, damage.Value - energySpent * 0.5f);
 
-        foreach (var hit in hits)
+        UsePsiEnergy(energySpent);
+
+        _isInternalPsiEnergy = CurrentValue > 0f;
+        RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
+        UpdatePsionicaBar();
+
+        DissipatePsiDamage(energySpent, receiverPosition);
+
+        return true;
+    }
+
+    [Server]
+    public void DissipatePsiDamage(float absorbedAmount, Vector3 center)
+    {
+        if (!_isDissipatingPsi) return;
+
+        float damageValue = absorbedAmount * PsiDissipationPercent;
+        if (damageValue <= 0f) return;
+
+        var processedTargets = new HashSet<Character>();
+        int damagedEnemies = 0;
+
+        foreach (var hit in Physics.OverlapSphere(
+                     center, CurrentPsiDissipationRadius))
         {
-            Character target = hit.GetComponent<Character>();
-            if (target == null) continue;
-            if (target == _heroCharacter) continue;
-            if (target.IsDead) continue;
+            var target = hit.GetComponentInParent<Character>();
 
-            Damage splashDamage = new Damage
+            if (target == null || target == _heroCharacter || target.IsDead)
+                continue;
+
+            if (_heroCharacter.RelationTo(target) != CharacterRelation.Enemy)
+                continue;
+
+            if (!processedTargets.Add(target))
+                continue;
+
+            var splashDamage = new Damage
             {
-                Value = splashDamageValue,
+                Value = damageValue,
                 Type = DamageType.Magical,
                 School = Schools.Air,
                 Form = AbilityForm.Magic,
+                SourceSkill = psionicEnergySkill
             };
-
-            target.Health.TryTakeDamage(ref splashDamage, skill);
+            
+            if (target.Health.TryTakeDamage(ref splashDamage, psionicEnergySkill) && splashDamage.Value > 0f)
+                damagedEnemies++;
+            
         }
+
+        if (damagedEnemies == 0 || psionicEnergySkill == null || !psionicEnergySkill.IsExtendedDuration)
+            return;
+
+        float extension = damagedEnemies * 0.1f;
+
+        _attackingPsionicEnergy?.ExtendDuration(extension);
+
+        ImpatienceStateStacking.ExtendForCaster(_heroCharacter, extension);
     }
 
     public void ConvertToAttackingEnergy(float amount)

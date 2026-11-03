@@ -11,10 +11,6 @@ public class ImpatienceStateStacking : StateStackingRefreshing
     private Impatica _impatica;
 
     private const string ShareKey = "ImpatienceShare";
-    
-    private const float PsiExplosionPercent = 0.3f;
-    private const float PsiExplosionRadius = 3f;
-    private const float ProtectiveAbsorbRatio = 0.5f;
 
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
@@ -22,6 +18,14 @@ public class ImpatienceStateStacking : StateStackingRefreshing
     public override States State => States.Impatience;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
+    
+    private static readonly HashSet<ImpatienceStateStacking> ActiveStates = new();
+
+    private double _clientEndTime;
+
+    public uint NetworkId { get; private set; }
+
+    public override bool CanExceedMaxDuration => true;
 
     private bool _subscribed;
     
@@ -30,7 +34,8 @@ public class ImpatienceStateStacking : StateStackingRefreshing
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         if (!character.isServer) return;
-
+        
+        ActiveStates.Add(this);
         ActiveCharacters.Add(character.Character);
 
         if (!_subscribed && health != null)
@@ -63,6 +68,16 @@ public class ImpatienceStateStacking : StateStackingRefreshing
 
     protected override void OnExit()
     {
+        ActiveStates.Remove(this);
+
+        if (characterState != null
+            && characterState.isServer
+            && NetworkId != 0
+            && _impatica != null)
+        {
+            _impatica.SendImpaticaRemoval(this);
+        }
+        
         if (characterState != null && characterState.Character != null && characterState.Character.isServer)
         {
             ActiveCharacters.Remove(characterState.Character);
@@ -93,70 +108,14 @@ public class ImpatienceStateStacking : StateStackingRefreshing
 
         if (damage.Value <= 0f) return;
         
-        if (_isAccumulationActive
-            && _casterPsionic != null
-            && damage.Type == DamageType.Physical
-            && _casterPsionic.IsAttackingPsiEnergyActive)
+        if (_isAccumulationActive && _casterPsionic != null && damage.Type == DamageType.Physical && _casterPsionic.IsAttackingPsiEnergyActive)
         {
             _casterPsionic.AddPsiAndRestartDecay(originalDamage);
         }
 
-        if (_impatica != null
-            && _impatica.IsExtendDamageAbsorption
-            && _casterPsionic != null
-            && _casterPsionic.CurrentValue > 0f)
+        if (_impatica != null && _impatica.IsExtendDamageAbsorption && _casterPsionic != null)
         {
-            float absorbAmount = Mathf.Min(_casterPsionic.CurrentValue, damage.Value);
-            _casterPsionic.UsePsiEnergy(absorbAmount);
-
-            damage.Value -= absorbAmount * ProtectiveAbsorbRatio;
-            damage.Value = Mathf.Max(damage.Value, 0f);
-
-            float aoeDamageValue = absorbAmount * PsiExplosionPercent;
-            if (aoeDamageValue > 0f)
-            {
-                int enemiesHitCount = 0;
-                var hits = Physics.OverlapSphere(
-                    characterState.Character.transform.position,
-                    PsiExplosionRadius);
-
-                foreach (var hit in hits)
-                {
-                    if (!hit.TryGetComponent<Character>(out var target)) continue;
-                    if (target == characterState.Character || target.IsDead) continue;
-
-                    var aoeDamage = new Damage
-                    {
-                        Value = aoeDamageValue,
-                        Type = DamageType.Magical,
-                        School = Schools.Air,
-                        Form = AbilityForm.Magic
-                    };
-
-                    target.Health.TryTakeDamage(ref aoeDamage, skill);
-                    enemiesHitCount++;
-                }
-
-                var psionicEnergy = _casterPsionic.PsionicEnergySkill;
-                if (psionicEnergy != null && psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
-                {
-                    float bonusTime = enemiesHitCount * 0.1f;
-
-                    var attacking = _casterPsionic.AttackingPsionicEnergy;
-                    if (attacking != null)
-                        attacking.ExtendDuration(bonusTime);
-
-                    foreach (var character in ActiveCharacters)
-                    {
-                        if (character == null) continue;
-                        if (character.CharacterState.GetState(States.Impatience)
-                            is ImpatienceStateStacking state)
-                        {
-                            state.ExtendDuration(bonusTime);
-                        }
-                    }
-                }
-            }
+            _casterPsionic.TryTakeDamage(ref damage, skill, characterState.Character.transform.position);
         }
 
         if (damage.Value <= 0f) return;
@@ -198,10 +157,52 @@ public class ImpatienceStateStacking : StateStackingRefreshing
         damage.Value = divided;
     }
     
-    [Server]
+    public void ApplyNetworkSnapshot(Impatica owner, uint networkId, double endTime, float maxDuration)
+    {
+        _impatica = owner;
+        NetworkId = networkId;
+        _clientEndTime = endTime;
+
+        MaxDuration = maxDuration;
+        SetDuration(Mathf.Max(0f, (float)(endTime - NetworkTime.time)));
+    }
+
+    public override void GlobalUpdate()
+    {
+        if (characterState == null) return;
+
+        if (characterState.isServer)
+        {
+            base.GlobalUpdate();
+            return;
+        }
+        
+        SetDuration(Mathf.Max(0f, (float)(_clientEndTime - NetworkTime.time)));
+    }
+
+    public static void ExtendForCaster(Character caster, float amount)
+    {
+        if (!NetworkServer.active || caster == null || amount <= 0f)
+            return;
+
+        foreach (var state in new List<ImpatienceStateStacking>(ActiveStates))
+        {
+            if (state.SourceCaster != caster)
+                continue;
+
+            state.ExtendDuration(amount);
+        }
+    }
+    
     public void ExtendDuration(float amount)
     {
-        if (amount <= 0f) return;
+        if (characterState == null || !characterState.isServer)
+            return;
+
+        if (amount <= 0f || RemainingDuration <= 0f)
+            return;
+
         IncreaseDuration(amount);
+        _impatica?.SendImpaticaSnapshot(this);
     }
 }

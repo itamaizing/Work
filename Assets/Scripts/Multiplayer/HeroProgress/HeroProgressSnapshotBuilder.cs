@@ -50,11 +50,17 @@ public static class HeroProgressSnapshotBuilder
         }
 
         var attributes = new List<AttributeSnapshotEntry>();
-        var attrSystem = attributesPanel.AttributeSystem;
+        var attrSystem = hero.AttributeSystem;
         if (attrSystem != null)
         {
             foreach (var attribute in attrSystem.Attributes.Values)
-                attributes.Add(new AttributeSnapshotEntry { name = attribute.Name, points = attribute.Modifiers.Count });
+            {
+                attributes.Add(new AttributeSnapshotEntry
+                {
+                    name = attribute.Name,
+                    points = attribute.Modifiers.Count(m => Equals(m.Source, "AttributePoint"))
+                });
+            }
         }
 
         return new HeroProgressSnapshot
@@ -79,35 +85,21 @@ public static class HeroProgressSnapshotApplier
 
     public static void ApplyTalentsAndAttributes(HeroComponent hero, HeroProgressSnapshot snapshot)
     {
-        foreach (var group in hero.TalentManager.TalentsGroups)
-        foreach (var row in group.TalentRows)
-        foreach (var talent in row.Talents)
-        {
-            talent.Data.SetOpen(false);
-        }
-
-        foreach (var entry in snapshot.talents ?? Array.Empty<TalentSnapshotEntry>())
-        {
-            var group = hero.TalentManager.TalentsGroups.FirstOrDefault(g => g.ID == entry.group);
-            var talent = group?.TalentRows[entry.row].Talents.FirstOrDefault(t => t.Data.Name == entry.name);
-            if (talent == null) continue;
-
-            talent.Data.SetOpen(true);
-            talent.Data.SetLevel(entry.lvl);
-        }
-
-        hero.TalentManager.SetPoints(snapshot.talentPoints);
-
         foreach (var attribute in hero.AttributeSystem.Attributes.Values)
         {
             var entry = (snapshot.attributes ?? Array.Empty<AttributeSnapshotEntry>())
                 .FirstOrDefault(a => a.name == attribute.Name);
 
             attribute.RemoveBySource("AttributePoint");
+
             for (int i = 0; i < entry.points; i++)
+            {
                 attribute.AddModifier(new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint"));
+            }
         }
-        
+
         hero.AttributeSystem.RaiseAttributesReloaded();
+
+        hero.TalentManager.ApplyTalentPage(snapshot.talents, snapshot.talentPoints);
     }
 }

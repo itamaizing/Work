@@ -294,7 +294,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	public override void OnStartClient()
 	{
-		if (isOwned)
+		if (isOwned && this is HeroComponent && CharacterParent == null)
 		{
 			Local = this;
 		}
@@ -308,7 +308,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	public override void OnStopClient()
 	{
-		if (isOwned && Local == this)
+		if (Local == this)
 		{
 			Local = null;
 		}
@@ -317,6 +317,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		{
 			return;
 		}
+
 		AuthorityOnUnitDeleted?.Invoke(this);
 	}
 

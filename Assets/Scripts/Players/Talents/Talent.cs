@@ -28,6 +28,7 @@ public abstract class Talent : MonoBehaviour
     public void Init(TalentSystem owner, int groupId, int rowIndex)
     {
         _owner = owner;
+        Owner = owner;
         _groupId = groupId;
         _rowIndex = rowIndex;
 

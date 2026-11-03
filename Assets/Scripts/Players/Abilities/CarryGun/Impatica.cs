@@ -41,6 +41,8 @@ public class Impatica : Skill
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;
 
+    private uint _nextImpaticaId;
+    
     public bool IsExtendDamageAbsorption { get => _isExtendDamageAbsorption; set => _isExtendDamageAbsorption = value; }
 
     #region Talent
@@ -171,11 +173,87 @@ public class Impatica : Skill
     [Command]
     private void CmdApplyImpaticaState(GameObject targetGameObject)
     {
-        var targetCharacter = targetGameObject.GetComponent<Character>();
-        if (targetCharacter != null)
+        if (targetGameObject == null) return;
+
+        var target = targetGameObject.GetComponent<Character>();
+        if (target == null || target.IsDead) return;
+
+        var state = CreateLocalImpatica(target, duration);
+        if (state == null) return;
+
+        state.ApplyNetworkSnapshot(this, ++_nextImpaticaId, NetworkTime.time + state.RemainingDuration, state.MaxDuration);
+
+        SendImpaticaSnapshot(state);
+    }
+
+    private ImpatienceStateStacking CreateLocalImpatica(Character target, float remaining)
+    {
+        var states = target.CharacterState;
+        int previousCount = states.CurrentStates.Count;
+
+        states.AddStateLogic(States.Impatience, Mathf.Max(remaining, 0.001f), 0f, Schools.None, _playerLinks.gameObject, name, isCanDodgeMagState: !isServer);
+
+        if (states.CurrentStates.Count <= previousCount)
+            return null;
+
+        return states.CurrentStates[states.CurrentStates.Count - 1] as ImpatienceStateStacking;
+    }
+
+    private ImpatienceStateStacking FindImpatica(Character target, uint id)
+    {
+        foreach (var current in target.CharacterState.CurrentStates)
         {
-            targetCharacter.CharacterState.AddState(States.Impatience, duration, 0, _playerLinks.gameObject, name);
+            if (current is ImpatienceStateStacking state && state.NetworkId == id && state.SourceCaster == _playerLinks)
+                return state;
         }
+
+        return null;
+    }
+
+    [Server]
+    public void SendImpaticaSnapshot(ImpatienceStateStacking state)
+    {
+        if (state.Target == null || state.NetworkId == 0)
+            return;
+
+        RpcSyncImpatica(state.Target.gameObject, state.NetworkId, NetworkTime.time + state.RemainingDuration, state.MaxDuration);
+    }
+
+    [ClientRpc]
+    private void RpcSyncImpatica(GameObject targetObject, uint id, double endTime, float maxDuration)
+    {
+        if (isServer || targetObject == null) return;
+
+        var target = targetObject.GetComponent<Character>();
+        if (target == null) return;
+
+        var state = FindImpatica(target, id);
+
+        if (state == null)
+        {
+            state = CreateLocalImpatica(target, (float)(endTime - NetworkTime.time));
+        }
+
+        state?.ApplyNetworkSnapshot(this, id, endTime, maxDuration);
+    }
+
+    [Server]
+    public void SendImpaticaRemoval(ImpatienceStateStacking state)
+    {
+        if (state.Target == null) return;
+
+        RpcRemoveImpatica(state.Target.gameObject, state.NetworkId);
+    }
+
+    [ClientRpc]
+    private void RpcRemoveImpatica(GameObject targetObject, uint id)
+    {
+        if (isServer || targetObject == null) return;
+
+        var target = targetObject.GetComponent<Character>();
+        if (target == null) return;
+
+        FindImpatica(target, id)?.ExitState();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
