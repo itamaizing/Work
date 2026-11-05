@@ -1,93 +1,112 @@
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
-using System.Text.RegularExpressions;
 
-public class IgnitionStateStacking : StateStackingRefreshing
+public class IgnitionStateStacking : StateStackingRefreshing, ITickableState
 {
-    private float _tickTimer = 0f;
-    private int _currentTick = 0;
-    private int MaxTicks = 6;
-    private const float TickInterval = 1f;
-    private const float BaseScorchedChance = 5f;
-    private float _damageBonus = 0;
+    private const float BaseScorchedChance = 0.05f;
+    private const float ScorchedDuration = 6f;
 
-    private float _fireBreathBonus = 0f;
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Others };
+
+    private int _currentTick;
+    private float _damageBonus;
+    private float _fireBreathBonus;
+
     public override States State => States.Ignition;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-    public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Others };
+    public override Schools Schools => Schools.Fire;
+    public override List<StatusEffect> Effects => _effects;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
+    public float TickInterval => 1f;
+
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _currentTick = 0;
-        _tickTimer = 0f;
-        MaxTicks = Mathf.Max(1, Mathf.CeilToInt(durationToExit / TickInterval));
+        _damageBonus = ExtractComboBonus(skillName);
+        _fireBreathBonus = 0f;
+        
+        skill = personWhoMadeBuff?.Abilities?.GetSkill<IgnitionSkill>();
+
+        MaxDuration = durationToExit;
         RemainingDuration = durationToExit;
+        CurrentStacksCount = 1;
+
+        ResetTickTimer();
     }
 
-    public override void UpdateState()
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _tickTimer += Time.deltaTime;
+        Apply(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+    }
 
-        if (_tickTimer >= TickInterval)
+    public void Tick()
+    {
+        if (characterState == null || !characterState.isServer || health == null) return;
+
+        _currentTick++;
+
+        float finalDamage = (_currentTick + _damageBonus) * (1f + _fireBreathBonus);
+
+        var damage = new Damage
         {
-            _tickTimer -= TickInterval;
-            _currentTick++;
-            ApplyTick();
+            Value = finalDamage,
+            Type = DamageType.Magical,
+            School = Schools.Fire,
+            IsDot = true,
+            DamageKey = "ignition"
+        };
 
-            if (_currentTick >= MaxTicks)
-                ExitState();
-        }
-    }
-    
-    public void UpdateFireBreathBonus(float bonus)
-    {
-        MaxTicks += Mathf.CeilToInt(bonus / TickInterval);
-        _fireBreathBonus = bonus;
-    }
-
-    private void ApplyTick()
-    {
-        if (characterState.isClient) return;
-
-        float finalDamage = _currentTick + _damageBonus + _fireBreathBonus;
-
-        var damage = new Damage { Value = finalDamage, Type = DamageType.Magical };
         health.TryTakeDamage(ref damage, skill);
 
+        if (sourceCaster == null)
+            return;
+
         float chance = BaseScorchedChance * _currentTick;
-        if (Random.Range(0f, 100f) <= chance)
-            characterState.AddState(States.ScorchedSoul, 6f, 0f, sourceCaster.gameObject, nameof(IgnitionStateStacking));
+
+        if (skill != null)
+            chance = skill.Attributes.GetChance(chance);
+
+        if (Random.value < Mathf.Clamp01(chance))
+        {
+            characterState.AddState(States.ScorchedSoul, ScorchedDuration, 0f, Schools.Fire, sourceCaster.gameObject, nameof(IgnitionSkill));
+        }
+    }
+
+    public void UpdateFireBreathBonus(float bonus)
+    {
+        _fireBreathBonus = Mathf.Max(0f, bonus);
     }
 
     protected override void OnExit()
     {
         _currentTick = 0;
-        _tickTimer = 0f;
         _damageBonus = 0f;
-        _fireBreathBonus = 0;
-        MaxTicks = 6;
+        _fireBreathBonus = 0f;
+        CurrentStacksCount = 0;
+        skill = null;
+
+        ResetTickTimer();
     }
-    
-    private float ExtractNumber(string text)
+
+    private static float ExtractComboBonus(string skillName)
     {
-        if (string.IsNullOrEmpty(text))
-            return 0f;
+        const string prefix = nameof(IgnitionSkill);
 
-        Match match = Regex.Match(text, @"-?\d+(\.\d+)?");
-
-        if (match.Success &&
-            float.TryParse(match.Value,
-                System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out float value))
+        if (string.IsNullOrEmpty(skillName) || !skillName.StartsWith(prefix))
         {
-            return value;
+            return 0f;
+        }
+
+        string value = skillName.Substring(prefix.Length);
+
+        if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float bonus) 
+            || float.TryParse(value, NumberStyles.Float, CultureInfo.CurrentCulture, out bonus))
+        {
+            return Mathf.Max(0f, bonus);
         }
 
         return 0f;
     }
-
-    
 }

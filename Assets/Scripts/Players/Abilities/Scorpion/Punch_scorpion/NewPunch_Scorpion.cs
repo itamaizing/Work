@@ -235,7 +235,10 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         if (isHit && damageable is Character character)
         {
             AttackPassed(character);
-            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+            
+            float effectChance = scorchedChance / 100f + scorpionPassive.GetStateChanceBonus(character.CharacterState);
+
+            if (scorchedChance > 0f && Random.value < Mathf.Clamp01(Attributes.GetChance(effectChance)))
                 character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, Schools.Fire, _hero.gameObject, name);
             
             TryAddComboStun(target.gameObject);
@@ -279,7 +282,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
                     chance += scorpionPassive.AdditionalAddStateChance;
                 }
             }
-            if (UnityEngine.Random.value <= chance) 
+            if (Random.value < Mathf.Clamp01(Attributes.GetChance(chance)))
                 state?.AddState(States.Stun, StunDuration, 0,Schools.Physical, _hero.gameObject, name);
         }
     }

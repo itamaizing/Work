@@ -1,59 +1,85 @@
-using System;
-using System.Collections;
-using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MagicalExcitementTalent : Talent
 {
-    [SerializeField] private float _increaseManaRegenerationPercentages = 1.1f;
-    [SerializeField] private float _increaseManaRegenerationDuration = 3f;
+    [SerializeField]
+    private float _increaseManaRegenerationDuration = 3f;
 
-    private WaitForSeconds _increaseManaRegenerationDeley;
-    private Resource _mana;
-    private float _defaultDuration = 3f;
-    private bool _isActive = false;
+    private const float DefaultDuration = 3f;
+
+    private readonly HashSet<Skill> _subscribedSkills = new();
+    private bool _isActive;
 
     public override void Enter()
     {
-        if(_isActive) return;
-        _isActive = true;
-        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
-        _mana = character.TryGetResource(ResourceType.Mana);
+        if (_isActive || character == null || !character.isOwned)
+            return;
 
-        character.DamageGeted += OnDamageTaked;
+        _isActive = true;
+
+        character.Abilities.SkillAdded += Subscribe;
+        character.Abilities.SkillRemoved += Unsubscribe;
+
+        foreach (var skill in character.Abilities.Abilities)
+            Subscribe(skill);
     }
 
     public override void Exit()
     {
-        if(!_isActive) return;
+        if (!_isActive)
+            return;
+
         _isActive = false;
-        character.DamageGeted -= OnDamageTaked;
+
+        character.Abilities.SkillAdded -= Subscribe;
+        character.Abilities.SkillRemoved -= Unsubscribe;
+
+        foreach (var skill in _subscribedSkills)
+        {
+            if (skill != null)
+                skill.OnDamageApplied -= OnSpellHit;
+        }
+
+        _subscribedSkills.Clear();
     }
 
-    private void OnDamageTaked(Damage damage, GameObject target)
+    private void Subscribe(Skill skill)
     {
-        character.CharacterState.CmdAddState(States.MagicalExcitement, _increaseManaRegenerationDuration,0,character.gameObject,name);
-        StartCoroutine(IncreaseManaRegeneration());
+        if (skill == null)
+            return;
+
+        if (skill.Info.AbilityForm != AbilityForm.Magic && skill.Info.AbilityForm != AbilityForm.Mixed) return;
+        
+
+        if (_subscribedSkills.Add(skill)) skill.OnDamageApplied += OnSpellHit;
     }
 
-    private IEnumerator IncreaseManaRegeneration()
+    private void Unsubscribe(Skill skill)
     {
-        _mana.IncreaseRegenerationPeriod(_increaseManaRegenerationPercentages);
+        if (skill != null && _subscribedSkills.Remove(skill))
+            skill.OnDamageApplied -= OnSpellHit;
+    }
 
-        yield return _increaseManaRegenerationDeley;
+    private void OnSpellHit(GameObject target, Skill skill)
+    {
+        if (!_isActive || !character.isOwned || target == null || skill == null) return;
 
-        _mana.ReduceRegenerationPeriod(_increaseManaRegenerationPercentages);
+        character.CharacterState.CmdAddState(States.MagicalExcitement, _increaseManaRegenerationDuration, 0f, character.gameObject, nameof(MagicalExcitementTalent));
     }
 
     public void IncreaseDuration(float newDuration)
     {
         _increaseManaRegenerationDuration = newDuration;
-        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
     }
 
     public void SetDefaultDuration()
     {
-        _increaseManaRegenerationDuration = _defaultDuration;
-        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
+        _increaseManaRegenerationDuration = DefaultDuration;
+    }
+
+    private void OnDestroy()
+    {
+        Exit();
     }
 }

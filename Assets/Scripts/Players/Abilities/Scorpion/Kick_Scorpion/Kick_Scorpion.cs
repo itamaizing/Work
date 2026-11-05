@@ -234,7 +234,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
             _kickHitsInRow = 0;
         }
         
-        if (Random.value <= chance)
+        if (Random.value < Mathf.Clamp01(Attributes.GetChance(chance)))
         {
             state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
         }
@@ -262,7 +262,10 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         if (isHit && damageable is Character character)
         {
             AttackPassed(character);
-            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+            
+            float effectChance = scorchedChance / 100f + _scorpionPassive.GetStateChanceBonus(character.CharacterState);
+
+            if (scorchedChance > 0f && Random.value < Mathf.Clamp01(Attributes.GetChance(effectChance)))
                 character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
         }
     }

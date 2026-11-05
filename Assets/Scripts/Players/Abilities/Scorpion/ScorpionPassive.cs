@@ -36,6 +36,11 @@ public class ScorpionPassive : Skill, IPassiveSkill
         
     public void ImpulseMatter(bool value) => _isImpulseMatter = value;
     #endregion
+    
+    public float GetStateChanceBonus(CharacterState targetState)
+    {
+        return IsAddStateUpdateChance && targetState != null && targetState.CheckForState(States.DisappointmentState) ? AdditionalAddStateChance : 0f;
+    }
 
     public void ActivateEnergyFreeAfterTeleport()
     {

@@ -187,7 +187,10 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
         if (result && damageable is Character character)
         {
             AttackPassed(shouldIncreaseCounter, character);
-            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+            
+            float effectChance = scorchedChance / 100f + _scorpionPassive.GetStateChanceBonus(character.CharacterState);
+
+            if (scorchedChance > 0f && Random.value < Mathf.Clamp01(Attributes.GetChance(effectChance)))
                 character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
         }
     }

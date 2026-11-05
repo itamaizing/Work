@@ -94,12 +94,20 @@ public class StingingHitsPassive : Skill, IPassiveSkill
         var characterTarget = target.GetComponent<Character>();
         
         if (WasDebuffAppliedByHandOrFoot(skill, characterTarget) && !isCritical) isCritical = true;
-        else if (target.GetComponent<CharacterState>().CheckForState(States.Stun) && scorpionPassive.IsAddStateUpdateChance)
+        else if (!isCritical)
         {
-            if(UnityEngine.Random.value <= _critChance + scorpionPassive.AdditionalAddStateChance&& !isCritical) 
-                isCritical = true;
+            float chance = _critChance;
+            var state = target.GetComponent<CharacterState>();
+
+            bool isStandingTargetSkill = skill is NewPunch_Scorpion || skill is Kick_Scorpion || skill is CleavingBlade_Scorpion;
+
+            if (isStandingTargetSkill && scorpionPassive.IsAddStateUpdateChance && state != null && state.CheckForState(States.Stun))
+            {
+                chance += scorpionPassive.AdditionalAddStateChance;
+            }
+
+            isCritical = Random.value < Mathf.Clamp01(skill.Attributes.GetChance(chance));
         }
-        else if (UnityEngine.Random.value <= _critChance && !isCritical) isCritical = true;
 
         if (isCritical)
         {

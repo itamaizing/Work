@@ -19,6 +19,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private float _baseCounter;
 
     #region SwarmTalent_8
+
+    private uint _boostVersion;
+    private double _boostWindowEnd;
     
     private const float SpeedBonusPercent = 1.5f;
     private const float TargetWindowDuration = 1.5f;
@@ -26,6 +29,14 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private GameObject _currentTarget;
     private Coroutine _targetBoostRoutine;
     private readonly AttributeModifier _attackSpeedModifier = new AttributeModifier(SpeedBonusPercent, ModifierType.Percent);
+    
+    private readonly HashSet<MinionComponent> _eligibleBoostUnits = new();
+
+    private readonly Dictionary<MinionComponent, Skill> _boostedCasts = new();
+
+    private readonly List<(Skill skill, Action started, Action ended)> _boostSubscriptions = new();
+    
+    private readonly Dictionary<Skill, Character> _heroCastTargets = new();
     
     #endregion
     
@@ -86,10 +97,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             UpdateCounter();
         }
 
-        if (Hero != null)
-        {
-            Hero.DamageTracker.OnDamageTracked += OnDamageTracked;
-        }
+        Hero.Abilities.OnSkillPreparedSuccessfully += RememberHeroCastTarget;
+        Hero.Abilities.SkillCastEnded += OnHeroCastEnded;
     }
 
     private void OnDisable()
@@ -106,10 +115,13 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             _overloadCheckRoutine = null;
         }
 
-        if (Hero != null && Hero.DamageTracker != null)
+        if (Hero != null && Hero.Abilities != null)
         {
-            Hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+            Hero.Abilities.OnSkillPreparedSuccessfully -= RememberHeroCastTarget;
+            Hero.Abilities.SkillCastEnded -= OnHeroCastEnded;
         }
+
+        _heroCastTargets.Clear();
 
         ResetBoostStateLocal();
     }
@@ -118,62 +130,192 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     #region Boost speed CreatureCarryGun
 
-    private void OnDamageTracked(Damage damage, GameObject target)
+    private void RememberHeroCastTarget(Skill skill)
     {
-        if (!isServer) return;
-        if (!_isBoostSpeedSwarmDamage) return;
-        if (target == null) return;
-        if (damage.Type != DamageType.Physical) return;
+        if (!isOwned || skill == null)
+            return;
+
+        _heroCastTargets.Remove(skill);
+
+        if (!_isBoostSpeedSwarmDamage || skill.Info.AbilityForm == AbilityForm.Magic)
+            return;
+
+        var target = skill.Targeting.GetTarget()?.Character;
+
+        if (target != null && Hero.RelationTo(target) == CharacterRelation.Enemy)
+        {
+            _heroCastTargets[skill] = target;
+        }
+    }
+
+    private void OnHeroCastEnded(Skill skill)
+    {
+        if (!isOwned || skill == null)
+            return;
+
+        if (!_heroCastTargets.TryGetValue(skill, out var target))
+            return;
         
-        ActivateTargetSpeedBoost(target);
+        _heroCastTargets.Remove(skill);
+
+        if (skill.LastTransitionCanceled)
+            return;
+
+        if (!_isBoostSpeedSwarmDamage || target == null || target.IsDead)
+            return;
+
+        CmdActivateBoostAfterHeroCast(skill, target);
+    }
+
+    [Command]
+    private void CmdActivateBoostAfterHeroCast(Skill skill, Character target)
+    {
+        if (!_isBoostSpeedSwarmDamage)
+            return;
+
+        if (skill.Info.AbilityForm == AbilityForm.Magic || !Hero.Abilities.Skills.Contains(skill))
+            return;
+
+        if (target == null || target.IsDead)
+            return;
+
+        if (Hero.RelationTo(target) != CharacterRelation.Enemy)
+            return;
+
+        ActivateTargetSpeedBoost(target.gameObject);
     }
 
     [Server]
     private void ActivateTargetSpeedBoost(GameObject target)
     {
-        ResetBoostStateLocal();
+        uint version = ++_boostVersion;
+        double endTime = NetworkTime.time + TargetWindowDuration;
 
-        _currentTarget = target;
-        ApplySpeedBoostToUnits();
-
-        TargetActivateSpeedBoost(target);
-
-        _targetBoostRoutine = StartCoroutine(TargetBoostTimer());
+        StartBoostWindow(target, version, endTime);
+        TargetActivateSpeedBoost(target, version, endTime);
     }
     
     [TargetRpc]
-    private void TargetActivateSpeedBoost(GameObject target)
+    private void TargetActivateSpeedBoost(GameObject target, uint version, double endTime)
     {
         if (isServer) return;
 
-        ResetBoostStateLocal();
-        _currentTarget = target;
-        ApplySpeedBoostToUnits();
+        StartBoostWindow(target, version, endTime);
     }
 
-    [TargetRpc]
-    private void TargetResetSpeedBoost()
+    private void StartBoostWindow(GameObject target, uint version, double endTime)
     {
-        if (isServer) return;
-
         ResetBoostStateLocal();
+
+        _boostVersion = version;
+        _currentTarget = target;
+        _boostWindowEnd = endTime;
+
+        ApplySpeedBoostToUnits();
+
+        _targetBoostRoutine = StartCoroutine(TargetBoostTimer());
     }
 
     private void ApplySpeedBoostToUnits()
     {
         foreach (var unit in _swarmUnits)
         {
-            if (unit == null) continue;
+            if (unit == null || unit.IsDead || unit.Abilities == null) continue;
+
+            if (!_eligibleBoostUnits.Add(unit)) continue;
 
             AddSpeedForMinion(unit.gameObject);
 
-            if (unit.TryGetComponent<Character>(out var unitChar) && unitChar.DamageTracker != null)
+            if (!isOwned) continue;
+
+            foreach (var skill in unit.Abilities.Skills)
             {
-                unitChar.DamageTracker.OnDamageTracked += OnUnitDamageTracked;
+                if (skill == null) continue;
+
+                var capturedUnit = unit;
+                var capturedSkill = skill;
+                uint version = _boostVersion;
+
+                Action started = () => OnBoostCastStarted(capturedUnit, capturedSkill, version);
+
+                Action ended = () => OnBoostCastEnded(capturedUnit, capturedSkill, version);
+
+                skill.CastStarted += started;
+                skill.CastEnded += ended;
+
+                _boostSubscriptions.Add((skill, started, ended));
             }
         }
     }
-    
+
+    private void OnBoostCastStarted(MinionComponent unit, Skill skill, uint version)
+    {
+        if (version != _boostVersion) return;
+        if (!_eligibleBoostUnits.Contains(unit)) return;
+        if (_boostedCasts.ContainsKey(unit)) return;
+        if (NetworkTime.time > _boostWindowEnd) return;
+
+        var target = skill.Targeting.GetTarget()?.Character;
+        if (target == null || target.gameObject != _currentTarget)
+            return;
+
+        _boostedCasts.Add(unit, skill);
+
+        if (!isServer)
+        {
+            CmdBoostCastStarted(unit, skill, version, NetworkTime.time);
+        }
+    }
+
+    [Command]
+    private void CmdBoostCastStarted(MinionComponent unit, Skill skill, uint version, double startedAt)
+    {
+        if (version != _boostVersion) return;
+        if (unit == null || skill == null || skill.Hero != unit) return;
+        if (!_eligibleBoostUnits.Contains(unit)) return;
+        if (_boostedCasts.ContainsKey(unit)) return;
+
+        if (startedAt < _boostWindowEnd - TargetWindowDuration || startedAt > _boostWindowEnd || startedAt > NetworkTime.time + 0.1d)
+            return;
+
+        _boostedCasts.Add(unit, skill);
+
+        AddSpeedForMinion(unit.gameObject);
+    }
+
+    private void OnBoostCastEnded(MinionComponent unit, Skill skill, uint version)
+    {
+        if (version != _boostVersion) return;
+
+        if (!_boostedCasts.TryGetValue(unit, out var boostedSkill) || boostedSkill != skill) 
+            return;
+
+        RemoveUnitBoost(unit);
+
+        if (!isServer)
+            CmdBoostCastEnded(unit, skill, version);
+    }
+
+    [Command]
+    private void CmdBoostCastEnded(MinionComponent unit, Skill skill, uint version)
+    {
+        if (version != _boostVersion || unit == null) return;
+
+        if (!_boostedCasts.TryGetValue(unit, out var boostedSkill) || boostedSkill != skill)
+            return;
+
+        RemoveUnitBoost(unit);
+    }
+
+    private void RemoveUnitBoost(MinionComponent unit)
+    {
+        _boostedCasts.Remove(unit);
+        _eligibleBoostUnits.Remove(unit);
+
+        if (unit != null)
+            RemoveSpeedMinion(unit.gameObject);
+    }
+
     private void AddSpeedForMinion(GameObject minion)
     {
         if (minion == null) return;
@@ -202,28 +344,21 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         }
     }
 
-    private void OnUnitDamageTracked(Damage damage, GameObject unitTarget)
-    {
-        if (!isServer) return;
-
-        if (_currentTarget != null && unitTarget == _currentTarget)
-        {
-            ResetBoostState();
-        }
-    }
-
     private IEnumerator TargetBoostTimer()
     {
-        yield return new WaitForSeconds(TargetWindowDuration);
-        ResetBoostStateLocal();
-    }
-    
-    private void ResetBoostState()
-    {
-        ResetBoostStateLocal();
+        while (NetworkTime.time < _boostWindowEnd)
+            yield return null;
 
-        if (isServer && NetworkServer.active && netId != 0)
-            TargetResetSpeedBoost();
+        _targetBoostRoutine = null;
+
+        foreach (var unit in _eligibleBoostUnits)
+        {
+            if (unit == null) continue;
+
+            if (_boostedCasts.ContainsKey(unit)) continue;
+
+            RemoveSpeedMinion(unit.gameObject);
+        }
     }
 
     private void ResetBoostStateLocal()
@@ -234,22 +369,28 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             _targetBoostRoutine = null;
         }
 
-        _currentTarget = null;
-
-        foreach (var unit in _swarmUnits)
+        foreach (var subscription in _boostSubscriptions)
         {
-            if (unit == null) continue;
+            if (subscription.skill == null)
+                continue;
 
-            RemoveSpeedMinion(unit.gameObject);
-            
-            if (unit.TryGetComponent<Character>(out var character))
-            {
-                if (character.DamageTracker != null)
-                {
-                    character.DamageTracker.OnDamageTracked -= OnUnitDamageTracked;
-                }
-            }
+            subscription.skill.CastStarted -= subscription.started;
+            subscription.skill.CastEnded -= subscription.ended;
         }
+
+        _boostSubscriptions.Clear();
+
+        foreach (var unit in _eligibleBoostUnits)
+        {
+            if (unit != null)
+                RemoveSpeedMinion(unit.gameObject);
+        }
+
+        _eligibleBoostUnits.Clear();
+        _boostedCasts.Clear();
+
+        _currentTarget = null;
+        _boostWindowEnd = 0d;
     }
 
     #endregion
@@ -281,6 +422,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private void HandleOverload()
     {
+        if (!isServer)
+            return;
+        
         if (CurrentCounter > _baseCounter)
         {
             if (_overloadCheckRoutine == null)
@@ -302,7 +446,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     {
         WaitForSeconds delay = new WaitForSeconds(1f);
 
-        while (true)
+        while (isServer)
         {
             float realCost = _spawnComponent.Units
                 .Where(unit => unit != null && !unit.TryGetComponent<MucusArea>(out _))
@@ -330,7 +474,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                         AttackRange = AttackRangeType.MeleeAttack,
                     };
 
-                    CmdApplyDamageSwarm(damage, minion.gameObject);
+                    ApplyDamageSwarmServer(damage, minion.gameObject);
                 }
             }
 
@@ -338,8 +482,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         }
     }
 
-    [Command]
-    private void CmdApplyDamageSwarm(Damage damage, GameObject target)
+    [Server]
+    private void ApplyDamageSwarmServer(Damage damage, GameObject target)
     {
         if (target == null) return;
 
@@ -347,6 +491,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         if (hp == null) return;
 
         hp.TryTakeDamage(ref damage, this);
+
         Hero.DamageTracker.AddDamage(damage, target, isServerRequest: true);
     }
 }

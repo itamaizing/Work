@@ -39,15 +39,11 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         get
         {
-            if (_heroCharacter is not HeroComponent hero)
-                return PsiDissipationRadius;
+            var states = _heroCharacter != null ? _heroCharacter.CharacterState : null;
 
-            var talent = hero.TalentManager.FindTalentByName(
-                nameof(PsionicsTalent_7));
+            bool generationActive = states != null && states.GetState(States.PsionicGeneration) != null;
 
-            bool hasTalent = talent != null && talent.Data.IsOpen;
-
-            return PsiDissipationRadius * (hasTalent ? 2f : 1f);
+            return PsiDissipationRadius * (generationActive ? 2f : 1f);
         }
     }
     

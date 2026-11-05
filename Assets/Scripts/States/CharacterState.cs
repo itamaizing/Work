@@ -161,6 +161,11 @@ public abstract class StateBasic
 		    _tickTimer = tickable.TickInterval;
 	    }
     }
+    
+    protected void ResetTickTimer()
+    {
+	    _tickTimer = this is ITickableState tickable ? tickable.TickInterval : 0f;
+    }
 
     public virtual void GlobalUpdate()
     {
