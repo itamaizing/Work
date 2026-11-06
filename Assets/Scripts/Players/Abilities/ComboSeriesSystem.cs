@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using Mirror;
 using System.Collections.Generic;
@@ -15,6 +15,9 @@ public class ComboSeriesSystem : Skill
     private float _speedBonusPerHit = 0.3f;
         
     private float _currentSpeedMultiplier = 1f;
+
+    [SyncVar(hook = nameof(OnSeriesSpeedChanged))]
+    private float _syncedSeriesSpeed = 1f;
     
     private AttributeModifier _speedBonusModifier;
  
@@ -40,6 +43,18 @@ public class ComboSeriesSystem : Skill
     private Skill _lastPreparedSkill;
     
     private bool _timerPaused = false;
+
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        ApplySeriesSpeed(_syncedSeriesSpeed);
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        ApplySeriesSpeed(_syncedSeriesSpeed);
+    }
 
     #region AdditionalRuneTalent
 
@@ -105,6 +120,138 @@ public class ComboSeriesSystem : Skill
 
     #endregion
 
+    #region SeriesBuff
+
+    private void RefreshSeriesBuff()
+    {
+        if (_hero == null) return;
+
+        bool active = _isInSeries && _currentHitCount > 0 && _currentSequence.Count > 0;
+
+        bool magic = active && _currentSequence[_currentSequence.Count - 1] == AbilityForm.Magic;
+
+        CmdSyncSeriesBuff(active ? _currentHitCount : 0, magic, Mathf.Max(0f, _timer), _comboTimeout, _timerPaused);
+    }
+
+    [Command]
+    private void CmdSyncSeriesBuff(int hitCount, bool magic, float remaining, float maximum, bool paused)
+    {
+        ApplySeriesBuffSnapshot(hitCount, magic, remaining, maximum, paused);
+
+        RpcSyncSeriesBuff(hitCount, magic, remaining, maximum, paused);
+    }
+
+    [ClientRpc]
+    private void RpcSyncSeriesBuff(int hitCount, bool magic, float remaining, float maximum, bool paused)
+    {
+        if (isServer) return;
+
+        ApplySeriesBuffSnapshot(hitCount, magic, remaining, maximum, paused);
+    }
+
+    private void ApplySeriesBuffSnapshot(int hitCount, bool magic, float remaining, float maximum, bool paused)
+    {
+        if (_hero == null || _hero.CharacterState == null) return;
+
+        CharacterState states = _hero.CharacterState;
+
+        if (hitCount <= 0)
+        {
+            RemoveSeriesBuffLocal(states, States.IceDeathSeriesPhysical);
+            RemoveSeriesBuffLocal(states, States.IceDeathSeriesMagic);
+            return;
+        }
+
+        States active = magic ? States.IceDeathSeriesMagic : States.IceDeathSeriesPhysical;
+
+        States opposite = magic ? States.IceDeathSeriesPhysical : States.IceDeathSeriesMagic;
+
+        RemoveSeriesBuffLocal(states, opposite);
+
+        if (!states.enumToState.ContainsKey(active))
+            states.enumToState.Add(active, new IceDeathSeriesState(active));
+
+        if (states.GetState(active) is IceDeathSeriesState current)
+        {
+            current.SetSnapshot(hitCount, remaining, maximum, paused);
+            return;
+        }
+
+        var template = (IceDeathSeriesState)states.enumToState[active];
+        template.SetSnapshot(hitCount, remaining, maximum, paused);
+
+        states.AddStateLogic(active, maximum, 0f, Schools.None, _hero.gameObject, nameof(ComboSeriesSystem), isCanDodgeMagState: true);
+
+        if (states.GetState(active) is IceDeathSeriesState added)
+            added.SetSnapshot(hitCount, remaining, maximum, paused);
+    }
+
+    private static void RemoveSeriesBuffLocal(CharacterState states, States id)
+    {
+        StateBasic state = states.GetState(id);
+
+        if (state != null)
+            state.ExitState();
+    }
+
+    #endregion
+
+    #region BoostWindow
+
+    private readonly HashSet<Skill> _seriesBoostedSkills = new();
+
+    private void RefreshSeriesBoosts()
+    {
+        if (!isOwned) return;
+
+        var nextBoostedSkills = new HashSet<Skill>();
+
+        if (_seriesIsEnable && _isInSeries && _hero?.Abilities != null)
+        {
+            foreach (var skill in _hero.Abilities.Abilities)
+            {
+                if (skill == null || !skill.IsSkillActive)
+                    continue;
+
+                if (skill is not IComboSeriesParticipatingSkill)
+                    continue;
+
+                if (WillCompleteSeriesOnNextHit(skill))
+                    nextBoostedSkills.Add(skill);
+            }
+        }
+
+        foreach (var skill in _seriesBoostedSkills.ToArray())
+        {
+            if (nextBoostedSkills.Contains(skill))
+                continue;
+
+            _seriesBoostedSkills.Remove(skill);
+
+            if (skill != null)
+                skill.DisableSkillBoost();
+        }
+
+        foreach (var skill in nextBoostedSkills)
+        {
+            if (_seriesBoostedSkills.Add(skill))
+                skill.EnableSkillBoost();
+        }
+    }
+
+    private void ClearSeriesBoosts()
+    {
+        foreach (var skill in _seriesBoostedSkills)
+        {
+            if (skill != null)
+                skill.DisableSkillBoost();
+        }
+
+        _seriesBoostedSkills.Clear();
+    }
+    
+    #endregion
+
     public void EnableSeries(bool value)
     {
         if(_seriesIsEnable == value) return;
@@ -145,10 +292,15 @@ public class ComboSeriesSystem : Skill
                 skill.OnSkillCanceled += OnSkillCanceledHandler;
             }
         }
+        
+        RefreshSeriesBoosts();
     }
 
     private void OnDisableSeries()
     {
+        BreakSeries();
+        RefreshPreparedSkill();
+
         if (_hero?.Abilities == null) return;
 
         foreach (var skill in _hero.Abilities.Abilities)
@@ -162,8 +314,12 @@ public class ComboSeriesSystem : Skill
             }
         }
     }
-
-
+    
+    private void OnDisable()
+    {
+        ClearSeriesBoosts();
+    }
+    
     private void Update()
     {
         if (_isInSeries && !_timerPaused)
@@ -181,12 +337,14 @@ public class ComboSeriesSystem : Skill
     {
         if (!_seriesIsEnable || !_isInSeries) return;
         _timerPaused = true;
+        RefreshSeriesBuff();
     }
 
     private void OnSkillCanceledHandler()
     {
         if (!_seriesIsEnable || !_isInSeries) return;
         _timerPaused = false;
+        RefreshSeriesBuff();
     }
 
     private void OnSkillTargetingStarted(Skill skill)
@@ -259,6 +417,7 @@ public class ComboSeriesSystem : Skill
         {
             _totalEnergySpentThisSeries += series.EnergyCostOnHit;
             _timer = _comboTimeout;
+            RefreshSeriesBuff();
             return;
         }
 
@@ -287,6 +446,7 @@ public class ComboSeriesSystem : Skill
         _currentHitCount++;
         _currentSequence.Add(skill.Info.AbilityForm);
         _timer = _comboTimeout;
+        RefreshSeriesBuff();
 
         UpdateSpeedBoost();
         series?.OnSeriesHit(_currentHitCount, target);
@@ -296,6 +456,10 @@ public class ComboSeriesSystem : Skill
         if (CheckPatternCompleted())
         {
             CompleteSeries(series, target);
+        }
+        else
+        {
+            RefreshSeriesBoosts();
         }
     }
     
@@ -379,6 +543,7 @@ public class ComboSeriesSystem : Skill
     {
         if (_currentHitCount < 2)
         {
+            ApplySeriesSpeed(1f);
             CmdResetSpeedBoost();
             return;
         }
@@ -392,32 +557,33 @@ public class ComboSeriesSystem : Skill
 
         _currentSpeedMultiplier = 1f + bonus;
 
+        ApplySeriesSpeed(_currentSpeedMultiplier);
         CmdApplySpeedBoost(_currentSpeedMultiplier);
     }
 
-    private void ApplyCurrentSpeedBoost()
+    private void OnSeriesSpeedChanged(float previous, float current)
     {
-        if (_hero == null || _hero.Abilities == null) return;
+        if (isServer) return;
 
-        _speedBonusModifier = new AttributeModifier(_currentSpeedMultiplier, ModifierType.Multiplier, this);
-
-        foreach (var skill in _hero.Abilities.Abilities)
-        {
-            if (skill is IComboSeriesParticipatingSkill)
-            {
-                var castSpeedAttr = skill.Attributes[SkillAttributeName.CastSpeed];
-                if (!castSpeedAttr.Modifiers.Contains(_speedBonusModifier))
-                    castSpeedAttr.AddModifier(_speedBonusModifier);
-            }
-        }
+        ApplySeriesSpeed(current);
     }
 
-    [Command]
-    private void CmdApplySpeedBoost(float multiplier)
+    private void ApplySeriesSpeed(float multiplier)
     {
-        if (_hero == null) return;
+        if (_hero == null || _hero.AttributeSystem == null) return;
 
         var castSpeedAttr = _hero.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (Mathf.Approximately(multiplier, 1f))
+        {
+            if (_speedBonusModifier != null)
+            {
+                castSpeedAttr.RemoveModifier(_speedBonusModifier);
+                _speedBonusModifier = null;
+            }
+
+            return;
+        }
 
         if (_speedBonusModifier == null)
         {
@@ -430,6 +596,13 @@ public class ComboSeriesSystem : Skill
         }
     }
 
+    [Command]
+    private void CmdApplySpeedBoost(float multiplier)
+    {
+        _syncedSeriesSpeed = multiplier;
+        ApplySeriesSpeed(multiplier);
+    }
+
     private void ResetSeries()
     {
         _currentTarget = null;
@@ -439,33 +612,19 @@ public class ComboSeriesSystem : Skill
         _totalRuneSpentThisSeries = 0f;
         _currentSpeedMultiplier = 1f;
         _isInSeries = false;
+        _timerPaused = false;
+        _timer = 0f;
+        RefreshSeriesBuff();
+        ApplySeriesSpeed(1f);
         CmdResetSpeedBoost();
-    }
-
-    private void ResetSpeedBoost()
-    {
-        if (_hero == null || _hero.Abilities == null || _speedBonusModifier == null) return;
-
-        foreach (var skill in _hero.Abilities.Abilities)
-        {
-            if (skill is IComboSeriesParticipatingSkill)
-            {
-                skill.Attributes[SkillAttributeName.CastSpeed].RemoveModifier(_speedBonusModifier);
-            }
-        }
-
-        _speedBonusModifier = null;
+        ClearSeriesBoosts();
     }
 
     [Command]
     private void CmdResetSpeedBoost()
     {
-        if (_hero == null || _speedBonusModifier == null) return;
-
-        var castSpeedAttr = _hero.AttributeSystem[CharacterAttributeName.CastSpeed];
-        castSpeedAttr.RemoveModifier(_speedBonusModifier);
-        _speedBonusModifier = null;
-        _currentSpeedMultiplier = 1f;
+        _syncedSeriesSpeed = 1f;
+        ApplySeriesSpeed(1f);
     }
     
     private void AddPattern(List<AbilityForm> sequence, string name = "")
@@ -479,6 +638,7 @@ public class ComboSeriesSystem : Skill
             sequence = new List<AbilityForm>(sequence),
             isActive = true
         });
+        RefreshSeriesBoosts();
     }
 
     private void RemovePattern(string name)
@@ -486,8 +646,10 @@ public class ComboSeriesSystem : Skill
         if (string.IsNullOrEmpty(name))
             return;
 
-        int removedCount = _availablePatterns.RemoveAll(pattern => 
-            pattern.name.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+        int removedCount = _availablePatterns.RemoveAll(pattern => pattern.name.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+        
+        if (removedCount > 0)
+            RefreshSeriesBoosts();
     }
 
     #region Skill

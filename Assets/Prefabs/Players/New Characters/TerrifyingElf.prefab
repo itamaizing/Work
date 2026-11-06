@@ -11602,7 +11602,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 22
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -11683,13 +11683,9 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[19]'
       value: 
-      objectReference: {fileID: 10595332369431687}
-    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_skills.Array.data[20]'
-      value: 
       objectReference: {fileID: 3083395416414514002}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_skills.Array.data[21]'
+      propertyPath: '_skills.Array.data[20]'
       value: 
       objectReference: {fileID: 6686568037796463366}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -12996,9 +12992,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1457342243689941384}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 10595332369431687}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3083395416414514002}
@@ -16517,154 +16510,6 @@ MonoBehaviour:
         Type: 0
         IsDot: 0
         value: 10
---- !u!114 &10595332369431687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300637093874885484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a14f91e1430b91b4aa7e62e5f3ff9eed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IncreaseLengthTalent
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 0
-  _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
-  _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
-    _rangeType: 0
-    _whileMoving: 0
-    _autoAttack: 0
-  _targetingComponent:
-    editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 0
-    _clickFaction: 0
-    _clickUnit: 0
-    _clickMask:
-      serializedVersion: 2
-      m_Bits: 0
-    _interactionMask:
-      serializedVersion: 2
-      m_Bits: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    AdditionalObstacle:
-      serializedVersion: 2
-      m_Bits: 0
-  _costComponent:
-    _base: 0
-    _costs: []
-  _damageValue: 0
-  _baseDamage:
-    rid: -2
-  _isSubjectToGlobalCooldownTime: 1
-  _cooldownComponent:
-    _baseCooldown: 0
-  _chargeComponent:
-    _usesCharges: 0
-    _isComboPart: 0
-    _cooldownType: 0
-    _maxCharges: 0
-    _baseCooldown: 0
-    affectedByCDR: 0
-  _autoAttackDelay: 0
-  _preparingDuration: 0
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _areaComponent:
-    _radius: 0
-    _area: 0
-    _castLength: 0
-    _castWidth: 0
-  _informationRenderComponent:
-    _isAutoRadiusRender: 1
-    _isAutoAreaRender: 1
-    _isAutoLineRender: 1
-    _isDynamicRenderer: 0
-    _prepareBarVisibility: 1
-    _castBarVisibility: 1
-  _disactive: 0
-  maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
-  _animationComponent:
-    _prepareTriggers: []
-    _castTriggers: []
-    _castAnimatorLayer: 0
-    _cachedCastClip: {fileID: 0}
-    _cachedCastClipDuration: 0
-    _cachedCastDelayClip: {fileID: 0}
-    _cachedCastDelayClipDuration: 0
-    _cachedTriggerClips: []
-  _soundComponent:
-    _entries: []
-  _skillAttributes:
-    _attributes:
-    - key: 0
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 1
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 2
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 3
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 4
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 5
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 6
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 7
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-    - key: 8
-      value:
-        _baseValue: 0
-        _cachedValue: 0
-        _modifiers: []
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!114 &3083395416414514002
 MonoBehaviour:
   m_ObjectHideFlags: 0

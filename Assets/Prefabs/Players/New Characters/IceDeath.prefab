@@ -6300,14 +6300,14 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -6329,6 +6329,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -6459,17 +6460,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 1
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 1
+    _targetingType: 1
+    _clickLayer: 3
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8448
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 1
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -6491,6 +6492,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -6616,17 +6618,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 3
       value: 0
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
+    oldType: 3
+    _targetingType: 3
+    _clickLayer: 0
+    _clickFaction: 1
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -6648,6 +6650,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -6777,11 +6780,11 @@ MonoBehaviour:
     oldType: 2
     _targetingType: 2
     _clickLayer: 2
-    _clickFaction: 0
+    _clickFaction: 4
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8192
     _interactionMask:
       serializedVersion: 2
       m_Bits: 256
@@ -6806,6 +6809,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -6936,17 +6940,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 2
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 1
+    _targetingType: 1
+    _clickLayer: 3
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8448
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 1
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -6968,6 +6972,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7098,14 +7103,14 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 6
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 768
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 768
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -7127,6 +7132,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7280,6 +7286,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7400,17 +7407,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 1
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 1
+    _targetingType: 1
+    _clickLayer: 3
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8448
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 1
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -7432,6 +7439,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 2.5
   _channelComponent:
@@ -7561,17 +7569,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 1
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 1
+    _targetingType: 1
+    _clickLayer: 3
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8448
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 1
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -7599,6 +7607,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7728,14 +7737,14 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -7757,6 +7766,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7890,17 +7900,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 1
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 1
+    _targetingType: 1
+    _clickLayer: 3
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8448
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 1
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -7922,6 +7932,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8048,19 +8059,19 @@ MonoBehaviour:
     editorBackupValue:
     - key: 3
       value: 0
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
+    oldType: 3
+    _targetingType: 3
+    _clickLayer: 0
+    _clickFaction: 1
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 1
-    _needLineOfSight: 1
+    _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8080,6 +8091,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 2
   _channelComponent:
@@ -8232,6 +8244,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8383,6 +8396,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8500,17 +8514,17 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
+    oldType: 3
+    _targetingType: 3
     _clickLayer: 0
-    _clickFaction: 0
+    _clickFaction: 1
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 512
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -8538,6 +8552,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8656,17 +8671,17 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
+    oldType: 3
+    _targetingType: 3
     _clickLayer: 0
-    _clickFaction: 0
+    _clickFaction: 1
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 512
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -8694,6 +8709,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8812,17 +8828,17 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
+    oldType: 3
+    _targetingType: 3
     _clickLayer: 0
-    _clickFaction: 0
+    _clickFaction: 1
     _clickUnit: 0
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 512
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -8844,6 +8860,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8963,15 +8980,15 @@ MonoBehaviour:
     editorBackupValue: []
     oldType: 0
     _targetingType: 0
-    _clickLayer: -1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickLayer: 1
+    _clickFaction: 4
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -8993,6 +9010,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9115,14 +9133,14 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 7
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 768
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 768
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -9144,6 +9162,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9262,17 +9281,17 @@ MonoBehaviour:
     editorBackupValue:
     - key: 2
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 2
+    _targetingType: 2
+    _clickLayer: 3
+    _clickFaction: 7
+    _clickUnit: 15
     _clickMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8960
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 768
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
     AdditionalObstacle:
@@ -9294,6 +9313,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9463,6 +9483,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9558,10 +9579,10 @@ MonoBehaviour:
     sequence: 010000000100000001000000010000000100000000000000i
     isActive: 1
   - name: FFForTest
-    sequence: 0100000001000000i
+    sequence: 010000000100000001000000i
     isActive: 1
   - name: FMForTest
-    sequence: 0100000000000000i
+    sequence: 010000000000000001000000i
     isActive: 1
   - name: MMForTest
     sequence: 0000000000000000i
@@ -11093,6 +11114,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:

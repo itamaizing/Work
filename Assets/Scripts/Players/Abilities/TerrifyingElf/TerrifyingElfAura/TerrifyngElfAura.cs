@@ -48,6 +48,112 @@ public class TerrifyingElfAura : Skill
 
     private SkillManager _skillManager;
 
+    #region Keen Eye
+
+    private const float KeenEyeSpellRangeBonus = 1.5f;
+    private const float KeenEyeVisionBonus = 3f;
+
+    [SyncVar(hook = nameof(OnHuntressTalentOneChanged))]
+    private bool _isHuntressTalent_1;
+
+    private bool _huntressTalentOneApplied;
+    private bool _keenEyeVisionApplied;
+    private AttributeModifier _keenEyeRangeModifier;
+    private readonly List<Attribute> _keenEyeRangeAttributes = new();
+
+    public bool IsHuntressTalent_1 => _huntressTalentOneApplied;
+
+    public void EnableHuntressTalent_1(bool value)
+    {
+        ApplyHuntressTalentOne(value);
+
+        if (isServer)
+            _isHuntressTalent_1 = value;
+        else if (isOwned)
+            CmdSetHuntressTalentOne(value);
+    }
+
+    [Command]
+    private void CmdSetHuntressTalentOne(bool value)
+    {
+        _isHuntressTalent_1 = value;
+        ApplyHuntressTalentOne(value);
+    }
+
+    private void OnHuntressTalentOneChanged(bool previous, bool current)
+    {
+        ApplyHuntressTalentOne(current);
+    }
+
+    private void ApplyHuntressTalentOne(bool value)
+    {
+        _huntressTalentOneApplied = value;
+        if (_hero == null) return;
+
+        if (_keenEyeRangeModifier == null)
+        {
+            _keenEyeRangeModifier = new AttributeModifier(0f, ModifierType.Flat, this);
+            foreach (var skill in _hero.Abilities.Abilities)
+            {
+                // These spells use Radius as cast distance; Area is their effect size.
+                if (skill is not (Silence or Suppression or ShotsIntoSky or PullingHealth
+                    or Ghost or Blindness or ShotAstral or GrowTree or RetributiveReckoning
+                    or SubjugationMind or Dispel or SleepSpell or BleedingSpell))
+                    continue;
+
+                var attribute = skill.Attributes[SkillAttributeName.Radius];
+                attribute.AddModifier(_keenEyeRangeModifier);
+                _keenEyeRangeAttributes.Add(attribute);
+            }
+        }
+
+        float bonus = value ? KeenEyeSpellRangeBonus : 0f;
+        if (!Mathf.Approximately(_keenEyeRangeModifier.Value, bonus))
+            _keenEyeRangeModifier.Value = bonus;
+
+        _hero.Abilities.GetSkill<Ghost>()?.MovingToGhostWithZeroMana(value);
+        RefreshKeenEyeVision();
+    }
+
+    private void LateUpdate()
+    {
+        RefreshKeenEyeVision();
+    }
+
+    private void RefreshKeenEyeVision()
+    {
+        if (_hero == null || _hero.VisionComponent == null) return;
+
+        bool enemy = _hero.gameObject.layer == LayerMask.NameToLayer("Enemy");
+        if (enemy)
+        {
+            // Team marking already resets enemy vision to zero.
+            _keenEyeVisionApplied = false;
+            return;
+        }
+
+        bool shouldApply = _huntressTalentOneApplied
+            && (isOwned || _hero.gameObject.layer == LayerMask.NameToLayer("Allies"));
+        if (_keenEyeVisionApplied == shouldApply) return;
+
+        _hero.VisionComponent.VisionRange += shouldApply ? KeenEyeVisionBonus : -KeenEyeVisionBonus;
+        _keenEyeVisionApplied = shouldApply;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var attribute in _keenEyeRangeAttributes)
+            attribute.RemoveModifier(_keenEyeRangeModifier);
+    }
+
+    private void OnEnable()
+    {
+        if (_hero != null)
+            ApplyHuntressTalentOne(_isHuntressTalent_1);
+    }
+
+    #endregion
+
     #region boolTalent
 
     private bool calmnessTalent;
@@ -265,10 +371,12 @@ public class TerrifyingElfAura : Skill
         if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
         _heroMana.ValueChanged += OnManaChanged;
         _baseAreaReconnaissanceFire = reconnaissanceFire.BaseArea;
+        ApplyHuntressTalentOne(_isHuntressTalent_1 || _huntressTalentOneApplied);
     }
 
     private void OnDisable()
     {
+        ApplyHuntressTalentOne(false);
         if (currentSkill != null)
         {
             currentSkill.CastFinished -= ApplyCalmnessTalent;

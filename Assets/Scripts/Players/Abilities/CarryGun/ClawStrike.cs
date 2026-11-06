@@ -27,7 +27,7 @@ public class ClawStrike : Skill
     #region Constants
 
     private const float AnimationSpeedDefault = 1f;
-    private const float SpeedBonusMultiplier = 1.4f;
+    private const float CastSpeedBonus = 0.4f;
 
     private const float RandomChanceMin = 0f;
     private const float RandomChanceMax = 1f;
@@ -62,6 +62,17 @@ public class ClawStrike : Skill
 
     public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+
+        if (_speedBonusModifier == null)
+        {
+            _speedBonusModifier = new AttributeModifier(0f, ModifierType.Percent, this);
+            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(_speedBonusModifier);
+        }
+    }
+
     private bool CheckIsCanCast()
     {
         return Targeting.GetTarget() != null &&
@@ -72,6 +83,13 @@ public class ClawStrike : Skill
     private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
+        ResetSpeedModifier();
+    }
+
+    private void OnDestroy()
+    {
+        if (_speedBonusModifier != null && _hero != null && _hero.AttributeSystem != null)
+            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].RemoveModifier(_speedBonusModifier);
     }
 
     private void OnEnable()
@@ -94,6 +112,7 @@ public class ClawStrike : Skill
     public void ClawStrikeSpeed(bool value)
     {
         _isClawStrikeComboTalentActive = value;
+        if (!value) ResetSpeedModifier();
     }
 
     public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
@@ -256,15 +275,9 @@ public class ClawStrike : Skill
 
     protected override void PlayCastAnim()
     {
-        RemoveSpeedModifier();
-
         _wasCurrentCastBoosted = _isClawStrikeComboTalentActive && ComboContext.ClawStrikeContext.IsValidPreviousSkill();
 
-        if (_wasCurrentCastBoosted)
-        {
-            _speedBonusModifier = new AttributeModifier(SpeedBonusMultiplier, ModifierType.Multiplier, this);
-            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(_speedBonusModifier);
-        }
+        _speedBonusModifier.Value = _wasCurrentCastBoosted ? CastSpeedBonus : 0f;
 
         
         float currentCastSpeed = GetCastSpeed();
@@ -292,17 +305,15 @@ public class ClawStrike : Skill
         AnimCastEnded();
     }
     
-    private void RemoveSpeedModifier()
+    private void ResetSpeedModifier()
     {
         if (_speedBonusModifier != null)
-        {
-            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].RemoveModifier(_speedBonusModifier);
-            _speedBonusModifier = null;
-        }
+            _speedBonusModifier.Value = 0f;
     }
 
     private void HandleSkillCanceled()
     {
+        ResetSpeedModifier();
         _player.Move.StopLookAt();
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
@@ -356,7 +367,7 @@ public class ClawStrike : Skill
     }
     protected override void ClearData()
     {
-        RemoveSpeedModifier();
+        ResetSpeedModifier();
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());

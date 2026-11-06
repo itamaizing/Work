@@ -1240,7 +1240,9 @@ public enum States
 	OtherForces,
 	MagicShield,
 	VampirismBuff,
-	MetabolismReptile
+	MetabolismReptile,
+	IceDeathSeriesPhysical,
+	IceDeathSeriesMagic
 }
 public enum BaffDebaff
 {

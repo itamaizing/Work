@@ -5,31 +5,24 @@ public class TrueSight : StateBasic
 {
     public override States State => States.TrueSightState;
     public override StateType Type => StateType.Magic;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new();
+
+    public override bool TryApply(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
+    {
+        MaxDuration = durationToExit;
+        return base.TryApply(character, durationToExit, damageToExit, personMadeBuff, skillName);
+    }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
     {
-        characterState = character;
-        abilities = character.Character.GetComponent<SkillManager>();
-        health = character.Character.GetComponent<Health>();
-        sourceCaster = personMadeBuff;
-
-        RemainingDuration = durationToExit;
-
         CheckInvisibility();
-    }
-
-    public override void UpdateState()
-    {
-
     }
 
     protected override void OnExit()
     {
         var character = characterState.GetComponent<Character>();
         if (characterState.CheckForState(States.Invisible) || characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
-        characterState.RemoveState(this);
     }
 
     private void CheckInvisibility()

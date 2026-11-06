@@ -62,10 +62,10 @@ public class Ghost : Skill
 
     private float GetCastRadius()
     {
-        if (!_isGhostSpawnInRadiusTree) return baseRadius;
+        if (!_isGhostSpawnInRadiusTree) return AreaInfo.Radius;
 
         float vision = Hero.VisionComponent != null ? Hero.VisionComponent.VisionRange : _heroVisionRadius;
-        return Mathf.Max(baseRadius, vision);
+        return Mathf.Max(AreaInfo.Radius, vision);
     }
 
     private float GetExtendedRadius() => _isGhostSpawnInRadiusTree ? 0f : extendedRadius;
@@ -208,15 +208,21 @@ public class Ghost : Skill
         if(_movingToGhostWithZeroMana == value) return;
         
         _movingToGhostWithZeroMana = value;
+
+        if (_manaResource == null) return;
         
         if (_movingToGhostWithZeroMana)
         {
             _manaResource.ValueChanged -= CheckForMana;
             _manaResource.ValueChanged += CheckForMana;
+            _manaResource.MaxValueChanged -= CheckForMaxMana;
+            _manaResource.MaxValueChanged += CheckForMaxMana;
+            CheckForMana(0f, _manaResource.CurrentValue);
         }
         else
         {
             _manaResource.ValueChanged -= CheckForMana;
+            _manaResource.MaxValueChanged -= CheckForMaxMana;
             DisableSkillBoost();
         }
     }
@@ -242,6 +248,15 @@ public class Ghost : Skill
         RegisterSpawnEvents();
 
         _manaResource = _hero.Resources[ResourceType.Mana];
+
+        if (_movingToGhostWithZeroMana)
+        {
+            _manaResource.ValueChanged -= CheckForMana;
+            _manaResource.ValueChanged += CheckForMana;
+            _manaResource.MaxValueChanged -= CheckForMaxMana;
+            _manaResource.MaxValueChanged += CheckForMaxMana;
+            CheckForMana(0f, _manaResource.CurrentValue);
+        }
         
         AreaInfo.Radius = baseRadius;
         if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
@@ -249,7 +264,17 @@ public class Ghost : Skill
 
     private void CheckForMana(float oldValue, float newValue)
     {
-        if (newValue < _manaResource.MaxValue * ManaPercentToCheckTeleport)
+        UpdateLowManaBoost(ShouldPreserveGhost(currentMana: newValue));
+    }
+
+    private void CheckForMaxMana(float oldValue, float newValue)
+    {
+        UpdateLowManaBoost(ShouldPreserveGhost(maximumMana: newValue));
+    }
+
+    private void UpdateLowManaBoost(bool active)
+    {
+        if (active)
             EnableSkillBoost();
         else
             DisableSkillBoost();
@@ -262,6 +287,14 @@ public class Ghost : Skill
     {
         TargetingSuccess += OnTargetingConcluded;
         TargetingCanceled += OnTargetingConcludedNoArgs;
+        if (_movingToGhostWithZeroMana && _manaResource != null)
+        {
+            _manaResource.ValueChanged -= CheckForMana;
+            _manaResource.ValueChanged += CheckForMana;
+            _manaResource.MaxValueChanged -= CheckForMaxMana;
+            _manaResource.MaxValueChanged += CheckForMaxMana;
+            CheckForMana(0f, _manaResource.CurrentValue);
+        }
     }
 
     private void OnDisable()
@@ -270,6 +303,11 @@ public class Ghost : Skill
         TargetingCanceled -= OnTargetingConcludedNoArgs;
 
         UnregisterSpawnEvents();
+        if (_manaResource != null)
+        {
+            _manaResource.ValueChanged -= CheckForMana;
+            _manaResource.MaxValueChanged -= CheckForMaxMana;
+        }
         if (_checkExtendedRadiusCoroutine != null)
         {
             StopCoroutine(_checkExtendedRadiusCoroutine);
@@ -565,7 +603,7 @@ public class Ghost : Skill
         ActivateWayIndicator();
 
         if (ghost.TryGetComponent<GhostAura>(out GhostAura ghostAura)) PerformTeleport(ghost.transform.position);
-        if (manaTeleportToGhost() || !_movingToGhostWithZeroMana) RemoveGhost(ghost);
+        if (!ShouldPreserveGhost()) RemoveGhost(ghost);
     }
     
     protected override void SpendResources()
@@ -840,9 +878,11 @@ public class Ghost : Skill
         }
     }
 
-    private bool manaTeleportToGhost()
+    private bool ShouldPreserveGhost(float? currentMana = null, float? maximumMana = null)
     {
-        return _manaResource.CurrentValue > _manaResource.MaxValue * ManaPercentToCheckTeleport;
+        return _movingToGhostWithZeroMana && _manaResource != null
+            && (currentMana ?? _manaResource.CurrentValue)
+                < (maximumMana ?? _manaResource.MaxValue) * ManaPercentToCheckTeleport;
     }
 
     [Command] private void CmdAcSummoningGhost() => RpcAcSummoningGhost();
