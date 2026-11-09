@@ -8431,6 +8431,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _teamIndex: 0
 --- !u!114 &4426863896191195331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8877,22 +8878,27 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 4
+    _clickUnit: 13
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -8903,15 +8909,13 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 1.5
     _area: 0
@@ -8943,11 +8947,63 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 542506517503282851}
   minDamage: 1
   maxDamage: 4
   bleedingDuration: 3
   bleedingChance: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1393425115325331674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8964,7 +9020,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _attributes: []
-  TemporaryResourceDisplay: []
 --- !u!114 &2019673168310186118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9046,22 +9101,27 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9072,15 +9132,13 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
@@ -9112,7 +9170,59 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _duration: 5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &5264275895270310813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9141,22 +9251,27 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
   _damageValue: 5
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -9167,15 +9282,13 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 2
     _area: 0
@@ -9207,8 +9320,60 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 542506517503282851}
   _stopDistance: 0.5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &4542645455032485449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9237,22 +9402,27 @@ MonoBehaviour:
   _targetingComponent:
     editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 3
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _costComponent:
     _base: 0
     _costs: []
   _damageValue: 0
+  _baseDamage:
+    rid: -2
   _isSubjectToGlobalCooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
@@ -9263,15 +9433,13 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
-  _castDeley: 0
+  _preparingDuration: 0
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _areaComponent:
     _radius: 2
     _area: 0
@@ -9303,12 +9471,64 @@ MonoBehaviour:
     _cachedTriggerClips: []
   _soundComponent:
     _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 542506517503282851}
   _minDamage: 1
   _maxDamage: 3
   _attackInterval: 1.2
   _searchInterval: 0.25
   _targetSearchRadiusMultiplier: 1.1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
@@ -14541,6 +14761,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents: []
+  _allTalents: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &7159499924228102383
 GameObject:
   m_ObjectHideFlags: 0

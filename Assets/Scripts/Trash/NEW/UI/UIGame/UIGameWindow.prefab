@@ -4590,7 +4590,6 @@ MonoBehaviour:
   - {fileID: 1245912761225712934}
   - {fileID: 5987989851800356111}
   _teamSource: {fileID: 5691334368756215407}
-  _clickIgnoreRects: []
 --- !u!1 &2349759185007151392
 GameObject:
   m_ObjectHideFlags: 0
@@ -17157,35 +17156,35 @@ PrefabInstance:
       objectReference: {fileID: 175030183844216948}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._sizeClamp.Max.x
-      value: 800
+      value: 1125
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._sizeClamp.Max.y
-      value: 200
+      value: 580
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._sizeClamp.Min.x
-      value: 400
+      value: 145
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._sizeClamp.Min.y
-      value: 100
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._scaleClamp.Max.x
-      value: 100
+      value: 850
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._scaleClamp.Max.y
-      value: 20
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._scaleClamp.Min.x
-      value: 25
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._scaleClamp.Min.y
-      value: 10
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: managedReferences[7978062560989544555]._scalingPreserveAspectRatio

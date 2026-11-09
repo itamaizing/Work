@@ -156226,7 +156226,7 @@ PrefabInstance:
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _panel
       value: 
-      objectReference: {fileID: 2047891851}
+      objectReference: {fileID: 1255025724}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _confineArea
       value: 
@@ -178296,7 +178296,7 @@ PrefabInstance:
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _panel
       value: 
-      objectReference: {fileID: 2047891851}
+      objectReference: {fileID: 125873226}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _confineArea
       value: 
@@ -200563,7 +200563,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 3
+  m_ChildAlignment: 5
   m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -278897,6 +278897,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875239973119195903, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2972663197597184949, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -278952,22 +278956,6 @@ PrefabInstance:
     - target: {fileID: 3337628622503060069, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: managedReferences[7978062517189214321]._cornerSize
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3337628622503060069, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
-      propertyPath: managedReferences[7978062560989544555]._sizeClamp.Max.x
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 3337628622503060069, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
-      propertyPath: managedReferences[7978062560989544555]._sizeClamp.Max.y
-      value: 400
-      objectReference: {fileID: 0}
-    - target: {fileID: 3337628622503060069, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
-      propertyPath: managedReferences[7978062560989544555]._scaleClamp.Max.x
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 3337628622503060069, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
-      propertyPath: managedReferences[7978062560989544555]._scaleClamp.Max.y
-      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3351236879529727414, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -280052,6 +280040,10 @@ PrefabInstance:
     - target: {fileID: 9072973448013671613, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: _hideUnusedButtons
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9159237905461615780, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9218407394255202166, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_IsActive

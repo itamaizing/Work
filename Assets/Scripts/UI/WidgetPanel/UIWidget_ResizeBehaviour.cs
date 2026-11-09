@@ -119,8 +119,8 @@ namespace UIWidget
                 handleEvent.Key.HoverStart += handleEvent.Value.HoverStart;
                 handleEvent.Key.HoverEnd += handleEvent.Value.HoverEnd;
 
-                _resizeEvents.Clear();
             }
+            _resizeEvents.Clear();
         }
 
         private void SetUpBorderSize()
