@@ -16,6 +16,7 @@ public class StateTooltip : MonoBehaviour
 
     private Coroutine _showRoutine;
     private bool _isShowing;
+    private MonoBehaviour _owner;
 
     private void Awake()
     {
@@ -23,11 +24,10 @@ public class StateTooltip : MonoBehaviour
         Hide();
     }
 
-    public void RequestShow(string tooltipName, string description)
+    public void RequestShow(MonoBehaviour owner, string tooltipName, string description)
     {
-        //if (string.IsNullOrEmpty(tooltipName) && string.IsNullOrEmpty(description)) return;
-
-        CancelPendingShow();
+        Hide();
+        _owner = owner;
         _showRoutine = StartCoroutine(ShowAfterDelay(tooltipName, description));
     }
 
@@ -67,9 +67,15 @@ public class StateTooltip : MonoBehaviour
         _rectTransform.position = worldPoint;
     }
 
-    public void Hide()
+    public void Hide(MonoBehaviour owner)
+    {
+        if (_owner == owner) Hide();
+    }
+
+    private void Hide()
     {
         CancelPendingShow();
+        _owner = null;
         _isShowing = false;
         _root.SetActive(false);
     }

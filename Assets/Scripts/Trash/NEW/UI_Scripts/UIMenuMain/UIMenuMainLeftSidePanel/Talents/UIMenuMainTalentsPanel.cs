@@ -19,6 +19,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     private readonly Dictionary<UIMenuMainTalentsPanelGroup, bool> _savedGroupStates = new();
 
     private TalentSystem _talentSystem;
+    private bool _isInteractable;
 
     private void Awake()
     {
@@ -49,12 +50,14 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
+        UnsubscribeFromLevel();
         ResetPanel();
 
         _isCollapsed = false;
         _savedGroupStates.Clear();
 
         _talentSystem = talentSystem;
+        _isInteractable = isInteractable;
 
         if (!_isMainMenu)
         {
@@ -102,6 +105,11 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
         SaveManager.Instance.TalentStateSettled -= UpdateTalentPointsText;
 
+        UnsubscribeFromLevel();
+    }
+
+    private void UnsubscribeFromLevel()
+    {
         if (!_isMainMenu)
         {
             if (_talentSystem != null)
@@ -141,7 +149,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             if (_talantsText != null)
                 _talantsText.gameObject.SetActive(true);
 
-            if (!_isMainMenu)
+            if (!_isMainMenu || !_isInteractable)
                 _talantsText.ChangeKey(_talentSystem.Points);
             else
             {

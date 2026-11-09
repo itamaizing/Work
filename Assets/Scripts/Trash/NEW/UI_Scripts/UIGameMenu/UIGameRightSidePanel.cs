@@ -1,11 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIGameRightSidePanel : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
     [SerializeField] private GameObject _rightPanelHolder;
+
+    private HeroComponent _inspectedHero;
 
     private void Awake()
     {
@@ -14,43 +15,30 @@ public class UIGameRightSidePanel : MonoBehaviour
 
     private void OnEnable()
     {
-        if (TargetSelector.Instance != null)
-            TargetSelector.Instance.TargetChanged += HandleTargetChanged;
+        PlayerIconMain.HeroPortraitClicked += OnHeroPortraitClicked;
     }
 
     private void OnDisable()
     {
-        if (TargetSelector.Instance != null)
-            TargetSelector.Instance.TargetChanged -= HandleTargetChanged;
+        PlayerIconMain.HeroPortraitClicked -= OnHeroPortraitClicked;
     }
 
-    private void HandleHeaderClicked()
+    private void OnHeroPortraitClicked(HeroComponent hero, bool isAllied)
     {
-        TargetSelector.Instance?.ClearTarget();
-    }
-
-    private void HandleTargetChanged(Character target)
-    {
-        if (target == null)
+        if (isAllied) return;
+        if (_inspectedHero == hero && _rightPanelHolder.activeSelf)
         {
+            _inspectedHero = null;
             _rightPanelHolder.SetActive(false);
             return;
         }
 
+        _inspectedHero = hero;
         _rightPanelHolder.SetActive(true);
-
-        if (target is HeroComponent hero)
-        {
-            _attributesPanel.gameObject.SetActive(true);
-            _attributesPanel.Show(hero, false);
-
-            _talentsPanel.gameObject.SetActive(true);
-            _talentsPanel.Show(hero.TalentManager, true, isInteractable: false);
-        }
-        else
-        {
-            _attributesPanel.gameObject.SetActive(false);
-            _talentsPanel.gameObject.SetActive(false);
-        }
+        _attributesPanel.gameObject.SetActive(true);
+        _attributesPanel.Show(hero, isMenu: false, isInteractable: false);
+        _attributesPanel.ShowHide(true);
+        _talentsPanel.gameObject.SetActive(true);
+        _talentsPanel.Show(hero.TalentManager, isGameUI: true, isInteractable: false);
     }
 }

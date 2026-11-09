@@ -21,9 +21,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     
     private int _freeAttributePoints;
 
-    public bool CanAddPoint() => _freeAttributePoints > 0;
-
-    private bool _isActive = false;
+    public bool IsInteractable { get; private set; } = true;
+    public bool CanAddPoint() => IsInteractable && _freeAttributePoints > 0;
 
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
     
@@ -37,12 +36,13 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
             _button.onClick.AddListener(SwitchPanel);
     }
 
-    public void Show(Character hero, bool isMenu = true)
+    public void Show(Character hero, bool isMenu = true, bool isInteractable = true)
     {
-        if (_hero == hero) { RefreshFromSource(); return; }
+        if (_hero == hero && IsInteractable == isInteractable) { RefreshFromSource(); return; }
         if (_hero != null && !isMenu) _hero.AttributeSystem.AttributesReloaded -= RefreshFromSource;
 
         _hero = hero;
+        IsInteractable = isInteractable;
         if (isMenu)
         {
             if (_menuAttributeSystemGO != null)
@@ -89,16 +89,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     [ContextMenu("Run Custom Debug Function")]
     public void SwitchPanel()
     {
-        if(_isActive)
-        {
-            _isActive = false;
-            ShowHide(_isActive);
-        }
-        else
-        {
-            _isActive = true;
-            ShowHide(_isActive);
-        }
+        ShowHide(!_itemsParent.gameObject.activeSelf);
     }
     
     private void OnEnable()
@@ -110,6 +101,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
         if (_attributeSystem != null) _attributeSystem.AttributesReloaded -= RefreshFromSource;
+        _hero = null;
         foreach (var attribute in _attributes)
         {
             //attribute.OnValueChange -= UpdateAttributesPoints;
@@ -139,7 +131,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     public void ShowHide(bool isShow = true)
     {
-        _itemsParent.gameObject.SetActive(_itemsParent.gameObject.activeInHierarchy == false && isShow);
+        _itemsParent.gameObject.SetActive(isShow);
     }
 
     public void UpdateAttributesPoints()

@@ -21,10 +21,11 @@ public class StateIcoItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log($"Tooltip.Instance is null: {StateTooltip.Instance == null}");
-        StateTooltip.Instance?.RequestShow(ResolvedTooltipName, ResolvedTooltipDescription);
+        StateTooltip.Instance?.RequestShow(this, ResolvedTooltipName, ResolvedTooltipDescription);
     }
 
     public void OnPointerExit(PointerEventData eventData) =>
-        StateTooltip.Instance?.Hide();
+        StateTooltip.Instance?.Hide(this);
+
+    private void OnDisable() => StateTooltip.Instance?.Hide(this);
 }

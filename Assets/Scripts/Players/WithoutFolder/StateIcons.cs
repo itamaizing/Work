@@ -75,11 +75,7 @@ public class StateIcons : MonoBehaviour
         _iconByState.Remove(state);
         _activeIcons.Remove(ico);
 
-        if (ico != null)
-        {
-            StateTooltip.Instance?.Hide();
-            Destroy(ico.gameObject);
-        }
+        if (ico != null) Destroy(ico.gameObject);
     }
 
     private void HandleDurationChanged(StateBasic state, float current, float max)

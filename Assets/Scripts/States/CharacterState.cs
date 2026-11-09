@@ -48,6 +48,7 @@ public abstract class StateBasic
 
     protected bool isHidden = false;
     public bool IsHidden => isHidden;
+    internal long ApplicationOrder { get; set; }
 
     public abstract States State { get; }
     public abstract StateType Type { get; }
@@ -460,6 +461,7 @@ public class CharacterState : NetworkBehaviour
 {
     private Character _hero;
     private List<StateBasic> _currentStates = new List<StateBasic>();
+    private long _nextApplicationOrder;
     [SerializeField] private StateIcons _stateIcons;
     [SerializeField] private StateEffects _stateEffects;
 
@@ -865,6 +867,7 @@ public class CharacterState : NetworkBehaviour
         bool applied = stateInstance.TryApply(this, duration, damageToExit, sourceCaster, skillName);
         if (!applied) return;
 
+        stateInstance.ApplicationOrder = _nextApplicationOrder++;
         _currentStates.Add(stateInstance);
         OnStateAdded?.Invoke(stateInstance);
 

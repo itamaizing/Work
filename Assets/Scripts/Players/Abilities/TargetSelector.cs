@@ -1,12 +1,13 @@
-using System;
 using UnityEngine;
 
 public class TargetSelector : MonoBehaviour
 {
     public static TargetSelector Instance { get; private set; }
 
-    public Character CurrentTarget { get; private set; }
-    public event Action<Character> TargetChanged;
+    public Character InspectedTarget { get; private set; }
+
+    private int _inspectionLayers;
+
     private void Awake()
     {
         if (Instance != null)
@@ -15,47 +16,53 @@ public class TargetSelector : MonoBehaviour
             return;
         }
         Instance = this;
+        _inspectionLayers = LayerMask.GetMask("Allies", "Enemy", "ControlledObjects", "Damageble", "Default", "Ground", "Obstecls");
     }
 
     private void OnEnable()
     {
-        InputHandler.OnClick += HandleGroundClick;
+        InputHandler.OnClick += HandleWorldClick;
     }
 
     private void OnDisable()
     {
-        InputHandler.OnClick -= HandleGroundClick;
+        InputHandler.OnClick -= HandleWorldClick;
+        SetTarget(null);
     }
 
-    public void SelectTarget(Character character)
+    private void OnDestroy()
     {
-        if (CurrentTarget == character) return;
-
-        if (CurrentTarget != null)
-            CurrentTarget.Died -= OnTargetDied;
-
-        CurrentTarget = character;
-
-        if (CurrentTarget != null)
-            CurrentTarget.Died += OnTargetDied;
-
-        TargetChanged?.Invoke(character);
+        if (Instance == this) Instance = null;
     }
 
-    public void ClearTarget()
+    private void HandleWorldClick()
     {
-        if (CurrentTarget == null) return;
-        CurrentTarget.Died -= OnTargetDied;
-        CurrentTarget = null;
-        TargetChanged?.Invoke(null);
-    }
-
-    private void HandleGroundClick()
-    {
-        if (IsConfirmingCast())
+        if (Input.GetKey(KeyCode.LeftAlt) || IsConfirmingCast())
             return;
 
-        ClearTarget();
+        var camera = Camera.main;
+        if (camera == null) return;
+
+        var ray = camera.ScreenPointToRay(Input.mousePosition);
+        var character = Physics.Raycast(ray, out var hit, Mathf.Infinity, _inspectionLayers, QueryTriggerInteraction.Ignore)
+            ? hit.collider.GetComponentInParent<Character>()
+            : null;
+        if (character != null && character == Character.Local) return;
+        SetTarget(character);
+    }
+
+    public void SetTarget(Character character)
+    {
+        if (character == null || character == Character.Local || character.IsDead) character = null;
+        if (ReferenceEquals(InspectedTarget, character)) return;
+
+        if (InspectedTarget != null)
+            InspectedTarget.Died -= OnInspectedTargetDied;
+
+        InspectedTarget = character;
+
+        if (InspectedTarget != null)
+            InspectedTarget.Died += OnInspectedTargetDied;
     }
 
     private bool IsConfirmingCast()
@@ -72,8 +79,5 @@ public class TargetSelector : MonoBehaviour
         return false;
     }
     
-    private void OnTargetDied(Character character)
-    {
-        ClearTarget();
-    }
+    private void OnInspectedTargetDied(Character character) => SetTarget(null);
 }

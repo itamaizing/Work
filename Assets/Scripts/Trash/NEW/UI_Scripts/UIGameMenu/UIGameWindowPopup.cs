@@ -17,20 +17,20 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private GameObject _teamStatistics;
     [SerializeField] private GameObject[] _forHide;
     [SerializeField] private GameObject _teamSource; //test
-    [SerializeField] private RectTransform[] _clickIgnoreRects;
 
     private MinionSkillPanelController _minionSkillController;
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
     
-    private bool _isHeroInfoOpen;
+    private HeroComponent _inspectedHero;
 
     private void Awake()
     {
         InputHandler.ShowMenu += ShowSettings;
         InputHandler.ShowStatistics += ShowStatistics;
         _minionSkillController = new MinionSkillPanelController(_skillMinionPanel);
+        HideHeroInfo();
     }
 
     public void SwichAll(bool value)
@@ -77,8 +77,7 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.CharacterSelected += OnCharacterSelected;
         _selectManager.CharacterDeselected += OnCharacterDeselected;
 
-        PlayerIconMain.OwnIconClicked += ShowHeroInfo;
-        InputHandler.OnClick += OnAnyClick;
+        PlayerIconMain.HeroPortraitClicked += OnHeroPortraitClicked;
     }
 
     private void OnDisable()
@@ -87,8 +86,7 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.CharacterSelected -= OnCharacterSelected;
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
 
-        PlayerIconMain.OwnIconClicked -= ShowHeroInfo;
-        InputHandler.OnClick -= OnAnyClick;
+        PlayerIconMain.HeroPortraitClicked -= OnHeroPortraitClicked;
     }
     
     private void OnDestroy()
@@ -96,18 +94,24 @@ public class UIGameWindowPopup : MonoBehaviour
         _minionSkillController?.Dispose();
     }
     
-    private void ShowHeroInfo(Character character)
+    private void OnHeroPortraitClicked(HeroComponent hero, bool isAllied)
     {
-        if (character is not HeroComponent hero) return;
+        if (!isAllied) return;
+        if (_inspectedHero == hero && _talentsPanel.gameObject.activeSelf)
+        {
+            HideHeroInfo();
+            return;
+        }
 
+        bool canEdit = hero == Character.Local;
         _attributesPanel.gameObject.SetActive(true);
-        _attributesPanel.Show(hero, false);
+        _attributesPanel.Show(hero, isMenu: false, isInteractable: canEdit);
         _attributesPanel.ShowHide(true);
 
         _talentsPanel.gameObject.SetActive(true);
-        _talentsPanel.Show(hero.TalentManager, true);
+        _talentsPanel.Show(hero.TalentManager, isGameUI: true, isInteractable: canEdit);
 
-        _isHeroInfoOpen = true;
+        _inspectedHero = hero;
     }
 
     private void HideHeroInfo()
@@ -117,21 +121,7 @@ public class UIGameWindowPopup : MonoBehaviour
         _talentsPanel.HidePanels();
         _talentsPanel.gameObject.SetActive(false);
 
-        _isHeroInfoOpen = false;
-    }
-
-    private void OnAnyClick()
-    {
-        if (!_isHeroInfoOpen) return;
-
-        Vector2 pos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
-        
-        foreach (var rect in _clickIgnoreRects)
-            if (rect != null && rect.gameObject.activeInHierarchy &&
-                RectTransformUtility.RectangleContainsScreenPoint(rect, pos))
-                return;
-
-        HideHeroInfo();
+        _inspectedHero = null;
     }
     
     private void OnCharacterSelected(Character character)
@@ -158,7 +148,6 @@ public class UIGameWindowPopup : MonoBehaviour
         _playerIcon.IconHolder.SetActive(false);
         _minionPanel.OnCharacterDeselected(character);
         _skillPanel.OnCharacterDeselected(character);
-        HideHeroInfo();
         _skillMinionPanel.gameObject.SetActive(false);
 
         _currentCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
@@ -172,9 +161,6 @@ public class UIGameWindowPopup : MonoBehaviour
         _playerIcon.OnCharacterSelected(_currentHero);
         _minionPanel.OnCharacterSelected(_currentHero);
         _skillPanel.OnCharacterSelected(_currentHero);
-
-        if (_isHeroInfoOpen) ShowHeroInfo(_currentHero);
-        else HideHeroInfo();
 
         UpdateMinionSkills();
 

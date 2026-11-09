@@ -27,6 +27,12 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
         _owner = owner;
         _currentAttributes = attribute;
 
+        if (!owner.IsInteractable)
+        {
+            foreach (var button in GetComponentsInChildren<Button>(true))
+                button.interactable = false;
+        }
+
         foreach (var modif in _currentAttributes.Modifiers)
         {
             _modifs.Add(modif);
@@ -50,7 +56,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void Reduce()
     {
-        if (_modifs.Count <= 0) return;
+        if ((_owner != null && !_owner.IsInteractable) || _modifs.Count <= 0) return;
 
         var modif = _modifs[0];
         _currentAttributes.RemoveModifier(modif);

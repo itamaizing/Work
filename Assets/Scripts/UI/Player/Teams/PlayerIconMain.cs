@@ -7,7 +7,7 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
 {
     [SerializeField] private LvlInfo _lvlInfo;
     [SerializeField] private Image _FrameBlink;
-    public static event Action<Character> OwnIconClicked;
+    public static event Action<HeroComponent, bool> HeroPortraitClicked;
 
     private Character _shownCharacter;
 
@@ -34,11 +34,12 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
         if (eventData.button != PointerEventData.InputButton.Left) return;
 
         var target = Character != null ? Character : _shownCharacter;
-        if (target == null) return;
+        var local = Character.Local;
+        if (target == null || target is not HeroComponent hero || local == null) return;
 
-        if (target == Character.Local)
-            OwnIconClicked?.Invoke(target);
-        else
-            TargetSelector.Instance?.SelectTarget(target);
+        bool isAllied = hero == local ||
+            (local.NetworkSettings != null && hero.NetworkSettings != null &&
+             local.RelationTo(hero) == CharacterRelation.Ally);
+        HeroPortraitClicked?.Invoke(hero, isAllied);
     }
 }
