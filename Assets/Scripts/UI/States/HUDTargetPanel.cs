@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +6,7 @@ public class HUDTargetPanel : MonoBehaviour
 {
     [SerializeField] private GameObject _targetInfo;
     [SerializeField] private Image _portrait;
-    [SerializeField] private ResourceBar[] _bars;
+    [SerializeField] private HUDResourceBar[] _bars;
 
     private Character _target;
     private CanvasGroup _visibility;
@@ -24,9 +22,6 @@ public class HUDTargetPanel : MonoBehaviour
         var selector = TargetSelector.Instance;
         var target = selector != null ? selector.InspectedTarget : null;
         SetTarget(target != null && target.IsInitialized && !target.IsDead ? target : null);
-
-        foreach (var bar in _bars)
-            bar.Refresh();
     }
 
     private void OnDisable() => SetTarget(null);
@@ -41,8 +36,16 @@ public class HUDTargetPanel : MonoBehaviour
 
         foreach (var bar in _bars)
         {
-            bar.Bind(target);
-            bar.Root.transform.SetAsLastSibling();
+            Resource resource = null;
+            if (target != null)
+            {
+                target.TryGetResource(bar.Type, out resource);
+                if (bar.Type == ResourceType.Health && target.Health != null)
+                    resource = target.Health;
+            }
+
+            bar.Bind(resource);
+            bar.transform.SetAsLastSibling();
         }
 
         if (target != null && target.Resource != null && target.Resource != target.Health)
@@ -51,7 +54,7 @@ public class HUDTargetPanel : MonoBehaviour
             {
                 if (bar.Type != target.Resource.Type) continue;
 
-                bar.Root.transform.SetSiblingIndex(1);
+                bar.transform.SetSiblingIndex(1);
                 break;
             }
         }
@@ -64,50 +67,5 @@ public class HUDTargetPanel : MonoBehaviour
         _visibility.alpha = visible ? 1f : 0f;
         _visibility.blocksRaycasts = visible;
         _targetInfo.SetActive(visible);
-    }
-
-    [Serializable]
-    private sealed class ResourceBar
-    {
-        [SerializeField] private ResourceType _type;
-        [SerializeField] private GameObject _root;
-        [SerializeField] private RectTransform _fill;
-        [SerializeField] private TMP_Text _label;
-
-        private Resource _resource;
-        private float _current = float.NaN;
-        private float _max = float.NaN;
-
-        public ResourceType Type => _type;
-        public GameObject Root => _root;
-
-        public void Bind(Character target)
-        {
-            _resource = null;
-            if (target != null)
-            {
-                target.TryGetResource(_type, out _resource);
-                if (_type == ResourceType.Health && target.Health != null)
-                    _resource = target.Health;
-            }
-
-            _current = float.NaN;
-            _max = float.NaN;
-            _root.SetActive(_resource != null);
-        }
-
-        public void Refresh()
-        {
-            if (_resource == null) return;
-
-            float current = _resource.CurrentValue;
-            float max = _resource.MaxValue;
-            if (current == _current && max == _max) return;
-
-            _current = current;
-            _max = max;
-            _fill.anchorMax = new Vector2(max > 0f ? Mathf.Clamp01(current / max) : 0f, 1f);
-            _label.SetText("{0:0} / {1:0}", current, max);
-        }
     }
 }

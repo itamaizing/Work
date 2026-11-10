@@ -7,8 +7,8 @@ public class PlayerIcon : MonoBehaviour
     [SerializeField] private Image _playerIcon;
     [SerializeField] private ReviveVisualUI _reviveVisual;
     [SerializeField] private Bar _playerHp;
-    [SerializeField] private Bar _playerMana;
     [SerializeField] private GameObject _iconHolder;
+    [SerializeField] private HUDResourceBar[] _resourceBars = System.Array.Empty<HUDResourceBar>();
     
     private Character _character;
     private TeamsPanel _panel;
@@ -58,7 +58,21 @@ public class PlayerIcon : MonoBehaviour
     protected virtual void UpdateInfo(Character character)
     {
         _playerIcon.sprite = character.Data.Icon;
-        _playerHp.Init(character.Health);
+        
+        if (_playerHp != null)
+            _playerHp.Init(character.Health);
+        
+        foreach (var bar in _resourceBars)
+        {
+            if (bar.Type == ResourceType.Health)
+            {
+                bar.Bind(character.Health);
+                continue;
+            }
+
+            character.TryGetResource(bar.Type, out var resource);
+            bar.Bind(resource);
+        }
         // _playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
     }
 

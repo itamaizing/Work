@@ -10,6 +10,8 @@ public class RuneComponent : Resource
 
     private float _externalRegenMultiplier = 1f;
 
+    public override float RegenerationPerSecond => Mathf.Max(0f, base.RegenerationPerSecond) * _externalRegenMultiplier;
+
     public void SetExternalRegenMultiplier(float multiplier)
     {
         _externalRegenMultiplier = Mathf.Max(0f, multiplier);

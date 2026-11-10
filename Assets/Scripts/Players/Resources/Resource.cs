@@ -85,6 +85,18 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     public ResourceType Type => _resourceType;
 
+    public virtual float RegenerationPerSecond
+    {
+        get
+        {
+            float period = _attr_regenPeriod?.GetValue() ?? _regenerationPeriod;
+            if (period <= 0f) return 0f;
+
+            float amount = _attr_regenValue?.GetValue() ?? _regenerationValue;
+            return amount / period;
+        }
+    }
+
     public event Action<float, float> MaxValueChanged;
     public event Action<float, float> ValueChanged;
     public event Action<float> PhantomValueShown;

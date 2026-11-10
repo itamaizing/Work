@@ -85,9 +85,10 @@ public class LvlInfo : MonoBehaviour
 
     private void UpdateInfo()
     {
-		if (_LvlText == null || _lvlBar == null) return;
+	    if (_LvlText != null)
+		    _LvlText.text = _lvlValue.ToString();
 
-		_lvlBar.value = (float)_expValue / _maxExpValue;
-		_LvlText.text = _lvlValue.ToString();
-	}
+	    if (_lvlBar != null)
+		    _lvlBar.value = _maxExpValue > 0 ? (float)_expValue / _maxExpValue : 0f;
+    }
 }

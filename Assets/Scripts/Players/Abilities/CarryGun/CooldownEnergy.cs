@@ -12,6 +12,8 @@ public class CooldownEnergy : Resource
     [SerializeField] private float durationCooldown = 12f;
     [SerializeField] private float cooldownCharger = 2f;
 
+    public override float RegenerationPerSecond => 1f;
+
     [Header("Skills to Track")]
     [SerializeField] private CheliceraStrike cheliceraStrike;
     [SerializeField] private DeafeningScream deafeningScream;

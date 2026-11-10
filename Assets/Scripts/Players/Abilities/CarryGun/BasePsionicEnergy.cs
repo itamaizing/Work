@@ -444,6 +444,8 @@ public class BasePsionicEnergy : Resource, IDamageable
         base.Add(value);
     }
     
+    public override float RegenerationPerSecond => 0f;
+
     protected override IEnumerator RegenerateJob()
     {
         yield return null;
