@@ -28,6 +28,9 @@ public abstract class GameRules : NetworkBehaviour
     protected NpcSpawn _npcSpawn;
     protected Coroutine _regenCoroutine;
 
+    [SyncVar(hook = nameof(OnTeamKillsChanged))] private int _team1Kills;
+    [SyncVar(hook = nameof(OnTeamKillsChanged))] private int _team2Kills;
+
     [SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
@@ -191,6 +194,8 @@ public abstract class GameRules : NetworkBehaviour
         _gameManager = FindAnyObjectByType<GameManager>();
 
         if (_gameManager == null) return;
+        
+        RefreshTeamKillScore();
 
         _spawnPoints = _gameManager.HeroSpawnManager;
         _preparationAreaManager = _gameManager.PreparationAreaManager;
@@ -400,7 +405,7 @@ public abstract class GameRules : NetworkBehaviour
     {
         foreach (var item in _players)
         {
-            item.Died += OnPlayerDied;
+            item.Died += OnMatchPlayerDied;
         }
     }
     
@@ -408,8 +413,50 @@ public abstract class GameRules : NetworkBehaviour
     {
         foreach (var item in _players)
         {
-            item.Died -= OnPlayerDied;
+            item.Died -= OnMatchPlayerDied;
         }
+    }
+    
+    private void OnMatchPlayerDied(Character victim)
+    {
+        if (!isServer) return;
+
+        if (IsStarted && victim is HeroComponent)
+            CountHeroKill(victim);
+
+        OnPlayerDied(victim);
+    }
+
+    private void CountHeroKill(Character victim)
+    {
+        var attacker = victim.Health.LethalDamageAttacker;
+        if (attacker == null) return;
+
+        var killer = attacker.CharacterParent;
+        if (killer == null)
+            killer = attacker;
+
+        if (killer is not HeroComponent || !_players.Contains(killer))
+            return;
+
+        int killerTeam = killer.NetworkSettings.TeamIndex;
+        int victimTeam = victim.NetworkSettings.TeamIndex;
+
+        if (killerTeam == 1 && victimTeam == 2)
+            _team1Kills++;
+        else if (killerTeam == 2 && victimTeam == 1)
+            _team2Kills++;
+    }
+
+    private void OnTeamKillsChanged(int oldValue, int newValue)
+    {
+        RefreshTeamKillScore();
+    }
+
+    private void RefreshTeamKillScore()
+    {
+        if (isClient && _gameManager != null)
+            _gameManager.SetTeamKillScore(_team1Kills, _team2Kills);
     }
 
     private IEnumerator FoundGameManagerCorounite()

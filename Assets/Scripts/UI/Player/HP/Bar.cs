@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 public class Bar : MonoBehaviour
 {
+	private const string ScalePrefabName = "WorldResourceBarScale";
+	private const int MaxTicksPerRange = 5000;
+	private static GameObject _scalePrefab;
+
 	[CanBeNull]
 	[SerializeField] private Resource _resource;
 	[SerializeField] private Slider _shieldBar;
@@ -23,11 +27,23 @@ public class Bar : MonoBehaviour
 	[SerializeField] protected TMP_Text _barText;
 	[SerializeField] protected Image _barImage;
 
+	[Header("World bar ticks")]
+	[SerializeField, Min(1)] private int _minorTickStep = 100;
+	[SerializeField, Min(1)] private int _majorTickStep = 1000;
+	[SerializeField, Min(1)] private int _psiTickStep = 10;
+	[SerializeField] private Color _tickColor = Color.black;
+
 	protected float _currentValue;
 	protected float _healthBarTarget;
 	protected float _maxValue;
 	protected float _preViewValue;
 	private Health _health;
+	private CanvasRenderer _scaleRenderer;
+	private Mesh _scaleMesh;
+	private Vector2 _scaleHeightRange = new Vector2(0f, 1f);
+	private float _psiThreshold;
+	private float _psiWidth;
+	private (Rect bounds, float maximum, float psiThreshold, float psiWidth, int minorStep, int majorStep, int psiStep, Color color) _renderedScale;
 
 	private bool _isDestroyed = false;
 	private bool ShieldActive = false;
@@ -47,6 +63,7 @@ public class Bar : MonoBehaviour
 		_currentValue = resource.CurrentValue;
 		_preViewValue = resource.CurrentValue;
 		_maxValue = resource.MaxValue;
+		CreateResourceScale();
 
 		UpdateBar();
 
@@ -75,12 +92,28 @@ public class Bar : MonoBehaviour
 
     private void OnEnable()
     {
+		if (_scaleRenderer != null)
+		{
+			_renderedScale = default;
+			_scaleRenderer.gameObject.SetActive(true);
+		}
+
 		if (_resource != null) Init(_resource);
+	}
+
+	private void OnDisable()
+	{
+		if (_scaleRenderer != null)
+			_scaleRenderer.gameObject.SetActive(false);
 	}
 
     private void OnDestroy()
     {
 	    _isDestroyed = true;
+		if (_scaleRenderer != null)
+			Destroy(_scaleRenderer.gameObject);
+		if (_scaleMesh != null)
+			Destroy(_scaleMesh);
 	    
 		if (_resource != null)
 		{
@@ -151,6 +184,161 @@ public class Bar : MonoBehaviour
 		}
 
 		UpdateBar();
+	}
+
+	private void CreateResourceScale()
+	{
+		if (_scaleRenderer != null || _bar == null || _bar.fillRect == null ||
+			_bar.GetComponentInParent<Canvas>(true)?.rootCanvas.renderMode != RenderMode.WorldSpace ||
+			_bar.fillRect.parent is not RectTransform track)
+			return;
+
+		var scaleRect = CreateScale(track);
+		scaleRect.offsetMin = _bar.fillRect.offsetMin;
+		scaleRect.offsetMax = _bar.fillRect.offsetMax;
+	}
+
+	public float UpdatePsiScale(float current, float maximum, float threshold, float fineWidth)
+	{
+		if (_scaleRenderer == null)
+		{
+			if (_bar == null)
+				_bar = GetComponent<Slider>();
+
+			var sliderRect = (RectTransform)_bar.transform;
+			var track = (RectTransform)_bar.fillRect.parent;
+			var scaleRect = CreateScale(sliderRect.parent);
+			scaleRect.anchorMin = sliderRect.anchorMin;
+			scaleRect.anchorMax = sliderRect.anchorMax;
+			scaleRect.pivot = sliderRect.pivot;
+			scaleRect.sizeDelta = sliderRect.sizeDelta;
+			scaleRect.anchoredPosition3D = sliderRect.anchoredPosition3D;
+			scaleRect.localRotation = sliderRect.localRotation;
+			scaleRect.localScale = sliderRect.localScale;
+			_scaleHeightRange = new Vector2(track.anchorMin.y, track.anchorMax.y);
+			_barText = scaleRect.GetComponentInChildren<TMP_Text>(true);
+			if (_barText != null)
+			{
+				_barText.SetText("{0:0}", Mathf.RoundToInt(current));
+				_barText.gameObject.SetActive(_showText);
+			}
+		}
+
+		_maxValue = maximum;
+		_psiThreshold = Mathf.Clamp(threshold, 0f, Mathf.Max(0f, maximum));
+		_psiWidth = _psiThreshold >= maximum ? 1f : fineWidth;
+		_bar.value = GetScaleFill(current);
+
+		if (_showText && _barText != null && Mathf.RoundToInt(current) != Mathf.RoundToInt(_currentValue))
+			_barText.SetText("{0:0}", Mathf.RoundToInt(current));
+		_currentValue = current;
+		return GetScaleFill(_psiThreshold);
+	}
+
+	private RectTransform CreateScale(Transform parent)
+	{
+		if (_scalePrefab == null)
+			_scalePrefab = Resources.Load<GameObject>(ScalePrefabName);
+
+		var instance = Instantiate(_scalePrefab, parent, false);
+		instance.layer = parent.gameObject.layer;
+		_scaleRenderer = instance.GetComponent<CanvasRenderer>();
+		_scaleRenderer.SetMaterial(Graphic.defaultGraphicMaterial, Texture2D.whiteTexture);
+		_scaleMesh = new Mesh { name = "Resource bar ticks" };
+		return (RectTransform)instance.transform;
+	}
+
+	private void LateUpdate()
+	{
+		if (_scaleRenderer == null) return;
+
+		Rect bounds = ((RectTransform)_scaleRenderer.transform).rect;
+		var layout = (bounds, _maxValue, _psiThreshold, _psiWidth, _minorTickStep, _majorTickStep, _psiTickStep, _tickColor);
+		if (_renderedScale == layout) return;
+
+		_renderedScale = layout;
+		using var vertices = new VertexHelper();
+		PopulateScale(vertices, bounds);
+		vertices.FillMesh(_scaleMesh);
+		_scaleRenderer.SetMesh(_scaleMesh);
+	}
+
+	private float GetScaleFill(float value)
+	{
+		if (_maxValue <= 0f) return 0f;
+
+		value = Mathf.Clamp(value, 0f, _maxValue);
+		if (_psiThreshold <= 0f)
+			return value / _maxValue;
+
+		if (value <= _psiThreshold)
+			return value / _psiThreshold * _psiWidth;
+
+		return _psiWidth + (value - _psiThreshold) / (_maxValue - _psiThreshold) * (1f - _psiWidth);
+	}
+
+	private void PopulateScale(VertexHelper mesh, Rect bounds)
+	{
+		if (_maxValue <= 0f || bounds.width <= 0f || bounds.height <= 0f) return;
+
+		Rect track = Rect.MinMaxRect(bounds.xMin, bounds.yMin + bounds.height * _scaleHeightRange.x,
+			bounds.xMax, bounds.yMin + bounds.height * _scaleHeightRange.y);
+		float border = track.height * 0.065f;
+		Color32 edge = _tickColor;
+		Color32 tick = new Color(_tickColor.r, _tickColor.g, _tickColor.b, _tickColor.a * 0.65f);
+
+		AddQuad(mesh, Rect.MinMaxRect(track.xMin, track.yMin, track.xMax, track.yMin + border), edge);
+		AddQuad(mesh, Rect.MinMaxRect(track.xMin, track.yMax - border, track.xMax, track.yMax), edge);
+		AddDivider(mesh, track, 0f, border, 1f, edge);
+		AddDivider(mesh, track, _maxValue, border, 1f, edge);
+
+		int majorStep = Mathf.Max(1, _majorTickStep);
+		AddTicks(mesh, track, _psiThreshold, _maxValue, majorStep, border, 1f, edge);
+		AddTicks(mesh, track, _psiThreshold, _maxValue, _minorTickStep, border * 0.55f, 0.45f, tick, majorStep);
+
+		if (_psiThreshold <= 0f) return;
+
+		AddTicks(mesh, track, 0f, _psiThreshold, _psiTickStep, border * 0.55f, 0.45f, tick);
+		if (_psiThreshold < _maxValue)
+			AddDivider(mesh, track, _psiThreshold, border, 1f, edge);
+	}
+
+	private void AddTicks(VertexHelper mesh, Rect track, float start, float end, int step,
+		float maxWidth, float height, Color32 tint, int skipStep = 0)
+	{
+		if (start >= end) return;
+
+		step = Mathf.Max(1, step);
+		int first = Mathf.FloorToInt(start / step) + 1;
+		int last = Mathf.CeilToInt(end / step) - 1;
+		int stride = Mathf.Max(1, Mathf.CeilToInt((last - first + 1f) / MaxTicksPerRange));
+		float spacing = track.width * (GetScaleFill(Mathf.Min(end, start + step)) - GetScaleFill(start));
+		float width = Mathf.Min(maxWidth, spacing * 0.5f);
+
+		for (int index = first; index <= last; index += stride)
+		{
+			float value = index * (float)step;
+			if (skipStep == 0 || value % skipStep != 0f)
+				AddDivider(mesh, track, value, width, height, tint);
+		}
+	}
+
+	private void AddDivider(VertexHelper mesh, Rect track, float value, float width, float height, Color32 tint)
+	{
+		float x = track.xMin + track.width * GetScaleFill(value);
+		AddQuad(mesh, Rect.MinMaxRect(Mathf.Max(track.xMin, x - width * 0.5f), track.yMax - track.height * height,
+			Mathf.Min(track.xMax, x + width * 0.5f), track.yMax), tint);
+	}
+
+	private static void AddQuad(VertexHelper mesh, Rect rect, Color32 tint)
+	{
+		int first = mesh.currentVertCount;
+		mesh.AddVert(new Vector2(rect.xMin, rect.yMin), tint, Vector2.zero);
+		mesh.AddVert(new Vector2(rect.xMin, rect.yMax), tint, Vector2.zero);
+		mesh.AddVert(new Vector2(rect.xMax, rect.yMax), tint, Vector2.zero);
+		mesh.AddVert(new Vector2(rect.xMax, rect.yMin), tint, Vector2.zero);
+		mesh.AddTriangle(first, first + 1, first + 2);
+		mesh.AddTriangle(first + 2, first + 3, first);
 	}
 
 	private IEnumerator DisapearBar()

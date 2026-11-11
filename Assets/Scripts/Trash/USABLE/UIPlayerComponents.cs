@@ -2,7 +2,9 @@ using System;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIPlayerComponents : MonoBehaviour
 {
@@ -10,6 +12,10 @@ public class UIPlayerComponents : MonoBehaviour
     [SerializeField] private SelectedCircle CircleSelect;
     [SerializeField] private MinimapMarker MarkersSelect;
     [SerializeField] private FillAmountOverTime _castLine;
+    [SerializeField] private Image _castSkillIcon;
+    [SerializeField] private Image _castTargetIcon;
+    [SerializeField] private TMP_Text _castSkillName;
+    [SerializeField] private TMP_Text _castTime;
     [SerializeField] private SkillRenderer skillRenderer;
 
     [SerializeField] private DamageTracker _damageTracker;
@@ -19,6 +25,8 @@ public class UIPlayerComponents : MonoBehaviour
     public Transform RegenSpawn;
     public PopupTextPrefab PopupText;
 
+    private Skill _activeCastSkill;
+    
     private Color _shieldColor = Color.blue;
     private Color _physDamageColor = Color.red;
     private Color _regenColor = Color.green;
@@ -29,14 +37,15 @@ public class UIPlayerComponents : MonoBehaviour
     private string miss = "Промах";
 
     private Queue<PopupRequest> popupQueue = new Queue<PopupRequest>();
+    private bool _isChannelingBar;
     private bool isProcessingQueue = false;
 
     public SelectedCircle CircleSelect1 { get => CircleSelect; set => CircleSelect = value; }
     public SkillRenderer Renderer { get => skillRenderer; set => skillRenderer = value; }
     
-    private Dictionary<Skill, Action<float>> _castDeleyHandlers = new();
+    private Dictionary<Skill, Action<float, uint>> _castDeleyHandlers = new();
     private Dictionary<Skill, Action> _castDeleyEndHandlers = new();
-    private Dictionary<Skill, Action<float>> _castStreamHandlers = new();
+    private Dictionary<Skill, Action<float, uint>> _castStreamHandlers = new();
     private Dictionary<Skill, Action> _castStreamEndHandlers = new();
 
     private void Awake()
@@ -54,21 +63,21 @@ public class UIPlayerComponents : MonoBehaviour
 
         foreach (var ability in _character.Abilities.Abilities)
         {
-            Action<float> onDeley = time => OnStartCastDeley(time, ability);
-            Action onDeleyEnd = () => OnStopCastDeley(ability);
-            Action<float> onStream = time => OnStartStreaming(time, ability);
-            Action onStreamEnd = () => OnStopStreaming(ability);
+            Action<float, uint> onDeley = (time, targetNetId) => ShowCastBar(time, ability, targetNetId, isChanneling: false);
+            Action onDeleyEnd = () => StopCastBar(ability, isChanneling: false);
+            Action<float, uint> onStream = (time, targetNetId) => ShowCastBar(time, ability, targetNetId, isChanneling: true);
+            Action onStreamEnd = () => StopCastBar(ability, isChanneling: true);
 
             _castDeleyHandlers[ability] = onDeley;
             _castDeleyEndHandlers[ability] = onDeleyEnd;
             _castStreamHandlers[ability] = onStream;
             _castStreamEndHandlers[ability] = onStreamEnd;
 
-            ability.PreparingStarted += onDeley;
+            ability.WorldPreparingStarted += onDeley;
             ability.PreparingEnded += onDeleyEnd;
             ability.Canceled += onDeleyEnd;
 
-            ability.ChannelingStarted += onStream;
+            ability.WorldChannelingStarted += onStream;
             ability.ChannelingEnded += onStreamEnd;
             ability.Canceled += onStreamEnd;
         }
@@ -84,28 +93,27 @@ public class UIPlayerComponents : MonoBehaviour
         foreach (var ability in _character.Abilities.Abilities)
         {
             if (_castDeleyHandlers.TryGetValue(ability, out var onDeley))
-                ability.PreparingStarted -= onDeley;
+                ability.WorldPreparingStarted -= onDeley;
             if (_castDeleyEndHandlers.TryGetValue(ability, out var onDeleyEnd))
             {
                 ability.PreparingEnded -= onDeleyEnd;
                 ability.Canceled -= onDeleyEnd;
             }
             if (_castStreamHandlers.TryGetValue(ability, out var onStream))
-                ability.ChannelingStarted -= onStream;
+                ability.WorldChannelingStarted -= onStream;
             if (_castStreamEndHandlers.TryGetValue(ability, out var onStreamEnd))
             {
                 ability.ChannelingEnded -= onStreamEnd;
                 ability.Canceled -= onStreamEnd;
             }
-
-            ability.ChannelingProgressApplied -= OnChannelingRollback;
-            ability.PreparingRolledBack -= OnPreparingRollback;
         }
 
         _castDeleyHandlers.Clear();
         _castDeleyEndHandlers.Clear();
         _castStreamHandlers.Clear();
         _castStreamEndHandlers.Clear();
+
+        HideCastBar();
     }
 
     public void ChangeSelection(bool isSelect)
@@ -206,24 +214,7 @@ public class UIPlayerComponents : MonoBehaviour
         ShowPopupValue(shieldValue, _shieldColor, _shieldColor);
     }
 
-    private void OnStartStreaming(float time, Skill skill)
-    {
-        if (!ShouldShow(skill.Renderer.CastBarVisibility)) return;
 
-        _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time, 1, 0);
-
-        skill.ChannelingProgressApplied -= OnChannelingRollback;
-        skill.ChannelingProgressApplied += OnChannelingRollback;
-    }
-
-    private void OnStopStreaming(Skill skill)
-    {
-        skill.ChannelingProgressApplied -= OnChannelingRollback;
-
-        _castLine.gameObject.SetActive(false);
-        _castLine.Stop();
-    }
     
     private bool ShouldShow(CastBarObservers flags)
     {
@@ -251,23 +242,87 @@ public class UIPlayerComponents : MonoBehaviour
             _castLine.Rollback(rollbackAmount);
     }
 
-    private void OnStartCastDeley(float time, Skill skill)
+    private void ShowCastBar(float duration, Skill skill, uint targetNetId, bool isChanneling)
     {
-        if (!ShouldShow(skill.Renderer.PrepareBarVisibility)) return;
+        if (_castLine == null || duration <= 0f) return;
 
-        _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time, 0, 1);
+        var visibility = isChanneling ? skill.Renderer.CastBarVisibility : skill.Renderer.PrepareBarVisibility;
 
-        skill.PreparingRolledBack -= OnPreparingRollback;
-        skill.PreparingRolledBack += OnPreparingRollback;
+        if (!ShouldShow(visibility)) return;
+
+        HideCastBar();
+        _activeCastSkill = skill;
+        _isChannelingBar = isChanneling;
+
+        _castLine.SetColor(skill.Info.AbilityForm switch 
+            { AbilityForm.Magic => Color.blue, AbilityForm.Physical => Color.red, _ => Color.white });
+
+        if (_castSkillName != null)
+            _castSkillName.text = skill.Name;
+
+        SetCastIcon(_castSkillIcon, skill.Icon);
+
+        Character target = null;
+        if (targetNetId != 0 && NetworkClient.spawned.TryGetValue(targetNetId, out var identity))
+            target = identity.GetComponent<Character>();
+
+        Sprite portrait = target != null && target.Data != null ? target.Data.Icon : null;
+        SetCastIcon(_castTargetIcon, portrait);
+
+        if (isChanneling)
+        {
+            skill.ChannelingProgressApplied += OnChannelingRollback;
+            _castLine.StartFill(duration, 1f, 0f, addTime: false);
+        }
+        else
+        {
+            skill.PreparingRolledBack += OnPreparingRollback;
+            _castLine.StartFill(duration, 0f, 1f, addTime: false);
+        }
+
+        UpdateCastTime(0f, duration);
     }
 
-    private void OnStopCastDeley(Skill skill)
+    private static void SetCastIcon(Image image, Sprite sprite)
     {
-        skill.PreparingRolledBack -= OnPreparingRollback;
+        if (image == null) return;
 
-        _castLine.gameObject.SetActive(false);
-        _castLine.Stop();
+        image.sprite = sprite;
+        image.gameObject.SetActive(sprite != null);
+    }
+
+    private void StopCastBar(Skill skill, bool isChanneling)
+    {
+        if (_activeCastSkill == skill && _isChannelingBar == isChanneling)
+            HideCastBar();
+    }
+
+    private void HideCastBar()
+    {
+        if (_activeCastSkill != null)
+        {
+            _activeCastSkill.PreparingRolledBack -= OnPreparingRollback;
+            _activeCastSkill.ChannelingProgressApplied -= OnChannelingRollback;
+        }
+
+        _activeCastSkill = null;
+
+        if (_castLine != null)
+            _castLine.Stop();
+    }
+
+    private void LateUpdate()
+    {
+        if (_castTime == null || _castLine == null || !_castLine.gameObject.activeInHierarchy)
+            return;
+
+        UpdateCastTime(_castLine.ElapsedTime, _castLine.Duration);
+    }
+
+    private void UpdateCastTime(float elapsed, float duration)
+    {
+        if (_castTime != null)
+            _castTime.text = FormattableString.Invariant($"{elapsed:0.0}/{duration:0.0} sec");
     }
 
     private void OnHealTracked(Heal heal)

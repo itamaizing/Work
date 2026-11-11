@@ -35,6 +35,7 @@ public class Health : Resource, IDamageable, IHealable
     public event Action<float, Skill, string> HealTakedServer;
     public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
+    public Character LethalDamageAttacker { get; private set; }
     public event Action<float, float> OnShieldValuesChanged;
     public event Action<float> OnShieldAdd;
     public event Action ShieldDeactivated;
@@ -77,6 +78,11 @@ public class Health : Resource, IDamageable, IHealable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
+        return TryTakeDamage(ref damage, skill, null);
+    }
+    
+    public bool TryTakeDamage(ref Damage damage, Skill skill, Character sourceCaster)
+    {
         OnBeforeTakeDamage?.Invoke(damage, skill);
         OnBeforeDamage?.Invoke(ref damage, skill);
 
@@ -117,14 +123,15 @@ public class Health : Resource, IDamageable, IHealable
         if (damage.Value == 0)
             return true;
 
-        if (!TryUse(damage.Value))
+        TryUse(damage.Value);
+
+        var victim = CharacterRef;
+        if (isServer && CurrentValue <= 0f && (victim == null || !victim.IsDead))
         {
-            if (isServer)
-            {
-                Died?.Invoke();
-                ClientRpcDied();
-            }
-            return true;
+            LethalDamageAttacker = sourceCaster != null ? sourceCaster : skill?.Hero;
+
+            Died?.Invoke();
+            ClientRpcDied();
         }
 
         return true;

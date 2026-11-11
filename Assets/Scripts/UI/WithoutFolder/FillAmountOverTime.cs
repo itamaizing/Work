@@ -96,4 +96,12 @@ public class FillAmountOverTime : MonoBehaviour
     }
 
     public float CurrentProgress => _duration > 0 ? _currentTime / _duration : 0f;
+    
+    public float Duration => _duration;
+    public float ElapsedTime => Mathf.Clamp(_currentTime, 0f, _duration);
+
+    public void SetColor(Color color)
+    {
+        _image.color = color;
+    }
 }

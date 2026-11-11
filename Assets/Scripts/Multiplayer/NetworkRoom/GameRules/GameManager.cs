@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TeamsPanel _teamsPanel;
     [SerializeField] private TeamSource _sourceTabl;
     [SerializeField] private ChatController _chatController;
+    [SerializeField] private TMP_Text _teamKillScore;
 
     private IGameSourceUI _gameSourceUI;
 
@@ -30,6 +32,12 @@ public class GameManager : MonoBehaviour
             Debug.LogError("SOURCEUI WRONG");
             _sourceUI = null;
         }
+    }
+    
+    public void SetTeamKillScore(int team1Kills, int team2Kills)
+    {
+        if (_teamKillScore != null)
+            _teamKillScore.text = $"{team1Kills} - {team2Kills}";
     }
 
     public HeroSpawnManager HeroSpawnManager { get => _heroSpawnManager; }

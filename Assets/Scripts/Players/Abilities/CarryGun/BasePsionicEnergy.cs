@@ -13,9 +13,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     [SerializeField] private PsionicEnergySkill psionicEnergySkill;
     [SerializeField] private float _psionicaDecayTime = 12f;
 
-    private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
-    private const float RemainingSliderFillPercent = 0.7f;
     private const float DamageToPsiConversionRate = 0.2f;
     private const float DistanceStep = 1f;
 
@@ -31,6 +29,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private bool _isTakesAnyDamage = false;
     private Coroutine _energyDecayCoroutine;
     private bool _isInitialized = false;
+    private Bar _psiBar;
 
     private float MaxPsi => _heroCharacter.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
@@ -298,19 +297,13 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         if (basePsionicsSlider == null || MaxPsi <= 0f) return;
 
-        float normalizedValue = 0f;
+        if (_psiBar == null && !basePsionicsSlider.TryGetComponent(out _psiBar))
+            _psiBar = basePsionicsSlider.gameObject.AddComponent<Bar>();
 
-        if (CurrentValue <= BasePsionicaThreshold)
-        {
-            normalizedValue = (CurrentValue / BasePsionicaThreshold) * BaseSliderFillPercent;
-        }
-        else
-        {
-            float remainingValue = (CurrentValue - BasePsionicaThreshold) / (MaxPsi - BasePsionicaThreshold);
-            normalizedValue = BaseSliderFillPercent + (remainingValue * RemainingSliderFillPercent);
-        }
-
-        basePsionicsSlider.value = normalizedValue;
+        float fineMaximum = _attackingPsionicEnergy.MaxAttackingPsiEnergy;
+        float fineWidth = _psiBar.UpdatePsiScale(CurrentValue, MaxPsi, fineMaximum, BaseSliderFillPercent);
+        var sliderRect = (RectTransform)basePsionicsSlider.transform;
+        _attackingPsionicEnergy.SetBarWidth(sliderRect.rect.width * fineWidth);
     }
 
     private IEnumerator EnergyDecayCoroutine()

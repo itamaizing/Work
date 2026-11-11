@@ -458,8 +458,7 @@ public abstract partial class Skill
 
     private IEnumerator PreparingJob(float delayTime)
     {
-        PreparingStarted?.Invoke(delayTime);
-        CmdBroadcastPreparingStarted(delayTime);
+        NotifyPreparingStarted(delayTime);
         PlayPrepareAnim();
         float time = 0;
 
@@ -496,8 +495,7 @@ public abstract partial class Skill
     private IEnumerator ChannelingJob()
     {
         EnterChanneling();
-        ChannelingStarted?.Invoke(ChannelingDuration);
-        CmdBroadcastChannelingStarted(ChannelingDuration);
+        NotifyChannelingStarted(ChannelingDuration);
         float time = 0;
 
         while (time < ChannelingDuration)

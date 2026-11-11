@@ -703,11 +703,41 @@ using UnityEngine;
     #endregion
     
     #region Networked Cast Bar Events
-    [Command] private void CmdBroadcastPreparingStarted(float duration) => RpcPreparingStarted(duration);
-    [ClientRpc] private void RpcPreparingStarted(float duration)
+    
+    public event Action<float, uint> WorldPreparingStarted;
+    public event Action<float, uint> WorldChannelingStarted;
+    
+    private void NotifyPreparingStarted(float duration)
+    {
+        uint targetNetId = Targeting.Target?.Character?.netId ?? 0u;
+
+        PreparingStarted?.Invoke(duration);
+        WorldPreparingStarted?.Invoke(duration, targetNetId);
+        CmdBroadcastPreparingStarted(duration, targetNetId);
+    }
+
+    private void NotifyChannelingStarted(float duration)
+    {
+        uint targetNetId = Targeting.Target?.Character?.netId ?? 0u;
+
+        ChannelingStarted?.Invoke(duration);
+        WorldChannelingStarted?.Invoke(duration, targetNetId);
+        CmdBroadcastChannelingStarted(duration, targetNetId);
+    }
+    
+    [Command]
+    private void CmdBroadcastPreparingStarted(float duration, uint targetNetId)
+    {
+        RpcPreparingStarted(duration, targetNetId);
+    }
+
+    [ClientRpc]
+    private void RpcPreparingStarted(float duration, uint targetNetId)
     {
         if (isOwned) return;
+
         PreparingStarted?.Invoke(duration);
+        WorldPreparingStarted?.Invoke(duration, targetNetId);
     }
 
     [Command] private void CmdBroadcastPreparingEnded() => RpcPreparingEnded();
@@ -717,11 +747,19 @@ using UnityEngine;
         PreparingEnded?.Invoke();
     }
 
-    [Command] private void CmdBroadcastChannelingStarted(float duration) => RpcChannelingStarted(duration);
-    [ClientRpc] private void RpcChannelingStarted(float duration)
+    [Command]
+    private void CmdBroadcastChannelingStarted(float duration, uint targetNetId)
+    {
+        RpcChannelingStarted(duration, targetNetId);
+    }
+
+    [ClientRpc]
+    private void RpcChannelingStarted(float duration, uint targetNetId)
     {
         if (isOwned) return;
+
         ChannelingStarted?.Invoke(duration);
+        WorldChannelingStarted?.Invoke(duration, targetNetId);
     }
 
     [Command] private void CmdBroadcastChannelingEnded() => RpcChannelingEnded();
@@ -756,8 +794,7 @@ using UnityEngine;
     public void InvokeChannelingStarted(float duration)
     {
         EnterChanneling();
-        ChannelingStarted?.Invoke(duration);
-        CmdBroadcastChannelingStarted(duration);
+        NotifyChannelingStarted(duration);
     }
 
     #endregion

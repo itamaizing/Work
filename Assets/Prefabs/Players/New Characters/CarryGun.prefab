@@ -7328,7 +7328,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2251035120331201189
 Transform:
   m_ObjectHideFlags: 0
@@ -11475,6 +11475,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5794954217610378670}
   - component: {fileID: 8327061482150587068}
+  - component: {fileID: 3943778567683192041}
   m_Layer: 5
   m_Name: PsionicaSlider
   m_TagString: Untagged
@@ -11553,6 +11554,34 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3943778567683192041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7912281051430716653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f8aa41f56291c6429c529fd4c223729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _resource: {fileID: 0}
+  _shieldBar: {fileID: 0}
+  _bar: {fileID: 8327061482150587068}
+  _barMinus: {fileID: 0}
+  _barPlus: {fileID: 0}
+  _timeToDisapear: 0.2
+  _disapearSpeed: 0.5
+  _timeToShow: 0.2
+  _ShowSpeed: 0.5
+  _showText: 1
+  _barText: {fileID: 0}
+  _barImage: {fileID: 0}
+  _minorTickStep: 100
+  _majorTickStep: 1000
+  _psiTickStep: 10
+  _tickColor: {r: 0.078431, g: 0.078431, b: 0.078431, a: 0.88}
 --- !u!1 &7913899011497325182
 GameObject:
   m_ObjectHideFlags: 0
@@ -15751,6 +15780,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -15920,6 +15950,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0.2
   _preparingDuration: 0
   _channelComponent:
@@ -16089,6 +16120,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0.3
   _channelComponent:
@@ -16249,6 +16281,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -16411,6 +16444,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -16561,6 +16595,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -16772,6 +16807,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -16927,6 +16963,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -17082,6 +17119,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -17268,6 +17306,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -17416,6 +17455,7 @@ MonoBehaviour:
     _maxCharges: 1
     _baseCooldown: 14
     affectedByCDR: 1
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -17568,6 +17608,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -17718,6 +17759,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -17894,6 +17936,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -18046,6 +18089,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -18204,6 +18248,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:

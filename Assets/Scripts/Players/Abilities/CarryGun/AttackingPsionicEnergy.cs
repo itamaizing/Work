@@ -131,6 +131,15 @@ public class AttackingPsionicEnergy : Resource
         attackingPsionicsSlider.value = CurrentValue / _currentMaxAttackingPsiEnergy;
     }
 
+    public void SetBarWidth(float width)
+    {
+        if (attackingPsionicsSlider == null || width <= 0f) return;
+
+        var rect = (RectTransform)attackingPsionicsSlider.transform;
+        if (!Mathf.Approximately(rect.rect.width, width))
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+    }
+
     [Server]
     public void ExtendDuration(float amount)
     {
