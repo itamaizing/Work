@@ -7,6 +7,7 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
 {
     [SerializeField] private LvlInfo _lvlInfo;
     [SerializeField] private Image _FrameBlink;
+    [SerializeField] private bool _openTalentsOnClick = true;
     public static event Action<HeroComponent, bool> HeroPortraitClicked;
 
     private Character _shownCharacter;
@@ -31,7 +32,7 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button != PointerEventData.InputButton.Left) return;
+        if (!_openTalentsOnClick || eventData.button != PointerEventData.InputButton.Left) return;
 
         var target = Character != null ? Character : _shownCharacter;
         var local = Character.Local;

@@ -1,10 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QueuePanel : MonoBehaviour
 {
+    private const float FirstIconScale = 1.2f;
+
     [SerializeField] private AbilityIcon _iconPref;
+    [SerializeField] private Transform _content;
 
     [Header("Target icons")]
     [SerializeField] private Sprite _areaIcon;
@@ -23,6 +27,7 @@ public class QueuePanel : MonoBehaviour
 
     private AbilityIcon _autoIcon;
     private Skill _autoSkill;
+    private AbilityIcon _firstIcon;
 
     public void Init(SkillQueue queue, AutoSkillCast autoCast)
     {
@@ -34,7 +39,7 @@ public class QueuePanel : MonoBehaviour
 
         _skillQueue.SkillAdded += OnSkillAdded;
         _skillQueue.SkillDeleted += OnSkillDeleted;
-        
+
         var occurrences = new Dictionary<Skill, int>();
         foreach (var skill in _skillQueue.Skills)
         {
@@ -49,6 +54,8 @@ public class QueuePanel : MonoBehaviour
             _autoCast.SkillCleared += OnAutoSkillCleared;
             if (_autoCast.IsBusy) SetAutoSkill(_autoCast.CurrentSkill, _autoCast.CurrentTargetInfo);
         }
+
+        UpdateFirstIcon();
     }
 
     private void OnAutoSkillSet(Skill skill, TargetInfo info) => SetAutoSkill(skill, info);
@@ -93,11 +100,12 @@ public class QueuePanel : MonoBehaviour
     {
         TargetInfo info = skill.TargetInfoQueue.Count > 0 ? skill.TargetInfoQueue.Last() : null;
         AddEntry(skill, info);
+        UpdateFirstIcon();
     }
 
     private void AddEntry(Skill skill, TargetInfo info)
     {
-        var icon = Instantiate(_iconPref, transform);
+        var icon = Instantiate(_iconPref, _content);
         icon.Init(skill);
         ShowTarget(icon, skill, info);
 
@@ -115,7 +123,7 @@ public class QueuePanel : MonoBehaviour
         if (_autoIcon == null || _autoSkill != skill)
         {
             ClearAutoSkill();
-            _autoIcon = Instantiate(_iconPref, transform);
+            _autoIcon = Instantiate(_iconPref, _content);
             _autoIcon.Init(skill);
             _autoSkill = skill;
         }
@@ -123,6 +131,7 @@ public class QueuePanel : MonoBehaviour
         _autoIcon.transform.SetAsFirstSibling();
         _autoIcon.SetAutoCast(true);
         ShowTarget(_autoIcon, skill, info);
+        UpdateFirstIcon();
     }
 
     public void ClearAutoSkill()
@@ -130,6 +139,7 @@ public class QueuePanel : MonoBehaviour
         if (_autoIcon != null) Destroy(_autoIcon.gameObject);
         _autoIcon = null;
         _autoSkill = null;
+        UpdateFirstIcon();
     }
 
     private void OnSkillDeleted(Skill skill)
@@ -140,6 +150,22 @@ public class QueuePanel : MonoBehaviour
         var icon = _entries[index].Icon;
         _entries.RemoveAt(index);
         if (icon != null) Destroy(icon.gameObject);
+        UpdateFirstIcon();
+    }
+
+    private void UpdateFirstIcon()
+    {
+        AbilityIcon firstIcon = _autoIcon;
+        if (firstIcon == null && _entries.Count > 0)
+            firstIcon = _entries[0].Icon;
+        if (_firstIcon == firstIcon) return;
+
+        if (_firstIcon != null) _firstIcon.transform.localScale = _iconPref.transform.localScale;
+        _firstIcon = firstIcon;
+        if (_firstIcon != null)
+            _firstIcon.transform.localScale = _iconPref.transform.localScale * FirstIconScale;
+
+        LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
     }
 
     private void ShowTarget(AbilityIcon icon, Skill skill, TargetInfo info)

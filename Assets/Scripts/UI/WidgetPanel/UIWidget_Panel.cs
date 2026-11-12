@@ -6,6 +6,9 @@ namespace UIWidget
     {
         [SerializeField] private RectTransform _panel;
         [SerializeField] private RectTransform _confineArea;
+        [SerializeField] private Vector2 _minimumSize;
+        [SerializeField] private Vector2 _maximumSize;
+        [SerializeField] private Vector2 _scaleRange;
         [SerializeReference, SubclassSelector] private UIWidget_DragBehaviour _dragBehaviour;
         [SerializeReference, SubclassSelector] private UIWidget_ResizeBehaviour _resizeBehaviour;
 
@@ -15,25 +18,28 @@ namespace UIWidget
         public RectTransform Panel { get => _panel; }
         public Vector3[] Corners => _corners;
 
+        internal Vector2 MinimumSize => _minimumSize;
+        internal Vector2 MaximumSize => _maximumSize;
+        internal Vector2 ScaleRange => _scaleRange;
+
         private void Awake()
         {
             if (_confineArea == null)
                 _confineArea = transform.root as RectTransform;
-
-            _dragBehaviour.Init(this);
-            _resizeBehaviour.Init(this);
+            if (_panel == null)
+                _panel = (RectTransform)transform;
         }
 
         private void OnEnable()
         {
-            _dragBehaviour.Init(this);
-            _resizeBehaviour.Init(this);
+            _dragBehaviour?.Init(this);
+            _resizeBehaviour?.Init(this);
         }
 
         private void OnDisable()
         {
-            _dragBehaviour.Dispose();
-            _resizeBehaviour.Dispose();
+            _dragBehaviour?.Dispose();
+            _resizeBehaviour?.Dispose();
         }
 
 
@@ -55,7 +61,7 @@ namespace UIWidget
             else if (max.y > bounds.yMax) shift.y = bounds.yMax - max.y;
 
             if (shift != Vector2.zero)
-                _panel.anchoredPosition += shift;
+                _panel.position += _confineArea.TransformVector(shift);
         }
     }
 }

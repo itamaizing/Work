@@ -13,6 +13,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     [SerializeField] private TMProLocalizer _talentsCount;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private UIMenuTalentRow _rowContainer;
+    [SerializeField] private RectOffset _rowContainerPadding;
+    [SerializeField] private Vector2 _rowContainerCellSize;
+    [SerializeField] private Vector2 _rowContainerSpacing;
 
     private bool _isGameUI = false;
     private float _initialParentCellHeight = 65f;
@@ -58,6 +61,13 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
         for (int i = 0; i < talentsGroup.TalentRows.Count; i++)
         {
             var row = Instantiate(_rowContainer, _itemsParent);
+
+            var rowGrid = row.GetComponent<GridLayoutGroup>();
+            
+            rowGrid.padding = _rowContainerPadding;
+            rowGrid.cellSize = _rowContainerCellSize;
+            rowGrid.spacing = _rowContainerSpacing;
+            
             _rows.Add(row);
             foreach (var item in talentsGroup.TalentRows[i].Talents)
             {
@@ -103,15 +113,31 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
             talentIcon.RefreshLockState();
     }
 
+    internal void ClearPage()
+    {
+        foreach (var row in _rows)
+        {
+            row.gameObject.SetActive(false);
+            Destroy(row.gameObject);
+        }
+        _rows.Clear();
+        _talents.Clear();
+        _talentsGroup = null;
+    }
+
     private void OnEnable()
     {
         SaveManager.Instance.TalentStateSettled += RefreshAllIconsVisual;
+        if (_talentsGroup != null) RefreshAllIconsVisual();
     }
 
     private void OnDisable()
     {
         SaveManager.Instance.TalentStateSettled -= RefreshAllIconsVisual;
+    }
 
+    private void OnDestroy()
+    {
         foreach (var talent in _talents)
         {
             talent.Selected -= OnTalentSelected;

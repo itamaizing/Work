@@ -24,10 +24,12 @@ public class SkillQueue : MonoBehaviour
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
     public Skill CurrentSkill { get => _currentSkill; }
+    public TargetInfo CurrentCastTarget { get; private set; }
     public Queue<Skill> Skills => _skills;
 
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillDeleted;
+    public event Action CurrentCastChanged;
     public event Action<Skill> Cancell;
 
     private void Update()
@@ -63,7 +65,10 @@ public class SkillQueue : MonoBehaviour
             if (skill.TryCast())
             {
                 RemoveFromQueue();
+                if (!skill.IsExecuting) return;
+
                 _currentSkill = skill;
+                CurrentCastTarget = targetInfo;
 
                 if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo infoTarget))
                 {
@@ -78,6 +83,7 @@ public class SkillQueue : MonoBehaviour
                 }
 
                 _currentSkill.CastEnded += OnCastEnded;
+                CurrentCastChanged?.Invoke();
             }
         }
     }
@@ -228,6 +234,8 @@ public class SkillQueue : MonoBehaviour
 
         _currentSkill.CastEnded -= OnCastEnded;
         _currentSkill = null;
+        CurrentCastTarget = null;
+        CurrentCastChanged?.Invoke();
     }
 
     private static void ToggleSelectCircles(TargetInfo info, bool isOn)

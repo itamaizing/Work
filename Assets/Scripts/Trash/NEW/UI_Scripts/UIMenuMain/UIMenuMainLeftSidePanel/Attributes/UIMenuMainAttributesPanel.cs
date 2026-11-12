@@ -56,6 +56,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         }
         else
         {
+            MoveTooltipOutsideScroll(this, _descriptionPanel);
             _attributeSystem = _hero.AttributeSystem;
             _attributeSystem.AttributesReloaded += RefreshFromSource;
         }
@@ -102,6 +103,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
         if (_attributeSystem != null) _attributeSystem.AttributesReloaded -= RefreshFromSource;
         _hero = null;
+        if (_descriptionPanel != null) HideDescription();
         foreach (var attribute in _attributes)
         {
             //attribute.OnValueChange -= UpdateAttributesPoints;
@@ -121,6 +123,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         {
             foreach (var attribute in _attributes)
             {
+                attribute.gameObject.SetActive(false);
                 attribute.Destroy();
             }
             _attributes.Clear();
@@ -162,6 +165,25 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     private void HideDescription()
     {
         _descriptionPanel.HideDescription();
+    }
+
+    internal static void MoveTooltipOutsideScroll(Component panel, Component tooltip)
+    {
+        var scroll = panel.GetComponentInParent<ScrollRect>(includeInactive: true);
+        if (scroll == null || tooltip == null || !tooltip.transform.IsChildOf(scroll.content)) return;
+
+        var rect = (RectTransform)tooltip.transform;
+        var window = (RectTransform)scroll.transform.parent;
+        bool onRight = window.anchorMin.x > .5f;
+        float width = rect.rect.width;
+        rect.SetParent(window, false);
+        rect.anchorMin = rect.anchorMax = new Vector2(onRight ? 0f : 1f, 1f);
+        rect.pivot = new Vector2(onRight ? 1f : 0f, 1f);
+        rect.anchoredPosition = new Vector2(onRight ? -8f : 8f, 0f);
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        if (!rect.TryGetComponent(out CanvasGroup group))
+            group = rect.gameObject.AddComponent<CanvasGroup>();
+        group.blocksRaycasts = false;
     }
 
     public void ApplyServerAttributePoints(List<ServerHeroProgressRepository.AttributeEntry> attributes, int freeAttributePoints)

@@ -41,6 +41,13 @@ namespace UIWidget
             public Vector2 Max = Vector2.zero;
         }
 
+        [Serializable]
+        protected class ResizeHandles
+        {
+            public ResizeHandleType key;
+            public List<UIWidget_Handle> value;
+        }
+
         protected enum AxisAnchor { Min, Center, Max }
 
         public enum ResizeType { Resize, Scale, ResizeAndScale }
@@ -49,11 +56,11 @@ namespace UIWidget
         [SerializeField] protected ResizeType _resizeType;
         [SerializeField] protected float _borderSize = 0;
         [SerializeField] protected float _cornerSize = 0;
-        [SerializeField] protected SizeClamping _sizeClamp;
+        [SerializeField] protected SizeClamping _sizeClamp = new();
         [SerializeField] private bool _resizingPreserveAspectRatio = false;
-        [SerializeField] protected SizeClamping _scaleClamp;
+        [SerializeField] protected SizeClamping _scaleClamp = new();
         [SerializeField] private bool _scalingPreserveAspectRatio = false;
-        [SerializeField] protected Dictionary<ResizeHandleType, List<UIWidget_Handle>> _resizeHandles;
+        [SerializeField] protected List<ResizeHandles> _resizeHandles = new();
 
         protected UIWidget_Panel _widget;
         bool cursorLockState = false;
@@ -70,11 +77,12 @@ namespace UIWidget
 
         protected RectTransform Panel => _widget.Panel;
 
-
         #region Initialization
         public override void Init(UIWidget_Panel panel)
         {
             _widget = panel;
+            _sizeClamp ??= new SizeClamping();
+            _scaleClamp ??= new SizeClamping();
             if (_borderSize != 0 || _cornerSize != 0)
                 SetUpBorderSize();
             SubscribeToHandles();
@@ -87,17 +95,17 @@ namespace UIWidget
 
         private void SubscribeToHandles()
         {
-            foreach (var TypeList in _resizeHandles)
-                foreach (var handle in TypeList.Value)
+            foreach (var handles in _resizeHandles)
+                foreach (var handle in handles.value)
                 {
                     if (_resizeEvents.ContainsKey(handle))
                         continue;
                     HandleEvents events = new();
-                    events.Start = evt => HandleResizeStart(evt, TypeList.Key);
-                    events.Active = evt => HandleResizeActive(evt, TypeList.Key);
-                    events.End = evt => HandleResizeEnd(evt, TypeList.Key);
-                    events.HoverStart = evt => HandleHoverStart(evt, TypeList.Key);
-                    events.HoverEnd = evt => HandleHoverEnd(evt, TypeList.Key);
+                    events.Start = evt => HandleResizeStart(evt, handles.key);
+                    events.Active = evt => HandleResizeActive(evt, handles.key);
+                    events.End = evt => HandleResizeEnd(evt, handles.key);
+                    events.HoverStart = evt => HandleHoverStart(evt, handles.key);
+                    events.HoverEnd = evt => HandleHoverEnd(evt, handles.key);
 
                     handle.DragStart += events.Start;
                     handle.DragActive += events.Active;
@@ -116,22 +124,27 @@ namespace UIWidget
                 handleEvent.Key.DragStart -= handleEvent.Value.Start;
                 handleEvent.Key.DragActive -= handleEvent.Value.Active;
                 handleEvent.Key.DragEnd -= handleEvent.Value.End;
-                handleEvent.Key.HoverStart += handleEvent.Value.HoverStart;
-                handleEvent.Key.HoverEnd += handleEvent.Value.HoverEnd;
+                handleEvent.Key.HoverStart -= handleEvent.Value.HoverStart;
+                handleEvent.Key.HoverEnd -= handleEvent.Value.HoverEnd;
 
             }
             _resizeEvents.Clear();
+            if (cursorLockState)
+            {
+                cursorLockState = false;
+                CursorService.SetState(CursorState.Default);
+            }
         }
 
         private void SetUpBorderSize()
         {
-            foreach (var kvp in _resizeHandles)
-                foreach (var handle in kvp.Value)
+            foreach (var handles in _resizeHandles)
+                foreach (var handle in handles.value)
                 {
                     RectTransform rect = handle.transform as RectTransform;
                     float cornerSize = Mathf.Max(_borderSize, _cornerSize);
 
-                    switch (kvp.Key)
+                    switch (handles.key)
                     {
                         case ResizeHandleType.BorderHorizontal:
                             rect.sizeDelta = new Vector2(_borderSize != 0 ? _borderSize : rect.sizeDelta.x,
@@ -208,7 +221,7 @@ namespace UIWidget
                     break;
 
                 case ResizeType.ResizeAndScale:
-                    if (Input.GetKey(KeyCode.LeftControl))
+                    if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
                         Scaling(e);
                     else
                         Resizing(e);
@@ -245,8 +258,9 @@ namespace UIWidget
                 rawH = Mathf.Abs(local.y - anchorLocal.y);
 
             Vector2 maxAllowed = ClampSize();
-            float minW = _sizeClamp.Min.x, maxW = Mathf.Max(_sizeClamp.Min.x, maxAllowed.x);
-            float minH = _sizeClamp.Min.y, maxH = Mathf.Max(_sizeClamp.Min.y, maxAllowed.y);
+            Vector2 minSize = Vector2.Max(_sizeClamp.Min, _widget.MinimumSize);
+            float minW = minSize.x, maxW = Mathf.Max(minSize.x, maxAllowed.x);
+            float minH = minSize.y, maxH = Mathf.Max(minSize.y, maxAllowed.y);
 
             bool preserveAspect = _resizingPreserveAspectRatio || Input.GetKey(KeyCode.LeftShift);
 
@@ -294,8 +308,14 @@ namespace UIWidget
                 _ => 2f * Mathf.Min(anchorInConfine.y - bounds.yMin, bounds.yMax - anchorInConfine.y),
             };
 
+            Vector3 widthAxis = _widget.ConfineArea.InverseTransformVector(Panel.TransformVector(Vector3.right));
+            Vector3 heightAxis = _widget.ConfineArea.InverseTransformVector(Panel.TransformVector(Vector3.up));
+            maxW /= Mathf.Abs(widthAxis.x);
+            maxH /= Mathf.Abs(heightAxis.y);
             if (_sizeClamp.Max.x > 0f) maxW = Mathf.Min(maxW, _sizeClamp.Max.x);
             if (_sizeClamp.Max.y > 0f) maxH = Mathf.Min(maxH, _sizeClamp.Max.y);
+            if (_widget.MaximumSize.x > 0f) maxW = Mathf.Min(maxW, _widget.MaximumSize.x);
+            if (_widget.MaximumSize.y > 0f) maxH = Mathf.Min(maxH, _widget.MaximumSize.y);
 
             return new Vector2(maxW, maxH);
         }
@@ -341,10 +361,19 @@ namespace UIWidget
             }
 
             Vector2 maxWorld = GetMaxWorldSize();
-            float minW = _scaleClamp.Min.x, maxW = Mathf.Max(_scaleClamp.Min.x, maxWorld.x);
-            float minH = _scaleClamp.Min.y, maxH = Mathf.Max(_scaleClamp.Min.y, maxWorld.y);
+            Vector2 minWorld = _scaleClamp.Min;
+            var scaleRange = _widget.ScaleRange;
+            if (scaleRange.x > 0f)
+            {
+                Vector2 unscaledSize = new(_baseVisualW / Mathf.Abs(_baseScale.x),
+                    _baseVisualH / Mathf.Abs(_baseScale.y));
+                maxWorld = Vector2.Min(maxWorld, unscaledSize * scaleRange.y);
+                minWorld = Vector2.Min(unscaledSize * scaleRange.x, maxWorld);
+            }
+            float minW = minWorld.x, maxW = Mathf.Max(minW, maxWorld.x);
+            float minH = minWorld.y, maxH = Mathf.Max(minH, maxWorld.y);
 
-            bool preserveAspect = _scalingPreserveAspectRatio || Input.GetKey(KeyCode.LeftShift);
+            bool preserveAspect = _scalingPreserveAspectRatio || scaleRange.x > 0f || Input.GetKey(KeyCode.LeftShift);
 
             Vector2 target = GetTargetSize(
                 rawW, rawH, _baseVisualW, _baseVisualH,

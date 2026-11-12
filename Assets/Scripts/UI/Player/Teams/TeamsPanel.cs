@@ -11,6 +11,7 @@ public class TeamsPanel : MonoBehaviour
     
     [SerializeField] private PlayerIcon _allyIconPrefab;
     [SerializeField] private PlayerIcon _enemyIconPrefab;
+    [SerializeField] private PlayerIcon _localHeroIcon;
     [SerializeField] private RectTransform _allies;
     [SerializeField] private RectTransform _enemies;
 
@@ -129,6 +130,9 @@ public class TeamsPanel : MonoBehaviour
 
     public void StartReviveTimer(Character character, float time)
     {
+        if (character != null && character == Character.Local && _localHeroIcon != null)
+            _localHeroIcon.StartReviveTimer(time);
+
         foreach (var item in _playerIcons)
         {
             if (item.Character == character)

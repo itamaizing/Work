@@ -47,7 +47,7 @@ public class PlayerIcon : MonoBehaviour
 
     public void StartReviveTimer(float time)
     {
-        _reviveVisual.StartTimer(time);
+        if (_reviveVisual != null) _reviveVisual.StartTimer(time);
     }
 
     public void OnButtonClick()

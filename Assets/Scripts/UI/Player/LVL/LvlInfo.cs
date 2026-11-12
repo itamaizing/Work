@@ -23,6 +23,7 @@ public class LvlInfo : MonoBehaviour
 		{
 			_playerLevel.EXPAdded -= OnEXPAdded;
 			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.LevelLoaded -= OnLevelLoaded;
 			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
 		}
 	}
@@ -33,6 +34,7 @@ public class LvlInfo : MonoBehaviour
 		{
 			_playerLevel.EXPAdded -= OnEXPAdded;
 			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.LevelLoaded -= OnLevelLoaded;
 			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
 		}
 
@@ -46,6 +48,7 @@ public class LvlInfo : MonoBehaviour
 
 		_playerLevel.EXPAdded += OnEXPAdded;
 		_playerLevel.LVLUped += OnLVLUped;
+		_playerLevel.LevelLoaded += OnLevelLoaded;
 		_playerLevel.EXPForNextLVLChanged += OnEXPForNextLVLChanged;
 	}
 
@@ -55,8 +58,15 @@ public class LvlInfo : MonoBehaviour
 		{
 			_playerLevel.EXPAdded -= OnEXPAdded;
 			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.LevelLoaded -= OnLevelLoaded;
 			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
 		}
+	}
+
+	private void OnLevelLoaded(int level)
+	{
+		_lvlValue = level;
+		UpdateInfo();
 	}
 
 	private void OnEXPAdded(int obj)

@@ -25,7 +25,7 @@ public class UIGameRightSidePanel : MonoBehaviour
 
     private void OnHeroPortraitClicked(HeroComponent hero, bool isAllied)
     {
-        if (isAllied) return;
+        if (isAllied || hero == null) return;
         if (_inspectedHero == hero && _rightPanelHolder.activeSelf)
         {
             _inspectedHero = null;
@@ -36,9 +36,8 @@ public class UIGameRightSidePanel : MonoBehaviour
         _inspectedHero = hero;
         _rightPanelHolder.SetActive(true);
         _attributesPanel.gameObject.SetActive(true);
-        _attributesPanel.Show(hero, isMenu: false, isInteractable: false);
-        _attributesPanel.ShowHide(true);
         _talentsPanel.gameObject.SetActive(true);
+        _attributesPanel.Show(hero, isMenu: false, isInteractable: false);
         _talentsPanel.Show(hero.TalentManager, isGameUI: true, isInteractable: false);
     }
 }

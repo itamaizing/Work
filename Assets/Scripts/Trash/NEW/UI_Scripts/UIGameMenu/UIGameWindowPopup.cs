@@ -8,6 +8,7 @@ public class UIGameWindowPopup : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
+    [SerializeField] private GameObject _progressionPanel;
     [SerializeField] private PlayerIcon _playerIcon;
     [SerializeField] private MinionPanel _minionPanel;
     [SerializeField] private SkillPanel _skillPanel;
@@ -22,6 +23,7 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
+    private Character _hudHero;
     
     private HeroComponent _inspectedHero;
 
@@ -30,17 +32,21 @@ public class UIGameWindowPopup : MonoBehaviour
         InputHandler.ShowMenu += ShowSettings;
         InputHandler.ShowStatistics += ShowStatistics;
         _minionSkillController = new MinionSkillPanelController(_skillMinionPanel);
-        HideHeroInfo();
+        _progressionPanel.SetActive(false);
     }
 
     public void SwichAll(bool value)
     {
-        if (value == false)
-            foreach (var item in _forHide)
-                item.SetActive(false);
-        else
-            foreach (var item in _forHide)
-                item.SetActive(true);
+        foreach (var item in _forHide)
+        {
+            if (item == _progressionPanel)
+            {
+                if (value && _inspectedHero != null) ShowHeroInfo(_inspectedHero);
+                else item.SetActive(false);
+            }
+            else
+                item.SetActive(value);
+        }
     }
 
     private void TeamSourceSwich(bool value) => _teamSource.SetActive(value);
@@ -87,6 +93,21 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
 
         PlayerIconMain.HeroPortraitClicked -= OnHeroPortraitClicked;
+
+        _hudHero = null;
+        if (_playerIcon != null) _playerIcon.OnCharacterSelected(null);
+    }
+
+    private void LateUpdate()
+    {
+        var hero = Character.Local;
+        if (hero == null || !hero.IsInitialized)
+            hero = null;
+
+        if (ReferenceEquals(_hudHero, hero)) return;
+
+        _hudHero = hero;
+        _playerIcon.OnCharacterSelected(hero);
     }
     
     private void OnDestroy()
@@ -96,32 +117,26 @@ public class UIGameWindowPopup : MonoBehaviour
     
     private void OnHeroPortraitClicked(HeroComponent hero, bool isAllied)
     {
-        if (!isAllied) return;
-        if (_inspectedHero == hero && _talentsPanel.gameObject.activeSelf)
+        if (!isAllied || hero == null) return;
+        if (_inspectedHero == hero && _progressionPanel.activeSelf)
         {
-            HideHeroInfo();
+            _inspectedHero = null;
+            _progressionPanel.SetActive(false);
             return;
         }
 
-        bool canEdit = hero == Character.Local;
-        _attributesPanel.gameObject.SetActive(true);
-        _attributesPanel.Show(hero, isMenu: false, isInteractable: canEdit);
-        _attributesPanel.ShowHide(true);
-
-        _talentsPanel.gameObject.SetActive(true);
-        _talentsPanel.Show(hero.TalentManager, isGameUI: true, isInteractable: canEdit);
-
         _inspectedHero = hero;
+        ShowHeroInfo(hero);
     }
 
-    private void HideHeroInfo()
+    private void ShowHeroInfo(HeroComponent hero)
     {
-        _attributesPanel.ShowHide(false);
-        _attributesPanel.gameObject.SetActive(false);
-        _talentsPanel.HidePanels();
-        _talentsPanel.gameObject.SetActive(false);
-
-        _inspectedHero = null;
+        bool canEdit = hero == Character.Local;
+        _progressionPanel.SetActive(true);
+        _attributesPanel.gameObject.SetActive(true);
+        _talentsPanel.gameObject.SetActive(true);
+        _attributesPanel.Show(hero, isMenu: false, isInteractable: canEdit);
+        _talentsPanel.Show(hero.TalentManager, isGameUI: true, isInteractable: canEdit);
     }
     
     private void OnCharacterSelected(Character character)
@@ -144,8 +159,6 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void OnCharacterDeselected(Character character)
     {
-        _playerIcon.OnCharacterDeselected(character);
-        _playerIcon.IconHolder.SetActive(false);
         _minionPanel.OnCharacterDeselected(character);
         _skillPanel.OnCharacterDeselected(character);
         _skillMinionPanel.gameObject.SetActive(false);
@@ -158,7 +171,6 @@ public class UIGameWindowPopup : MonoBehaviour
     {
         if (_currentHero == null) return;
 
-        _playerIcon.OnCharacterSelected(_currentHero);
         _minionPanel.OnCharacterSelected(_currentHero);
         _skillPanel.OnCharacterSelected(_currentHero);
 

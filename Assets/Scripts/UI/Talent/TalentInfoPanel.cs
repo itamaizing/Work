@@ -2,13 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TalentInfoPanel : MonoBehaviour
 {
     [SerializeField] private TalentInfoCell _cellPref;
     [SerializeField] private TMP_Text _name;
+    [SerializeField] private bool _followCursor;
+    [SerializeField] private float _cursorGap = 12f;
 
     private List<TalentInfoCell> _cells = new();
+    
+    private readonly Vector3[] _corners = new Vector3[4];
+
+    private void LateUpdate()
+    {
+        if (_followCursor)
+            PositionAtCursor();
+    }
 
     public void Show(TalentData data, string rowConditionDescription = "")
     {
@@ -72,6 +83,12 @@ public class TalentInfoPanel : MonoBehaviour
                 if (i == pairCnt - 1) stateCell.HideDividingLine();
             }
         }
+        
+        if (_followCursor)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
+            PositionAtCursor();
+        }
     }
 
     public void Hide()
@@ -80,5 +97,37 @@ public class TalentInfoPanel : MonoBehaviour
         if (_cells == null) return;
         foreach (var cell in _cells) Destroy(cell.gameObject);
         _cells.Clear();
+    }
+    
+    private void PositionAtCursor()
+    {
+        var tooltip = (RectTransform)transform;
+        var parent = (RectTransform)tooltip.parent;
+
+        tooltip.GetWorldCorners(_corners);
+        Vector2 bottomLeft = RectTransformUtility.WorldToScreenPoint(null, _corners[0]);
+        Vector2 topRight = RectTransformUtility.WorldToScreenPoint(null, _corners[2]);
+        Vector2 size = topRight - bottomLeft;
+
+        Vector2 mouse = Input.mousePosition;
+        Rect bounds = Screen.safeArea;
+
+        float x = mouse.x + _cursorGap;
+        float y = mouse.y - _cursorGap;
+
+        if (x + size.x > bounds.xMax)
+            x = mouse.x - _cursorGap - size.x;
+
+        if (y - size.y < bounds.yMin)
+            y = mouse.y + _cursorGap + size.y;
+
+        x = Mathf.Clamp(x, bounds.xMin, Mathf.Max(bounds.xMin, bounds.xMax - size.x));
+        y = Mathf.Clamp(y, Mathf.Min(bounds.yMax, bounds.yMin + size.y), bounds.yMax);
+
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                parent, new Vector2(x, y), null, out Vector3 position))
+        {
+            tooltip.position = position;
+        }
     }
 }
