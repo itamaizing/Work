@@ -11,6 +11,7 @@ public enum ResourceType
     Energy,
     Rune,
     Psionic,
+    AttackingPsi,
     CooldownEnergy,
 }
 

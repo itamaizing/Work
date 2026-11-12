@@ -15,15 +15,15 @@ MonoBehaviour:
   _ui:
     White: {r: 1, g: 1, b: 1, a: 1}
     YellowAccent: {r: 1, g: 0.8392157, b: 0.30980393, a: 1}
-  _elements:
-    Earth: {r: 0.5882353, g: 0.43137255, b: 0.23529412, a: 1}
-    Fire: {r: 0.92156863, g: 0.3529412, b: 0.15686275, a: 1}
-    Water: {r: 0.27450982, g: 0.54901963, b: 0.92156863, a: 1}
-    Air: {r: 0.74509805, g: 0.88235295, b: 0.9411765, a: 1}
   _chat:
     Time: {r: 0.6666667, g: 0.6666667, b: 0.6666667, a: 1}
     Team1: {r: 0.3529412, g: 0.5882353, b: 1, a: 1}
     Team2: {r: 1, g: 0.39215687, b: 0.39215687, a: 1}
+    Name: {r: 1, g: 1, b: 1, a: 1}
+    Friend: {r: 0.54509807, g: 0.8862745, b: 0.54509807, a: 1}
+    SystemMessage: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+    Pending: {r: 0.53333336, g: 0.53333336, b: 0.53333336, a: 1}
+    Error: {r: 0.8980392, g: 0.4509804, b: 0.4509804, a: 1}
     All:
       Label: "\u041E\u0431\u0449\u0438\u0439"
       TagColor: {r: 1, g: 1, b: 1, a: 1}
@@ -42,9 +42,46 @@ MonoBehaviour:
       ColorNameByTeam: 1
       NameColor: {r: 1, g: 1, b: 1, a: 1}
       TextColor: {r: 0.78431374, g: 0.88235295, b: 1, a: 1}
+    Custom:
+      Label: "\u041A\u0430\u043D\u0430\u043B"
+      TagColor: {r: 1, g: 0.8392157, b: 0.30980393, a: 1}
+      ColorNameByTeam: 1
+      NameColor: {r: 1, g: 1, b: 1, a: 1}
+      TextColor: {r: 1, g: 1, b: 1, a: 1}
     Private:
       Label: "\u041B\u0438\u0447\u043D\u043E"
       TagColor: {r: 1, g: 0.54901963, b: 0.8627451, a: 1}
       ColorNameByTeam: 0
       NameColor: {r: 1, g: 0.54901963, b: 0.8627451, a: 1}
       TextColor: {r: 1, g: 0.54901963, b: 0.8627451, a: 1}
+  _gameplay:
+    _resources:
+      _resources:
+      - key: 0
+        value:
+          _bar: {r: 0, g: 1, b: 0.23950684, a: 1}
+          _textLink: {r: 1, g: 0.3066038, b: 0.3066038, a: 1}
+      - key: 1
+        value:
+          _bar: {r: 0, g: 0.12156863, b: 0.65882355, a: 1}
+          _textLink: {r: 0, g: 0.12156863, b: 0.65882355, a: 1}
+      - key: 2
+        value:
+          _bar: {r: 0.98039216, g: 0.95686275, b: 0, a: 1}
+          _textLink: {r: 0.98039216, g: 0.95686275, b: 0, a: 1}
+      - key: 3
+        value:
+          _bar: {r: 1, g: 1, b: 1, a: 1}
+          _textLink: {r: 0.43921566, g: 0.8840889, b: 1, a: 1}
+      - key: 4
+        value:
+          _bar: {r: 0, g: 0.84313726, b: 0.98039216, a: 1}
+          _textLink: {r: 0, g: 0.84313726, b: 0.98039216, a: 1}
+      - key: 6
+        value:
+          _bar: {r: 0.42352942, g: 0.23529412, b: 0.85490197, a: 1}
+          _textLink: {r: 0.42352942, g: 0.23529412, b: 0.85490197, a: 1}
+      - key: 5
+        value:
+          _bar: {r: 0.99607843, g: 0.6745098, b: 0, a: 1}
+          _textLink: {r: 0.9960785, g: 0.6745098, b: 0, a: 1}

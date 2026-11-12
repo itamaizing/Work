@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ColorPalette", menuName = "Game/Color Palette")]
@@ -6,9 +7,11 @@ public class ColorPalette : ScriptableObject
 {
     [SerializeField] private UIColors _ui = new();
     [SerializeField] private ChatColors _chat = new();
+    [SerializeField] private GameplayColors _gameplay = new();
 
     public UIColors UI => _ui;
     public ChatColors Chat => _chat;
+    public GameplayColors Gameplay => _gameplay;
 
     [Serializable]
     public class UIColors
@@ -85,5 +88,54 @@ public class ColorPalette : ScriptableObject
             ChatChannel.Group => Group,
             _ => Private
         };
+    }
+
+    [Serializable]
+    public class GameplayColors
+    {
+        [Serializable]
+#if !UNITY_EDITOR
+        public class Resources
+#else
+        public class ResourceColors : ISerializationCallbackReceiver
+#endif
+        {
+            [Serializable]
+            public struct ResourceStyle
+            {
+                [SerializeField] private Color _bar;
+                [SerializeField] private Color _textLink;
+
+                public Color? Bar => (_bar == default) ? null : _bar;
+                public Color? TextLink => (_bar == default) ? null : _textLink;
+
+            }
+
+            [SerializeField] private Dictionary<ResourceType, ResourceStyle> _resources = new();
+            public ResourceStyle this[ResourceType type] => _resources[type];
+
+#if UNITY_EDITOR
+            public ResourceColors()
+            {
+                FillTypes();
+            }
+            public void OnAfterDeserialize() { }
+
+            public void OnBeforeSerialize()
+            {
+                FillTypes();
+            }
+
+            private void FillTypes()
+            {
+                foreach (ResourceType res in Enum.GetValues(typeof(ResourceType)))
+                {
+                    _resources.TryAdd(res, new ResourceStyle());
+                }
+            }
+#endif
+        }
+        [SerializeField] private ResourceColors _resources;
+        public ResourceColors Resources => _resources;
     }
 }

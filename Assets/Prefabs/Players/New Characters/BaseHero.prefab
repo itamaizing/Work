@@ -18517,8 +18517,8 @@ MonoBehaviour:
   _showText: 1
   _barText: {fileID: 4236290764060667860}
   _barImage: {fileID: 0}
-  _minorTickStep: 50
-  _majorTickStep: 100
+  _minorTickStep: 100
+  _majorTickStep: 500
   _psiTickStep: 10
   _tickColor: {r: 0.078431, g: 0.078431, b: 0.078431, a: 0.88}
 --- !u!1 &8423443208040621164
