@@ -4726,7 +4726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7266,7 +7266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -20913,7 +20913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u041C"
+      value: V
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -23157,7 +23157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u041F"
+      value: G
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -23618,7 +23618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _minimumSize.x
-      value: 340
+      value: 275
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _minimumSize.y
@@ -24544,7 +24544,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u0421"
+      value: C
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -24953,7 +24953,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u0410"
+      value: F
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -25086,7 +25086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u0423"
+      value: E
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -25444,7 +25444,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u0427"
+      value: X
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -26978,7 +26978,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _minimumSize.x
-      value: 340
+      value: 275
       objectReference: {fileID: 0}
     - target: {fileID: 666931092700382956, guid: 319fb74c0a3c685469e371eecc3477dc, type: 3}
       propertyPath: _minimumSize.y
@@ -27116,7 +27116,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u041A"
+      value: R
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -30060,7 +30060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u0418"
+      value: B
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -30447,7 +30447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u0419"
+      value: Q
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name
@@ -31450,7 +31450,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5499866639184036437, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_text
-      value: "\u042F"
+      value: Z
       objectReference: {fileID: 0}
     - target: {fileID: 8032228655829858447, guid: dc3ee596ba660f6439c11b335252feb1, type: 3}
       propertyPath: m_Name

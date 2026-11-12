@@ -1,6 +1,7 @@
 using System.Globalization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HUDResourceBar : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class HUDResourceBar : MonoBehaviour
     {
         _resource = resource;
         gameObject.SetActive(_resource != null);
+        Image fillColor = _fill.GetComponent<Image>();
+        fillColor.color = G.Colors.Gameplay.Resources[Type].Bar ?? fillColor.color;
         Refresh();
     }
 

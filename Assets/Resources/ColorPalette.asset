@@ -63,7 +63,7 @@ MonoBehaviour:
           _textLink: {r: 1, g: 0.3066038, b: 0.3066038, a: 1}
       - key: 1
         value:
-          _bar: {r: 0, g: 0.12156863, b: 0.65882355, a: 1}
+          _bar: {r: 0, g: 0.121568635, b: 0.65882355, a: 1}
           _textLink: {r: 0, g: 0.12156863, b: 0.65882355, a: 1}
       - key: 2
         value:
@@ -71,7 +71,7 @@ MonoBehaviour:
           _textLink: {r: 0.98039216, g: 0.95686275, b: 0, a: 1}
       - key: 3
         value:
-          _bar: {r: 1, g: 1, b: 1, a: 1}
+          _bar: {r: 0.4292453, g: 0.63829553, b: 1, a: 1}
           _textLink: {r: 0.43921566, g: 0.8840889, b: 1, a: 1}
       - key: 4
         value:

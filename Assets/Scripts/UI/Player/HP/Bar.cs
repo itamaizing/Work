@@ -64,7 +64,11 @@ public class Bar : MonoBehaviour
 		_preViewValue = resource.CurrentValue;
 		_maxValue = resource.MaxValue;
 		CreateResourceScale();
-
+		if (_resource.Type != ResourceType.Rune)
+		{
+			Image resColor = _bar.fillRect.GetComponent<Image>();
+			resColor.color = G.Colors.Gameplay.Resources[_resource.Type].Bar ?? resColor.color;
+		}
 		UpdateBar();
 
 		_resource.ValueChanged += OnValueChanged;
