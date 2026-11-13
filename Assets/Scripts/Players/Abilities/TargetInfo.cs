@@ -8,6 +8,10 @@ public class TargetInfo
     private List<ITargetable> _targets = new();
     public List<Vector3> Points = new();
     public List<Quaternion> Roation = new();
+    public Character SelectedTarget { get; set; }
+    public bool UsesSelectedTarget { get; set; }
+
+    public bool LostSelectedTarget => UsesSelectedTarget && (SelectedTarget == null || SelectedTarget.IsDead);
 
     public List<ITargetable> GetTargets(bool canTakeDead = false)
     {

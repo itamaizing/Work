@@ -70,8 +70,7 @@ public class PlayerIcon : MonoBehaviour
                 continue;
             }
 
-            character.TryGetResource(bar.Type, out var resource);
-            bar.Bind(resource);
+            bar.Bind(bar.FindResource(character));
         }
         // _playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
     }

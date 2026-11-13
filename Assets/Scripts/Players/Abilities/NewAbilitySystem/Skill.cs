@@ -442,7 +442,38 @@ using UnityEngine;
     /// </summary>
     protected virtual IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        if (TryQueueSelectedTarget(targetDataSavedCallback))
+            yield break;
+
         yield return TargetingBehaviour(targetDataSavedCallback);
+    }
+
+    private bool PrefersSelectedTarget => Targeting.CastAtSelected && CastPrioritySetting.Priority == CastPriority.SelectedTarget;
+
+    protected virtual bool CanSelectTarget(Character target) => Targeting.CanSelectUnit(target);
+
+    public bool TryBuildSelectedTargetInfo(Action<TargetInfo> save)
+    {
+        var selector = TargetSelector.Instance;
+        var target = selector != null ? selector.InspectedTarget : null;
+        if (!CanSelectTarget(target)) return false;
+
+        return SetQueueTarget(new TargetData(target.gameObject), info =>
+        {
+            info.UsesSelectedTarget = true;
+            info.SelectedTarget = target;
+            save(info);
+        });
+    }
+
+    protected bool TryQueueSelectedTarget(Action<TargetInfo> save)
+    {
+        if (!PrefersSelectedTarget) return false;
+        if (TryBuildSelectedTargetInfo(save)) return true;
+        if (!IsAutoMode) return false;
+
+        save(new TargetInfo { UsesSelectedTarget = true });
+        return true;
     }
 
     /// <summary>

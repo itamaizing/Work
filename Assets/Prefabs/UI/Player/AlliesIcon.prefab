@@ -815,7 +815,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660798635722830708}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -854,6 +854,8 @@ MonoBehaviour:
   _fill: {fileID: 7171752412740277282}
   _amount: {fileID: 6207322945193353155}
   _regeneration: {fileID: 334641508635719385}
+  _runePrefab: {fileID: 3587964104377880790, guid: dfde154522e5e414585737341fd96b83, type: 3}
+  _initialResource: {fileID: 0}
 --- !u!1 &1818182532928052487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,6 +1027,8 @@ MonoBehaviour:
   _fill: {fileID: 2495913334074212097}
   _amount: {fileID: 7894470703109752122}
   _regeneration: {fileID: 316514684338349595}
+  _runePrefab: {fileID: 0}
+  _initialResource: {fileID: 0}
 --- !u!1 &1918647536993644295
 GameObject:
   m_ObjectHideFlags: 0
@@ -1452,6 +1456,7 @@ GameObject:
   - component: {fileID: 7171752412740277282}
   - component: {fileID: 5622934338292958859}
   - component: {fileID: 8063430487511763156}
+  - component: {fileID: 3891423618711127685}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -1474,7 +1479,7 @@ RectTransform:
   m_Father: {fileID: 1584398405962650574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
@@ -1493,7 +1498,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2195038269989229819}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1516,6 +1521,32 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3891423618711127685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2195038269989229819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &2576893342967694455
 GameObject:
   m_ObjectHideFlags: 0
@@ -2186,6 +2217,8 @@ MonoBehaviour:
   _fill: {fileID: 2674983423836106082}
   _amount: {fileID: 247312140504633702}
   _regeneration: {fileID: 1783767097970543440}
+  _runePrefab: {fileID: 0}
+  _initialResource: {fileID: 0}
 --- !u!1 &4659837851589706419
 GameObject:
   m_ObjectHideFlags: 0
@@ -2239,7 +2272,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4659837851589706419}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2396,7 +2429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2506574890462095496
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2688,6 +2721,8 @@ MonoBehaviour:
   _fill: {fileID: 1927178610459717857}
   _amount: {fileID: 6825972743622752327}
   _regeneration: {fileID: 2242542844059803624}
+  _runePrefab: {fileID: 0}
+  _initialResource: {fileID: 0}
 --- !u!114 &1687714456051000173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2942,6 +2977,8 @@ MonoBehaviour:
   _fill: {fileID: 4913385618056548454}
   _amount: {fileID: 5565411760192920087}
   _regeneration: {fileID: 8490157639766695392}
+  _runePrefab: {fileID: 0}
+  _initialResource: {fileID: 0}
 --- !u!1 &6407703947081236630
 GameObject:
   m_ObjectHideFlags: 0
@@ -4539,6 +4576,8 @@ MonoBehaviour:
   _fill: {fileID: 7746666279090092267}
   _amount: {fileID: 5808657322486529196}
   _regeneration: {fileID: 1625195322266906028}
+  _runePrefab: {fileID: 0}
+  _initialResource: {fileID: 0}
 --- !u!1 &8995286646139835524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4556,7 +4595,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8948691810205328304
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4771,3 +4810,5 @@ MonoBehaviour:
   _fill: {fileID: 4559342438504403986}
   _amount: {fileID: 8257948900167598300}
   _regeneration: {fileID: 2106047769818277581}
+  _runePrefab: {fileID: 0}
+  _initialResource: {fileID: 0}

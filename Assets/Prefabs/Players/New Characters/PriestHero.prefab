@@ -7278,6 +7278,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -7297,6 +7298,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7431,6 +7433,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -7456,6 +7459,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7608,6 +7612,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -7633,6 +7638,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 1.8
   _channelComponent:
@@ -7776,6 +7782,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -7801,6 +7808,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -7948,6 +7956,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -7973,6 +7982,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8109,6 +8119,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8134,6 +8145,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 1.5
   _channelComponent:
@@ -8274,6 +8286,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8299,6 +8312,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8429,6 +8443,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8454,6 +8469,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8589,6 +8605,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8608,6 +8625,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8747,6 +8765,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8766,6 +8785,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -8896,6 +8916,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -8915,6 +8936,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9060,6 +9082,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9079,6 +9102,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9210,6 +9234,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9235,6 +9260,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9385,6 +9411,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9410,6 +9437,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 9
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9556,6 +9584,7 @@ MonoBehaviour:
       m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9581,6 +9610,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 2
   _channelComponent:
@@ -9729,6 +9759,7 @@ MonoBehaviour:
       m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9748,6 +9779,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -9895,6 +9927,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -9920,6 +9953,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 2
   _channelComponent:
@@ -10053,6 +10087,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10078,6 +10113,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10211,6 +10247,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10230,6 +10267,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10366,6 +10404,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10391,6 +10430,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 1.5
   _channelComponent:
@@ -10521,6 +10561,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10540,6 +10581,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10674,6 +10716,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10693,6 +10736,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10822,6 +10866,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10841,6 +10886,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -10971,6 +11017,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10990,6 +11037,7 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:
@@ -11120,6 +11168,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11145,6 +11194,7 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 18
     affectedByCDR: 0
+    _showRecoveryProgress: 0
   _autoAttackDelay: 0
   _preparingDuration: 0
   _channelComponent:

@@ -7,6 +7,7 @@ public class AutoSkillCast
 {
     private Skill _currentSkill;
     private TargetInfo _targetInfo;
+    private bool _followSelection;
     private Coroutine _tryCastCoroutine;
     private MonoBehaviour _parentForCoroutine;
     
@@ -28,9 +29,13 @@ public class AutoSkillCast
             DeleteSkill();
 
         _currentSkill = skill;
-        _targetInfo = new();
-        _targetInfo.AddTargets(targetInfo.GetTargets());
-        _targetInfo.Points = new(targetInfo.Points);
+        _followSelection = targetInfo.UsesSelectedTarget;
+        _targetInfo = _followSelection ? targetInfo : new TargetInfo();
+        if (!_followSelection)
+        {
+            _targetInfo.AddTargets(targetInfo.GetTargets());
+            _targetInfo.Points = new(targetInfo.Points);
+        }
         _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
 
         _currentSkill.SkillRender.StartDrawAutoAttackRadius(_currentSkill.AreaInfo.Radius);
@@ -95,7 +100,11 @@ public class AutoSkillCast
             _currentSkill.SkillRender.StopDrawAutoAttackRadius();
         }
 
-        if (_targetInfo?.GetTargets() != null)
+        if (_followSelection)
+        {
+            SetSelectionCircle(_targetInfo?.SelectedTarget, false);
+        }
+        else if (_targetInfo != null)
         {
             foreach (var item in _targetInfo.GetTargets())
             {
@@ -110,16 +119,30 @@ public class AutoSkillCast
 
     private IEnumerator TryCastJob()
     {
-        foreach (var item in _targetInfo.GetTargets())
+        if (_followSelection)
         {
-            if (item is Character character)
+            SetSelectionCircle(_targetInfo.SelectedTarget, true);
+        }
+        else
+        {
+            foreach (var item in _targetInfo.GetTargets())
             {
-                character.SelectedCircle.SwitchSelectCircle(true);
+                if (item is Character character)
+                    character.SelectedCircle.SwitchSelectCircle(true);
             }
         }
 
         while (true)
         {
+            if (_followSelection)
+            {
+                if (!_currentSkill.IsExecuting)
+                    TryCastAtSelection();
+
+                yield return new WaitForSeconds(_currentSkill.AutoAttackDelay);
+                continue;
+            }
+
             if (_targetInfo.GetTargets().Count > 0 )
             {
                 if (_targetInfo.GetTargets()[0] is Character character && _targetInfo.GetTargets()[0] != null)
@@ -138,6 +161,28 @@ public class AutoSkillCast
 
             yield return new WaitForSeconds(_currentSkill.AutoAttackDelay);
         }
+    }
+
+    private void TryCastAtSelection()
+    {
+        TargetInfo next = null;
+        _currentSkill.TryBuildSelectedTargetInfo(info => next = info);
+        if (!ReferenceEquals(_targetInfo.SelectedTarget, next?.SelectedTarget))
+        {
+            SetSelectionCircle(_targetInfo.SelectedTarget, false);
+            _targetInfo = next ?? new TargetInfo();
+            SetSelectionCircle(_targetInfo.SelectedTarget, true);
+            SkillSet?.Invoke(_currentSkill, _targetInfo);
+        }
+
+        if (next != null)
+            _currentSkill.TryCast(next);
+    }
+
+    private static void SetSelectionCircle(Character target, bool visible)
+    {
+        if (target != null && target.SelectedCircle != null)
+            target.SelectedCircle.SwitchSelectCircle(visible);
     }
 
 }

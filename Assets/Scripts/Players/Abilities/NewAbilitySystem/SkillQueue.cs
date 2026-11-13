@@ -45,6 +45,15 @@ public class SkillQueue : MonoBehaviour
         if (IsBusy)
             return;
         
+        while (_skills.TryPeek(out var queuedSkill) && queuedSkill.TargetInfoQueue.TryPeek(out var queuedTarget) && queuedTarget.LostSelectedTarget)
+        {
+            if (queuedTarget.SelectedTarget != null && queuedTarget.SelectedTarget.SelectedCircle != null)
+                queuedTarget.SelectedTarget.SelectedCircle.SwitchSelectCircle(false);
+
+            queuedSkill.TargetInfoQueue.Dequeue();
+            RemoveFromQueue();
+        }
+
         if (_skills.TryPeek(out Skill skill))
         {
             if (skill.Targeting.SkillType == TargetingType.Zone)
@@ -61,6 +70,9 @@ public class SkillQueue : MonoBehaviour
                     }
                 }
             }
+
+            if (targetInfo?.UsesSelectedTarget == true && !targetInfo.SelectedTarget.IsTargetable)
+                return;
 
             if (skill.TryCast())
             {

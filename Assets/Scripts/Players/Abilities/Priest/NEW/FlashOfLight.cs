@@ -129,8 +129,14 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
         Cooldown.OnForceRefreshUI();
     }
+    protected override bool CanSelectTarget(Character target)
+        => base.CanSelectTarget(target) && (isLightMode ? IsAllyTarget(target) : IsEnemyTarget(target));
+
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
+        if (TryQueueSelectedTarget(callbackDataSaved))
+            yield break;
+
        // _previousTarget = null;
 
         while (Targeting.GetTempTarget()?.Character == null)

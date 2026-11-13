@@ -8,6 +8,9 @@ public abstract class CloseCombatSkill : Skill
 
     protected override IEnumerator TargetingJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        if (TryQueueSelectedTarget(targetDataSavedCallback))
+            yield break;
+
         while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)

@@ -133,6 +133,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     [SerializeField] protected LayerMask _interactionMask;  //Если не указали вручную - формируется по _clickFaction
     [SerializeField] protected OutOfRangeClick _outOfRangeBehaviour;
     [SerializeField] protected bool _needLineOfSight;
+    [SerializeField, InspectorName("Каст в выбранную цель")] private bool _castAtSelected;
     #endregion
 
     #region Runtime Variables
@@ -183,6 +184,15 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         set => _forDamage = value;
     }
     public bool NeedLineOfSight { get => _needLineOfSight; }
+    public bool CastAtSelected => _castAtSelected && (_clickLayer & TargetLayer.Unit) != 0
+        && _targetingType is TargetingType.Target or TargetingType.Projectile;
+
+    public bool CanSelectUnit(Character target)
+    {
+        return CastAtSelected && target != null && target.IsTargetable
+            && (_clickMask.value & (1 << target.gameObject.layer)) != 0
+            && (target != _character || (_clickFaction & TargetFaction.Self) != 0);
+    }
     #endregion
 
     #region Methods

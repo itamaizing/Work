@@ -39,7 +39,7 @@ public class HUDTargetPanel : MonoBehaviour
             Resource resource = null;
             if (target != null)
             {
-                target.TryGetResource(bar.Type, out resource);
+                resource = bar.FindResource(target);
                 if (bar.Type == ResourceType.Health && target.Health != null)
                     resource = target.Health;
             }

@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StateTooltip : MonoBehaviour
 {
@@ -17,10 +18,13 @@ public class StateTooltip : MonoBehaviour
     private Coroutine _showRoutine;
     private bool _isShowing;
     private MonoBehaviour _owner;
+    private readonly Vector3[] _corners = new Vector3[4];
 
     private void Awake()
     {
         Instance = this;
+        if (_rootCanvas == null)
+            _rootCanvas = GetComponentInParent<Canvas>()?.rootCanvas;
         Hide();
     }
 
@@ -48,6 +52,7 @@ public class StateTooltip : MonoBehaviour
         _descriptionText.gameObject.SetActive(hasDescription);
         if (hasDescription) _descriptionText.text = description;
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
         UpdatePositionToMouse();
     }
 
@@ -58,13 +63,42 @@ public class StateTooltip : MonoBehaviour
 
     private void UpdatePositionToMouse()
     {
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            (RectTransform)_rootCanvas.transform,
-            Input.mousePosition + (Vector3)_mouseOffset,
-            _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _rootCanvas.worldCamera,
-            out Vector3 worldPoint);
+        if (_rootCanvas == null) return;
 
-        _rectTransform.position = worldPoint;
+        Camera camera = _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _rootCanvas.worldCamera;
+        Vector2 pivot = RectTransformUtility.WorldToScreenPoint(camera, _rectTransform.position);
+        _rectTransform.GetWorldCorners(_corners);
+        Vector2 minOffset = Vector2.positiveInfinity;
+        Vector2 maxOffset = Vector2.negativeInfinity;
+        foreach (Vector3 corner in _corners)
+        {
+            Vector2 offset = RectTransformUtility.WorldToScreenPoint(camera, corner) - pivot;
+            minOffset = Vector2.Min(minOffset, offset);
+            maxOffset = Vector2.Max(maxOffset, offset);
+        }
+
+        Vector2 mouse = Input.mousePosition;
+        Rect bounds = Screen.safeArea;
+        float gapX = Mathf.Abs(_mouseOffset.x);
+        float gapY = Mathf.Abs(_mouseOffset.y);
+        float x = mouse.x + gapX - minOffset.x;
+        float y = mouse.y - gapY - maxOffset.y;
+
+        if (x + maxOffset.x > bounds.xMax)
+            x = mouse.x - gapX - maxOffset.x;
+        if (y + minOffset.y < bounds.yMin)
+            y = mouse.y + gapY - minOffset.y;
+
+        float minX = bounds.xMin - minOffset.x;
+        float maxY = bounds.yMax - maxOffset.y;
+        x = Mathf.Clamp(x, minX, Mathf.Max(minX, bounds.xMax - maxOffset.x));
+        y = Mathf.Clamp(y, Mathf.Min(maxY, bounds.yMin - minOffset.y), maxY);
+
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            _rectTransform, new Vector2(x, y), camera, out Vector3 worldPoint))
+        {
+            _rectTransform.position = worldPoint;
+        }
     }
 
     public void Hide(MonoBehaviour owner)
