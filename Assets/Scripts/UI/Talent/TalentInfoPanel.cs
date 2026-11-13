@@ -113,16 +113,13 @@ public class TalentInfoPanel : MonoBehaviour
         Rect bounds = Screen.safeArea;
 
         float x = mouse.x + _cursorGap;
-        float y = mouse.y - _cursorGap;
+        float y = mouse.y;
 
         if (x + size.x > bounds.xMax)
             x = mouse.x - _cursorGap - size.x;
 
-        if (y - size.y < bounds.yMin)
-            y = mouse.y + _cursorGap + size.y;
-
-        x = Mathf.Clamp(x, bounds.xMin, Mathf.Max(bounds.xMin, bounds.xMax - size.x));
-        y = Mathf.Clamp(y, Mathf.Min(bounds.yMax, bounds.yMin + size.y), bounds.yMax);
+        x = Mathf.Clamp(x, bounds.xMin, bounds.xMax - size.x);
+        y = Mathf.Clamp(y, bounds.yMin + size.y/2, bounds.yMax - size.y/2);
 
         if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
                 parent, new Vector2(x, y), null, out Vector3 position))

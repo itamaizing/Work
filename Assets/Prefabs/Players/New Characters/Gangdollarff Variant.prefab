@@ -7826,7 +7826,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_clonePrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -1162350683604376873, guid: 6d3574ed5b9a6764dbd4176676a2e5dc, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _characterPrefabs.Array.size
       value: 4
@@ -7834,19 +7834,19 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_characterPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 2740777870113441289, guid: 7ed1fbac60109864085628ac0b32ca3b, type: 3}
+      objectReference: {fileID: 6093348549712099965, guid: 7ed1fbac60109864085628ac0b32ca3b, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_characterPrefabs.Array.data[1]'
       value: 
-      objectReference: {fileID: 3082828067594610963, guid: 137d9729a4a22a6419fff4f67971e1bf, type: 3}
+      objectReference: {fileID: 6363226733355898215, guid: 137d9729a4a22a6419fff4f67971e1bf, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_characterPrefabs.Array.data[2]'
       value: 
-      objectReference: {fileID: 8575489330000523180, guid: 0b5e7e50988911349b6cd72ac7343494, type: 3}
+      objectReference: {fileID: 397615114677867480, guid: 0b5e7e50988911349b6cd72ac7343494, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_characterPrefabs.Array.data[3]'
       value: 
-      objectReference: {fileID: 6270067163818579670, guid: b9361abbea62d324688cafe08eac97d9, type: 3}
+      objectReference: {fileID: 2703600234555599522, guid: b9361abbea62d324688cafe08eac97d9, type: 3}
     - target: {fileID: 548951138285989099, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -10634,7 +10634,7 @@ MonoBehaviour:
     _targetingType: 0
     _clickLayer: 3
     _clickFaction: -1
-    _clickUnit: 5
+    _clickUnit: 13
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -10969,7 +10969,7 @@ MonoBehaviour:
     _interactionMask:
       serializedVersion: 2
       m_Bits: 256
-    _outOfRangeBehaviour: 0
+    _outOfRangeBehaviour: 1
     _needLineOfSight: 0
     AdditionalObstacle:
       serializedVersion: 2
@@ -11436,7 +11436,7 @@ MonoBehaviour:
     _targetingType: 0
     _clickLayer: 1
     _clickFaction: 4
-    _clickUnit: 5
+    _clickUnit: 13
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -12247,7 +12247,7 @@ MonoBehaviour:
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:
@@ -12564,7 +12564,7 @@ MonoBehaviour:
     _targetingType: 0
     _clickLayer: 1
     _clickFaction: 4
-    _clickUnit: 5
+    _clickUnit: 1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -13257,7 +13257,7 @@ MonoBehaviour:
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
     AdditionalObstacle:

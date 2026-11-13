@@ -156,7 +156,7 @@ PrefabInstance:
     - target: {fileID: 242370089425684122, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 8575489330000523180}
+      objectReference: {fileID: 397615114677867480}
     - target: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -387,6 +387,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: -4032445377014633577}
   m_SourcePrefab: {fileID: 100100000, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+--- !u!114 &397615114677867480 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7742085869912657149, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 7995568031969599269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5665284927246484895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionComponent
 --- !u!114 &531154088669589675 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7614178594727784334, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -448,17 +459,6 @@ MonoBehaviour:
   _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 0
-  _castDeley: 1.5
-  _damageValue: 12
   _infoComponent:
     _school: 2
     _form: 0
@@ -467,29 +467,32 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 4
+    _clickUnit: -1
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 12
+  _baseDamage:
+    rid: 7005414399565103971
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -497,24 +500,26 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+    _showRecoveryProgress: 0
+  _autoAttackDelay: 0
+  _preparingDuration: 1.5
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -525,9 +530,73 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 8521629497404255749}
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _debuffTime: 7
+  references:
+    version: 2
+    RefIds:
+    - rid: 7005414399565103971
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 12
 --- !u!114 &217267245241133449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -570,17 +639,6 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 0
-  _castDeley: 0
-  _damageValue: 10
   _infoComponent:
     _school: 0
     _form: 0
@@ -589,29 +647,32 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 3
-    _faction: 4
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 4
+    _clickUnit: 13
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 10
+  _baseDamage:
+    rid: 7005414399565103972
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -619,24 +680,26 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+    _showRecoveryProgress: 0
+  _autoAttackDelay: 0
+  _preparingDuration: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -647,8 +710,72 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 8521629497404255749}
   _particlePref: {fileID: 2607017853375542456, guid: ac2586615ed6e5948983d73649d16e00, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7005414399565103972
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 10
 --- !u!114 &-2837521630394622147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -667,17 +794,6 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 0d46b191d6193f74ca4346a50cbf2e49, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 4
-  _castDeley: 0
-  _damageValue: 0
   _infoComponent:
     _school: 0
     _form: 0
@@ -686,29 +802,32 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
-    type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _targetingType: 0
+    _clickLayer: 1
+    _clickFaction: 3
+    _clickUnit: 13
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 512
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0.6
-  _manaCostRate: 0
-  _manaCostPerTick: []
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 0
+  _baseDamage:
+    rid: -2
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 4
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -716,24 +835,26 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+    _showRecoveryProgress: 0
+  _autoAttackDelay: 0
+  _preparingDuration: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _areaComponent:
     _radius: 6
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -744,9 +865,69 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 8521629497404255749}
   _shieldPref: {fileID: 1158249924082485831, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
   _baffDuration: 9
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-4032445377014633577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -789,17 +970,6 @@ NavMeshAgent:
   m_CorrespondingSourceObject: {fileID: 1780925315992858912, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   m_PrefabInstance: {fileID: 7995568031969599269}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8575489330000523180 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
-  m_PrefabInstance: {fileID: 7995568031969599269}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5665284927246484895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8641820456667636566 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1808229507172449395, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}

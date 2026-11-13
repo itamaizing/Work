@@ -251,6 +251,10 @@ PrefabInstance:
       propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5495238207772230747, guid: b1bd155078b6d9345a21cf322659ce7a, type: 3}
+      propertyPath: EmissionModule.rateOverTime.maxCurve.m_Curve.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7212952248849220704, guid: b1bd155078b6d9345a21cf322659ce7a, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -337,7 +341,7 @@ PrefabInstance:
     - target: {fileID: 242370089425684122, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 3082828067594610963}
+      objectReference: {fileID: 6363226733355898215}
     - target: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -750,17 +754,6 @@ MonoBehaviour:
   _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 8294b38bbba4f1745ae34d535899f173, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 0
-  _castDeley: 0
-  _damageValue: 9
   _infoComponent:
     _school: 6
     _form: 2
@@ -769,29 +762,36 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue:
+    - key: 0
+      value: 1
+    - key: 2
+      value: 3
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 4
-    _unitType: -1
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 4
+    _clickUnit: -1
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 9
+  _baseDamage:
+    rid: 7005414399565103970
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -799,24 +799,26 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+    _showRecoveryProgress: 0
+  _autoAttackDelay: 0
+  _preparingDuration: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _areaComponent:
     _radius: 2
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -827,9 +829,73 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 3136982779875862714}
   _stunDuration: 1.5
   _stunChance: 0.15
+  references:
+    version: 2
+    RefIds:
+    - rid: 7005414399565103970
+      type: {class: DamageTableSingle, ns: , asm: Assembly-CSharp}
+      data:
+        Type: 0
+        IsDot: 0
+        value: 9
 --- !u!114 &3917612944800829221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,17 +968,6 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b4f1dab0f9430004ca3b857aea197619, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 18
-  _castDeley: 0
-  _damageValue: 0
   _infoComponent:
     _school: 0
     _form: 0
@@ -921,29 +976,32 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 1
-    _faction: 6
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: -1
+    _clickUnit: 13
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 0
+  _baseDamage:
+    rid: -2
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 18
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -951,24 +1009,26 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+    _showRecoveryProgress: 0
+  _autoAttackDelay: 0
+  _preparingDuration: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -979,8 +1039,68 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _agent: {fileID: 3136982779875862714}
   _debuffDuration: 4
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &8158455417967411142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,17 +1119,6 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: e09aa40ceee0a8e4ea1cd499cff44f7d, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _cooldownComponent:
-    _baseCooldown: 18
-  _castDeley: 0.5
-  _damageValue: 0
   _infoComponent:
     _school: 0
     _form: 0
@@ -1018,29 +1127,32 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    editorBackupValue: []
     oldType: 0
-    type: 0
+    _targetingType: 0
     _clickLayer: 0
-    _faction: 2
-    _unitType: 5
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
-    _targetLayer:
+    _clickFaction: 0
+    _clickUnit: 0
+    _clickMask:
       serializedVersion: 2
       m_Bits: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 512
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
-    _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+    _interactionMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    AdditionalObstacle:
+      serializedVersion: 2
+      m_Bits: 0
+  _costComponent:
+    _base: 0
+    _costs: []
+  _damageValue: 0
+  _baseDamage:
+    rid: -2
+  _isSubjectToGlobalCooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 18
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -1048,24 +1160,26 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+    _showRecoveryProgress: 0
+  _autoAttackDelay: 0
+  _preparingDuration: 0.5
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
+    _prepareBarVisibility: 1
+    _castBarVisibility: 1
   _disactive: 0
-  _earlyCooldown: 0
   maxCounter: 0
   _tags:
     skillType: 0
@@ -1076,9 +1190,69 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
+    _castAnimatorLayer: 0
+    _cachedCastClip: {fileID: 0}
+    _cachedCastClipDuration: 0
+    _cachedCastDelayClip: {fileID: 0}
+    _cachedCastDelayClipDuration: 0
+    _cachedTriggerClips: []
+  _soundComponent:
+    _entries: []
+  _skillAttributes:
+    _attributes:
+    - key: 0
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 1
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 2
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 3
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 4
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 5
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 6
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 7
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
+    - key: 8
+      value:
+        _baseValue: 0
+        _cachedValue: 0
+        _modifiers: []
   _effectObject: {fileID: 2920725488939395447}
   _powerOfEarthAura: {fileID: 3917612944800829221}
   _auraDuration: 6
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &1738063844293958042 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3107770508428623872, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -1093,17 +1267,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3082828067594610963 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
-  m_PrefabInstance: {fileID: 3692902303834413466}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393027867669365536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!195 &3136982779875862714 stripped
@@ -1127,6 +1290,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   m_PrefabInstance: {fileID: 3692902303834413466}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6363226733355898215 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7742085869912657149, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 3692902303834413466}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393027867669365536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionComponent
 --- !u!114 &6527171627437028884 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7614178594727784334, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}

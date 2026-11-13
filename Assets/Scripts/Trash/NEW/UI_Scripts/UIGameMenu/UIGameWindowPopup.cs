@@ -29,8 +29,6 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void Awake()
     {
-        InputHandler.ShowMenu += ShowSettings;
-        InputHandler.ShowStatistics += ShowStatistics;
         _minionSkillController = new MinionSkillPanelController(_skillMinionPanel);
         _progressionPanel.SetActive(false);
     }
@@ -53,7 +51,6 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void ShowSettings()
     {
-        Debug.Log(_settings);   //почему-то без дерганья _settings, они не находятся
         if (_settings.activeSelf)
         {
             _settings.SetActive(false);
@@ -84,6 +81,9 @@ public class UIGameWindowPopup : MonoBehaviour
         _selectManager.CharacterDeselected += OnCharacterDeselected;
 
         PlayerIconMain.HeroPortraitClicked += OnHeroPortraitClicked;
+
+        InputHandler.ShowMenu += ShowSettings;
+        InputHandler.ShowStatistics += ShowStatistics;
     }
 
     private void OnDisable()
@@ -96,6 +96,9 @@ public class UIGameWindowPopup : MonoBehaviour
 
         _hudHero = null;
         if (_playerIcon != null) _playerIcon.OnCharacterSelected(null);
+
+        InputHandler.ShowMenu -= ShowSettings;
+        InputHandler.ShowStatistics -= ShowStatistics;
     }
 
     private void LateUpdate()

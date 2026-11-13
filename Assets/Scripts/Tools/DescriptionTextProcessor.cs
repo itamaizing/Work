@@ -22,7 +22,7 @@ public static class DescriptionTextProcessor
 
     public static readonly Dictionary<ColorPallete, string> ColorMap = new Dictionary<ColorPallete, string>
     {
-        {ColorPallete.Y, "#FFFF00"},
+        {ColorPallete.Y, "#FFD836"},
         {ColorPallete.B, "#0000FF"},
         {ColorPallete.Air, "#E3DB94"},
         {ColorPallete.Earth, "#DE924F"},

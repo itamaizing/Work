@@ -67,37 +67,28 @@ public class StateTooltip : MonoBehaviour
 
         Camera camera = _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _rootCanvas.worldCamera;
         Vector2 pivot = RectTransformUtility.WorldToScreenPoint(camera, _rectTransform.position);
+
         _rectTransform.GetWorldCorners(_corners);
-        Vector2 minOffset = Vector2.positiveInfinity;
-        Vector2 maxOffset = Vector2.negativeInfinity;
-        foreach (Vector3 corner in _corners)
-        {
-            Vector2 offset = RectTransformUtility.WorldToScreenPoint(camera, corner) - pivot;
-            minOffset = Vector2.Min(minOffset, offset);
-            maxOffset = Vector2.Max(maxOffset, offset);
-        }
+        Vector2 bottomLeft = RectTransformUtility.WorldToScreenPoint(null, _corners[0]);
+        Vector2 topRight = RectTransformUtility.WorldToScreenPoint(null, _corners[2]);
+        Vector2 size = topRight - bottomLeft;
 
         Vector2 mouse = Input.mousePosition;
         Rect bounds = Screen.safeArea;
-        float gapX = Mathf.Abs(_mouseOffset.x);
-        float gapY = Mathf.Abs(_mouseOffset.y);
-        float x = mouse.x + gapX - minOffset.x;
-        float y = mouse.y - gapY - maxOffset.y;
 
-        if (x + maxOffset.x > bounds.xMax)
-            x = mouse.x - gapX - maxOffset.x;
-        if (y + minOffset.y < bounds.yMin)
-            y = mouse.y + gapY - minOffset.y;
+        float x = mouse.x + _mouseOffset.x;
+        float y = mouse.y - _mouseOffset.y + size.y/2;
 
-        float minX = bounds.xMin - minOffset.x;
-        float maxY = bounds.yMax - maxOffset.y;
-        x = Mathf.Clamp(x, minX, Mathf.Max(minX, bounds.xMax - maxOffset.x));
-        y = Mathf.Clamp(y, Mathf.Min(maxY, bounds.yMin - minOffset.y), maxY);
+        if (x + size.x > bounds.xMax)
+            x = mouse.x - _mouseOffset.x;
+
+        x = Mathf.Clamp(x, bounds.xMin, bounds.xMax - size.x);
+        y = Mathf.Clamp(y, bounds.yMin + size.y, bounds.yMax);
 
         if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            _rectTransform, new Vector2(x, y), camera, out Vector3 worldPoint))
+            gameObject.transform as RectTransform, new Vector2(x, y), camera, out Vector3 worldPoint))
         {
-            _rectTransform.position = worldPoint;
+            gameObject.transform.position = worldPoint;
         }
     }
 
