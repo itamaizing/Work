@@ -15,7 +15,7 @@ public class StateInfo
     public GameObject PersonWhoShooted;
     public string SkillName;
 
-	public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+    public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
     {
         State = state;
         Duration = duration;
@@ -27,15 +27,15 @@ public class StateInfo
 
 public interface ITickableState
 {
-	float TickInterval { get; }
-	void Tick();
+    float TickInterval { get; }
+    void Tick();
 }
 
 public enum StateParameter
 {
-	DamageToExit,
-	IsCanDodgeMagState,
-	ExtraDuration,
+    DamageToExit,
+    IsCanDodgeMagState,
+    ExtraDuration,
 }
 
 public abstract class StateBasic
@@ -87,21 +87,21 @@ public abstract class StateBasic
 
     public virtual float RemainingDuration
     {
-	    get => _duration;
-	    protected set
-	    {
-		    _duration = CanExceedMaxDuration ? value : Mathf.Min(value, MaxDuration);
+        get => _duration;
+        protected set
+        {
+            _duration = CanExceedMaxDuration ? value : Mathf.Min(value, MaxDuration);
 
-		    if (_duration > MaxDuration) MaxDuration = _duration;
+            if (_duration > MaxDuration) MaxDuration = _duration;
 
-		    OnDurationChanged?.Invoke(this, _duration, MaxDuration);
-	    }
+            OnDurationChanged?.Invoke(this, _duration, MaxDuration);
+        }
     }
 
     public virtual float MaxDuration
     {
-	    get => _maxDuration;
-	    protected set => _maxDuration = value;
+        get => _maxDuration;
+        protected set => _maxDuration = value;
     }
     
     public void SetDuration(float value) => RemainingDuration = value;
@@ -115,31 +115,31 @@ public abstract class StateBasic
     }
 
     public virtual bool TryApply(CharacterState character, float durationToExit, float damageToExit,
-	    Character sourceCaster, string skillName)
+        Character sourceCaster, string skillName)
     {
-	    if (!CanEnterState(character)) return false;
+        if (!CanEnterState(character)) return false;
 
-	    BaseInit(character, durationToExit, damageToExit, sourceCaster, skillName);
+        BaseInit(character, durationToExit, damageToExit, sourceCaster, skillName);
 
-	    if (StartTime == 0) StartTime = NetworkTime.time;
+        if (StartTime == 0) StartTime = NetworkTime.time;
 
-	    if (MaxDuration <= 0f) MaxDuration = durationToExit;
-	    RemainingDuration = durationToExit;
+        if (MaxDuration <= 0f) MaxDuration = durationToExit;
+        RemainingDuration = durationToExit;
 
-	    if (damageToExit > 0f) parameters[StateParameter.DamageToExit] = damageToExit;
-	    if (this is ITickableState tickable && _tickTimer <= 0f) _tickTimer = tickable.TickInterval;
+        if (damageToExit > 0f) parameters[StateParameter.DamageToExit] = damageToExit;
+        if (this is ITickableState tickable && _tickTimer <= 0f) _tickTimer = tickable.TickInterval;
 
-	    if (!_hasApplied)
-	    {
-		    _hasApplied = true;
-		    Apply(character, durationToExit, damageToExit, sourceCaster, skillName);
-	    }
-	    else
-	    {
-		    Reapply(character, durationToExit, damageToExit, sourceCaster, skillName);
-	    }
+        if (!_hasApplied)
+        {
+            _hasApplied = true;
+            Apply(character, durationToExit, damageToExit, sourceCaster, skillName);
+        }
+        else
+        {
+            Reapply(character, durationToExit, damageToExit, sourceCaster, skillName);
+        }
 
-	    return true;
+        return true;
     }
     
     public abstract void Apply(CharacterState character, float durationToExit, float damageToExit,
@@ -149,243 +149,252 @@ public abstract class StateBasic
         Character sourceCaster, string skillName) =>
         Apply(character, durationToExit, damageToExit, sourceCaster, skillName);
 
-	public virtual void UpdateState() { }
+    public virtual void UpdateState() { }
     
     protected void ProcessTick()
     {
-	    if (this is not ITickableState tickable) return;
+        if (this is not ITickableState tickable) return;
 
-	    _tickTimer -= Time.deltaTime;
-	    if (_tickTimer <= 0f)
-	    {
-		    tickable.Tick();
-		    _tickTimer = tickable.TickInterval;
-	    }
+        _tickTimer -= Time.deltaTime;
+        if (_tickTimer <= 0f)
+        {
+            tickable.Tick();
+            _tickTimer = tickable.TickInterval;
+        }
     }
     
     protected void ResetTickTimer()
     {
-	    _tickTimer = this is ITickableState tickable ? tickable.TickInterval : 0f;
+        _tickTimer = this is ITickableState tickable ? tickable.TickInterval : 0f;
     }
 
     public virtual void GlobalUpdate()
     {
-	    UpdateState();
-	    ProcessTick();
+        UpdateState();
+        ProcessTick();
 
-	    if (RemainingDuration >= 0f)
-	    {
-		    RemainingDuration -= Time.deltaTime;
-		    if (RemainingDuration <= 0f) ExitState();
-	    }
+        if (RemainingDuration >= 0f)
+        {
+            RemainingDuration -= Time.deltaTime;
+            if (RemainingDuration <= 0f) ExitState();
+        }
     }
 
-	public virtual void ExitState()
-	{
-		_hasApplied = false;
-		OnExit();
-		characterState.RemoveState(this);
-	}
+    public virtual void ExitState()
+    {
+        _hasApplied = false;
+        OnExit();
+        characterState.RemoveState(this);
+    }
 
-	protected virtual void OnExit() { }
+    protected virtual void OnExit() { }
 
     protected virtual bool CanEnterState(CharacterState character) => true;
 
     protected virtual void BaseInit(CharacterState character, float durationToExit, float damageToExit,
-	    Character sourceCaster, string skillName)
+        Character sourceCaster, string skillName)
     {
-	    characterState = character;
-	    health = character.Character.Health;
-	    abilities = character.Character.Abilities;
-	    this.sourceCaster = sourceCaster;
+        characterState = character;
+        health = character.Character.Health;
+        abilities = character.Character.Abilities;
+        this.sourceCaster = sourceCaster;
     }
     
     public virtual bool TryDispel(DispelType incomingDispel)
     {
-	    if (dispelType == DispelType.None) return false;
-	    if ((dispelType & incomingDispel) == 0) return false;
+        if (dispelType == DispelType.None) return false;
+        if ((dispelType & incomingDispel) == 0) return false;
 
-	    ExitState();
-	    return true;
+        ExitState();
+        return true;
     }
 
-	protected void SendDurationChange(float duration, float max)
-	{
-		OnDurationChanged?.Invoke(this, duration, max);
-	}
+    protected void SendDurationChange(float duration, float max)
+    {
+        OnDurationChanged?.Invoke(this, duration, max);
+    }
 }
 
 public abstract class StateStacking : StateBasic
 {
-	protected int сurrentStacksCount = 0;
-	public override int CurrentStacksCount
-	{
-		get => сurrentStacksCount;
-		protected set { сurrentStacksCount = value; UpdateDisplayText(); }
-	}
+    protected int сurrentStacksCount = 0;
+    public override int CurrentStacksCount
+    {
+        get => сurrentStacksCount;
+        protected set { сurrentStacksCount = value; UpdateDisplayText(); }
+    }
 
-	private int _maxStacksCount = 1;
-	public override int MaxStacksCount => _maxStacksCount;
-	public void SetMaxStacks(int value) => _maxStacksCount = value;
-	
-	public override bool TryApply(CharacterState character, float durationToExit, float damageToExit,
-		Character sourceCaster, string skillName)
-	{
-		bool wasFirstApply = CurrentStacksCount == 0;
-		bool applied = base.TryApply(character, durationToExit, damageToExit, sourceCaster, skillName);
+    private int _maxStacksCount = 1;
+    public override int MaxStacksCount => _maxStacksCount;
+    public void SetMaxStacks(int value) => _maxStacksCount = value;
+    
+    public override bool TryApply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName)
+    {
+        bool wasFirstApply = CurrentStacksCount == 0;
+        bool applied = base.TryApply(character, durationToExit, damageToExit, sourceCaster, skillName);
 
-		if (applied && wasFirstApply)
-		{
-			CurrentStacksCount = 1;
-		}
+        if (applied && wasFirstApply)
+        {
+            CurrentStacksCount = 1;
+            OnStackChange();
+        }
 
-		return applied;
-	}
+        return applied;
+    }
 
-	public override void Reapply(CharacterState character, float durationToExit, float damageToExit,
-		Character sourceCaster, string skillName) => Stack(durationToExit);
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName) => Stack(durationToExit);
 
-	public virtual bool Stack(float time)
-	{
-		if (CurrentStacksCount < MaxStacksCount)
-			CurrentStacksCount = CurrentStacksCount + 1;
+    public virtual bool Stack(float time)
+    {
+        if (CurrentStacksCount < MaxStacksCount)
+            CurrentStacksCount = CurrentStacksCount + 1;
 
-		RemainingDuration = MaxDuration;
-		return true;
-	}
+        OnStackChange();
+        RemainingDuration = MaxDuration;
+        return true;
+    }
 
-	public virtual void ReduceStack()
-	{
-		if (CurrentStacksCount <= 1)
-		{
-			ExitState();
-			return;
-		}
+    public virtual void ReduceStack()
+    {
+        if (CurrentStacksCount <= 1)
+        {
+            ExitState();
+            return;
+        }
 
-		CurrentStacksCount = CurrentStacksCount - 1;
-		RemainingDuration = MaxDuration;
-	}
+        CurrentStacksCount = CurrentStacksCount - 1;
+        OnStackChange();
+        
+        RemainingDuration = MaxDuration;
+    }
 
-	protected virtual void UpdateDisplayText() => DisplayText = CurrentStacksCount.ToString();
+    protected virtual void UpdateDisplayText() => DisplayText = CurrentStacksCount.ToString();
 
-	public override void GlobalUpdate()
-	{
-		UpdateState();
-		ProcessTick();
+    public override void GlobalUpdate()
+    {
+        UpdateState();
+        ProcessTick();
 
-		RemainingDuration -= Time.deltaTime;
+        if (RemainingDuration >= 0f)
+        {
+            RemainingDuration -= Time.deltaTime;
+            ReduceStack();
+        }
+    }
 
-		if (RemainingDuration <= 0f)
-		{
-			ReduceStack();
-		}
-	}
+    public virtual void OnStackChange() { }
 }
 
 public abstract class StateStackingRefreshing : StateStacking
 {
-	/// <summary>
-	/// <0:	Окончание 1 стака сбрасывает все состояние
-	/// 0:	После окончания 1 стака предыдущий живет MaxDuration
-	/// >0:	После окончания 1 стака предыдущий живет LingerTime
-	/// </summary>
-	public virtual float StackLingerTime => 0;
+    /// <summary>
+    /// <0:	Окончание 1 стака сбрасывает все состояние
+    /// 0:	После окончания 1 стака предыдущий живет MaxDuration
+    /// >0:	После окончания 1 стака предыдущий живет LingerTime
+    /// </summary>
+    public virtual float StackLingerTime => 0;
 
-	public override void ReduceStack()
-	{
-		if (CurrentStacksCount <= 1) { ExitState(); return; }
-		CurrentStacksCount = CurrentStacksCount - 1;
+    public override void ReduceStack()
+    {
+        if (CurrentStacksCount <= 1) { ExitState(); return; }
+        CurrentStacksCount = CurrentStacksCount - 1;
+        OnStackChange();
 
-		if (StackLingerTime < 0)
-			ExitState();
-		else if (StackLingerTime == 0)
-			RemainingDuration = MaxDuration;
-		else
-		{
-			_duration = StackLingerTime;
-			SendDurationChange(StackLingerTime, StackLingerTime);
-		}
-	}
+        if (StackLingerTime < 0)
+            ExitState();
+        else if (StackLingerTime == 0)
+            RemainingDuration = MaxDuration;
+        else
+        {
+            _duration = StackLingerTime;
+            SendDurationChange(StackLingerTime, StackLingerTime);
+        }
+    }
 }
 
 public class StackInfo
 {
-	public float MaxDuration;
-	public float CurrentDuration;
+    public float MaxDuration;
+    public float CurrentDuration;
 
-	public StackInfo(float duration)
-	{
-		MaxDuration = duration;
-		CurrentDuration = duration;
-	}
+    public StackInfo(float duration)
+    {
+        MaxDuration = duration;
+        CurrentDuration = duration;
+    }
 }
 
 public abstract class StateStackingIndependent : StateStacking
 {
-	protected readonly List<StackInfo> stacks = new();
+    protected readonly List<StackInfo> stacks = new();
     public override int CurrentStacksCount { get => stacks.Count; }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
     {
-		Stack(durationToExit);
+        Stack(durationToExit);
     }
 
-	public override bool Stack(float time)
-	{
-		if (CurrentStacksCount >= MaxStacksCount)
-			stacks.RemoveAt(0);
+    public override bool Stack(float time)
+    {
+        if (CurrentStacksCount >= MaxStacksCount)
+            stacks.RemoveAt(0);
+        OnStackChange();
 
-		stacks.Add(CreateStackInfo(time));
-		MaxDuration = stacks[^1].MaxDuration;
-		RemainingDuration = stacks[^1].CurrentDuration;
-		UpdateDisplayText();
+        stacks.Add(CreateStackInfo(time));
+        MaxDuration = stacks[^1].MaxDuration;
+        RemainingDuration = stacks[^1].CurrentDuration;
+        UpdateDisplayText();
 
-		return true;
-	}
+        return true;
+    }
 
 
-	protected virtual StackInfo CreateStackInfo(float duration) => new StackInfo(duration);
+    protected virtual StackInfo CreateStackInfo(float duration) => new StackInfo(duration);
 
-	public override void ReduceStack()
-	{
-		if (CurrentStacksCount <= 1) { ExitState(); return; }
-		UpdateDisplayText();
-		stacks.RemoveAt(0);
-	}
+    public override void ReduceStack()
+    {
+        if (CurrentStacksCount <= 1) { ExitState(); return; }
+        OnStackChange();
+        UpdateDisplayText();
+        stacks.RemoveAt(0);
+    }
 
-	public override void GlobalUpdate()
-	{
-		UpdateState();
-		ProcessTick();
+    public override void GlobalUpdate()
+    {
+        UpdateState();
+        ProcessTick();
 
-		for (int i = stacks.Count - 1; i >= 0; i--)
-		{
-			stacks[i].CurrentDuration -= Time.deltaTime;
-			if (stacks[i].CurrentDuration <= 0f) RemoveStackAt(i);
-		}
-		RemainingDuration -= Time.deltaTime;
-	}
+        for (int i = stacks.Count - 1; i >= 0; i--)
+        {
+            stacks[i].CurrentDuration -= Time.deltaTime;
+            if (stacks[i].CurrentDuration <= 0f) RemoveStackAt(i);
+        }
+        RemainingDuration -= Time.deltaTime;
+    }
 
-	protected void RemoveStackAt(int index)
-	{
-		stacks.RemoveAt(index);
-		UpdateDisplayText();
+    protected void RemoveStackAt(int index)
+    {
+        stacks.RemoveAt(index);
+        OnStackChange();
+        UpdateDisplayText();
 
-		if (stacks.Count == 0) ExitState();
-		else { MaxDuration = stacks[^1].MaxDuration; RemainingDuration = stacks[^1].CurrentDuration; }
-	}
+        if (stacks.Count == 0) ExitState();
+        else { MaxDuration = stacks[^1].MaxDuration; RemainingDuration = stacks[^1].CurrentDuration; }
+    }
 }
 
 public abstract class AuraState : StateBasic
 {
-	protected Character _self;
+    protected Character _self;
     private Transform _auraCentre;
     protected List<Character> _charactersInRadius = new();
     private List<Collider> _collidersKeysForRemove = new();
-	private Dictionary<Collider, Character> _colliderToCharacter = new();
-	private float _timeAfterLastEffect = 0;
+    private Dictionary<Collider, Character> _colliderToCharacter = new();
+    private float _timeAfterLastEffect = 0;
 
-	public abstract float Distance { get; }
+    public abstract float Distance { get; }
     public abstract float EffectRate { get; }
     public abstract LayerMask LayerMask { get; }
 
@@ -396,10 +405,10 @@ public abstract class AuraState : StateBasic
     public override StateType Type => StateType.Aura;
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit,
-	    Character sourceCaster, string skillName)
+        Character sourceCaster, string skillName)
     {
-	    _auraCentre = character.transform;
-	    _self = sourceCaster;
+        _auraCentre = character.transform;
+        _self = sourceCaster;
     }
     public override void UpdateState()
     {
@@ -408,36 +417,36 @@ public abstract class AuraState : StateBasic
             _timeAfterLastEffect += Time.deltaTime;
 
             if (EffectRate > _timeAfterLastEffect)
-				return;
+                return;
 
-			_timeAfterLastEffect = 0;
+            _timeAfterLastEffect = 0;
 
             var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
 
             foreach (KeyValuePair<Collider, Character> collider in _colliderToCharacter)
-			{
-				if (colliders.Contains(collider.Key) == false)
-				{
+            {
+                if (colliders.Contains(collider.Key) == false)
+                {
                     EffectOnExit(collider.Value);
-					_charactersInRadius.Remove(collider.Value);
-					_collidersKeysForRemove.Add(collider.Key);
-				}
-			}
-			foreach (var item in _collidersKeysForRemove)
-			{
-				_colliderToCharacter.Remove(item);
-			}
-			_collidersKeysForRemove.Clear();
+                    _charactersInRadius.Remove(collider.Value);
+                    _collidersKeysForRemove.Add(collider.Key);
+                }
+            }
+            foreach (var item in _collidersKeysForRemove)
+            {
+                _colliderToCharacter.Remove(item);
+            }
+            _collidersKeysForRemove.Clear();
 
             foreach (var collider in colliders)
-			{
-				if (_colliderToCharacter.ContainsKey(collider) == false && collider.TryGetComponent(out Character character))
-				{
-					_colliderToCharacter.Add(collider, character);
-					_charactersInRadius.Add(character);
-					EffectOnEnter(character);
-				}
-			}
+            {
+                if (_colliderToCharacter.ContainsKey(collider) == false && collider.TryGetComponent(out Character character))
+                {
+                    _colliderToCharacter.Add(collider, character);
+                    _charactersInRadius.Add(character);
+                    EffectOnEnter(character);
+                }
+            }
 
             EffectOnStay(_charactersInRadius);
         }
@@ -454,7 +463,7 @@ public abstract class AuraState : StateBasic
 
 public abstract class HealStates : StateBasic
 {
-	public float HealingValue { get; set; }
+    public float HealingValue { get; set; }
 }
 
 public class CharacterState : NetworkBehaviour
@@ -488,234 +497,234 @@ public class CharacterState : NetworkBehaviour
     public event Action<StateBasic> OnStateRemoved;
 
 
-	public Dictionary<States, StateBasic> enumToState = new Dictionary<States, StateBasic>()
-	{
-		#region UpdatedStates
-		[States.Frozen] = new FrozenStateStacking(),
-		[States.Frosting] = new FrostingStateStacking(),
-		[States.Cooling] = new Cooling(),
-		[States.Restoration] = new RestorationStateStacking(States.Restoration),
-		[States.RestorationStacking] = new RestorationStateStacking(States.RestorationStacking),
-		[States.Stun] = new StunnedStateStacking(),
-		[States.Silent] = new Silent(),
-		[States.Calmness] = new Calmness(),
-		[States.PartialBlindness] = new PartialBlindness(),
-		[States.ScorchedSoul] = new ScorchedSoul(),
-		[States.Blind] = new BlindnessStateStacking(),
-		[States.HealingSlime] = new HealingSlime(),
-		#endregion
+    public Dictionary<States, StateBasic> enumToState = new Dictionary<States, StateBasic>()
+    {
+        #region UpdatedStates
+        [States.Frozen] = new FrozenStateStacking(),
+        [States.Frosting] = new FrostingStateStacking(),
+        [States.Cooling] = new Cooling(),
+        [States.Restoration] = new RestorationStateStacking(States.Restoration),
+        [States.RestorationStacking] = new RestorationStateStacking(States.RestorationStacking),
+        [States.Stun] = new StunnedStateStacking(),
+        [States.Silent] = new Silent(),
+        [States.Calmness] = new Calmness(),
+        [States.PartialBlindness] = new PartialBlindness(),
+        [States.ScorchedSoul] = new ScorchedSoul(),
+        [States.Blind] = new BlindnessStateStacking(),
+        [States.HealingSlime] = new HealingSlime(),
+        #endregion
 
 
-		[States.Invisible] = new InvisibleState(),
-		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
-		[States.Desiccuration] = new Desiccuration(),
-		[States.Plague] = new Plague(),
-		[States.Curse] = new Curse(),
-		[States.NorthernerEndurance] = new NorthernerEndurance(),
-		[States.LastBreath] = new LastBreath(),
-		[States.MagicBuff] = new MagicBuff(),
-		[States.DarkShield] = new DarkShield(),
-		[States.LightShield] = new LightShield(),
-		[States.TiredSoul] = new TiredSoul(),
-		[States.ReversePolarity] = new ReversePolarityState(),
-		[States.SpiritEnergy] = new SpiritEnergyStateStacking(),
-		[States.SpiritHealth] = new SpiritHealthStateStacking(),
-		[States.DisciplineAura] = new DisciplineAuraStateStacking(),
+        [States.Invisible] = new InvisibleState(),
+        [States.SchoolDebuff] = new AbilitySchoolDebuff(),
+        [States.Desiccuration] = new Desiccuration(),
+        [States.Plague] = new Plague(),
+        [States.Curse] = new Curse(),
+        [States.NorthernerEndurance] = new NorthernerEndurance(),
+        [States.LastBreath] = new LastBreath(),
+        [States.MagicBuff] = new MagicBuff(),
+        [States.DarkShield] = new DarkShield(),
+        [States.LightShield] = new LightShield(),
+        [States.TiredSoul] = new TiredSoul(),
+        [States.ReversePolarity] = new ReversePolarityState(),
+        [States.SpiritEnergy] = new SpiritEnergyStateStacking(),
+        [States.SpiritHealth] = new SpiritHealthStateStacking(),
+        [States.DisciplineAura] = new DisciplineAuraStateStacking(),
 
-		[States.Knockdown] = new Knockdown(),
-		[States.IdealEvade] = new IdealEvade(),
-		[States.BleedingDebuff] = new BleedingDebuff(),
-		[States.EmeraldSkin] = new EmeraldSkinState(),
-		[States.DefenseReduction] = new DefenceReductionState(),
-		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
-		[States.SelfHarm] = new SelfHarmState(),
-		[States.InAir] = new InAirState(),
-		[States.Immateriality] = new ImmaterialityState(),
-		[States.CreeperInvisible] = new CreeperInvisibleState(),
-		[States.PoisonBone] = new PoisonBoneStateStacking(),
-		[States.WitheringPoison] = new WitheringPoisonStateStacking(),
-		[States.BindingPoison] = new BindingPoisonState(),
-		[States.PoisonCloud] = new PoisonCloudStateStacking(),
-		[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
-		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
-		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
-		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
-		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
-		[States.HeatedGlands] = new HeatedGlandsState(),
-		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
-		[States.Bleeding] = new BleedingStateStacking(),
-		[States.BleedingCarry] = new BleedingStateStackingCarry(),
-		[States.BleedingScrader] = new BleedingScraderDebuff(),
-		[States.ReducingHealing] = new ReducingHealingState(),
-		[States.LowVoltage] = new LowVoltage(),
-		[States.ComboState] = new ComboStateStacking(),
-		[States.DisappointmentState] = new DisappointmentStateStacking(),
-		[States.ManaRegen] = new ManaRegen(),
-		[States.Stupefaction] = new Stupefaction(),
-		[States.TentacleGrip] = new TentacleGrip(),
-		[States.Destruction] = new DestructionStateStacking(States.Destruction),
-		[States.DestructionStacking] = new DestructionStateStacking(States.DestructionStacking),
-		[States.HardenedFlesh] = new HardenedFlesh(),
-		[States.FocusingOnReflexesState] = new FocusingOnReflexesStateStacking(),
-		[States.DivineEnhancement] = new DivineEnhancementState(),
-		[States.DischargePsi] = new DischargePsiState(),
-		[States.TrueSightState] = new TrueSight(),
-		[States.CorrodedArmor] = new CorrodedArmorState(),
-		[States.Impatience] = new ImpatienceStateStacking(),
-		[States.PsionicGeneration] = new PsionicGenerationState(),
-		[States.Parasites] = new ParasitesStateStacking(),
-		[States.SwarmSpeed] = new SwarmSpeedStateStacking(),
-		[States.DestructivePoison] = new DestructivePoisonStateStacking(),
-		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
-		[States.ProtectiveScales] = new ProtectiveScalesStateStacking(),
-		[States.ErodedArmor] = new ErodedArmorStateStacking(),
-		[States.ParalyzingPoison] = new ParalyzingPoisonState(),
-		[States.FeelingPoisoning] = new FeelingPoisoningStateStacking(),
-		[States.LightningEvade] = new LightningEvadeStateStacking(),
-		[States.ReptilianStasis] = new ReptilianStasisStateStacking(),
-		[States.ReflectiveScales] = new ReflectiveScalesStateStacking(),
-		[States.SwiftAttacks] = new SwiftAttacksStateStacking(),
-		[States.FireCharge] = new FireChargeState(),
-		[States.RestorativeAttacks] = new RestorativeAttacksState(),
-		[States.CounterRage] = new CounterRageStateStacking(),
-		[States.Ignition] = new IgnitionStateStacking(),
-		[States.MergeDark] = new MergeDarkState(),
-		[States.DarkFormState] = new DarkFormState(),
-		[States.ShackleState] = new ShackleState(),
-		[States.SlowFlowLight] = new SlowFlowLightStateStacking(),
-		[States.Retribution] = new RetributionStateStacking(),
-		[States.KillingSpree] = new KillingSpreeStateStacking(),
-		[States.FrostEnergy] = new FrostEnergyStateStacking(),
-		[States.PortalDarkness] = new PortalDarknessStateStacking(),
-		[States.CreeperCombo] = new CreeperComboStateStacking(),
-		[States.OtherForces] = new OtherForceStateStacking(),
-		[States.MagicShield] = new MagicShieldState(),
-		[States.VampirismBuff] = new VampirismBuffStateStacking(),
-		[States.MetabolismReptile] = new MetabolismReptileState(),
+        [States.Knockdown] = new Knockdown(),
+        [States.IdealEvade] = new IdealEvade(),
+        [States.BleedingDebuff] = new BleedingDebuff(),
+        [States.EmeraldSkin] = new EmeraldSkinState(),
+        [States.DefenseReduction] = new DefenceReductionState(),
+        [States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
+        [States.SelfHarm] = new SelfHarmState(),
+        [States.InAir] = new InAirState(),
+        [States.Immateriality] = new ImmaterialityState(),
+        [States.CreeperInvisible] = new CreeperInvisibleState(),
+        [States.PoisonBone] = new PoisonBoneStateStacking(),
+        [States.WitheringPoison] = new WitheringPoisonStateStacking(),
+        [States.BindingPoison] = new BindingPoisonState(),
+        [States.PoisonCloud] = new PoisonCloudStateStacking(),
+        [States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+        [States.EmpathicPoisons] = new EmpathicPoisonsState(),
+        [States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+        [States.InstantHealingPoison] = new InstantHealingPoisonState(),
+        [States.RegeneratingPoison] = new RegeneratingPoisonState(),
+        [States.HeatedGlands] = new HeatedGlandsState(),
+        [States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
+        [States.Bleeding] = new BleedingStateStacking(),
+        [States.BleedingCarry] = new BleedingStateStackingCarry(),
+        [States.BleedingScrader] = new BleedingScraderDebuff(),
+        [States.ReducingHealing] = new ReducingHealingState(),
+        [States.LowVoltage] = new LowVoltage(),
+        [States.ComboState] = new ComboStateStacking(),
+        [States.DisappointmentState] = new DisappointmentStateStacking(),
+        [States.ManaRegen] = new ManaRegen(),
+        [States.Stupefaction] = new Stupefaction(),
+        [States.TentacleGrip] = new TentacleGrip(),
+        [States.Destruction] = new DestructionStateStacking(States.Destruction),
+        [States.DestructionStacking] = new DestructionStateStacking(States.DestructionStacking),
+        [States.HardenedFlesh] = new HardenedFlesh(),
+        [States.FocusingOnReflexesState] = new FocusingOnReflexesStateStacking(),
+        [States.DivineEnhancement] = new DivineEnhancementState(),
+        [States.DischargePsi] = new DischargePsiState(),
+        [States.TrueSightState] = new TrueSight(),
+        [States.CorrodedArmor] = new CorrodedArmorState(),
+        [States.Impatience] = new ImpatienceStateStacking(),
+        [States.PsionicGeneration] = new PsionicGenerationState(),
+        [States.Parasites] = new ParasitesStateStacking(),
+        [States.SwarmSpeed] = new SwarmSpeedStateStacking(),
+        [States.DestructivePoison] = new DestructivePoisonStateStacking(),
+        [States.InjectionAdrenaline] = new InjectionAdrenalineState(),
+        [States.ProtectiveScales] = new ProtectiveScalesStateStacking(),
+        [States.ErodedArmor] = new ErodedArmorStateStacking(),
+        [States.ParalyzingPoison] = new ParalyzingPoisonState(),
+        [States.FeelingPoisoning] = new FeelingPoisoningStateStacking(),
+        [States.LightningEvade] = new LightningEvadeStateStacking(),
+        [States.ReptilianStasis] = new ReptilianStasisStateStacking(),
+        [States.ReflectiveScales] = new ReflectiveScalesStateStacking(),
+        [States.SwiftAttacks] = new SwiftAttacksStateStacking(),
+        [States.FireCharge] = new FireChargeState(),
+        [States.RestorativeAttacks] = new RestorativeAttacksState(),
+        [States.CounterRage] = new CounterRageStateStacking(),
+        [States.Ignition] = new IgnitionStateStacking(),
+        [States.MergeDark] = new MergeDarkState(),
+        [States.DarkFormState] = new DarkFormState(),
+        [States.ShackleState] = new ShackleState(),
+        [States.SlowFlowLight] = new SlowFlowLightStateStacking(),
+        [States.Retribution] = new RetributionStateStacking(),
+        [States.KillingSpree] = new KillingSpreeStateStacking(),
+        [States.FrostEnergy] = new FrostEnergyStateStacking(),
+        [States.PortalDarkness] = new PortalDarknessStateStacking(),
+        [States.CreeperCombo] = new CreeperComboStateStacking(),
+        [States.OtherForces] = new OtherForceStateStacking(),
+        [States.MagicShield] = new MagicShieldState(),
+        [States.VampirismBuff] = new VampirismBuffStateStacking(),
+        [States.MetabolismReptile] = new MetabolismReptileState(),
 
-		#region TerrifyingElfStates
-		[States.InnerDarkness] = new InnerDarkness(),
-		[States.Fear] = new Fear(),
-		[States.Astral] = new AstralStateStacking(),
-		[States.Irradiation] = new IrradiationState(),
-		[States.Suppression] = new SuppressionState(),
-		[States.WeakeningSilence] = new WeakeningSilence(),
-		[States.Anxiety] = new Anxiety(),
-		[States.HuntressMark] = new HuntressMark(),
-		[States.Sleep] = new Sleep(),
-		[States.ElvenSkill] = new ElvenSkill(),
-		[States.ElvenReflexes] = new ElvenReflexesState(),
-		[States.Bound] = new Bound(),
-		[States.ShadowTree] = new ShadowTree(),
-		[States.MultiMagic] = new MultiMagic(),
-		[States.FireFlash] = new FireFlash(),
-		[States.WarmingUpState] = new WarmingUpStateStacking(),
+        #region TerrifyingElfStates
+        [States.InnerDarkness] = new InnerDarkness(),
+        [States.Fear] = new Fear(),
+        [States.Astral] = new AstralStateStacking(),
+        [States.Irradiation] = new IrradiationState(),
+        [States.Suppression] = new SuppressionState(),
+        [States.WeakeningSilence] = new WeakeningSilence(),
+        [States.Anxiety] = new Anxiety(),
+        [States.HuntressMark] = new HuntressMark(),
+        [States.Sleep] = new Sleep(),
+        [States.ElvenSkill] = new ElvenSkill(),
+        [States.ElvenReflexes] = new ElvenReflexesState(),
+        [States.Bound] = new Bound(),
+        [States.ShadowTree] = new ShadowTree(),
+        [States.MultiMagic] = new MultiMagic(),
+        [States.FireFlash] = new FireFlash(),
+        [States.WarmingUpState] = new WarmingUpStateStacking(),
 
-		#endregion
+        #endregion
 
-		#region Gandollarf	
-		[States.PowerOfEarth] = new PowerOfEarth(),
-		[States.EarthsHealth] = new EarthsHealthBuff(),
-		[States.MagicWater] = new MagicWater(),
-		[States.HotBloodBuff] = new HotAuraBuff(),
-		[States.GodAuraBuff] = new GodAuraBuff(),
-		[States.TransformationDebuff] = new TransformationDebuff(),
-		[States.PetrificationDebuff] = new PetrificationStateStacking(),
-		[States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
-		[States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
-		[States.Burning] = new Burning(),
-		[States.BurningMatter] = new BurningMatterDebuff(),
-		[States.Burn] = new Burn(),
-		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
-		[States.CoolingDamaged] = new CoolingDamaged(),
-		[States.MagicalExcitement] = new MagicalExcitement(),
-		[States.GodLight] = new GodLightState(),
-		[States.MagicInstantaneity] = new MagicInstantaneityStateStacking(),
-		[States.ImmortalityState] = new ImmortalityState(),
-		#endregion
+        #region Gandollarf	
+        [States.PowerOfEarth] = new PowerOfEarth(),
+        [States.EarthsHealth] = new EarthsHealthBuff(),
+        [States.MagicWater] = new MagicWater(),
+        [States.HotBloodBuff] = new HotAuraBuff(),
+        [States.GodAuraBuff] = new GodAuraBuff(),
+        [States.TransformationDebuff] = new TransformationDebuff(),
+        [States.PetrificationDebuff] = new PetrificationStateStacking(),
+        [States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
+        [States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
+        [States.Burning] = new Burning(),
+        [States.BurningMatter] = new BurningMatterDebuff(),
+        [States.Burn] = new Burn(),
+        [States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
+        [States.CoolingDamaged] = new CoolingDamaged(),
+        [States.MagicalExcitement] = new MagicalExcitement(),
+        [States.GodLight] = new GodLightState(),
+        [States.MagicInstantaneity] = new MagicInstantaneityStateStacking(),
+        [States.ImmortalityState] = new ImmortalityState(),
+        #endregion
 
-		#region Test Baff and Debaff
-		[States.BaffState] = new BaffState(),
-		[States.DebaffState] = new DebaffState(),
-		#endregion
-	};
+        #region Test Baff and Debaff
+        [States.BaffState] = new BaffState(),
+        [States.DebaffState] = new DebaffState(),
+        #endregion
+    };
 
-	public void Initialize(Character hero)
-	{
-		_hero = hero;
-		if (_hero == null)
-		{
-			Debug.LogError("No required component in " + name + " " + gameObject.name);
-		}
-	}
+    public void Initialize(Character hero)
+    {
+        _hero = hero;
+        if (_hero == null)
+        {
+            Debug.LogError("No required component in " + name + " " + gameObject.name);
+        }
+    }
 
-	private void Update()
-	{
-		if (_currentStates.Count > 0)
-		{
-			for (int i = 0; i < _currentStates.Count; i++)
-			{
-				_currentStates[i].GlobalUpdate();
-			}
-		}
-	}
+    private void Update()
+    {
+        if (_currentStates.Count > 0)
+        {
+            for (int i = 0; i < _currentStates.Count; i++)
+            {
+                _currentStates[i].GlobalUpdate();
+            }
+        }
+    }
 
-	public void Dispel(StateType type)
-	{
-		foreach (StateBasic state in _currentStates)
-		{
-			if (state.Type == type)
-			{
-				state.ExitState();
-			}
-		}
-	}
-	
-	public bool Check(StatusEffect effect)
-	{
-		foreach (StateBasic state in _currentStates)
-		{
-			if (state.Effects.Contains(effect))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    public void Dispel(StateType type)
+    {
+        foreach (StateBasic state in _currentStates)
+        {
+            if (state.Type == type)
+            {
+                state.ExitState();
+            }
+        }
+    }
+    
+    public bool Check(StatusEffect effect)
+    {
+        foreach (StateBasic state in _currentStates)
+        {
+            if (state.Effects.Contains(effect))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public bool CheckForState(States state)
-	{
-		foreach (StateBasic s in _currentStates)
-		{
-			if (s.State == state) return true;
-		}
-		return false;
-	}
+    public bool CheckForState(States state)
+    {
+        foreach (StateBasic s in _currentStates)
+        {
+            if (s.State == state) return true;
+        }
+        return false;
+    }
 
-	public int CheckStateStacks(States state)
-	{
-		foreach (StateBasic s in _currentStates)
-		{
-			if (s.State == state) return s.CurrentStacksCount;
-		}
-		return 0;
-	}
+    public int CheckStateStacks(States state)
+    {
+        foreach (StateBasic s in _currentStates)
+        {
+            if (s.State == state) return s.CurrentStacksCount;
+        }
+        return 0;
+    }
 
-	public bool CheckStateType(StateType type)
-	{
-		foreach (StateBasic state in _currentStates)
-		{
-			if (state.Type == type) return true;
-		}
-		return false;
-	}
+    public bool CheckStateType(StateType type)
+    {
+        foreach (StateBasic state in _currentStates)
+        {
+            if (state.Type == type) return true;
+        }
+        return false;
+    }
 
-	public bool HasMagicDebuff()
-	{
-		foreach (var state in _currentStates)
-			if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) return true;
-		return false;
-	}
+    public bool HasMagicDebuff()
+    {
+        foreach (var state in _currentStates)
+            if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) return true;
+        return false;
+    }
 
     public StateBasic GetState(States state)
     {
@@ -808,61 +817,61 @@ public class CharacterState : NetworkBehaviour
     }
 
     public void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-	    GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+        GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
     {
-	    if (invinsible) return;
+        if (invinsible) return;
 
-	    StateBasic template = enumToState[state];
+        StateBasic template = enumToState[state];
 
-	    if (_suppressStateEffectsBuff && template.BaffDebaff == BaffDebaff.Baff) return;
-	    if (_suppressStateDebuffEffects && template.BaffDebaff == BaffDebaff.Debaff) return;
+        if (_suppressStateEffectsBuff && template.BaffDebaff == BaffDebaff.Baff) return;
+        if (_suppressStateDebuffEffects && template.BaffDebaff == BaffDebaff.Debaff) return;
 
-	    duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
-	    if (duration <= 0f && duration != -1) return;
+        duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
+        if (duration <= 0f && duration != -1) return;
 
-	    personWhoShooted.TryGetComponent<Character>(out var sourceCaster);
+        personWhoShooted.TryGetComponent<Character>(out var sourceCaster);
 
-	    if (!template.IsUnique)
-	    {
-		    StateBasic instance;
-		    try
-		    {
-			    instance = (StateBasic)Activator.CreateInstance(template.GetType());
-		    }
-		    catch (MissingMethodException)
-		    {
-			    Debug.LogError($"State {state} ({template.GetType().Name}) has IsUnique=false but no parameterless constructor for Activator.CreateInstance");
-			    return;
-		    }
+        if (!template.IsUnique)
+        {
+            StateBasic instance;
+            try
+            {
+                instance = (StateBasic)Activator.CreateInstance(template.GetType());
+            }
+            catch (MissingMethodException)
+            {
+                Debug.LogError($"State {state} ({template.GetType().Name}) has IsUnique=false but no parameterless constructor for Activator.CreateInstance");
+                return;
+            }
 
-		    CreateAndAddState(instance, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
-		    return;
-	    }
+            CreateAndAddState(instance, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
+            return;
+        }
 
-	    for (int i = 0; i < _currentStates.Count; i++)
-	    {
-		    if (_currentStates[i].State != state) continue;
+        for (int i = 0; i < _currentStates.Count; i++)
+        {
+            if (_currentStates[i].State != state) continue;
 
-		    _currentStates[i].TryApply(this, duration, damageToExit, sourceCaster, skillName);
-		    MoveStateToEnd(i);
-		    return;
-	    }
+            _currentStates[i].TryApply(this, duration, damageToExit, sourceCaster, skillName);
+            MoveStateToEnd(i);
+            return;
+        }
 
-	    CreateAndAddState(template, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
+        CreateAndAddState(template, sourceCaster, duration, damageToExit, skillName, isCanDodgeMagState, checkDodge: true, template.Type);
     }
 
     private void CreateAndAddState(StateBasic stateInstance, Character sourceCaster, float duration,
         float damageToExit, string skillName, bool isCanDodgeMagState, bool checkDodge, StateType type)
     {
-	    if (checkDodge && !isCanDodgeMagState && type == StateType.Magic)
-	    {
-		    float chanceDodgeMagDamage = Random.Range(0f, 100f);
-		    if (chanceDodgeMagDamage <= _hero.AttributeSystem[CharacterAttributeName.EvasionMagical].GetValue())
-		    {
-			    Debug.Log("CharacterState / DodgeMagDamage");
-			    return;
-		    }
-	    }
+        if (checkDodge && !isCanDodgeMagState && type == StateType.Magic)
+        {
+            float chanceDodgeMagDamage = Random.Range(0f, 100f);
+            if (chanceDodgeMagDamage <= _hero.AttributeSystem[CharacterAttributeName.EvasionMagical].GetValue())
+            {
+                Debug.Log("CharacterState / DodgeMagDamage");
+                return;
+            }
+        }
 
         bool applied = stateInstance.TryApply(this, duration, damageToExit, sourceCaster, skillName);
         if (!applied) return;
@@ -1075,104 +1084,104 @@ public class CharacterState : NetworkBehaviour
 
 public enum StateType
 {
-	Physical,
-	Magic,
-	Immaterial,
-	Aura
+    Physical,
+    Magic,
+    Immaterial,
+    Aura
 }
 
 public enum StatusEffect
 {
-	Others,
-	Move,
-	MoveSpeed,
-	Ability,
-	AbilitySchool,
-	AbilitySpeed,
-	Absorptions,
-	Poison,
-	Healing,
-	Freezing,
-	Stunning,
-	Invisible,
-	Strengthening,
-	Immateriality,
-	ReducingEfficiency,
-	Restoration,
-	Destruction,
-	Evade,
+    Others,
+    Move,
+    MoveSpeed,
+    Ability,
+    AbilitySchool,
+    AbilitySpeed,
+    Absorptions,
+    Poison,
+    Healing,
+    Freezing,
+    Stunning,
+    Invisible,
+    Strengthening,
+    Immateriality,
+    ReducingEfficiency,
+    Restoration,
+    Destruction,
+    Evade,
 }
 
 public enum States
 {
-	CreeperInvisible,
-	PoisonBone,
-	WitheringPoison,
-	BindingPoison,
-	PoisonCloud,
-	HealingPoisonCloud,
-	EmpathicPoisons,
-	HealingPoisonPerSecond,
-	InstantHealingPoison,
-	RegeneratingPoison,
-	HeatedGlands,
-	AbsorptionOfPoison,
-	ReducingHealing,
-	Immateriality,
-	InAir,
-	Default,
-	Stun,
-	Frozen,
-	Frosting,
-	Cooling,
-	Blind,
-	Invisible,
-	SchoolDebuff,
-	FormDebuf,
-	Desiccuration,
-	Plague,
-	Curse,
-	NorthernerEndurance,
-	LastBreath,
-	MagicBuff,
-	DarkShield,
-	LightShield,
-	ReversePolarity,
-	SpiritEnergy,
-	SpiritHealth,
-	TiredSoul,
-	ScorchedSoul,
-	Knockdown,
-	IdealEvade,
-	Bleeding,
-	BleedingCarry,
-	Absorption,
-	EmeraldSkin,
-	SparkTalentHealthBuff,
-	DefenseReduction,
-	SelfHarm,
-	ShieldBaff,
-	LowVoltage,
-	ComboState,
-	DisappointmentState,
-	ManaRegen,
-	InnerDarkness,
-	Fear,
-	Astral,
-	Silent,
-	Irradiation,
-	Suppression,
-	WeakeningSilence,
-	PartialBlindness,
-	Anxiety,
-	HuntressMark,
-	Calmness,
-	Sleep,
-	ElvenSkill,
-	BaffState,
+    CreeperInvisible,
+    PoisonBone,
+    WitheringPoison,
+    BindingPoison,
+    PoisonCloud,
+    HealingPoisonCloud,
+    EmpathicPoisons,
+    HealingPoisonPerSecond,
+    InstantHealingPoison,
+    RegeneratingPoison,
+    HeatedGlands,
+    AbsorptionOfPoison,
+    ReducingHealing,
+    Immateriality,
+    InAir,
+    Default,
+    Stun,
+    Frozen,
+    Frosting,
+    Cooling,
+    Blind,
+    Invisible,
+    SchoolDebuff,
+    FormDebuf,
+    Desiccuration,
+    Plague,
+    Curse,
+    NorthernerEndurance,
+    LastBreath,
+    MagicBuff,
+    DarkShield,
+    LightShield,
+    ReversePolarity,
+    SpiritEnergy,
+    SpiritHealth,
+    TiredSoul,
+    ScorchedSoul,
+    Knockdown,
+    IdealEvade,
+    Bleeding,
+    BleedingCarry,
+    Absorption,
+    EmeraldSkin,
+    SparkTalentHealthBuff,
+    DefenseReduction,
+    SelfHarm,
+    ShieldBaff,
+    LowVoltage,
+    ComboState,
+    DisappointmentState,
+    ManaRegen,
+    InnerDarkness,
+    Fear,
+    Astral,
+    Silent,
+    Irradiation,
+    Suppression,
+    WeakeningSilence,
+    PartialBlindness,
+    Anxiety,
+    HuntressMark,
+    Calmness,
+    Sleep,
+    ElvenSkill,
+    BaffState,
     DebaffState,
-	Bound,
-	ShadowTree,
+    Bound,
+    ShadowTree,
     PowerOfEarth,
     EarthsHealth,
     MagicWater,
@@ -1180,85 +1189,85 @@ public enum States
     BurningMatter,
     Burn,
     TestAuraState,
-	MultiMagic,
-	FireFlash,
-	Stupefaction,
-	TentacleGrip,
+    MultiMagic,
+    FireFlash,
+    Stupefaction,
+    TentacleGrip,
     Discharge,
     Restoration,
     RestorationStacking,
     Destruction,
     DestructionStacking,
-	HardenedFlesh,
-	FocusingOnReflexesState,
-	WarmingUpState,
-	DivineEnhancement,
-	HealingSlime,
-	BleedingScrader,
-	DischargePsi,
-	BleedingDebuff,
-	TrueSightState,
-	CorrodedArmor,
-	Impatience,
-	PsionicGeneration,
-	MagicalExcitement,
-	GodLight,
-	HotBloodBuff,
-	GodAura,
-	GodAuraBuff,
-	TransformationDebuff,
-	PetrificationDebuff,
-	PushingWindBuff,
-	PushingWindAura,
-	CoolingDamaged,
-	MagicInstantaneity,
-	ImmortalityState,
-	Parasites,
-	SwarmSpeed,
-	DestructivePoison,
-	InjectionAdrenaline,
-	ProtectiveScales,
-	ErodedArmor,
-	ParalyzingPoison,
-	FeelingPoisoning,
-	LightningEvade,
-	ReptilianStasis,
-	ReflectiveScales,
-	SwiftAttacks,
-	CounterRage,
-	Ignition,
-	MergeDark,
-	DarkFormState,
-	ShackleState,
-	SlowFlowLight,
-	Retribution,
-	DisciplineAura,
-	FrostEnergy,
-	PortalDarkness,
-	CreeperCombo,
-	ElvenReflexes,
-	FireCharge,
-	RestorativeAttacks,
-	KillingSpree,
-	OtherForces,
-	MagicShield,
-	VampirismBuff,
-	MetabolismReptile,
-	IceDeathSeriesPhysical,
-	IceDeathSeriesMagic
+    HardenedFlesh,
+    FocusingOnReflexesState,
+    WarmingUpState,
+    DivineEnhancement,
+    HealingSlime,
+    BleedingScrader,
+    DischargePsi,
+    BleedingDebuff,
+    TrueSightState,
+    CorrodedArmor,
+    Impatience,
+    PsionicGeneration,
+    MagicalExcitement,
+    GodLight,
+    HotBloodBuff,
+    GodAura,
+    GodAuraBuff,
+    TransformationDebuff,
+    PetrificationDebuff,
+    PushingWindBuff,
+    PushingWindAura,
+    CoolingDamaged,
+    MagicInstantaneity,
+    ImmortalityState,
+    Parasites,
+    SwarmSpeed,
+    DestructivePoison,
+    InjectionAdrenaline,
+    ProtectiveScales,
+    ErodedArmor,
+    ParalyzingPoison,
+    FeelingPoisoning,
+    LightningEvade,
+    ReptilianStasis,
+    ReflectiveScales,
+    SwiftAttacks,
+    CounterRage,
+    Ignition,
+    MergeDark,
+    DarkFormState,
+    ShackleState,
+    SlowFlowLight,
+    Retribution,
+    DisciplineAura,
+    FrostEnergy,
+    PortalDarkness,
+    CreeperCombo,
+    ElvenReflexes,
+    FireCharge,
+    RestorativeAttacks,
+    KillingSpree,
+    OtherForces,
+    MagicShield,
+    VampirismBuff,
+    MetabolismReptile,
+    IceDeathSeriesPhysical,
+    IceDeathSeriesMagic
 }
 public enum BaffDebaff
 {
-	Baff,
-	Debaff,
-	Null,
+    Baff,
+    Debaff,
+    Null,
 }
 
 [System.Flags]
 public enum DispelType
 {
-	None = 0,
-	Magic = 1,
-	Physic = 2,
-	Immaterial = 4,
+    None = 0,
+    Magic = 1,
+    Physic = 2,
+    Immaterial = 4,
 }

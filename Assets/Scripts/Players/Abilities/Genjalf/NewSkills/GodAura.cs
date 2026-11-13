@@ -14,6 +14,7 @@ public class GodAura : AuraStateHandler
 
     protected override void OnTargetExit(Character target)
     {
+        Debug.Log(target.gameObject);
         CmdRemoveStateFromTarget(target.gameObject, States.GodAuraBuff);
     }
 
@@ -44,9 +45,6 @@ public class GodAuraBuff : StateStackingRefreshing
     private AttributeModifier _modifier = new AttributeModifier(-0.1f, ModifierType.Percent);
     private const float _modifierPerStack = -0.1f;
 
-    private float _baseDuration;
-    private float _stackTimer;
-
     public override States State => States.GodAuraBuff;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -57,24 +55,17 @@ public class GodAuraBuff : StateStackingRefreshing
     public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
+        SetMaxStacks(1);
+        CurrentStacksCount = 1;
+        RemainingDuration = durationToExit;
     }
 
-    public override bool Stack(float time)
+    public override void OnStackChange()
     {
-        if (CurrentStacksCount == 0)
-        {
-            return true;
-        }
-        
-        _baseDuration = time;
-        _stackTimer = _baseDuration;
-
-        UpdateModifier(CurrentStacksCount + 1);
-
-        return true;
+        Debug.Log(characterState);
+        UpdateModifier(CurrentStacksCount);
     }
 
-    
 
     private void UpdateModifier(int stacks)
     {
@@ -83,42 +74,12 @@ public class GodAuraBuff : StateStackingRefreshing
         ApplyModifierToAllSkills(_modifier);
     }
 
-    public override void UpdateState()
-    {
-        if (_stackTimer <= -1) return;
-
-        _stackTimer -= Time.deltaTime;
-
-        if (_stackTimer <= 0)
-        {
-            CurrentStacksCount--;
-
-            if (CurrentStacksCount <= 0)
-            {
-                ExitState();
-                return;
-            }
-            
-            _stackTimer = CurrentStacksCount == 1 ? -1f : _baseDuration;
-            if (_stackTimer == -1f)
-            {
-    
-            }
-            UpdateModifier(CurrentStacksCount);
-        }
-    }
-
     protected override void OnExit()
     {
         RemoveModifierFromAllSkills(_modifier);
 
         CurrentStacksCount = 0;
-        _baseDuration = 0;
-        _stackTimer = 0;
         _modifier.Value = _modifierPerStack;
-        _character = null;
-
-        characterState = null;
     }
 
     private void ApplyModifierToAllSkills(AttributeModifier modifier)
