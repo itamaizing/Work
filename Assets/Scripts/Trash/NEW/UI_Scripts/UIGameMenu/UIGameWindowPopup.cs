@@ -18,6 +18,7 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private GameObject _teamStatistics;
     [SerializeField] private GameObject[] _forHide;
     [SerializeField] private GameObject _teamSource; //test
+    [SerializeField] private UIWidget.HudEditMode _hudEditMode;
 
     private MinionSkillPanelController _minionSkillController;
 
@@ -51,6 +52,12 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void ShowSettings()
     {
+        if (_hudEditMode != null && _hudEditMode.IsEditing)
+        {
+            _hudEditMode.ExitEditMode();
+            return;
+        }
+
         if (_settings.activeSelf)
         {
             _settings.SetActive(false);

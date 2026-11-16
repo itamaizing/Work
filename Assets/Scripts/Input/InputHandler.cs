@@ -27,6 +27,7 @@ public class InputHandler : MonoBehaviour
 
 	public static UnityAction<Vector2> OnPlayerMove = delegate { };
 	public static UnityAction OnClick = delegate { };
+	public static event UnityAction OnWorldTargetClick;
 	public static UnityAction OnClickCanceled = delegate { };
 	public static UnityAction OnAltClick = delegate { };
 	public static UnityAction OnDoubleAltClick = delegate { };
@@ -123,7 +124,11 @@ public class InputHandler : MonoBehaviour
 			{
 				if (PointerHitsUI())
 					return;
+
+				bool canSelectWorldTarget = !TargetingSession.IsActive;
 				OnClick?.Invoke();
+				if (canSelectWorldTarget)
+					OnWorldTargetClick?.Invoke();
 			},
 			() => OnClickCanceled?.Invoke(),
 			pointer: true);

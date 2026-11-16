@@ -6,6 +6,9 @@ public static class TargetingSession
     private static readonly List<Skill> _active = new();
     private static object _key;
 
+    public static bool IsActive => _active.Exists(skill =>
+        skill != null && skill.IsTargeting && skill.gameObject.activeInHierarchy);
+
     public static void Begin(Skill skill, object key)
     {
         key ??= skill;

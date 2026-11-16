@@ -672,6 +672,7 @@ public abstract partial class Skill
         StopCoro(ref _targetingWrapperCoroutine);
         StopCoro(ref _targetingCoroutine);
         _isTargeting = false;
+        TargetingSession.End(this);
         IsAutoMode = false;
 
         ClearData();

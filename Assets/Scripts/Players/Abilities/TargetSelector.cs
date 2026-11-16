@@ -21,12 +21,12 @@ public class TargetSelector : MonoBehaviour
 
     private void OnEnable()
     {
-        InputHandler.OnClick += HandleWorldClick;
+        InputHandler.OnWorldTargetClick += HandleWorldClick;
     }
 
     private void OnDisable()
     {
-        InputHandler.OnClick -= HandleWorldClick;
+        InputHandler.OnWorldTargetClick -= HandleWorldClick;
         SetTarget(null);
     }
 
@@ -37,7 +37,7 @@ public class TargetSelector : MonoBehaviour
 
     private void HandleWorldClick()
     {
-        if (Input.GetKey(KeyCode.LeftAlt) || IsConfirmingCast())
+        if (Input.GetKey(KeyCode.LeftAlt))
             return;
 
         var camera = Camera.main;
@@ -65,19 +65,5 @@ public class TargetSelector : MonoBehaviour
             InspectedTarget.Died += OnInspectedTargetDied;
     }
 
-    private bool IsConfirmingCast()
-    {
-        var hero = Character.Local;
-        if (hero == null || hero.Abilities == null)
-            return false;
-
-        foreach (var skill in hero.Abilities.Skills)
-        {
-            if (skill.IsTargeting)
-                return true;
-        }
-        return false;
-    }
-    
     private void OnInspectedTargetDied(Character character) => SetTarget(null);
 }

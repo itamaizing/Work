@@ -7,7 +7,14 @@ using System.Linq;
 public static class StateIcoDatabaseGenerator
 {
     private const string GeneratedPath = "Assets/Resources/StateIcoDatabase_Generated.asset";
-    private const string IconsFolderPath = "Assets/Sprites/StateIcons";
+    private static readonly string[] IconsFolderPaths =
+    {
+        "Assets/Sprites/StateIcons",
+        "Assets/Sprites/HUD/Abilities/StateIcons",
+        "Assets/Sprites/HUD/Shared/StateIcons",
+        "Assets/Sprites/HUD/States/StateIcons",
+        "Assets/Sprites/HUD/Talents/StateIcons",
+    };
 
     [MenuItem("Tools/Generate StateIcoDatabase")]
     public static void Generate()
@@ -36,7 +43,7 @@ public static class StateIcoDatabaseGenerator
 
     private static Sprite FindSpriteByName(string name)
     {
-        string[] guids = AssetDatabase.FindAssets(name + " t:Sprite", new[] { IconsFolderPath });
+        string[] guids = AssetDatabase.FindAssets(name + " t:Sprite", IconsFolderPaths);
         if (guids.Length == 0) return null;
 
         string assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);

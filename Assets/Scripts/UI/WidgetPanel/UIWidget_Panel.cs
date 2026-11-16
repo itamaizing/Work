@@ -15,7 +15,7 @@ namespace UIWidget
         private readonly Vector3[] _corners = new Vector3[4];
 
         public RectTransform ConfineArea { get => _confineArea; }
-        public RectTransform Panel { get => _panel; }
+        public RectTransform Panel => _panel != null ? _panel : (RectTransform)transform;
         public Vector3[] Corners => _corners;
 
         internal Vector2 MinimumSize => _minimumSize;
