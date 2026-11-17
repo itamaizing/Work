@@ -4,7 +4,7 @@ using UnityEngine;
 public class CreeperComboStateStacking : StateStackingRefreshing
 {
     public override States State => States.CreeperCombo;
-    public override StateType Type => StateType.Magic;
+    public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
     public override List<StatusEffect> Effects => new List<StatusEffect>();
@@ -25,12 +25,6 @@ public class CreeperComboStateStacking : StateStackingRefreshing
         characterState = character;
         
         RemainingDuration = durationToExit;
-    }
-
-    public override bool Stack(float time)
-    {
-        RemainingDuration = time;
-        return true;
     }
 
     public void ResetStacks()

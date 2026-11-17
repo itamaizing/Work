@@ -23,6 +23,8 @@ public class HUDResourceBar : MonoBehaviour
     private float _runeAspect;
 
     public ResourceType Type => _type;
+    protected Resource BoundResource => _resource;
+    protected RectTransform Fill => _fill;
 
     public Resource FindResource(Character character)
     {
@@ -38,7 +40,7 @@ public class HUDResourceBar : MonoBehaviour
             Bind(_initialResource);
     }
 
-    public void Bind(Resource resource)
+    public virtual void Bind(Resource resource)
     {
         _resource = resource;
         gameObject.SetActive(_resource != null);
@@ -73,6 +75,9 @@ public class HUDResourceBar : MonoBehaviour
         float current = _resource.CurrentValue;
         float max = _resource.MaxValue;
         bool showRunes = Type == ResourceType.Rune && _runePrefab != null;
+        if (!showRunes)
+            RefreshFill(current, max);
+
         Vector2 trackSize = showRunes ? _fill.rect.size : Vector2.zero;
         if (current != _current || max != _max || trackSize != _runeTrackSize)
         {
@@ -85,18 +90,29 @@ public class HUDResourceBar : MonoBehaviour
             }
             else
             {
-                _fill.anchorMax = new Vector2(max > 0f ? Mathf.Clamp01(current / max) : 0f, 1f);
                 _amount.SetText("{0:0}/<b>{1:0}</b>", current, max);
             }
         }
 
-        if (showRunes) return;
+        if (showRunes || _regeneration == null) return;
 
         float rate = _resource.RegenerationPerSecond;
         if (rate == _regenPerSecond) return;
 
         _regenPerSecond = rate;
         _regeneration.text = rate.ToString("+0.##;-0.##;0", CultureInfo.InvariantCulture);
+    }
+
+    protected virtual void RefreshFill(float current, float max)
+    {
+        SetFillWidth(_fill, max > 0f ? Mathf.Clamp01(current / max) : 0f);
+    }
+
+    protected static void SetFillWidth(RectTransform fill, float width)
+    {
+        var anchors = new Vector2(width, 1f);
+        if (fill.anchorMax != anchors)
+            fill.anchorMax = anchors;
     }
 
     private void RefreshRunes(float current, float max)

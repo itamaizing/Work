@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SneakySpit : Skill
@@ -13,12 +12,9 @@ public class SneakySpit : Skill
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private CreeperCombo _creeperCombo;
 
-    private Character _attacker;
     private Coroutine _boostWindow;
-    private NetworkIdentity identity;
+    private bool _subscribed;
     private bool isAbilityQueue = false;
-    private bool isAnimStart = false;
-    private bool _isCastControlLocked = false;
 
     #region Talent
 
@@ -38,7 +34,7 @@ public class SneakySpit : Skill
     protected override void SkillDisableBoostLogic()
     {
         Disactive = true;
-        if (isAnimStart) return;
+        if (IsExecuting) return;
         Targeting.ClearTarget();
     }
 
@@ -51,26 +47,28 @@ public class SneakySpit : Skill
     private void OnEnable()
     {
         TrySubscribe();
-        
-        isAnimStart = false;
-        isAbilityQueue = false;
     }
 
     private void OnDisable()
     {
-        Hero.Health.OnBeforeTakeDamage -= HandleBeforeTakeDamage;
+        CancelBoostWindow();
+        if (!_subscribed) return;
+
         Hero.Health.Evaded -= OnHeroEvade;
         CastStarted -= HandleCastStarted;
+        _subscribed = false;
     }
 
     private void TrySubscribe()
     {
-        if (Hero == null)
+        if (_subscribed || !isActiveAndEnabled || Hero == null)
             return;
 
-        Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
+        if (_creeperCombo == null) _creeperCombo = GetComponent<CreeperCombo>();
+
         Hero.Health.Evaded += OnHeroEvade;
         CastStarted += HandleCastStarted;
+        _subscribed = true;
     }
 
     public void TryStartSneakySpitBoostWindow(Character target)
@@ -80,7 +78,7 @@ public class SneakySpit : Skill
 
     public void TryStartSneakySpitBoostWindow(Character target, float windowDuration)
     {
-        if (target == null)
+        if (target == null || target.IsDead || !IsSkillActive || !isActiveAndEnabled || IsExecuting)
             return;
 
         if (_boostWindow != null)
@@ -108,7 +106,7 @@ public class SneakySpit : Skill
     {
         DisableSkillBoost();
 
-        if (!isAnimStart)
+        if (!IsExecuting)
         {
             CancelQueuedCast();
         }
@@ -129,9 +127,8 @@ public class SneakySpit : Skill
 
     private void HandleCastStarted()
     {
-        isAnimStart = true;
         CancelBoostWindow();
-        LockControlDuringCast();
+        if (_creeperCombo != null) _creeperCombo.ConsumeSneakySpitBoost();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -149,7 +146,7 @@ public class SneakySpit : Skill
     {
         Character target = Targeting.GetTarget()?.Character;
 
-        if (target == null) return false;
+        if (_boostWindow == null || Disactive || target == null) return false;
 
         return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius &&
                Targeting.NoObstacles(target.transform.position, transform.position, Targeting.AdditionalObstacle);
@@ -157,15 +154,10 @@ public class SneakySpit : Skill
 
     private void OnHeroEvade(Skill skill)
     {
-        Debug.Log($"_attacker: {_attacker}");
-        if (_attacker == null || _boostWindow != null) return;
+        Character attacker = skill?.Hero;
+        if (!isServer || attacker == null || connectionToClient == null) return;
 
-        TargetRpcStartSneakySpitBoostWindow(connectionToClient, _attacker.netId);
-    }
-
-    private void HandleBeforeTakeDamage(Damage damage, Skill skill)
-    {
-        if (skill != null && skill.Hero != null) _attacker = skill.Hero;
+        TargetRpcStartSneakySpitBoostWindow(connectionToClient, attacker.netId);
     }
 
     private void DealCriticalDamage(Character target, float baseDamage)
@@ -177,20 +169,6 @@ public class SneakySpit : Skill
         damage.Value = finalDamage;
 
         CmdApplyDamage(damage, target.gameObject);
-    }
-
-    private void LockControlDuringCast()
-    {
-        _isCastControlLocked = true;
-        Disactive = true;
-    }
-
-    private void UnlockControlAfterCast()
-    {
-        _isCastControlLocked = false;
-
-        if (_boostWindow != null) Disactive = false;
-        else Disactive = true;
     }
 
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
@@ -219,8 +197,6 @@ public class SneakySpit : Skill
         Targeting.ClearTarget();
         Hero.Move.StopLookAt();
         isAbilityQueue = false;
-        isAnimStart = false;
-        //_target = null;
     }
 
     public void CancelBoostWindow()
@@ -239,7 +215,7 @@ public class SneakySpit : Skill
 
         if (target != null)
         {
-            CmdAddState(target);
+            CmdApplySpitStates(target.gameObject);
 
             if (_coldBlood != null && _coldBlood.TryConsumeForPoison(target))
             {
@@ -250,52 +226,41 @@ public class SneakySpit : Skill
                 Damage damage = GetDamage();
                 CmdApplyDamage(damage, target.gameObject);
             }
-
-            ClearData();
         }
     }
 
     public void SneakySpitDisactive()
     {
-        if (!Disactive) return;
-        if (isAnimStart || _isCastControlLocked) return;
+        if (!isOwned || !Disactive || IsExecuting) return;
 
         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
-        isAnimStart = false;
         CancelBoostWindow();
         Targeting.ClearTarget();
     }
 
-    private void ConsumeSneakySpitBoost()
-    {
-        if (_creeperCombo == null) return;
-        _creeperCombo.ConsumeSneakySpitBoost();
-    }
-
     public void SneakySpitCast()
     {
-        ConsumeSneakySpitBoost();
         AnimStartCastCoroutine();
     }
 
     public void SneakySpitEnd()
     {
         AnimCastEnded();
-        isAnimStart = false;
-        UnlockControlAfterCast();
     }
 
-    [Command] 
-    private void CmdAddState(Character target)
+    [Command]
+    private void CmdApplySpitStates(GameObject targetObject)
     {
+        if (targetObject == null || !targetObject.TryGetComponent<Character>(out var target) || target.IsDead) return;
+
         GameObject casterObj = Hero != null ? Hero.gameObject : (_playerLinks != null ? _playerLinks.gameObject : gameObject);
 
-        if (_isErodedArmorState) 
-            target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, casterObj, Name);
-
         target.CharacterState.AddState(States.Blind, duration, 0, casterObj, Name);
+
+        if (_isErodedArmorState)
+            target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, casterObj, Name);
     }
 
     [TargetRpc]

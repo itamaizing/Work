@@ -7268,8 +7268,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 3
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 6
+    _clickUnit: 1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -7423,8 +7423,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 6
+    _clickUnit: -1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -7602,8 +7602,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 7
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -7772,8 +7772,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 7
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -7946,8 +7946,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 3
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -8106,9 +8106,9 @@ MonoBehaviour:
     editorBackupValue:
     - key: 3
       value: 0
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
+    oldType: 3
+    _targetingType: 3
+    _clickLayer: 0
     _clickFaction: 0
     _clickUnit: 0
     _clickMask:
@@ -8273,8 +8273,8 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
+    oldType: 3
+    _targetingType: 3
     _clickLayer: 0
     _clickFaction: 0
     _clickUnit: 0
@@ -8433,8 +8433,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 2
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -8592,19 +8592,19 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 0
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 1
+    _targetingType: 1
+    _clickLayer: 3
+    _clickFaction: 4
+    _clickUnit: -1
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
     _interactionMask:
       serializedVersion: 2
       m_Bits: 0
-    _outOfRangeBehaviour: 0
-    _needLineOfSight: 0
+    _outOfRangeBehaviour: 1
+    _needLineOfSight: 1
     _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
@@ -8906,8 +8906,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 6
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9221,11 +9221,11 @@ MonoBehaviour:
     editorBackupValue:
     - key: 2
       value: 3
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 2
+    _targetingType: 2
+    _clickLayer: 3
+    _clickFaction: 7
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9398,11 +9398,11 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 3
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 3
+    _targetingType: 3
+    _clickLayer: 0
+    _clickFaction: 6
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9574,8 +9574,8 @@ MonoBehaviour:
     oldType: 2
     _targetingType: 2
     _clickLayer: 3
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 7
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9749,8 +9749,8 @@ MonoBehaviour:
     oldType: 2
     _targetingType: 2
     _clickLayer: 2
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 6
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -9914,11 +9914,11 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: 3
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 2
+    _targetingType: 2
+    _clickLayer: 2
+    _clickFaction: 4
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -10074,11 +10074,11 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
-    _clickLayer: -1
-    _clickFaction: 0
-    _clickUnit: 0
+    oldType: 3
+    _targetingType: 3
+    _clickLayer: 0
+    _clickFaction: 4
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -10234,8 +10234,8 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
+    oldType: 3
+    _targetingType: 3
     _clickLayer: 0
     _clickFaction: 0
     _clickUnit: 0
@@ -10391,8 +10391,8 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     editorBackupValue: []
-    oldType: 0
-    _targetingType: 0
+    oldType: 3
+    _targetingType: 3
     _clickLayer: 0
     _clickFaction: 0
     _clickUnit: 0
@@ -10550,9 +10550,9 @@ MonoBehaviour:
     editorBackupValue: []
     oldType: 0
     _targetingType: 0
-    _clickLayer: 3
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickLayer: 1
+    _clickFaction: 4
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0
@@ -11158,8 +11158,8 @@ MonoBehaviour:
     oldType: 0
     _targetingType: 0
     _clickLayer: 1
-    _clickFaction: 0
-    _clickUnit: 0
+    _clickFaction: 7
+    _clickUnit: 5
     _clickMask:
       serializedVersion: 2
       m_Bits: 0

@@ -13,7 +13,6 @@ public class BasePsionicEnergy : Resource, IDamageable
     [SerializeField] private PsionicEnergySkill psionicEnergySkill;
     [SerializeField] private float _psionicaDecayTime = 12f;
 
-    private const float BaseSliderFillPercent = 0.3f;
     private const float DamageToPsiConversionRate = 0.2f;
     private const float DistanceStep = 1f;
 
@@ -301,7 +300,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             _psiBar = basePsionicsSlider.gameObject.AddComponent<Bar>();
 
         float fineMaximum = _attackingPsionicEnergy.MaxAttackingPsiEnergy;
-        float fineWidth = _psiBar.UpdatePsiScale(CurrentValue, MaxPsi, fineMaximum, BaseSliderFillPercent);
+        float fineWidth = _psiBar.UpdatePsiScale(CurrentValue, MaxPsi, fineMaximum, PsionicBarScale.FineWidth);
         var sliderRect = (RectTransform)basePsionicsSlider.transform;
         _attackingPsionicEnergy.SetBarWidth(sliderRect.rect.width * fineWidth);
     }

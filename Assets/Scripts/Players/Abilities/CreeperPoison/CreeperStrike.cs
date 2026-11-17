@@ -354,15 +354,9 @@ public class CreeperStrike : Skill
     {
         float multiplier = _multiplyCritDamage;
 
-        if (_poisonBoneStack > 0)
-        {
-            for (int i = 0; i < _poisonBoneStack; i++)
-                multiplier += 0.5f;
-        }
-
         if (_coldBlood != null && (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes))
         {
-            multiplier += 2.5f;
+            multiplier = 2.5f;
 
             if (_lightningStrikes != null && _lightningStrikes.IsUsedLightningStrikes)
             {
@@ -375,6 +369,7 @@ public class CreeperStrike : Skill
             }
         }
 
+        multiplier += Mathf.Max(0, _poisonBoneStack) * 0.5f;
         return baseDamage * multiplier;
     }
 

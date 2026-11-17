@@ -8,7 +8,7 @@ public class Restoration : Skill,IPolaritySwitchable
     [Header("Restoration (Light Mode) Settings")]
     [SerializeField] private float healPerTick = 6f;
     [SerializeField] private float lightRange = 4f;
-    [SerializeField] private float lightDuration = 12.1f;
+    [SerializeField] private float lightDuration = 12f;
     [SerializeField] private float healInterval = 4f;
     [SerializeField] private float lightCastTime = 1.2f;
     [SerializeField] private float effectivenessIncreasePerHeal = 0.1f;
@@ -17,7 +17,7 @@ public class Restoration : Skill,IPolaritySwitchable
     [Header("Restoration (Dark Mode) Settings")]
     [SerializeField] private float damagePerTick = 6f;
     [SerializeField] private float darkRange = 6f;
-    [SerializeField] private float darkDuration = 12.1f;
+    [SerializeField] private float darkDuration = 12f;
     [SerializeField] private float damageInterval = 3f;
     [SerializeField] private float darkCastTime = 1.2f;
     [SerializeField] private AbilityInfo darkInfo;
@@ -166,15 +166,7 @@ public class Restoration : Skill,IPolaritySwitchable
         {
             var target = Targeting.GetTarget()?.Character;
 
-            if (_stackingRestorationTalent)
-            {
-                CmdAddState(target, States.RestorationStacking, lightDuration);
-            }
-            else
-            {
-                CmdRemoveState(target, States.Restoration);
-                CmdAddState(target, States.Restoration, lightDuration);
-            }
+            CmdAddState(target, _stackingRestorationTalent ? States.RestorationStacking : States.Restoration, lightDuration);
         }
     }
 
@@ -196,15 +188,7 @@ public class Restoration : Skill,IPolaritySwitchable
         {
             var target = Targeting.GetTarget()?.Character;
 
-            if (_stackingDestructionTalent)
-            {
-                CmdAddState(target, States.DestructionStacking, darkDuration);
-            }
-            else
-            {
-                CmdRemoveState(target, States.Destruction);
-                CmdAddState(target, States.Destruction, darkDuration);
-            }
+            CmdAddState(target, _stackingDestructionTalent ? States.DestructionStacking : States.Destruction, darkDuration);
         }
     }
 
@@ -277,20 +261,28 @@ public class Restoration : Skill,IPolaritySwitchable
     }
 
     [Command]
-    private void CmdRemoveState(Character character, States states) => character.CharacterState.RemoveState(states);
-
-
-    [Command]
-    private void CmdAddState(Character character, States states, float duration)
+    private void CmdAddState(Character character, States state, float duration)
     {
-        float damageToExit = 0;
-        if (_spiritHealthIsEnabled)
-        {
-            damageToExit = -1f;
-        }
-        character.CharacterState.AddState(states, duration, damageToExit, Hero.gameObject, _initialRestorationName);
+        if (character == null) return;
+
+        float spiritHealthFlag = _spiritHealthIsEnabled ? -1f : 0f;
+        ApplyPeriodicState(character, state, duration, spiritHealthFlag);
+        RpcAddPeriodicState(character, state, duration, spiritHealthFlag);
     }
-    
+
+    [ClientRpc]
+    private void RpcAddPeriodicState(Character character, States state, float duration, float spiritHealthFlag)
+    {
+        if (!isServer && character != null)
+            ApplyPeriodicState(character, state, duration, spiritHealthFlag);
+    }
+
+    private void ApplyPeriodicState(Character character, States state, float duration, float spiritHealthFlag)
+    {
+        character.CharacterState.AddStateLogic(state, duration, spiritHealthFlag, Schools.None,
+            Hero.gameObject, _initialRestorationName);
+    }
+
     //[ClientRpc]
     private void RpcPlayShotSound()
     {

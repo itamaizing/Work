@@ -17,7 +17,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
     [SerializeField] private AutoCastParticles _autoCastEffect;
-    [SerializeField] private ParticleSystem _boostEffect;
+    [SerializeField] private GameObject _boostEffect;
 
     private Transform _patentAfterDrag;
     private Skill _skill;

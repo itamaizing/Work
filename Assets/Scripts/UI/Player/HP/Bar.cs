@@ -269,16 +269,7 @@ public class Bar : MonoBehaviour
 
 	private float GetScaleFill(float value)
 	{
-		if (_maxValue <= 0f) return 0f;
-
-		value = Mathf.Clamp(value, 0f, _maxValue);
-		if (_psiThreshold <= 0f)
-			return value / _maxValue;
-
-		if (value <= _psiThreshold)
-			return value / _psiThreshold * _psiWidth;
-
-		return _psiWidth + (value - _psiThreshold) / (_maxValue - _psiThreshold) * (1f - _psiWidth);
+		return PsionicBarScale.GetFill(value, _maxValue, _psiThreshold, _psiWidth);
 	}
 
 	private void PopulateScale(VertexHelper mesh, Rect bounds)

@@ -11213,7 +11213,6 @@ MonoBehaviour:
   - {fileID: 791836975879289828}
   - {fileID: 5572242631448563929}
   - {fileID: 6329787714802171844}
-  - {fileID: 7146391421373293304}
 --- !u!223 &613754624261345861
 Canvas:
   m_ObjectHideFlags: 0
@@ -35704,20 +35703,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a99edac8625c44a593785d850a2bc4b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HUDResourceBar
---- !u!114 &2695116850687148617 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2635522607269460915, guid: cbca591a3ed5ed6409ad2c399edfea1e, type: 3}
-  m_PrefabInstance: {fileID: 141225285284411898}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a99edac8625c44a593785d850a2bc4b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HUDResourceBar
+  m_Script: {fileID: 11500000, guid: ee1198d1284943ee8d7697a07ba813b1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::HUDPsionicBar
 --- !u!224 &3457532643436173354 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3318629801609830864, guid: cbca591a3ed5ed6409ad2c399edfea1e, type: 3}
@@ -41371,20 +41359,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a99edac8625c44a593785d850a2bc4b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HUDResourceBar
---- !u!114 &7146391421373293304 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2635522607269460915, guid: cbca591a3ed5ed6409ad2c399edfea1e, type: 3}
-  m_PrefabInstance: {fileID: 5169662861212129611}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a99edac8625c44a593785d850a2bc4b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HUDResourceBar
+  m_Script: {fileID: 11500000, guid: ee1198d1284943ee8d7697a07ba813b1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::HUDPsionicBar
 --- !u!224 &7615710955706431643 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3318629801609830864, guid: cbca591a3ed5ed6409ad2c399edfea1e, type: 3}
@@ -41630,7 +41607,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 910499944508277086, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
       propertyPath: _resourceBars.Array.size
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 910499944508277086, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
       propertyPath: '_resourceBars.Array.data[0]'
@@ -41654,10 +41631,6 @@ PrefabInstance:
       objectReference: {fileID: 801493927805694056}
     - target: {fileID: 910499944508277086, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
       propertyPath: '_resourceBars.Array.data[5]'
-      value: 
-      objectReference: {fileID: 2695116850687148617}
-    - target: {fileID: 910499944508277086, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
-      propertyPath: '_resourceBars.Array.data[6]'
       value: 
       objectReference: {fileID: 798801978799031396}
     - target: {fileID: 916124421943192224, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}

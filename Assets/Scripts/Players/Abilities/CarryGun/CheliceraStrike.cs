@@ -23,8 +23,6 @@ public class CheliceraStrike : Skill
     [SerializeField] private float _minDamage = 11f;
     [SerializeField] private float _maxDamage = 16f;
 
-    public bool IsTriggeredByJump { get; set; }
-
     #region Constants
 
     private const float CriticalDamageMultiplierDefault = 1.6f;
@@ -47,7 +45,6 @@ public class CheliceraStrike : Skill
     private float _totalChanceApplyBleeding;
     private float _totalchanceCritDamage;
     private float _criticalDamage;
-    private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
     private bool _isClawStrike_Right = true;
 
@@ -60,7 +57,6 @@ public class CheliceraStrike : Skill
     protected override bool IsCanCast => CheckIsCanCast() && _cooldownEnergy.CurrentValue >= _cooldownEnergyCost;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-    public float ChanceCritDamageEvolutionFour { get => _chanceCritDamageEvolutionFour; set => _chanceCritDamageEvolutionFour = value; }
 
     public event Action OnCriticalHit;
 
@@ -100,35 +96,34 @@ public class CheliceraStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null) yield break;
+        var target = Targeting.GetTarget();
+        if (target == null) yield break;
 
-        IDamageable damageable = Targeting.GetTarget()?.Damageable;
+        ApplyStrike(target.Damageable, target.Targetable as Character);
+        yield return null;
+    }
 
-        if (_jumpWithChelicera.IsJumpDone)
-            _cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.CooldownJump, _jumpWithChelicera);
-        else
-            _cooldownEnergy.CastCooldownEnergySkill(_cooldownEnergyCost, this);
+    public void StrikeAfterJump(IDamageable target, float damageBonus, float criticalChance)
+    {
+        ApplyStrike(target, target as Character, fromJump: true, damageBonus: damageBonus, criticalChance: criticalChance);
+    }
 
-        DamageDealChelicera(damageable);
-        _jumpWithChelicera.IsJumpDone = false;
+    private void ApplyStrike(IDamageable target, Character character, bool fromJump = false,
+        float damageBonus = 0f, float? criticalChance = null)
+    {
+        _cooldownEnergy.CastCooldownEnergySkill(fromJump ? _jumpWithChelicera.CooldownJump : _cooldownEnergyCost,
+            fromJump ? (Skill)_jumpWithChelicera : this);
+        DamageDealChelicera(target, 1f + damageBonus, criticalChance);
         _isClawStrike_Right = !_isClawStrike_Right;
 
-        Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
-
-        ComboContext.JumpBack.LastTarget = currentTarget;
+        ComboContext.JumpBack.LastTarget = character;
         ComboContext.JumpBack.LastSkill = typeof(CheliceraStrike);
         ComboContext.JumpBack.LastTime = Time.time;
 
-        if (!IsTriggeredByJump)
-        {
+        if (!fromJump)
             ComboContext.Bleeding.Set(typeof(CheliceraStrike));
-        }
 
         ComboContext.ClawStrikeContext.Set(typeof(CheliceraStrike));
-
-        IsTriggeredByJump = false;
-
-        yield return null;
     }
 
     private void HandleSkillCanceled()
@@ -140,21 +135,16 @@ public class CheliceraStrike : Skill
         AnimCastEnded();
     }
     
-    public void DamageDealChelicera(IDamageable target) => DamageDealChelicera(target, 1f, true);
-    
     public void RollStrike(IDamageable target, float damageMultiplier)
     {
-        DamageDealChelicera(target, damageMultiplier, false);
+        DamageDealChelicera(target, damageMultiplier);
     }
 
-    private void DamageDealChelicera(IDamageable target, float damageMultiplier, bool useJumpBonus)
+    private void DamageDealChelicera(IDamageable target, float damageMultiplier, float? criticalChance = null)
     {
         if (target == null) return;
         Character targetCharacter = target as Character;
         Damage damage = GetDamage();
-
-        if (useJumpBonus && _jumpWithChelicera.IsJumpDone)
-            damage.Value = damage.Value + damage.Value * _additionalDamageFromSkill;
 
         damage.Value *= damageMultiplier;
 
@@ -179,7 +169,7 @@ public class CheliceraStrike : Skill
             float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
             float chanceCritDamageValue = UnityEngine.Random.Range(ChanceCritDamageMinMultiplier, ChanceCritDamageMaxMultiplier);
 
-            _totalchanceCritDamage = _chanceCritDamageEvolutionFour;
+            _totalchanceCritDamage = criticalChance ?? _chanceCritDamageEvolutionFour;
 
             if (_isChanceCritDamageIncrease && CheckStateForCrit(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
@@ -283,11 +273,6 @@ public class CheliceraStrike : Skill
         _hero.Move.StopMoveAndAnimationMove();
     }
 
-    public void SetAdditionalDamage(float value)
-    {
-        _additionalDamageFromSkill = value;
-    }
-
     public void CheliceraStrikeCast()
     {
         AnimStartCastCoroutine();
@@ -298,12 +283,6 @@ public class CheliceraStrike : Skill
         _player.Move.StopLookAt();
         _player.Move.SetCanMove(true);
         AnimCastEnded();
-    }
-
-    public void ClearDataCheliceraStrike()
-    {
-        ClearData();
-        Renderer.HideSmartIndicator();
     }
 
     [Command]

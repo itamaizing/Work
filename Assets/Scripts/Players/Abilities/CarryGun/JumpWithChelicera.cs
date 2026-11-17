@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -24,6 +23,7 @@ public class JumpWithChelicera : Skill
     private const float PsiStepDistance = 1f;
 
     private const float JumpSpeedDivider = 10f;
+    private const float JumpPositionSyncThreshold = 1f;
 
     private const float JumpCritChanceEnabled = 0.3f;
     private const float JumpCritChanceDisabled = 0.15f;
@@ -32,27 +32,23 @@ public class JumpWithChelicera : Skill
     #endregion
 
     private Animator _animator;
-    private ITargetable _currentTarget;
 
-    private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
     private float _minDistance = 0.6f;
-    private float _additionalDamageInPercentage;
-    private bool _isJumpDone = false;
     private bool _isCheliceraStrikeCast = false;
     private Coroutine _trackMovementDuringJumpCoroutine;
 
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerPrepare => 0;
-    public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
     public float CooldownJump { get => _cooldownJump; set => _cooldownJump = value; }
 
     protected override bool IsCanCast => CheckCanCast() && _cooldownEnergy.CurrentValue >= _cooldownJump;
 
     private bool _jumpSequenceFinished;
+    private uint _jumpId;
 
     private bool isJumpWithCheliceraChanceDamageCrit = false;
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
@@ -81,9 +77,8 @@ public class JumpWithChelicera : Skill
     {
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
-        _currentTarget = null;
-        if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(_trackMovementDuringJumpCoroutine);
-        AnimCastEnded();
+        _jumpSequenceFinished = true;
+        HandleJumpWithCheliceraEnd();
     }
 
     public override Damage GetDamage(DamageTable table = null, bool shouldModify = true)
@@ -96,7 +91,6 @@ public class JumpWithChelicera : Skill
         if (targetInfo.GetTargets().Count > 0)
         {
             Targeting.SetTarget(targetInfo.GetTargets()[0]);
-            _cheliceraeStrike.Targeting.SetTarget(targetInfo.GetTargets()[0]);
         }
         if (Targeting.GetTarget()?.Character is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
     }
@@ -108,141 +102,97 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null)
+        var target = Targeting.GetTarget();
+        if (target?.Targetable is not NetworkBehaviour networkTarget)
         {
             TryCancel(true);
             yield break;
         }
 
         _jumpSequenceFinished = false;
-        
-        ExecuteJump(Targeting.GetTarget().Targetable);
+        uint jumpId = ++_jumpId;
+        float distanceToTarget = Vector3.Distance(target.Transform.position, _player.transform.position);
+        float damageBonus = Mathf.Round((BaseDamagePercent + Mathf.Floor(distanceToTarget / DamageStepDistance) * DamageStepPercent) * DamageRoundMultiplier) / DamageRoundMultiplier;
 
+        _isCheliceraStrikeCast = true;
+        _clawStrike.DurationChanceApplyBleedingWithJump();
+        ComboContext.Bleeding.Set(typeof(JumpWithChelicera));
+        ComboContext.ClawStrikeContext.Set(typeof(JumpWithChelicera));
+
+        CmdExecuteJump(networkTarget.netId, damageBonus, jumpId);
         while (!_jumpSequenceFinished)
             yield return null;
     }
 
-    private void ExecuteJump(ITargetable target)
-    {
-        JumpEndSpeedAnim();
-        if (target == null) return;
-
-        _isJumpDone = true;
-
-        float distanceToTarget = Vector3.Distance(Targeting.GetTarget().Transform.position, _player.transform.position);
-        _additionalDamageInPercentage = Mathf.Round((BaseDamagePercent + Mathf.Floor(distanceToTarget / DamageStepDistance) * DamageStepPercent) * DamageRoundMultiplier) / DamageRoundMultiplier;
-        Vector3 direction = (Targeting.GetTarget().Transform.position - transform.position).normalized;
-
-        _isCheliceraStrikeCast = true;
-        _clawStrike.DurationChanceApplyBleedingWithJump();
-
-        ComboContext.Bleeding.Set(typeof(JumpWithChelicera));
-        
-        ComboContext.ClawStrikeContext.Set(typeof(JumpWithChelicera));
-
-        if (target is Character character)
-        {
-            CmdExecuteJump(_player.gameObject, character.netId, direction, _additionalDamageInPercentage);
-        }
-        else if (target is NetworkBehaviour nb)
-        {
-            CmdExecuteJumpToPosition(_player.gameObject, Targeting.GetTarget().Transform.position, nb.netId, _additionalDamageInPercentage);
-        }
-    }
-
-
-    private void HandleJumpAnimEnd()
-    {
-        if (_animator != null) _animator.CrossFade(jumpEnd, JumpEndTransitionDuration);
-    }
-
     public void HandleJumpWithCheliceraEnd()
     {
-        _animator.applyRootMotion = false;
+        if (_animator != null) _animator.applyRootMotion = false;
         _player.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
-        if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(_trackMovementDuringJumpCoroutine);
         AnimCastEnded();
     }
 
     [Command]
-    private void CmdExecuteJump(GameObject player, uint targetNetId, Vector3 direction, float additionalDamage)
+    private void CmdExecuteJump(uint targetNetId, float damageBonus, uint jumpId)
     {
-        if (!NetworkServer.spawned.TryGetValue(targetNetId, out NetworkIdentity identity)) return;
-        Character targetCharacter = identity.GetComponent<Character>();
-        if (targetCharacter == null) return;
+        StopCoro(ref _trackMovementDuringJumpCoroutine);
+        if (!NetworkServer.spawned.TryGetValue(targetNetId, out NetworkIdentity targetIdentity))
+        {
+            RpcCompleteJump(jumpId, 0, damageBonus);
+            return;
+        }
 
-        MoveComponent playerMove = player.GetComponent<MoveComponent>();
-        Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance);
-        playerMove.TargetRpcDoMove(jumpPosition, AreaInfo.Radius / JumpSpeedDivider);
-        StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetCharacter.netId, additionalDamage));
+        var playerMove = _player.Move;
+        float duration = AreaInfo.Radius / JumpSpeedDivider;
+        Vector3 jumpPosition = Vector3.MoveTowards(targetIdentity.transform.position, playerMove.transform.position, _minDistance);
+        playerMove.TargetRpcDoMove(jumpPosition, duration);
+        _trackMovementDuringJumpCoroutine = StartCoroutine(TrackMovementDuringJump(playerMove, targetIdentity, damageBonus, jumpId, duration));
     }
 
-    [Command]
-    private void CmdExecuteJumpToPosition(GameObject player, Vector3 targetPosition, uint targetNetId, float additionalDamage)
-    {
-        MoveComponent playerMove = player.GetComponent<MoveComponent>();
-        Vector3 jumpPosition = Vector3.MoveTowards(targetPosition, player.transform.position, _minDistance);
-        playerMove.TargetRpcDoMove(jumpPosition, AreaInfo.Radius / 10);
-
-        if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
-        _trackMovementDuringJumpCoroutine = StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
-    }
-
-    private IEnumerator TrackMovementDuringJumpCoroutine(MoveComponent playerMove, uint targetNetId, float additionalDamage)
+    private IEnumerator TrackMovementDuringJump(MoveComponent playerMove, NetworkIdentity target, float damageBonus, uint jumpId, float duration)
     {
         Vector3 lastPlayerPos = playerMove.transform.position;
         float stopDistance = _minDistance + StopDistanceExtra;
-
-        Transform targetTransform = null;
-        IDamageable targetDamageable = null;
-
-        if (NetworkServer.spawned.TryGetValue(targetNetId, out NetworkIdentity identity))
-        {
-            targetTransform = identity.transform;
-            targetDamageable = identity.GetComponent<IDamageable>();
-        }
-
-        while (targetTransform != null && Vector3.Distance(playerMove.transform.position, targetTransform.position) > stopDistance)
+        double deadline = NetworkTime.time + duration + JumpPositionSyncThreshold;
+        while (target != null)
         {
             Vector3 currentPlayerPos = playerMove.transform.position;
             float playerMoved = Vector3.Distance(lastPlayerPos, currentPlayerPos);
-            
-            if (playerMoved > 0.001f && _player != null && _player.TryGetComponent(out BasePsionicEnergy psiEnergy))
-            {
+            if (playerMoved > 0.001f && _player.TryGetComponent(out BasePsionicEnergy psiEnergy))
                 psiEnergy.AddPsiByDistance(playerMoved);
+
+            if (Vector3.Distance(currentPlayerPos, target.transform.position) <= stopDistance)
+            {
+                RpcCompleteJump(jumpId, target.netId, damageBonus);
+                yield break;
             }
 
+            if (NetworkTime.time >= deadline) break;
             lastPlayerPos = currentPlayerPos;
             yield return null;
         }
 
-        RpcHandleJumpAnimEnd();
-
-        if (targetDamageable is NetworkBehaviour net)
-            RpcCheliceraeStrikeByNetId(net.netId, additionalDamage);
+        RpcCompleteJump(jumpId, 0, damageBonus);
     }
 
     [ClientRpc]
-    private void RpcHandleJumpAnimEnd()
+    private void RpcCompleteJump(uint jumpId, uint targetNetId, float damageBonus)
     {
-        HandleJumpAnimEnd();
-    }
+        if (isOwned && (!IsExecuting || _jumpSequenceFinished || jumpId != _jumpId)) return;
 
-    [ClientRpc]
-    private void RpcCheliceraeStrikeByNetId(uint netId, float additionalDamage)
-    {
-        if (!NetworkClient.spawned.TryGetValue(netId, out NetworkIdentity identity)) return;
+        JumpEndSpeedAnim();
+        if (_animator != null)
+            _animator.CrossFade(jumpEnd, JumpEndTransitionDuration, 0, 0f);
 
-        if (identity.TryGetComponent(out IDamageable target))
+        if (!isOwned) return;
+
+        _jumpSequenceFinished = true;
+        if (NetworkClient.spawned.TryGetValue(targetNetId, out NetworkIdentity identity) &&
+            identity.TryGetComponent(out IDamageable target) &&
+            (target is not ITargetable targetable || targetable.IsTargetable))
         {
-            _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? JumpCritChanceEnabled : JumpCritChanceDisabled;
-            _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-            
-            _cheliceraeStrike.IsTriggeredByJump = true;
-
-            _cheliceraeStrike.CastDetached(_cheliceraeStrike.CheliceraStrikeCast);
-            _cheliceraeStrike.ClearDataCheliceraStrike();
+            float criticalChance = isJumpWithCheliceraChanceDamageCrit ? JumpCritChanceEnabled : JumpCritChanceDisabled;
+            _cheliceraeStrike.StrikeAfterJump(target, damageBonus, criticalChance);
         }
     }
 
@@ -252,9 +202,7 @@ public class JumpWithChelicera : Skill
         
     public void JumpWithCheliceraEnd()
     {
-        HandleJumpWithCheliceraEnd();
-        ClearData();
-        _jumpSequenceFinished = true;
+        if (!isOwned) HandleJumpWithCheliceraEnd();
     }
 
     public void ApplyRootTrue()
@@ -267,16 +215,11 @@ public class JumpWithChelicera : Skill
     {
         float timeDelay = AreaInfo.Radius / JumpSpeedDivider;
         _player.Animator.SetFloat("JumpEndSpeed", 1f / timeDelay);
-        Animation.PlayPreparing(1, castSpeed: 1f / timeDelay);
     }
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() != null)
-        {
-            float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
-            return distance <= AreaInfo.Radius;
-        }
-        return false;
+        var target = Targeting.GetTarget();
+        return target != null && Vector3.Distance(target.Transform.position, transform.position) <= AreaInfo.Radius;
     }
 }

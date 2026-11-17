@@ -31,25 +31,6 @@ public class CreeperCombo : NetworkBehaviour
 
     public Character CurrentSneakySpitTarget => _currentSneakySpitTarget;
 
-    private void OnEnable()
-    {
-        _sneakySpit.BoostDisabled += OnSpitCastEnd;
-    }
-
-    private void OnSpitCastEnd()
-    {
-        CmdDisableSneakySpitWindow();
-    }
-
-    [Command]
-    private void CmdDisableSneakySpitWindow()
-    {
-        if (_sneakySpit)
-        {
-            _isSneakySpitWindowActive = false;
-        }
-    }
-
     public void RegisterDamageToTarget(Character target)
     {
         if (target == null) return;
@@ -264,17 +245,7 @@ public class CreeperCombo : NetworkBehaviour
         }
 
         _isSneakySpitWindowActive = false;
-
-        TargetRpcCloseSneakySpitWindow(connectionToClient);
-    }
-
-    [TargetRpc]
-    private void TargetRpcCloseSneakySpitWindow(NetworkConnection targetConnection)
-    {
-        if (_sneakySpit == null)
-            return;
-
-        _sneakySpit.CancelBoostWindow();
+        _currentSneakySpitTarget = null;
     }
 
     [TargetRpc]

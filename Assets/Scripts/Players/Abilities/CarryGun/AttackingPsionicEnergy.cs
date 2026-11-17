@@ -15,7 +15,6 @@ public class AttackingPsionicEnergy : Resource
     [SyncVar]
     private bool _isAttackingPsiActive = false;
 
-    private float _currentMaxAttackingPsiEnergy;
     [SyncVar]
     private double _expiresAt;
 
@@ -25,7 +24,7 @@ public class AttackingPsionicEnergy : Resource
 
     private Coroutine _attackingPsiEnergyCoroutine;
 
-    public float MaxAttackingPsiEnergy => _currentMaxAttackingPsiEnergy;
+    public float MaxAttackingPsiEnergy => MaxValue;
     public bool IsAttackingPsiEnergy { get => _isAttackingPsiActive; set => _isAttackingPsiActive = value; }
 
     public event Action<float> OnEnergyChanged;
@@ -33,12 +32,8 @@ public class AttackingPsionicEnergy : Resource
     #region Talent
     public void AttackingPsiIncrease(bool value)
     {
-        if (value) _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy + 10f;
-        else _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy;
-
-        CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
-
-        _maxValue = _currentMaxAttackingPsiEnergy;
+        _maxValue = value ? _baseMaxAttackingPsiEnergy + 10f : _baseMaxAttackingPsiEnergy;
+        CurrentValue = Mathf.Min(CurrentValue, MaxAttackingPsiEnergy);
 
         UpdateAttackingEnergyBar();
     }
@@ -56,8 +51,8 @@ public class AttackingPsionicEnergy : Resource
 
     private void Start()
     {
-        _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy;
-        _maxValue = _currentMaxAttackingPsiEnergy;
+        if (MaxAttackingPsiEnergy <= 0f)
+            _maxValue = _baseMaxAttackingPsiEnergy;
         UpdateAttackingEnergyBar();
     }
 
@@ -82,7 +77,7 @@ public class AttackingPsionicEnergy : Resource
         _expiresAt = NetworkTime.time + _timeAttackingPsiEnergy;
 
         Add(transferAmount);
-        CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
+        CurrentValue = Mathf.Min(CurrentValue, MaxAttackingPsiEnergy);
 
         _isAttackingPsiActive = true;
 
@@ -127,8 +122,8 @@ public class AttackingPsionicEnergy : Resource
 
     private void UpdateAttackingEnergyBar()
     {
-        if (attackingPsionicsSlider == null || _currentMaxAttackingPsiEnergy <= 0f) return;
-        attackingPsionicsSlider.value = CurrentValue / _currentMaxAttackingPsiEnergy;
+        if (attackingPsionicsSlider == null || MaxAttackingPsiEnergy <= 0f) return;
+        attackingPsionicsSlider.value = CurrentValue / MaxAttackingPsiEnergy;
     }
 
     public void SetBarWidth(float width)

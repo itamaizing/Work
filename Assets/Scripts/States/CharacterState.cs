@@ -808,6 +808,7 @@ public class CharacterState : NetworkBehaviour
     [ClientRpc]
     private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
     {
+        if (isServer) return;
         AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
     }
 

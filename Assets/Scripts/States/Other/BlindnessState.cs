@@ -1,5 +1,4 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -8,13 +7,15 @@ public class BlindnessStateStacking : StateStackingRefreshing
 {
     public bool turnOff = false;
 
-    private float _duration;
-    private float _baseDuration;
-    private VolumeProfile _volumeProfile;
+    private UniversalAdditionalCameraData _cameraData;
+    private bool _wasPostProcessingEnabled;
     private Bloom _bloom;
     private Vignette _vignette;
-
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
+    private (float value, bool overridden) _originalBloomIntensity;
+    private (float value, bool overridden) _originalVignetteIntensity;
+    private (float value, bool overridden) _originalVignetteSmoothness;
+    private readonly List<Skill> _disabledSkills = new();
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Blind;
@@ -23,95 +24,91 @@ public class BlindnessStateStacking : StateStackingRefreshing
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
-        _duration = durationToExit;
-        _baseDuration = durationToExit;
-        characterState = character;
-        SetMaxStacks(1);
-        CurrentStacksCount = 1;
+        MaxDuration = durationToExit;
+        RemainingDuration = durationToExit;
 
-        if (characterState.isOwned) ApplyEffectToLocalCamera();
+        if (character.isOwned) ApplyEffectToLocalCamera();
 
-        if (character.TryGetComponent<Character>(out var ability))
+        foreach (var skill in abilities.Abilities)
         {
-            abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities)
-                if (abil.Targeting.SkillType == TargetingType.Target)
-                    abil.Disactive = true;
+            if (skill.Targeting.SkillType != TargetingType.Target || skill.Disactive) continue;
+
+            skill.Disactive = true;
+            if (skill.Disactive) _disabledSkills.Add(skill);
         }
     }
 
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        MaxDuration = durationToExit;
+        RemainingDuration = durationToExit;
+    }
 
     public override void UpdateState()
     {
-        if (_duration < 0 || turnOff) ExitState();
+        if (turnOff) ExitState();
     }
 
     protected override void OnExit()
     {
-        if (characterState.isOwned) RemoveEffectFromLocalCamera();
+        RemoveEffectFromLocalCamera();
 
-        if (characterState.TryGetComponent<Character>(out var ability))
-        {
-            abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities) if (abil.Targeting.SkillType == TargetingType.Target) abil.Disactive = false;
-        }
-    }
+        foreach (var skill in _disabledSkills)
+            if (skill != null) skill.Disactive = false;
 
-    public override bool Stack(float time)
-    {
-        _duration += time;
-        RemainingDuration = _duration;
-        return false;
+        _disabledSkills.Clear();
+        CurrentStacksCount = 0;
+        turnOff = false;
     }
 
     private void ApplyEffectToLocalCamera()
     {
-       // Debug.Log("Applying Blindness effect to local camera...");
         var camera = Camera.main;
-        if (camera == null)
+        if (camera == null || !camera.TryGetComponent<Volume>(out var volume)) return;
+
+        var profile = volume.profile;
+        if (profile == null || !profile.TryGet(out _vignette)) return;
+
+        if (camera.TryGetComponent(out _cameraData))
         {
-            Debug.LogError("No camera found for the local client.");
-            return;
+            _wasPostProcessingEnabled = _cameraData.renderPostProcessing;
+            _cameraData.renderPostProcessing = true;
         }
 
-        var volume = camera.GetComponent<Volume>();
-        if (volume != null && volume.profile != null)
-        {
-            _volumeProfile = volume.profile;
+        if (profile.TryGet(out _bloom))
+            _originalBloomIntensity = SetOverride(_bloom.intensity, 10f);
 
-            if (_volumeProfile.TryGet(out _bloom) && _volumeProfile.TryGet(out _vignette)) EnableBlindnessEffect();
-            else Debug.LogError("Bloom or Vignette not found in VolumeProfile.");
-        }
-
-        else Debug.LogError("Volume component or profile not found on camera.");
+        _originalVignetteIntensity = SetOverride(_vignette.intensity, 1f);
+        _originalVignetteSmoothness = SetOverride(_vignette.smoothness, 1f);
     }
 
     private void RemoveEffectFromLocalCamera()
     {
-        if (_bloom != null) _bloom.intensity.overrideState = false;
+        if (_bloom != null) RestoreOverride(_bloom.intensity, _originalBloomIntensity);
 
         if (_vignette != null)
         {
-            _vignette.intensity.overrideState = false;
-            _vignette.smoothness.overrideState = false;
+            RestoreOverride(_vignette.intensity, _originalVignetteIntensity);
+            RestoreOverride(_vignette.smoothness, _originalVignetteSmoothness);
         }
+
+        if (_cameraData != null) _cameraData.renderPostProcessing = _wasPostProcessingEnabled;
+
+        _bloom = null;
+        _vignette = null;
+        _cameraData = null;
     }
 
-    private void EnableBlindnessEffect()
+    private static (float value, bool overridden) SetOverride(VolumeParameter<float> parameter, float value)
     {
-        if (_bloom != null)
-        {
-            _bloom.intensity.overrideState = true;
-            _bloom.intensity.value = 10f;
-        }
+        var previous = (parameter.value, parameter.overrideState);
+        parameter.Override(value);
+        return previous;
+    }
 
-        if (_vignette != null)
-        {
-            _vignette.intensity.overrideState = true;
-            _vignette.intensity.value = 1f;
-            _vignette.smoothness.overrideState = true;
-            _vignette.smoothness.value = 1f;
-        }
+    private static void RestoreOverride(VolumeParameter<float> parameter, (float value, bool overridden) previous)
+    {
+        parameter.value = previous.value;
+        parameter.overrideState = previous.overridden;
     }
 }

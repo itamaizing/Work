@@ -10,7 +10,6 @@ public class LightningStrikes : Skill
     
     [Header("Abillity Components")]
     [SerializeField] private ColdBlood _coldBlood;
-    [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
 
@@ -20,7 +19,6 @@ public class LightningStrikes : Skill
 
     private Character _currentTarget;
 
-    private float _animTime;
     private float _cooldownMultiplier = 2f;
     private float _radiusSearchTarget = 0.5f;
 
@@ -30,20 +28,19 @@ public class LightningStrikes : Skill
 
     private int _hitsDealt;
     private bool _awaitingHits;
-    private bool _attackFinished;
 
     public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override int AnimTriggerPrepare => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => attackTrigger;
 
     protected override bool IsCanCast
     {
         get
         {
             Character target = _currentTarget != null ? _currentTarget : Targeting.GetTarget()?.Character;
-            if (target == null) return false;
+            if (target == null || target.IsDead) return false;
             return Targeting.NoObstacles(target.transform.position, Targeting.AdditionalObstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, target.transform);
         }
     }
@@ -55,27 +52,23 @@ public class LightningStrikes : Skill
         return _creeperStrike.GetDamage();
     }
 
-    public event Action OnLightningStrikesEnd;
-
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     #region Animation events
 
     public void AnimLightningStrikesCast()
     {
-        if (!_awaitingHits || _hitsDealt >= HitsPerCast) return;
+        if (!isOwned || !IsExecuting || !_isPlayCastAnim) return;
 
-        _hitsDealt++;
-        DealHit(_currentTarget, isLastHit: _hitsDealt >= HitsPerCast);
+        if (!_awaitingHits)
+        {
+            AnimStartCastCoroutine();
+            return;
+        }
+
+        DealNextHit();
     }
 
     public void AnimLightningStrikesEnd()
     {
-        OnLightningStrikesEnd?.Invoke();
-        _attackFinished = true;
         AnimCastEnded();
     }
 
@@ -90,8 +83,6 @@ public class LightningStrikes : Skill
         Targeting.ClearTempTarget();
         _hero.Move.StopLookAt();
     }
-
-    public void ClearDataLightningStrikes() => ClearData();
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -138,16 +129,10 @@ public class LightningStrikes : Skill
     {
         Character target = _currentTarget;
 
-        if (target == null || !IsTargetInRange(target))
+        if (target == null || target.IsDead)
         {
             TryCancel(true);
             yield break;
-        }
-        
-        if (_lightningMovement != null && _lightningMovement.IsInMovement)
-        {
-            _animTime = GetClipLength();
-            IncreaseAnimSpeed();
         }
 
         if (_coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
@@ -164,72 +149,43 @@ public class LightningStrikes : Skill
         _player.Abilities.LastCastedSkill = this;
 
         _hitsDealt = 0;
-        _attackFinished = false;
-        _awaitingHits = true;
+        _awaitingHits = _isPlayCastAnim;
+        DealNextHit();
 
-        _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
-        _hero.Animator.SetTrigger(attackTrigger);
-        _hero.NetworkAnimator.SetTrigger(attackTrigger);
+        if (!_awaitingHits)
+        {
+            DealNextHit();
+            yield break;
+        }
 
         float timeout = GetAttackTimeout();
         float elapsed = 0f;
-        while (!_attackFinished)
+        while (_isPlayCastAnim && elapsed < timeout)
         {
             elapsed += Time.deltaTime;
-            if (elapsed > timeout)
-            {
-                break;
-            }
             yield return null;
         }
 
         _awaitingHits = false;
-    }
-
-    private bool IsTargetInRange(Character target)
-    {
-        if (target == null) return false;
-        return Vector3.Distance(_player.transform.position, target.transform.position) <= AreaInfo.Radius;
+        AnimCastEnded();
     }
 
     private float GetAttackTimeout()
     {
-        float clip = GetClipLength();
-        float duration = clip > 0f ? clip : FallbackAttackDuration;
+        float duration = Animation.GetCachedCastClip()?.length ?? FallbackAttackDuration;
         return duration / Mathf.Max(0.1f, GetCastSpeed()) + 1f;
     }
 
-    private float GetClipLength()
+    private void DealNextHit()
     {
-        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
-        foreach (var clip in animController.animationClips)
-        {
-            if (clip.name == "LightningStrikesAttack")
-            {
-                return clip.length;
-            }
-        }
-        return -1f;
-    }
+        Character target = _currentTarget;
+        if (_hitsDealt >= HitsPerCast || target == null || target.IsDead) return;
 
-    private void IncreaseAnimSpeed()
-    {
-        if (_animTime > 0)
-        {
-            float multiplier = _lightningMovement.DurationLeap - 4.9f;
-            float animTimeMultiplier = _animTime / multiplier;
-            _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);
-        }
-    }
-
-    private void DealHit(Character target, bool isLastHit)
-    {
-        if (target == null) return;
-
+        _hitsDealt++;
         _creeperStrike.DamageDeal(target, true);
         _isCanDamageDeal = false;
 
-        if (isLastHit && _coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime)
+        if (_hitsDealt == HitsPerCast && _coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime)
             _isIncreaseCooldownTime = false;
     }
 }

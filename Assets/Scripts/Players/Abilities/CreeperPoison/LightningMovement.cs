@@ -413,6 +413,12 @@ public class LightningMovement : Skill
 
         while (IsInMovement)
         {
+            if (_lightningStrikes.IsExecuting)
+            {
+                yield return new WaitForSeconds(0.05f);
+                continue;
+            }
+
             List<TargetData> targets = _creeperStrike.Targeting.FindTargets(_hero.transform.position, _radiusAttack);
 
             if (targets != null && targets.Count > 0)
@@ -432,9 +438,12 @@ public class LightningMovement : Skill
                         if (isLightningPreparing)
                         {
                             _lightningStrikes.TryCancel(true);
-                            _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
-                            _lightningStrikes.TryCast(hitInfo);
-                            RegisterHit(character);
+                            if (_lightningStrikes.TryCast(hitInfo))
+                            {
+                                RegisterHit(character);
+                                break;
+                            }
+
                             continue;
                         }
 
@@ -491,11 +500,5 @@ public class LightningMovement : Skill
     {
         _poisonSlap.ClearDataPoisonSlap();
         _poisonSlap.OnPoisonSlapEnd -= HandlePoisonSlapEnd;
-    }
-
-    private void HandleLightningStrikesEnd()
-    {
-        _lightningStrikes.ClearDataLightningStrikes();
-        _lightningStrikes.OnLightningStrikesEnd -= HandleLightningStrikesEnd;
     }
 }

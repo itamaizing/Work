@@ -32,7 +32,11 @@ public class SwapTheBarsPsionic : MonoBehaviour
         float baseEnergy = basePsionicEnergy.CurrentValue;
         float attackingEnergy = attackingPsionicEnergy.CurrentValue;
 
-        if (attackingEnergy > baseEnergy) baseEnergySliderTransform.SetSiblingIndex(attackingEnergySliderTransform.GetSiblingIndex() + 1);
-        else attackingEnergySliderTransform.SetSiblingIndex(baseEnergySliderTransform.GetSiblingIndex() + 1);
+        int baseIndex = baseEnergySliderTransform.GetSiblingIndex();
+        int attackingIndex = attackingEnergySliderTransform.GetSiblingIndex();
+        bool baseInFront = attackingEnergy > baseEnergy;
+
+        if (baseInFront != (baseIndex > attackingIndex))
+            baseEnergySliderTransform.SetSiblingIndex(attackingIndex);
     }
 }

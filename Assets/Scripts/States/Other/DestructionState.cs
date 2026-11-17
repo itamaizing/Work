@@ -1,19 +1,32 @@
-﻿using Mirror;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class DestructionStateStacking : StateStackingRefreshing
 {
-    private const float _tickInterval = 4f;
+    private const float DefaultDuration = 12f;
+    private const float TickInterval = 3f;
+    private const double TickTolerance = 0.001;
     private const float _damagePerTickBase = 6f;
 
-    private float _baseDuration;
-    private float _timer;
-    private bool _isActive;
+    private double _timeUntilTick;
+    private double _remainingDuration;
+
+    private bool _canApplySpiritHealth;
 
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Destruction };
+
+    public override float RemainingDuration
+    {
+        get => base.RemainingDuration;
+        protected set
+        {
+            _remainingDuration = Math.Min(value, MaxDuration);
+            base.RemainingDuration = value;
+        }
+    }
 
     public override States State { get; }
     public override StateType Type => StateType.Magic;
@@ -24,100 +37,75 @@ public class DestructionStateStacking : StateStackingRefreshing
     {
         State = stateType;
     }
+    
+    private bool IsStackingMode => State == States.DestructionStacking;
 
-    public DestructionStateStacking() { }
+    public override bool TryApply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName)
+    {
+        float duration = durationToExit > 0f ? durationToExit : DefaultDuration;
+        MaxDuration = duration;
+        return base.TryApply(character, duration, damageToExit, sourceCaster, skillName);
+    }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
+        Character sourceCaster, string skillName)
     {
-        characterState = character;
-
-        _baseDuration = durationToExit;
-        RemainingDuration = durationToExit;
-        _timer = _tickInterval;
-        _isActive = true;
-
         SetMaxStacks(IsStackingMode ? 2 : 1);
         CurrentStacksCount = 1;
-
-        ApplyDamageTick();
+        _timeUntilTick = TickInterval;
+        _canApplySpiritHealth = damageToExit < 0f;
     }
 
-    public override void UpdateState()
+    public override void Reapply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName)
     {
-        if (!_isActive) return;
+        base.Reapply(character, durationToExit, damageToExit, sourceCaster, skillName);
+        _canApplySpiritHealth = damageToExit < 0f;
+    }
 
-        _timer -= Time.deltaTime;
+    public override void GlobalUpdate()
+    {
+        double elapsed = Math.Min(_remainingDuration, Time.deltaTime);
+        _remainingDuration -= elapsed;
+        base.RemainingDuration = (float)_remainingDuration;
+        _timeUntilTick -= elapsed;
 
-        if (_timer <= 0f)
+        while (_timeUntilTick <= TickTolerance && CurrentStacksCount > 0)
         {
-            ApplyDamageTick();
-            _timer = _tickInterval;
+            _timeUntilTick += TickInterval;
+            ApplyTick();
         }
+
+        if (CurrentStacksCount > 0 && _remainingDuration <= 0f)
+            ReduceStack();
     }
 
-    private void ApplyDamageTick()
+    private void ApplyTick()
     {
-        int effectiveStacks = Mathf.Min(CurrentStacksCount, MaxStacksCount);
-        float damageValue = _damagePerTickBase * effectiveStacks;
+        var target = Target;
+        if (target == null || target.IsDead || sourceCaster == null) return;
 
-        CmdDamage(damageValue);
-    }
-
-    private void CmdDamage(float damageValue)
-    {
-        ClientRpcDamage(damageValue);
-    }
-
-    [ClientRpc]
-    private void ClientRpcDamage(float damageValue)
-    {
-        Damage damage = new()
+        if (sourceCaster.isOwned)
         {
-            Value = damageValue,
-            Type = DamageType.Magical,
-            School = Schools.Dark
-        };
-
-        if (sourceCaster != null && sourceCaster.isOwned)
-            sourceCaster.Abilities.GetSkill<Restoration>().CmdApplyDamage(damage,characterState.gameObject);
-
-        if (DamageToExit == float.MaxValue)
-        {
-            float chance = Random.Range(0f, 100f);
-            if (chance <= 15f)
+            var damage = new Damage
             {
-                characterState.AddState(States.SpiritHealth, 18f, 0, characterState.gameObject, nameof(SpiritHealthStateStacking));
-            }
+                Value = _damagePerTickBase * CurrentStacksCount,
+                Type = DamageType.Magical,
+                School = Schools.Dark,
+                IsDot = true
+            };
+            sourceCaster.Abilities?.GetSkill<Restoration>()?.CmdApplyDamage(damage, target.gameObject);
         }
-    }
 
-    public override bool Stack(float time)
-    {
-        if (!IsStackingMode)
-        {
-            RemainingDuration = _baseDuration;
-            RemainingDuration = _baseDuration;
-            return true;
-        }
-        
-        if (CurrentStacksCount < MaxStacksCount)
-            CurrentStacksCount++;
-
-        RemainingDuration = _baseDuration;
-        RemainingDuration = _baseDuration;
-
-        return true;
+        if (NetworkServer.active && _canApplySpiritHealth && Random.value < 0.15f)
+            characterState.AddState(States.SpiritHealth, 18f, 0f, target.gameObject, nameof(SpiritHealthStateStacking));
     }
 
     protected override void OnExit()
     {
-        _isActive = false;
-        RemainingDuration = 0f;
-        _timer = 0f;
         CurrentStacksCount = 0;
-        characterState = null;
+        RemainingDuration = 0f;
+        _timeUntilTick = TickInterval;
     }
-
-    private bool IsStackingMode => State == States.DestructionStacking;
 }

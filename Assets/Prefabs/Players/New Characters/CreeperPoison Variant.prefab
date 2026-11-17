@@ -11906,7 +11906,6 @@ MonoBehaviour:
         _cachedValue: 0
         _modifiers: []
   _coldBlood: {fileID: 4616268591970552908}
-  _lightningMovement: {fileID: 7013613396998518356}
   _creeperStrike: {fileID: 6745892867125186241}
   _player: {fileID: 2483674839823445686}
   references:
