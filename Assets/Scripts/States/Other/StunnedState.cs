@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StunnedStateStacking : StateStackingRefreshing
+public class StunnedStateStacking : StateBasic
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Move, StatusEffect.Ability };
 
@@ -9,6 +9,7 @@ public class StunnedStateStacking : StateStackingRefreshing
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
+    public override bool IsUnique => false;
 
     public override bool CanExceedMaxDuration => true;
 
@@ -22,22 +23,17 @@ public class StunnedStateStacking : StateStackingRefreshing
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        SetMaxStacks(1);
-        CurrentStacksCount = 1;
-
         abilities?.SetAbilitiesDisactive(true);
 
         characterState.Character.Move.IsMoveBlocked = true;
         characterState.Character.Move.StopMoveAndAnimationMove();
     }
 
-    public override bool Stack(float newDuration)
-    {
-        if (newDuration > RemainingDuration)
-            RemainingDuration = newDuration;
-
-        return true;
-    }
+    //public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
+    //{
+    //    if (durationToExit > RemainingDuration)
+    //        RemainingDuration = durationToExit;
+    //}
 
     protected override void OnExit()
     {

@@ -38006,11 +38006,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_StartCorner
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ChildAlignment
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ConstraintCount
@@ -38140,11 +38140,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_StartCorner
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ChildAlignment
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ConstraintCount
@@ -39786,11 +39786,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_StartCorner
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ChildAlignment
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ConstraintCount
@@ -41246,11 +41246,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_StartCorner
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ChildAlignment
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2002, guid: 9148301da51b4679a16de6ea31b91f31, type: 3}
       propertyPath: m_ConstraintCount

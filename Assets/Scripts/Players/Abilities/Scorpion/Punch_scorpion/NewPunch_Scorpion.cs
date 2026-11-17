@@ -327,7 +327,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     {
         if (isServer)
         {
-            _comboStunDuration++;
+            _comboStunDuration += StunDuration;
         }
     }
 

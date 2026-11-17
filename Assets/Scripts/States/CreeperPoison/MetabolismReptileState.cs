@@ -37,7 +37,7 @@ public class MetabolismReptileState : StateBasic
         if (hero.isOwned)
         {
             hero.AttributeSystem[CharacterAttributeName.CooldownReduction].AddModifier(
-                new AttributeModifier(CooldownReduction, ModifierType.Flat, source: this));
+                new AttributeModifier(CooldownReduction, ModifierType.Multiplier, source: this));
 
             ApplyCastSpeed(true);
         }

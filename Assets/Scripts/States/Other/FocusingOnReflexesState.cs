@@ -1,7 +1,9 @@
+using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FocusingOnReflexesStateStacking : StateStackingRefreshing
+public class FocusingOnReflexesStateStacking : StateBasic
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Evade };
 
@@ -10,27 +12,64 @@ public class FocusingOnReflexesStateStacking : StateStackingRefreshing
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public FocusingOnReflexesStateStacking()
-    {
-        SetMaxStacks(1);
-        CurrentStacksCount = 0;
-    }
+    private const float EvadeMeleeBonus = 60f;
+    private const float EvadeRangeBonus = 100f;
+
+    private readonly AttributeModifier _evadeMeleeModifier = new(EvadeMeleeBonus, ModifierType.Flat);
+    private readonly AttributeModifier _evadeRangeModifier = new(EvadeRangeBonus, ModifierType.Flat);
+
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        this.sourceCaster = personWhoMadeBuff;
-        CurrentStacksCount = 1;
+        var attrs = Target.AttributeSystem;
+        _evadeMeleeModifier.Source = this;
+        _evadeRangeModifier.Source = this;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(_evadeMeleeModifier);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].AddModifier(_evadeRangeModifier);
+
+        SubToEvents();
     }
 
-    public override bool Stack(float time)
+    private void OnEvaded(Skill skill)
     {
-        RemainingDuration = time;
-        return true;
+        ForceEnd();
+    }
+
+    private void OnDamageTaken(Damage damage, Skill skill)
+    {
+        if (damage.IsDot) return;
+        ForceEnd();
+    }
+
+    private void ForceEnd()
+    {
+        Target.CharacterState.CmdRemoveState(State);
     }
 
     protected override void OnExit()
     {
-        CurrentStacksCount = 0;
+        var attrs = Target.AttributeSystem;
+        attrs[CharacterAttributeName.EvasionPhysicalMelee].RemoveModifier(_evadeMeleeModifier);
+        attrs[CharacterAttributeName.EvasionPhysicalRange].RemoveModifier(_evadeRangeModifier);
+
+        UnsubFromEvents();
+    }
+
+    private void SubToEvents()
+    {
+        if (Target != null && Target.Health != null)
+        {
+            Target.Health.DamageTaken += OnDamageTaken;
+            Target.Health.Evaded += OnEvaded;
+        }
+    }
+
+    private void UnsubFromEvents()
+    {
+        if (Target != null && Target.Health != null)
+        {
+            Target.Health.DamageTaken -= OnDamageTaken;
+            Target.Health.Evaded -= OnEvaded;
+        }
     }
 }

@@ -280,7 +280,8 @@ public abstract class StateStacking : StateBasic
         if (RemainingDuration >= 0f)
         {
             RemainingDuration -= Time.deltaTime;
-            ReduceStack();
+            if (RemainingDuration <= 0f) ExitState();
+
         }
     }
 

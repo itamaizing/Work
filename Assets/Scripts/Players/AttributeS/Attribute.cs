@@ -185,7 +185,9 @@ public class Attribute
                 attr.RecalculateMultipliers();
             flat += attr.FlatBonus;
             percent += attr.PercentBonus;
-            mult *= attr.MultiplierBonus;
+            if (attr.MultiplierBonus < 0 && mult > 0)
+                mult *= -1;
+            mult *= Mathf.Abs(attr.MultiplierBonus);
         }
         return (flat * percent) * mult;
     }

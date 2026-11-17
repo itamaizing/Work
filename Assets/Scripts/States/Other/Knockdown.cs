@@ -5,7 +5,6 @@ using UnityEngine;
 public class Knockdown : StateStackingRefreshing
 {
     private float _baseDuration;
-    private float _duration;
 
     public override States State => States.Knockdown;
     public override StateType Type => StateType.Physical;
@@ -14,7 +13,7 @@ public class Knockdown : StateStackingRefreshing
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
+        CurrentStacksCount = 1;
 
         float resistance = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical].GetValue();
         float chanceToApply = 100f - resistance;
@@ -26,10 +25,9 @@ public class Knockdown : StateStackingRefreshing
             return;
         }
 
-        _duration = durationToExit;
+        RemainingDuration = durationToExit;
         _baseDuration = durationToExit;
         SetMaxStacks(3);
-        CurrentStacksCount = 1;
 
         ApplyDebuff();
     }
@@ -44,12 +42,12 @@ public class Knockdown : StateStackingRefreshing
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;
-            _duration = _baseDuration;
+            RemainingDuration = _baseDuration;
             ApplyDebuff();
             return true;
         }
 
-        _duration = _baseDuration;
+        RemainingDuration = _baseDuration;
         return false;
     }
 
@@ -72,6 +70,4 @@ public class Knockdown : StateStackingRefreshing
             ability.Buff.Damage.IncreasePercentage(reduction);
         }
     }
-    
-    
 }
