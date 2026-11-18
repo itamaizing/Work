@@ -7,6 +7,7 @@ using Mirror;
 public enum CharacterRelation { Self, Ally, Enemy }
 
 [RequireComponent(typeof(NetworkIdentity))]
+[RequireComponent(typeof(CharacterAttachmentPoints))]
 public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITargetable
 {
 	[SerializeField] private CharacterData _playerData;
@@ -33,6 +34,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	[SerializeField] private TargetSeeker _targetSeeker;
 	[SerializeField] private Character _characterParent;
 	[SerializeField] private TransformationComponent _transformationComponent;
+	[SerializeField] private CharacterAttachmentPoints _attachmentPoints;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -71,6 +73,14 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
     public Animator Animator => _animator;
 	public TargetSeeker TargetSeeker => _targetSeeker;
 	public TransformationComponent TransformationComponent => _transformationComponent;
+	public CharacterAttachmentPoints AttachmentPoints
+	{
+		get
+		{
+			if (_attachmentPoints == null) _attachmentPoints = GetComponent<CharacterAttachmentPoints>();
+			return _attachmentPoints;
+		}
+	}
     public NetworkAnimator NetworkAnimator => _networkAnimator;
     public AttributeSystem AttributeSystem => _attributeSystem;
     
@@ -142,9 +152,34 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	public event Action Killed;
 	public event Action Reset;
 
+#if UNITY_EDITOR
+    [ContextMenu("Set Up Attachment Points")]
+    private void SetUpAttachmentPoints()
+    {
+        if (Application.isPlaying) return;
+        if (UnityEditor.EditorUtility.IsPersistent(this))
+        {
+            Debug.LogWarning("Open the character in Prefab Mode before setting up attachment points.", this);
+            return;
+        }
+
+        UnityEditor.Undo.IncrementCurrentGroup();
+        int undoGroup = UnityEditor.Undo.GetCurrentGroup();
+        UnityEditor.Undo.SetCurrentGroupName("Set up character attachment points");
+        UnityEditor.Undo.RecordObject(this, "Assign attachment points component");
+        if (AttachmentPoints == null)
+            _attachmentPoints = UnityEditor.Undo.AddComponent<CharacterAttachmentPoints>(gameObject);
+        _attachmentPoints.SetUpMissingHumanoidPoints();
+        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.Undo.CollapseUndoOperations(undoGroup);
+    }
+#endif
+
 	protected override void OnValidate()
     {
 		base.OnValidate();
+		if (_attachmentPoints == null) _attachmentPoints = GetComponent<CharacterAttachmentPoints>();
 
         if (_collider == null)
         {

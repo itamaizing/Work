@@ -86,7 +86,9 @@ public class AmbushPoisons : Skill
     private void StartClearing()
     {
         if (_clearRoutine != null) return;
+        if (_currentStacks <= 0) return;
 
+        if (isOwned) Cooldown.StartCustom(ClearDelay);
         _clearRoutine = StartCoroutine(ClearRoutine());
     }
 
@@ -96,6 +98,7 @@ public class AmbushPoisons : Skill
 
         StopCoroutine(_clearRoutine);
         _clearRoutine = null;
+        if (isOwned) Cooldown.SetReduced(0f);
     }
 
     private IEnumerator ClearRoutine()
@@ -106,6 +109,7 @@ public class AmbushPoisons : Skill
 
         Charges.SendCurrentChange(_currentStacks);
         _clearRoutine = null;
+        if (isOwned) Cooldown.SetReduced(0f);
     }
 
     public void TryConsumeStack(Character target)
@@ -116,6 +120,7 @@ public class AmbushPoisons : Skill
         _currentStacks--;
 
         Charges.SendCurrentChange(_currentStacks);
+        if (_currentStacks == 0) StopClearing();
 
         CmdAddPoisonBone(target);
         

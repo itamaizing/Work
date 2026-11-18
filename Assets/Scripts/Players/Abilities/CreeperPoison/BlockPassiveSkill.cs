@@ -9,11 +9,10 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     [SerializeField] private float durationWindowsBoost = 1f;
     [SerializeField] private float blockChance = 50;
     [SerializeField] private float cooldownPerTarget = 6f;
-    [SerializeField] private int meleeHitsToTrigger = 2;
 
     private Dictionary<Character, Coroutine> _boostWindows = new();
     private Dictionary<Character, double> _cooldownEndTime = new();
-    private Dictionary<Character, int> _meleeHitCounts = new();
+    private readonly Dictionary<Character, double> _boostEndTime = new();
 
     private HashSet<Character> _validAttackers = new();
 
@@ -46,6 +45,12 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private void OnDisable()
     {
+        StopAllCoroutines();
+        _boostWindows.Clear();
+        _boostEndTime.Clear();
+        _validAttackers.Clear();
+        if (Hero == null || Hero.Health == null) return;
+
         Hero.Health.Block -= PlayBlockAnimation;
         Hero.Health.Evaded -= OnHeroEvade;
 
@@ -54,30 +59,32 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private void OnHeroEvade(Skill skill)
     {
+        if (!isServer || !IsSkillActive) return;
+
         Character attacker = skill?.Hero as Character;
         if (attacker == null) return;
 
-        TargetRpcStartBlockPassiveSkillBoostWindow(connectionToClient, attacker.netId);
+        TryStartBlockPassiveSkillBoostWindow(attacker);
     }
 
+    [Server]
     public void TryStartBlockPassiveSkillBoostWindow(Character target)
     {
-        Debug.LogError("TryStartBlockPassiveSkillBoostWindow");
+        if (!isServer || !IsSkillActive) return;
         if (target == null) return;
         if (_boostWindows.ContainsKey(target)) return;
         if (_cooldownEndTime.TryGetValue(target, out double endTime) && NetworkTime.time < endTime) return;
 
-        CmdAddAttacker(target);
         _validAttackers.Add(target);
-        Disactive = false;
+        _boostEndTime[target] = NetworkTime.time + durationWindowsBoost;
+        if (_validAttackers.Count == 1 && connectionToClient != null)
+            TargetRpcSetBlockBoost(connectionToClient, true);
 
         _boostWindows[target] = StartCoroutine(BlockPassiveSkillBoostWindow(target));
     }
 
     private IEnumerator BlockPassiveSkillBoostWindow(Character target)
     {
-        EnableSkillBoost();
-
         yield return new WaitForSeconds(durationWindowsBoost);
 
         EndBoostWindow(target);
@@ -85,23 +92,20 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private void EndBoostWindow(Character target)
     {
+        if (!_validAttackers.Remove(target)) return;
         _boostWindows.Remove(target);
-        _validAttackers.Remove(target);
-        CmdRemoveAttacker(target);
-        _meleeHitCounts.Remove(target);
+        _boostEndTime.Remove(target);
         _cooldownEndTime[target] = NetworkTime.time + cooldownPerTarget;
-        DisableSkillBoost();
-        if (_boostWindows.Count == 0)
+        if (connectionToClient != null)
         {
-            Disactive = true;
+            TargetRpcShowBlockCooldown(connectionToClient, target.netId, _cooldownEndTime[target]);
+            if (_validAttackers.Count == 0) TargetRpcSetBlockBoost(connectionToClient, false);
         }
     }
     
     private bool TryResist(Damage damage, Skill skill)
     {
-        if (IsDot(damage)) return false;
-
-        Debug.LogError("TryResist");
+        if (!isServer || IsDot(damage)) return false;
         
         Character attacker = skill?.Hero as Character;
 
@@ -114,9 +118,12 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private bool TryBlock(Damage damage, Character attacker)
     {
-        if (damage.Type != DamageType.Physical) return false;
+        if (!IsSkillActive) return false;
+        if (damage.Type != DamageType.Physical &&
+            !(damage.Type == DamageType.Magical && _isMagicOrPhysicRessist)) return false;
         if (attacker == null) return false;
         if (!_validAttackers.Contains(attacker)) return false;
+        if (!_boostEndTime.TryGetValue(attacker, out double endTime) || NetworkTime.time >= endTime) return false;
 
         if (UnityEngine.Random.Range(0f, 100f) > blockChance) return false;
 
@@ -144,30 +151,23 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     }
 
     [TargetRpc]
-    private void TargetRpcStartBlockPassiveSkillBoostWindow(NetworkConnection target, uint attackerNetId)
+    private void TargetRpcSetBlockBoost(NetworkConnection target, bool active)
     {
-        if (NetworkClient.spawned.TryGetValue(attackerNetId, out NetworkIdentity identity))
-        {
-            Character attacker = identity.GetComponent<Character>();
-            if (attacker != null) TryStartBlockPassiveSkillBoostWindow(attacker);
-        }
-    }
-    
-    [Command]
-    private void CmdAddAttacker(Character target)
-    {
-        if (!_validAttackers.Contains(target)) _validAttackers.Add(target);
+        Disactive = !active;
+        if (active) EnableSkillBoost();
+        else DisableSkillBoost();
     }
 
-    [Command]
-    private void CmdRemoveAttacker(Character target)
+    [TargetRpc]
+    private void TargetRpcShowBlockCooldown(NetworkConnection targetConnection, uint targetNetId, double endTime)
     {
-        if (_validAttackers.Contains(target)) _validAttackers.Remove(target);
-    }
+        if (!NetworkClient.spawned.TryGetValue(targetNetId, out NetworkIdentity identity)) return;
+        Character target = identity.GetComponent<Character>();
+        if (target == null || target.CharacterState == null) return;
 
-    [Command]
-    private void CmdClearAttackers()
-    {
-        _validAttackers.Clear();
+        float remaining = (float)(endTime - NetworkTime.time);
+        var state = new LocalVisualState(States.BlockCooldown, endTime,
+            "Блокировка удара: перезарядка", "Блокировка удара против этой цели перезаряжается.", Icon);
+        target.CharacterState.AddLocalVisualState(state, remaining, Hero);
     }
 }

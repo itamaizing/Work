@@ -32,6 +32,11 @@ public class LightningMovement : Skill
 
     private Vector3 _startPosition;
     private Coroutine _movementRoutine;
+    private Coroutine _damageCheckRoutine;
+    private Vector3 _lastDamageCheckPosition;
+    private Coroutine _pathAttackRoutine;
+    private readonly Queue<Character> _pendingHandHits = new();
+    private Character _pendingLightningTarget;
     private Coroutine _secondVectorDrawRoutine;
 
     private BoxArea _secondVectorLineInstance;
@@ -59,10 +64,12 @@ public class LightningMovement : Skill
     private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
+        StopPathAttacks();
     }
 
     private void HandleSkillCanceled()
     {
+        StopPathAttacks();
         if (_movementRoutine != null)
         {
             StopCoroutine(_movementRoutine);
@@ -137,6 +144,12 @@ public class LightningMovement : Skill
 
     private void FinalizeMovement()
     {
+        if (_damageCheckRoutine != null)
+        {
+            StopCoroutine(_damageCheckRoutine);
+            _damageCheckRoutine = null;
+        }
+
         _lightningStrikes.IsUsedLightningStrikes = false;
         _poisonSlap.IsCanDamageDeal = false;
         if (DOTween.IsTweening(_hero.Rigidbody)) DOTween.Kill(_hero.Rigidbody);
@@ -359,7 +372,8 @@ public class LightningMovement : Skill
         _lightningStrikes.IsUsedLightningStrikes = true;
         _poisonSlap.IsCanDamageDeal = true;
 
-        StartCoroutine(DamageCheckRoutine());
+        _lastDamageCheckPosition = _hero.transform.position;
+        _damageCheckRoutine = StartCoroutine(DamageCheckRoutine());
 
         _hero.Move.SetAnimationMovement(direction * _hero.Move.CurrentSpeed);
 
@@ -376,6 +390,7 @@ public class LightningMovement : Skill
             yield return moveTween.WaitForCompletion();
         }
 
+        CheckTargetsAlongPath();
         _hero.Move.StopMoveAndAnimationMove();
 
         if (_hasSecondLeapInput && _enemyHitDuringLeap && IsValidLeapPoint(_secondLeapPoint))
@@ -383,9 +398,11 @@ public class LightningMovement : Skill
             if (_isLightningEvade) _hero.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _hero.gameObject, Name);
 
             _damagedCharacters.Clear();
+            _lastDamageCheckPosition = _hero.transform.position;
 
             yield return ExecuteLeapSecond(_secondLeapPoint);
 
+            CheckTargetsAlongPath();
             ApplyReturnCooldownReduction();
         }
 
@@ -413,59 +430,107 @@ public class LightningMovement : Skill
 
         while (IsInMovement)
         {
-            if (_lightningStrikes.IsExecuting)
+            CheckTargetsAlongPath();
+            yield return null;
+        }
+    }
+
+    private void CheckTargetsAlongPath()
+    {
+        Vector3 currentPosition = _hero.transform.position;
+        Vector3 segmentStart = _lastDamageCheckPosition;
+        Collider[] colliders = Physics.OverlapCapsule(_lastDamageCheckPosition, currentPosition,
+            _radiusAttack, _creeperStrike.Targeting.ClickMask, QueryTriggerInteraction.Collide);
+        _lastDamageCheckPosition = currentPosition;
+
+        bool lightningRequested = _hero.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsTargeting;
+        if (!lightningRequested) _pendingLightningTarget = null;
+
+        Vector3 direction = (currentPosition - segmentStart).normalized;
+        foreach (Collider collider in colliders.OrderBy(c => direction.sqrMagnitude > 0f
+            ? Vector3.Dot(c.bounds.center - segmentStart, direction)
+            : (c.bounds.center - currentPosition).sqrMagnitude))
+        {
+            Character character = collider.GetComponentInParent<Character>();
+            if (character == null || character == _hero || !character.IsTargetable ||
+                (_creeperStrike.Targeting.ClickMask.value & (1 << character.gameObject.layer)) == 0) continue;
+
+            if (lightningRequested && (_pendingLightningTarget == null || !_pendingLightningTarget.IsTargetable))
+                _pendingLightningTarget = character;
+
+            if (_damagedCharacters.Contains(character)) continue;
+            RegisterHit(character);
+            _pendingHandHits.Enqueue(character);
+        }
+
+        if (_pathAttackRoutine == null && (_pendingHandHits.Count > 0 || _pendingLightningTarget != null))
+            _pathAttackRoutine = StartCoroutine(PathAttackRoutine());
+    }
+
+    private IEnumerator PathAttackRoutine()
+    {
+        yield return null;
+        while (_pendingHandHits.Count > 0 || _pendingLightningTarget != null)
+        {
+            if (_creeperStrike.IsExecuting || _lightningStrikes.IsExecuting || _poisonSlap.IsExecuting)
             {
-                yield return new WaitForSeconds(0.05f);
+                yield return null;
                 continue;
             }
 
-            List<TargetData> targets = _creeperStrike.Targeting.FindTargets(_hero.transform.position, _radiusAttack);
-
-            if (targets != null && targets.Count > 0)
+            if (_pendingLightningTarget != null)
             {
-                bool isLightningPreparing = _hero.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsTargeting;
-                bool isPoisonPreparing = _hero.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsTargeting;
-
-                foreach (TargetData targetData in targets)
+                Character lightningTarget = _pendingLightningTarget;
+                _pendingLightningTarget = null;
+                if (lightningTarget.IsTargetable && _lightningStrikes.IsTargeting)
                 {
-                    var character = targetData.Character;
-
-                    if (character && !_damagedCharacters.Contains(character))
+                    _lightningStrikes.TryCancel(true);
+                    if (_lightningStrikes.TryCastFromMovement(lightningTarget))
                     {
-                        TargetInfo hitInfo = new TargetInfo();
-                        hitInfo.AddTarget((ITargetable)character);
-
-                        if (isLightningPreparing)
+                        int pendingHits = _pendingHandHits.Count;
+                        for (int i = 0; i < pendingHits; i++)
                         {
-                            _lightningStrikes.TryCancel(true);
-                            if (_lightningStrikes.TryCast(hitInfo))
-                            {
-                                RegisterHit(character);
-                                break;
-                            }
-
-                            continue;
+                            Character queuedTarget = _pendingHandHits.Dequeue();
+                            if (queuedTarget != lightningTarget) _pendingHandHits.Enqueue(queuedTarget);
                         }
-
-                        if (isPoisonPreparing)
-                        {
-                            _poisonSlap.TryCancel(true);
-                            _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
-                            _poisonSlap.TryCast(hitInfo);
-                            RegisterHit(character);
-                            continue;
-                        }
-
-                        _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
-                        _creeperStrike.MarkNextHitFromLightningMovement();
-                        _creeperStrike.TryCast(hitInfo);
-                        RegisterHit(character);
+                        yield return null;
+                        continue;
                     }
                 }
             }
 
-            yield return new WaitForSeconds(0.05f);
+            if (_pendingHandHits.Count == 0) break;
+            Character character = _pendingHandHits.Dequeue();
+            if (character == null || !character.IsTargetable) continue;
+
+            bool isPoisonPreparing = _hero.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsTargeting;
+            if (isPoisonPreparing)
+            {
+                var hitInfo = new TargetInfo();
+                hitInfo.AddTarget(character);
+                _poisonSlap.TryCancel(true);
+                _poisonSlap.OnPoisonSlapEnd -= HandlePoisonSlapEnd;
+                _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
+                if (_poisonSlap.TryCast(hitInfo))
+                {
+                    yield return null;
+                    continue;
+                }
+                _poisonSlap.OnPoisonSlapEnd -= HandlePoisonSlapEnd;
+            }
+
+            _creeperStrike.DamageDeal(character);
+            yield return null;
         }
+        _pathAttackRoutine = null;
+    }
+
+    private void StopPathAttacks()
+    {
+        if (_pathAttackRoutine != null) StopCoroutine(_pathAttackRoutine);
+        _pathAttackRoutine = null;
+        _pendingHandHits.Clear();
+        _pendingLightningTarget = null;
     }
 
     private Vector3 CalculateLeapPoint(Vector3 origin, Vector3 targetPoint)
@@ -488,12 +553,6 @@ public class LightningMovement : Skill
         }
 
         return leapPoint;
-    }
-
-    private void HandleCreeperStrikeEnd()
-    {
-        _creeperStrike.ClearDataCreeperStrike();
-        _creeperStrike.OnCreeperStrikeEnd -= HandleCreeperStrikeEnd;
     }
 
     private void HandlePoisonSlapEnd()

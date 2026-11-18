@@ -306,7 +306,7 @@ public class LevelCharacterManager
             _experienceForNextLevel = _maxExperienceAtMaxLevel;
         }
 
-        OnLevelChanged?.Invoke(_currentLevel);
+        LevelChanged();
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
 
         int skillPoints = _currentLevel - _character.TalentManager.ActiveTalents.Count;
@@ -314,7 +314,6 @@ public class LevelCharacterManager
 
         SaveManager.Instance.SaveHeroLevel(_currentLevel, _currentExperience, skillPoints, attributePoints);
 
-        _character.LVL?.ApplyLoadedLevelLocal(_currentLevel, _currentExperience, _experienceForNextLevel);
     }
 
     public void ResetAllLevelData()
@@ -336,7 +335,12 @@ public class LevelCharacterManager
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
     }
 
-    public void LevelChanged() => OnLevelChanged?.Invoke(_currentLevel);
+    public void LevelChanged()
+    {
+        _character?.TalentManager.AddPoint(_currentLevel);
+        _character?.LVL?.ApplyLoadedLevelLocal(_currentLevel, _currentExperience, _experienceForNextLevel);
+        OnLevelChanged?.Invoke(_currentLevel);
+    }
     
     public void PreloadHeroLevelData(HeroComponent hero, int saveIndex = 0)
     {

@@ -117,6 +117,9 @@ public class Level : NetworkBehaviour
     [ClientRpc]
     private void RpcUpdateInfo(int value, int experience, int experienceForNextLVL)
     {
+        _value = value;
+        _experience = experience;
+        _experienceForNextLVL = experienceForNextLVL;
         LVLUped?.Invoke(value);
         EXPAdded?.Invoke(experience);
         EXPForNextLVLChanged?.Invoke(experienceForNextLVL);

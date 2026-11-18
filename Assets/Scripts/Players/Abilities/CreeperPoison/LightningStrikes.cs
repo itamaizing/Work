@@ -28,6 +28,7 @@ public class LightningStrikes : Skill
 
     private int _hitsDealt;
     private bool _awaitingHits;
+    private bool _isMovementCast;
 
     public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
@@ -41,7 +42,8 @@ public class LightningStrikes : Skill
         {
             Character target = _currentTarget != null ? _currentTarget : Targeting.GetTarget()?.Character;
             if (target == null || target.IsDead) return false;
-            return Targeting.NoObstacles(target.transform.position, Targeting.AdditionalObstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, target.transform);
+            return Targeting.NoObstacles(target.transform.position, Targeting.AdditionalObstacle) &&
+                (_isMovementCast || Targeting.IsTargetInRadius(AreaInfo.Radius, target.transform));
         }
     }
 
@@ -76,6 +78,7 @@ public class LightningStrikes : Skill
 
     protected override void ClearData()
     {
+        _isMovementCast = false;
         _currentTarget = null;
         _awaitingHits = false;
 
@@ -102,9 +105,15 @@ public class LightningStrikes : Skill
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
+        if (IsUsedLightningStrikes) Targeting.ClearTempTarget();
 
         while (Targeting.GetTempTarget()?.Targetable == null)
         {
+            if (IsUsedLightningStrikes)
+            {
+                yield return null;
+                continue;
+            }
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusSearchTarget);
@@ -123,6 +132,17 @@ public class LightningStrikes : Skill
         targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
         targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved.Invoke(targetInfo);
+    }
+    
+    public bool TryCastFromMovement(Character target)
+    {
+        if (target == null || !target.IsTargetable || IsExecuting) return false;
+        var info = new TargetInfo();
+        info.AddTarget(target);
+        _isMovementCast = true;
+        if (TryCast(info)) return true;
+        _isMovementCast = false;
+        return false;
     }
 
     protected override IEnumerator CastJob()

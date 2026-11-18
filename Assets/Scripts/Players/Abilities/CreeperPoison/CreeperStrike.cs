@@ -212,10 +212,10 @@ public class CreeperStrike : Skill
         
         bool coldBloodCrit = CanDealColdBloodCriticalDamage();
         bool strikeEndsInvisibility = coldBloodCrit
-                                      && _player != null && _player.IsInvisible
-                                      && _creeperInvisible != null;
+                                      && _creeperInvisible != null && _creeperInvisible.IsInvisible;
 
-        TryApplyInvisibleCritBonus(strikeEndsInvisibility);
+        float invisibleStrikeMultiplier = GetInvisibleStrikeMultiplier(strikeEndsInvisibility);
+        _currentDamage *= invisibleStrikeMultiplier;
 
         _lastHitTarget = character;
 
@@ -232,12 +232,13 @@ public class CreeperStrike : Skill
         else if (TryRollPoisonCrit(character, out float critMultiplier))
         {
             Damage damage = GetDamage();
-            damage.Value *= critMultiplier;
+            damage.Value *= critMultiplier + invisibleStrikeMultiplier;
             CmdApplyDamage(damage, character.gameObject);
         }
         else
         {
             Damage damage = GetDamage();
+            damage.Value *= invisibleStrikeMultiplier;
             CmdDamageDeal(damage, character.gameObject);
         }
 
@@ -249,16 +250,19 @@ public class CreeperStrike : Skill
         _isHit = false;
     }
 
-    private void TryApplyInvisibleCritBonus(bool strikeEndsInvisibility)
+    private float GetInvisibleStrikeMultiplier(bool strikeEndsInvisibility)
     {
         if (_creeperInvisible == null || !_creeperInvisible.IsInvisibilitStrike)
-            return;
+            return 1f;
+
+        if (_creeperInvisible.IsInvisible && !strikeEndsInvisibility)
+            return 1f;
 
         if (!strikeEndsInvisibility && _creeperInvisible.StrikeCrit == 0)
-            return;
+            return 1f;
 
-        _currentDamage *= 4f;
         _creeperInvisible.StrikeCrit = 0;
+        return 4f;
     }
 
     private bool CanDealColdBloodCriticalDamage()

@@ -51,7 +51,18 @@ public class TalentSystem : NetworkBehaviour
         return activeTalents;
 	}
     
-    public int Points => _points;
+    public event Action<int> PointsChanged;
+
+    public int Points
+    {
+        get => _points;
+        private set
+        {
+            if (_points == value) return;
+            _points = value;
+            PointsChanged?.Invoke(value);
+        }
+    }
     public bool CanOpenTalent => _points > 0;
 
     private void Awake()
@@ -82,6 +93,22 @@ public class TalentSystem : NetworkBehaviour
         return null;
     }
 
+    private void OnEnable()
+    {
+        if (!_initialized || _lvl == null) return;
+        SubscribeToLevel();
+        AddPoint(_lvl.Value);
+    }
+
+    private void SubscribeToLevel()
+    {
+        if (_lvl == null) return;
+        _lvl.LVLUped -= AddPoint;
+        _lvl.LevelLoaded -= OnLevelLoaded;
+        _lvl.LVLUped += AddPoint;
+        _lvl.LevelLoaded += OnLevelLoaded;
+    }
+
     private void OnDisable()
     {
         if (_lvl != null)
@@ -96,6 +123,8 @@ public class TalentSystem : NetworkBehaviour
     {
         if (_initialized)
         {
+            SubscribeToLevel();
+            if (_lvl != null) AddPoint(_lvl.Value);
             RefreshTalentVisuals();
             return;
         }
@@ -104,14 +133,13 @@ public class TalentSystem : NetworkBehaviour
         if (level != null)
         {
             _lvl = level;
-            _lvl.LVLUped += AddPoint;
-            _lvl.LevelLoaded += OnLevelLoaded;
+            SubscribeToLevel();
         }
 
         _prevValue = _lvl.Value;
 
         if (!_pointsLoaded)
-            _points = _lvl.Value;
+            Points = _lvl.Value;
 
         RefreshTalentVisuals();
     }
@@ -159,24 +187,22 @@ public class TalentSystem : NetworkBehaviour
 
     public void AddPoint(int value)
     {
-        if (_prevValue != value)
-        {
-            Debug.Log("Add" + value);
-            _points++;
-            _prevValue = value;
-        }
+        if (value <= _prevValue) return;
+        int gainedPoints = value - _prevValue;
+        _prevValue = value;
+        Points += gainedPoints;
     }
 
 	public void AddPoints(int value)
     {
-        _points += value;
+        Points += value;
     }
 
     public void SetPoints(int value)
     {
-        _points = value;
         _prevValue = _lvl != null ? _lvl.Value : _prevValue;
         _pointsLoaded = true;
+        Points = value;
     }
 
     public bool ApplyTalentPage(TalentSnapshotEntry[] entries, int freePoints)
@@ -264,15 +290,15 @@ public class TalentSystem : NetworkBehaviour
 
        if (!talent.TrySetActive(value, lvl)) return false;
 
-       if (value) _points--;
+       if (value) Points--;
        else
        {
            int maxPoints = GetMaxTalentPoints();
-           if (_points < maxPoints) _points++;
+           if (_points < maxPoints) Points++;
        }
 
        if (!value)
-           _points += CascadeCloseInvalidated();
+           Points += CascadeCloseInvalidated();
 
        return true;
    }
@@ -328,12 +354,12 @@ public class TalentSystem : NetworkBehaviour
 
         var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
         talent.SetActive(value);
-        if (value) _points--;
+        if (value) Points--;
 
         else
         {
             int maxPoints = GetMaxTalentPoints();
-            if (_points < maxPoints) _points++;
+            if (_points < maxPoints) Points++;
         }
         //_talents[group].TalentRows[row].Talents[id].SetActive(value);
     }

@@ -59,6 +59,7 @@ public class CreeperInvisible : Skill
             if (_isInvisible == value) return;
 
             _isInvisible = value;
+            if (value) _strikeCrit = 0;
             OnInvisibleChanged?.Invoke(_isInvisible);
         }
     }
@@ -74,7 +75,11 @@ public class CreeperInvisible : Skill
     public bool IsInvisibilitStrike
     {
         get => _isInvisibilitStrike;
-        set => _isInvisibilitStrike = value;
+        set
+        {
+            _isInvisibilitStrike = value;
+            if (!value) _strikeCrit = 0;
+        }
     }
 
     public void InvisibilitStrike(bool value)
@@ -532,7 +537,7 @@ public class CreeperInvisible : Skill
             }
         }
 
-        _strikeCrit = exitedByStrike ? 0 : 1;
+        _strikeCrit = IsInvisibilitStrike && !exitedByStrike ? 1 : 0;
         playerMaterial.Clear();
     }
     

@@ -2777,6 +2777,99 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1742142112487945801
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1531501276245463979}
+  m_Layer: 0
+  m_Name: Attachment_Torso
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1531501276245463979
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742142112487945801}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4679874950463369411}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1905775355348989381
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1086744369624944151}
+  m_Layer: 0
+  m_Name: Attachment_LeftHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1086744369624944151
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905775355348989381}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2067094806885247289}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2215637671132816310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4234871074744315831}
+  m_Layer: 0
+  m_Name: Attachment_Head
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4234871074744315831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2215637671132816310}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8435423944542995522}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2703825988772583295
 GameObject:
   m_ObjectHideFlags: 0
@@ -5294,6 +5387,37 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!1 &9033913773824078200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4384640196205614268}
+  m_Layer: 0
+  m_Name: Attachment_RightHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4384640196205614268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9033913773824078200}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4206931131760729884}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &256315533410953336
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6780,7 +6904,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4863004579945633979, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1531501276245463979}
+    - targetCorrespondingSourceObject: {fileID: 2243169029628674369, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1086744369624944151}
+    - targetCorrespondingSourceObject: {fileID: 8547331798299880506, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4234871074744315831}
+    - targetCorrespondingSourceObject: {fileID: 4173878139094480740, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4384640196205614268}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
 --- !u!137 &61799310265132537 stripped
@@ -6838,6 +6974,11 @@ SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2014730566687752065, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
   m_PrefabInstance: {fileID: 256315533410953336}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &2067094806885247289 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2243169029628674369, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+  m_PrefabInstance: {fileID: 256315533410953336}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &2271598959305585352 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2020087261396310704, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
@@ -6873,6 +7014,11 @@ SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3792129623291177134, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
   m_PrefabInstance: {fileID: 256315533410953336}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &4206931131760729884 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4173878139094480740, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+  m_PrefabInstance: {fileID: 256315533410953336}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &4374335491145663609 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4556058896560614401, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
@@ -6881,6 +7027,11 @@ SkinnedMeshRenderer:
 --- !u!4 &4545509272661993790 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4366935860451262790, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+  m_PrefabInstance: {fileID: 256315533410953336}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4679874950463369411 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4863004579945633979, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
   m_PrefabInstance: {fileID: 256315533410953336}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &5241129872656647648 stripped
@@ -6961,6 +7112,11 @@ SkinnedMeshRenderer:
 --- !u!137 &8422308310697609108 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8605412793407795180, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
+  m_PrefabInstance: {fileID: 256315533410953336}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8435423944542995522 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8547331798299880506, guid: 9165dd9cf90e49c4ab1b5bf43e97cb58, type: 3}
   m_PrefabInstance: {fileID: 256315533410953336}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &8471816445388726742 stripped
@@ -8507,6 +8663,22 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8320030506110263858, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _head
+      value: 
+      objectReference: {fileID: 4234871074744315831}
+    - target: {fileID: 8320030506110263858, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _torso
+      value: 
+      objectReference: {fileID: 1531501276245463979}
+    - target: {fileID: 8320030506110263858, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _leftHand
+      value: 
+      objectReference: {fileID: 1086744369624944151}
+    - target: {fileID: 8320030506110263858, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _rightHand
+      value: 
+      objectReference: {fileID: 4384640196205614268}
     - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -10481,6 +10653,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 1
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10643,6 +10816,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10806,6 +10980,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -10971,6 +11146,7 @@ MonoBehaviour:
       m_Bits: 256
     _outOfRangeBehaviour: 1
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11129,6 +11305,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11290,6 +11467,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11445,6 +11623,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11609,6 +11788,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11771,6 +11951,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -11927,6 +12108,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -12093,6 +12275,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -12250,6 +12433,7 @@ MonoBehaviour:
       m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -12409,6 +12593,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -12573,6 +12758,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -12749,6 +12935,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -12906,6 +13093,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -13108,6 +13296,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -13260,6 +13449,7 @@ MonoBehaviour:
       m_Bits: 256
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -13422,6 +13612,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -13579,6 +13770,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -13735,6 +13927,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -13896,6 +14089,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -14059,6 +14253,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 1
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -14215,6 +14410,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0
@@ -14373,6 +14569,7 @@ MonoBehaviour:
       m_Bits: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _castAtSelected: 0
     AdditionalObstacle:
       serializedVersion: 2
       m_Bits: 0

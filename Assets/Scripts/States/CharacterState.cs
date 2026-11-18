@@ -48,6 +48,7 @@ public abstract class StateBasic
 
     protected bool isHidden = false;
     public bool IsHidden => isHidden;
+    public virtual bool IsVisualOnly => false;
     internal long ApplicationOrder { get; set; }
 
     public abstract States State { get; }
@@ -70,6 +71,7 @@ public abstract class StateBasic
     
     public virtual string TooltipName => State.ToString();
     public virtual string TooltipDescription => string.Empty;
+    public virtual Sprite DisplayIcon => null;
 
     protected readonly Dictionary<StateParameter, object> parameters = new();
 
@@ -213,6 +215,53 @@ public abstract class StateBasic
     {
         OnDurationChanged?.Invoke(this, duration, max);
     }
+}
+
+public sealed class LocalVisualState : StateBasic
+{
+    private readonly States _state;
+    private readonly double _endTime;
+    private readonly string _name;
+    private readonly string _description;
+    private readonly Sprite _icon;
+    private readonly List<StatusEffect> _effects = new();
+
+    public override bool IsVisualOnly => true;
+    public override States State => _state;
+    public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override List<StatusEffect> Effects => _effects;
+    public override string TooltipName => _name;
+    public override string TooltipDescription => _description;
+    public override Sprite DisplayIcon => _icon;
+
+    public LocalVisualState(States state, double endTime, string name, string description, Sprite icon = null)
+    {
+        _state = state;
+        _endTime = endTime;
+        _name = name;
+        _description = description;
+        _icon = icon;
+    }
+
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character sourceCaster, string skillName) => UpdateCountdown();
+
+    public override void GlobalUpdate()
+    {
+        RemainingDuration = Mathf.Max(0f, (float)(_endTime - NetworkTime.time));
+        UpdateCountdown();
+        if (RemainingDuration <= 0f) ExitState();
+    }
+
+    private void UpdateCountdown()
+    {
+        string text = Mathf.CeilToInt(RemainingDuration).ToString();
+        if (DisplayText != text) DisplayText = text;
+    }
+
+    public override bool TryDispel(DispelType incomingDispel) => false;
+    public override void ExitState() => characterState.RemoveLocalVisualState(this);
 }
 
 public abstract class StateStacking : StateBasic
@@ -471,6 +520,7 @@ public class CharacterState : NetworkBehaviour
 {
     private Character _hero;
     private List<StateBasic> _currentStates = new List<StateBasic>();
+    private readonly List<LocalVisualState> _localVisualStates = new();
     private long _nextApplicationOrder;
     [SerializeField] private StateIcons _stateIcons;
     [SerializeField] private StateEffects _stateEffects;
@@ -492,6 +542,9 @@ public class CharacterState : NetworkBehaviour
     public StateEffects StateEffects => _stateEffects;
     public StateIcons StateIcons => _stateIcons;
     public List<StateBasic> CurrentStates => _currentStates;
+    public IReadOnlyList<LocalVisualState> LocalVisualStates => _localVisualStates;
+    public event Action<StateBasic> OnLocalVisualStateAdded;
+    public event Action<StateBasic> OnLocalVisualStateRemoved;
     public Character Character => _hero;
     public event System.Action<StateBasic> OnStateAdded;
     public event Action<States, int> OnStateDispelled;
@@ -661,6 +714,9 @@ public class CharacterState : NetworkBehaviour
 
     private void Update()
     {
+        for (int i = _localVisualStates.Count - 1; i >= 0; i--)
+            _localVisualStates[i].GlobalUpdate();
+
         if (_currentStates.Count > 0)
         {
             for (int i = 0; i < _currentStates.Count; i++)
@@ -669,6 +725,37 @@ public class CharacterState : NetworkBehaviour
             }
         }
     }
+
+    public void AddLocalVisualState(LocalVisualState state, float duration, Character sourceCaster)
+    {
+        if (!isClient || state == null || duration <= 0f) return;
+
+        // A single local indicator per state and source, including in host mode.
+        for (int i = _localVisualStates.Count - 1; i >= 0; i--)
+            if (_localVisualStates[i].State == state.State && _localVisualStates[i].SourceCaster == sourceCaster)
+                RemoveLocalVisualState(_localVisualStates[i]);
+
+        if (!state.TryApply(this, duration, 0f, sourceCaster, string.Empty)) return;
+        state.ApplicationOrder = _nextApplicationOrder++;
+        _localVisualStates.Add(state);
+        _stateIcons?.RegisterState(state);
+        OnLocalVisualStateAdded?.Invoke(state);
+    }
+
+    public void RemoveLocalVisualState(LocalVisualState state)
+    {
+        if (!_localVisualStates.Remove(state)) return;
+        _stateIcons?.UnregisterState(state);
+        OnLocalVisualStateRemoved?.Invoke(state);
+    }
+
+    private void ClearLocalVisualStates()
+    {
+        for (int i = _localVisualStates.Count - 1; i >= 0; i--)
+            RemoveLocalVisualState(_localVisualStates[i]);
+    }
+
+    private void OnDestroy() => ClearLocalVisualStates();
 
     public void Dispel(StateType type)
     {
@@ -824,6 +911,7 @@ public class CharacterState : NetworkBehaviour
         if (invinsible) return;
 
         StateBasic template = enumToState[state];
+        if (template.IsVisualOnly) return;
 
         if (_suppressStateEffectsBuff && template.BaffDebaff == BaffDebaff.Baff) return;
         if (_suppressStateDebuffEffects && template.BaffDebaff == BaffDebaff.Debaff) return;
@@ -1061,6 +1149,7 @@ public class CharacterState : NetworkBehaviour
     [ClientRpc]
     private void RpcClearStateIcons()
     {
+        ClearLocalVisualStates();
         _stateIcons?.DeactivateAll();
     }
 
@@ -1256,7 +1345,8 @@ public enum States
     VampirismBuff,
     MetabolismReptile,
     IceDeathSeriesPhysical,
-    IceDeathSeriesMagic
+    IceDeathSeriesMagic,
+    BlockCooldown
 }
 public enum BaffDebaff
 {

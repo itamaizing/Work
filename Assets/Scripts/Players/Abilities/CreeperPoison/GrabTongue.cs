@@ -39,10 +39,11 @@ public class GrabTongue : Skill
 
         bool canPull = _castTarget.CharacterState.CheckForState(States.InAir);
 
-        Vector3 start = transform.position;
         Vector3 end = _castTarget.transform.position;
+        if (_castTarget.AttachmentPoints != null && _castTarget.AttachmentPoints.TryGetPoint(AttachmentPointType.Torso, out Transform torso))
+            end = torso.position;
 
-        CmdSpawnProjectile(_castTarget.netIdentity, start, end, canPull);
+        CmdSpawnProjectile(_castTarget.netIdentity, end, canPull);
 
         yield return null;
     }
@@ -62,17 +63,20 @@ public class GrabTongue : Skill
     }
 
     [Command]
-    private void CmdSpawnProjectile(NetworkIdentity targetId, Vector3 start, Vector3 end, bool canPull)
+    private void CmdSpawnProjectile(NetworkIdentity targetId, Vector3 end, bool canPull)
     {
         if (targetId == null)
             return;
-
-        Debug.Log(end);
-
+        
         Character target = targetId.GetComponent<Character>();
 
         if (target == null)
             return;
+
+        Transform origin = _player.transform;
+        if (_player.AttachmentPoints != null && _player.AttachmentPoints.TryGetPoint(AttachmentPointType.Head, out Transform head))
+            origin = head;
+        Vector3 start = origin.position;
 
         GameObject go = Instantiate(_projectile.gameObject, start, Quaternion.identity);
 
@@ -81,15 +85,15 @@ public class GrabTongue : Skill
         if (proj == null)
             return;
 
-        proj.Init(_player, target, start, end);
+        proj.Init(_player, target, end);
 
         NetworkServer.Spawn(go);
 
-        RpcInitGrabTongueProjectile(go, target.gameObject, start, end);
+        RpcInitGrabTongueProjectile(go, target.gameObject, end);
     }
 
     [ClientRpc]
-    private void RpcInitGrabTongueProjectile(GameObject projectileObject, GameObject targetObject, Vector3 start, Vector3 end)
+    private void RpcInitGrabTongueProjectile(GameObject projectileObject, GameObject targetObject, Vector3 end)
     {
         if (projectileObject == null || targetObject == null)
             return;
@@ -100,7 +104,7 @@ public class GrabTongue : Skill
         if (proj == null || target == null)
             return;
 
-        proj.Init(_player, target, start, end);
+        proj.Init(_player, target, end);
     }
 
     protected override void ClearData()

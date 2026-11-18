@@ -20,6 +20,7 @@ public class HUDStateIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         State = state;
 
         if (data?.Icon != null) _icon.sprite = data.Icon;
+        if (state.DisplayIcon != null) _icon.sprite = state.DisplayIcon;
         if (_icon.sprite == null) _icon.color = new Color32(30, 30, 30, 255);
         _border.color = data != null && data.BorderColor != Color.white ? data.BorderColor : color;
         _text.color = color;

@@ -73,7 +73,11 @@ public class HUDStatePanel : MonoBehaviour
 
         _observedStates.OnStateAdded += AddIcon;
         _observedStates.OnStateRemoved += RemoveIcon;
+        _observedStates.OnLocalVisualStateAdded += AddIcon;
+        _observedStates.OnLocalVisualStateRemoved += RemoveIcon;
         foreach (var state in _observedStates.CurrentStates)
+            AddIcon(state);
+        foreach (var state in _observedStates.LocalVisualStates)
             AddIcon(state);
     }
 
@@ -83,6 +87,8 @@ public class HUDStatePanel : MonoBehaviour
         {
             _observedStates.OnStateAdded -= AddIcon;
             _observedStates.OnStateRemoved -= RemoveIcon;
+            _observedStates.OnLocalVisualStateAdded -= AddIcon;
+            _observedStates.OnLocalVisualStateRemoved -= RemoveIcon;
         }
         _observedStates = null;
 

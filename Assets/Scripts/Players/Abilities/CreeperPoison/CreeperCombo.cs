@@ -93,6 +93,13 @@ public class CreeperCombo : NetworkBehaviour
         if (target == null) return;
         if (_blockPassiveSkill == null) return;
 
+        if (!_blockPassiveSkill.IsSkillActive)
+        {
+            _currentBlockComboTarget = null;
+            _blockComboHitCount = 0;
+            return;
+        }
+
         bool isSameTarget = target == _currentBlockComboTarget;
         bool isWithinInterval = Time.time - _lastBlockComboHitTime <= _blockComboMaxIntervalBetweenHits;
 
@@ -112,18 +119,7 @@ public class CreeperCombo : NetworkBehaviour
 
         _blockComboHitCount = 0;
 
-        TargetRpcStartBlockBoostWindow(connectionToClient, target.netId);
-    }
-
-    [TargetRpc]
-    private void TargetRpcStartBlockBoostWindow(NetworkConnection targetConnection, uint enemyNetId)
-    {
-        if (_blockPassiveSkill == null) return;
-        if (!NetworkClient.spawned.TryGetValue(enemyNetId, out NetworkIdentity identity)) return;
-        Character enemy = identity.GetComponent<Character>();
-        if (enemy == null) return;
-
-        _blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(enemy);
+        _blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(target);
     }
 
     private void ActivateSneakySpitWindow(Character target)

@@ -91,6 +91,14 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         _talentSystem = talentSystem;
         _isInteractable = isInteractable;
 
+        if (_isMainMenu && _isInteractable)
+        {
+            int spentPoints = 0;
+            foreach (var group in _talentSystem.TalentsGroups)
+                spentPoints += group.GetSpentPoints();
+            _talentSystem.SetPoints(LevelCharacterManager.Instance.GetCurrentLevel() - spentPoints);
+        }
+
         if (isActiveAndEnabled) SubscribeToLevel();
 
         var branches = _talentSystem.TalentsGroups;
@@ -167,21 +175,19 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     private void SubscribeToLevel()
     {
         if (_talentSystem == null) return;
+        _talentSystem.PointsChanged -= OnLevelUp;
+        _talentSystem.PointsChanged += OnLevelUp;
         if (_isMainMenu)
+        {
+            LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
             LevelCharacterManager.Instance.OnLevelChanged += OnLevelUp;
-        else if (_talentSystem.Level != null)
-            _talentSystem.Level.LVLUped += OnLevelUp;
+        }
     }
 
     private void UnsubscribeFromLevel()
     {
-        if (!_isMainMenu)
-        {
-            if (_talentSystem != null)
-                if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
-        }
-
-        else LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
+        if (_talentSystem != null) _talentSystem.PointsChanged -= OnLevelUp;
+        if (_isMainMenu) LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
     }
 
     private void OnLevelUp(int newLevel)
@@ -190,6 +196,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         if (!isActiveAndEnabled) return;
 
         UpdateTalentPointsText();
+        RefreshAllGroups();
     }
 
     private void RefreshAllGroups()
@@ -211,23 +218,12 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
         if (_talantsText == null) return;
 
-        int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel();
-
-        int usedPoints = _talentSystem.GetActiveTalentCount();
-        int freePoints = maxPoints - usedPoints;
-
         if (_talentSystem.Points >= 0)
         {
             if (_talantsText != null)
                 _talantsText.gameObject.SetActive(true);
 
-            if (!_isMainMenu || !_isInteractable)
-                _talantsText.ChangeKey(_talentSystem.Points);
-            else
-            {
-                _talentSystem.SetPoints(freePoints);
-                _talantsText.ChangeKey(_talentSystem.Points);
-            }
+            _talantsText.ChangeKey(_talentSystem.Points);
         }
         else
         {

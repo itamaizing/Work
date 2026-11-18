@@ -8,6 +8,7 @@ public class GrabTongueProjectile : NetworkBehaviour
     [SerializeField] private LineRenderer _lineRenderer;
 
     private Character _player;
+    private Transform _origin;
     private Character _target;
     private CharacterState _targetCharacterState;
 
@@ -38,17 +39,20 @@ public class GrabTongueProjectile : NetworkBehaviour
         _lineRenderer.enabled = true;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (_player == null || _lineRenderer == null) return;
-        _lineRenderer.SetPosition(0, _player.transform.position);
+        _lineRenderer.SetPosition(0, _origin != null ? _origin.position : _player.transform.position);
     }
 
-    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition)
+    public void Init(Character player, Character target, Vector3 endPosition)
     {
         _player = player;
         _target = target;
-        _startPosition = startPosition;
+        _origin = player.transform;
+        if (player.AttachmentPoints != null && player.AttachmentPoints.TryGetPoint(AttachmentPointType.Head, out Transform head))
+            _origin = head;
+        _startPosition = _origin.position;
         _endPosition = endPosition;
 
         _targetCharacterState = _target.GetComponent<CharacterState>();
@@ -57,8 +61,8 @@ public class GrabTongueProjectile : NetworkBehaviour
             _lineRenderer = GetComponent<LineRenderer>();
 
         _lineRenderer.positionCount = 2;
-        _lineRenderer.SetPosition(0, startPosition);
-        _lineRenderer.SetPosition(1, startPosition);
+        _lineRenderer.SetPosition(0, _startPosition);
+        _lineRenderer.SetPosition(1, _startPosition);
 
         StartTongue();
     }

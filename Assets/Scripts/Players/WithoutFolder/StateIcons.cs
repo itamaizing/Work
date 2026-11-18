@@ -52,6 +52,7 @@ public class StateIcons : MonoBehaviour
             ico.ResolvedTooltipDescription = state.TooltipDescription;
         }
 
+        if (state.DisplayIcon != null) ico.Icon.sprite = state.DisplayIcon;
         ico.Text.color = GetTextColor(state.State);
 
         _activeIcons.Add(ico);
