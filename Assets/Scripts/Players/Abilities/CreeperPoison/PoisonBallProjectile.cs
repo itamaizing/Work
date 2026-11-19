@@ -204,6 +204,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     #region MakingDamageAndDebuffs
 
+    [Server]
     public override void DamageDeal()
     {
         Damage _baseDamage = _skill.GetDamage();
@@ -218,7 +219,8 @@ public class PoisonBallProjectile : Test_Projectile
         if (_isColdBloodCrit) _baseDamage.Value *= 2.5f;
 
 
-        _target.Health.TryTakeDamage(ref _baseDamage, _skill);
+        if (_target.Health.TryTakeDamage(ref _baseDamage, _skill) && _baseDamage.Value > 0f)
+            _player.DamageTracker.AddDamage(_baseDamage, _target.gameObject, isServerRequest: true);
 
         if (_isActiveWitheringPoison)
         {

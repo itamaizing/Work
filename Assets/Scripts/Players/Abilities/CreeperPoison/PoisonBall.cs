@@ -216,6 +216,7 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     {
         base.Init(render, hero);
 
+        Charges.AffectedByCooldownReduction = true;
         _baseCastWidth = AreaInfo.CastWidth;
         _originalChargeCooldown = Charges.CooldownTime;
 

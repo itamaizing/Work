@@ -341,6 +341,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.Cooldown.OnEnd += OnStopCooldown;
         ability.Cooldown.OnModify += OnModifyCooldown;
         ability.Charges.OnRechargeStart += OnChargeStartCooldown;
+        ability.Charges.OnRechargeModified += OnChargeModifyCooldown;
         ability.Charges.OnCurrentChange += OnCurrentChargeChanged;
         
         ability.Charges.OnRecoveryProgressChanged += OnRecoveryProgressChanged;
@@ -370,6 +371,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.Cooldown.OnEnd -= OnStopCooldown;
         ability.Cooldown.OnModify -= OnModifyCooldown;
         ability.Charges.OnRechargeStart -= OnChargeStartCooldown;
+        ability.Charges.OnRechargeModified -= OnChargeModifyCooldown;
         ability.Charges.OnCurrentChange -= OnCurrentChargeChanged;
         
         ability.Charges.OnRecoveryProgressChanged -= OnRecoveryProgressChanged;
@@ -484,6 +486,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnChargeStartCooldown(float value)
     {
         _chargeCD.AddChargeCD(value);
+    }
+
+    private void OnChargeModifyCooldown(int index, float remaining)
+    {
+        _chargeCD.ModifyChargeCD(index, remaining);
     }
 
     private void CheckingForCurrentRecharge(float duration)

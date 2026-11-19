@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Mirror;
 
 public class ReptilianStasisStateStacking : StateStacking
 {
@@ -37,12 +38,12 @@ public class ReptilianStasisStateStacking : StateStacking
         }
         _owner.Abilities?.SetAbilitiesDisactive(false);
         
-        if (_owner.isOwned && _owner.Abilities != null)
+        if (NetworkServer.active && _owner.Abilities != null)
         {
             foreach (var skill in _owner.Abilities.Skills)
             {
-                if (skill == null || skill.Cooldown == null || skill is ReptilianStasis) continue;
-                if (skill.Cooldown.IsActive) skill.Cooldown.ForceEnd();
+                if (skill == null) continue;
+                skill.ResetCooldown();
             }
         }
     }

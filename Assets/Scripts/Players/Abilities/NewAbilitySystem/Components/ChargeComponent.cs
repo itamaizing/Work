@@ -48,6 +48,11 @@ public class ChargeComponent : BaseSkillComponent
     public bool IsComboPart => _isComboPart;
     public ChargeCooldownType CooldownType => _cooldownType;
     public float BaseCooldown => _baseCooldown;
+    public bool AffectedByCooldownReduction
+    {
+        get => affectedByCDR;
+        set => affectedByCDR = value;
+    }
     public float CooldownTime => affectedByCDR ? _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown) : _baseCooldown;
     
     private float _recoveryProgress;
@@ -105,6 +110,7 @@ public class ChargeComponent : BaseSkillComponent
     public event Action<int> OnMaxChange;
     public event Action<int> OnCurrentChange;
     public event Action<float> OnRechargeStart;
+    public event Action<int, float> OnRechargeModified;
     public event Action<int> OnRechargeEnd;
     #endregion Events
     
@@ -211,6 +217,11 @@ public class ChargeComponent : BaseSkillComponent
                 {
                     OnRechargeStart?.Invoke(Mathf.Max(0f, (float)(newTime - NetworkTime.time)));
                 }
+                break;
+
+            case SyncList<double>.Operation.OP_SET:
+                if (CooldownType != ChargeCooldownType.Infinite)
+                    OnRechargeModified?.Invoke(index, Mathf.Max(0f, (float)(newTime - NetworkTime.time)));
                 break;
 
             case SyncList<double>.Operation.OP_REMOVEAT:

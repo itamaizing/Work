@@ -35,7 +35,6 @@ public class CreeperStrike : Skill
 
     private bool _isHit;
     private bool _isTwoHit;
-    private bool _isSpeedOfReptileActive;
     private bool _isCheckForStatePoisonBone;
 
     private bool _isCreeperStrikeDamageAppliedThisCast;
@@ -152,8 +151,6 @@ public class CreeperStrike : Skill
     
     #endregion
     
-    public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
-
     public void AnimCreeperStrikeCast()
     {
         if (_isCreeperStrikeDamageAppliedThisCast) return;
@@ -280,19 +277,24 @@ public class CreeperStrike : Skill
 
     private void TryApplyPoisonBone(Character target)
     {
-        if (!_isSpeedOfReptileActive)
-            return;
-
         if (target == null)
             return;
 
-        target.CharacterState.CmdAddState(
-            States.PoisonBone,
-            _lifeTimePoisonBoneStacks,
-            0,
-            _player.gameObject,
-            Name
-        );
+        CmdTryApplyPoisonBone(target.gameObject);
+    }
+
+    [Command]
+    private void CmdTryApplyPoisonBone(GameObject targetObject)
+    {
+        if (targetObject == null) return;
+
+        var player = _player != null ? _player : Hero;
+        if (!player.CharacterState.CheckForState(States.SpeedOfReptile)) return;
+
+        Character target = targetObject.GetComponent<Character>();
+        if (target == null || target.CharacterState == null) return;
+
+        target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, player.gameObject, Name);
     }
 
     private void TryApplyWitheringPoison(Character target)

@@ -6,6 +6,13 @@ using System.Linq;
 using UnityEngine;
  using UnityEngine.Serialization;
 
+public enum CooldownReductionMode
+{
+    Flat,
+    Relative,
+    Absolute
+}
+
  public abstract partial class Skill : NetworkBehaviour
 {
     #region Variables
@@ -366,6 +373,8 @@ using UnityEngine;
         if (time > CooldownEnd)
             Cooldown?.ForceEnd();
 
+        if (!isServer) return;
+
         for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
         {
             if (_rechargeEndTime[i] <= time
@@ -667,6 +676,7 @@ using UnityEngine;
 
     #region Cooldown
     [SyncVar(hook = nameof(OnCooldownChanged))] private double _cooldownEndTime = 0;
+    private double _cooldownDuration;
     public double CooldownEnd => _cooldownEndTime;
     private void OnCooldownChanged(double oldValue, double newValue)
     {
@@ -676,6 +686,7 @@ using UnityEngine;
     [Command]
     public void CmdCooldownStart(float duration)
     {
+        _cooldownDuration = duration;
         _cooldownEndTime = NetworkTime.time + duration;
         if (duration >= 1) // чтобы не спамило ГКД/скиллы без КД
             Debug.Log("CD STARTED " + duration);
@@ -684,10 +695,79 @@ using UnityEngine;
     [Server]
     public void ServerReduceCooldown(double seconds)
     {
-        double now = NetworkTime.time;
-        if (_cooldownEndTime <= now) return;
+        LowerCooldown(-seconds);
+    }
+    
+    public virtual void LowerCooldown(double value, CooldownReductionMode mode = CooldownReductionMode.Flat)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value) || value >= 0d) return;
+        if (mode < CooldownReductionMode.Flat || mode > CooldownReductionMode.Absolute) return;
 
-        _cooldownEndTime = Math.Max(now, _cooldownEndTime - seconds);
+        if (!isServer)
+        {
+            CmdLowerCooldown(value, mode);
+            return;
+        }
+
+        double now = NetworkTime.time;
+        if (Charges.UsesCharges && !Charges.IsComboPart)
+        {
+            if (Charges.CooldownType == ChargeCooldownType.Infinite) return;
+
+            for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
+                if (_rechargeEndTime[i] <= now) _rechargeEndTime.RemoveAt(i);
+
+            if (_rechargeEndTime.Count == 0) return;
+
+            if (Charges.CooldownType == ChargeCooldownType.Sequential)
+            {
+                double reduction = GetCooldownReduction(value, mode, _rechargeEndTime[0] - now, Charges.CooldownTime);
+                for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
+                    _rechargeEndTime[i] -= reduction;
+
+                if (_rechargeEndTime[0] <= now) _rechargeEndTime.RemoveAt(0);
+            }
+            else
+            {
+                for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
+                {
+                    double remaining = _rechargeEndTime[i] - now;
+                    double reduction = GetCooldownReduction(value, mode, remaining, Charges.CooldownTime);
+                    if (reduction >= remaining) _rechargeEndTime.RemoveAt(i);
+                    else _rechargeEndTime[i] -= reduction;
+                }
+            }
+
+            return;
+        }
+
+        double cooldownRemaining = Math.Max(0d, _cooldownEndTime - now);
+        _cooldownEndTime -= GetCooldownReduction(value, mode, cooldownRemaining, _cooldownDuration);
+    }
+
+    [Command]
+    private void CmdLowerCooldown(double value, CooldownReductionMode mode)
+    {
+        LowerCooldown(value, mode);
+    }
+
+    private static double GetCooldownReduction(double value, CooldownReductionMode mode, double remaining, double maximum)
+    {
+        double reduction;
+        switch (mode)
+        {
+            case CooldownReductionMode.Relative:
+                reduction = remaining * -value / 100d;
+                break;
+            case CooldownReductionMode.Absolute:
+                reduction = maximum * -value / 100d;
+                break;
+            default:
+                reduction = -value;
+                break;
+        }
+
+        return Math.Min(remaining, Math.Max(0d, reduction));
     }
 
     [Command]
@@ -713,7 +793,46 @@ using UnityEngine;
 
     public void CooldownReset()
     {
-        Cooldown.SetReduced(0);
+        ResetCooldown();
+    }
+    
+    public virtual void ResetCooldown()
+    {
+        if (!isServer)
+        {
+            CmdResetSkillCooldown();
+            return;
+        }
+
+        double now = NetworkTime.time;
+        if (Charges.UsesCharges && !Charges.IsComboPart)
+        {
+            if (Charges.CooldownType != ChargeCooldownType.Infinite)
+            {
+                for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
+                    if (_rechargeEndTime[i] <= now) _rechargeEndTime.RemoveAt(i);
+            }
+
+            if (_rechargeEndTime.Count == 0) return;
+
+            if (Charges.CooldownType == ChargeCooldownType.Sequential)
+            {
+                double remaining = _rechargeEndTime[0] - now;
+                for (int i = _rechargeEndTime.Count - 1; i > 0; i--)
+                    _rechargeEndTime[i] -= remaining;
+            }
+
+            _rechargeEndTime.RemoveAt(0);
+            return;
+        }
+
+        _cooldownEndTime = now;
+    }
+
+    [Command]
+    private void CmdResetSkillCooldown()
+    {
+        ResetCooldown();
     }
 
     [Command]

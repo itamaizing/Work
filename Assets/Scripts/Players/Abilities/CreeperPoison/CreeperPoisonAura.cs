@@ -268,7 +268,7 @@ public class CreeperPoisonAura : NetworkBehaviour
         foreach (var skill in _owner.Abilities.Skills)
         {
             if (skill == null) continue;
-            skill.ServerReduceCooldown(1.0);
+            skill.LowerCooldown(-1d);
         }
     }
 

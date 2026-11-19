@@ -125,6 +125,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     #region DamageMethods
 
+    [Server]
     public override void DamageDeal()
     {
         float chanceOfBlindness = 0.3f;
@@ -137,8 +138,8 @@ public class SpitPoisonProjectile : Test_Projectile
             damage.Value *= 2.5f;
         }
 
-        _target.Health.TryTakeDamage(ref damage, _skill);
-        _target.DamageTracker.AddDamage(damage, null, isServerRequest: isServer);
+        if (_target.Health.TryTakeDamage(ref damage, _skill) && damage.Value > 0f)
+            _player.DamageTracker.AddDamage(damage, _target.gameObject, isServerRequest: true);
 
         if (_isErodedArmorState)
         {

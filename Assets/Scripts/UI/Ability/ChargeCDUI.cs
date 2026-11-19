@@ -32,9 +32,19 @@ public class ChargeCDUI : MonoBehaviour
         _chargeCDList.RemoveAt(index);
     }
 
+    public void ModifyChargeCD(int index, float remaining)
+    {
+        if (index < 0 || index >= _chargeCDList.Count) return;
+
+        var charge = _chargeCDList[index];
+        if (charge == null) return;
+
+        float duration = Mathf.Max(charge.Duration, remaining);
+        charge.StartFill(duration, addTime: false, currentTime: Mathf.Max(0f, duration - remaining));
+    }
+
     private void OnEnded(FillAmountOverTime charge)
     {
-        charge.Ended -= OnEnded;
-        Destroy(charge.gameObject);
+        charge.Stop();
     }
 }
