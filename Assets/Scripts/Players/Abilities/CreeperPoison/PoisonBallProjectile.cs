@@ -3,6 +3,20 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
+public struct PoisonBallProjectileTalents
+{
+    public float PushDistanceBonus;
+    public int PoisonBoneStacks;
+    public bool FootInstincts;
+    public bool RestorationOfGlands;
+    public bool HealingPoisonBall;
+    public bool WitheringPoison;
+    public bool VoluminousBall;
+    public bool BallEffect;
+    public bool TransparentPoisons;
+    public bool ColdBloodCrit;
+}
+
 public class PoisonBallProjectile : Test_Projectile
 {
     #region Variables
@@ -10,13 +24,13 @@ public class PoisonBallProjectile : Test_Projectile
     [Header("PoisonBallProjectile Parameters")]
     [SerializeField] private Transform _transformBall;
     [SerializeField] private float _baseSizeBall;
-    [SerializeField] private float _damage;
     [SerializeField] private float _baseDistancePush;
     [SerializeField] private float _baseDurationPush;
     [SerializeField] private float _durationInAir;
     [SerializeField] private float poisonBone;
-    [SerializeField] private float _fastMovementSpeed;
-    [SerializeField] private float _slowMovementSpeed;
+    private float _fastMovementSpeed;
+    private float _slowMovementSpeed;
+    private float _maxFlightDistance;
 
     [SerializeField] private Material _projectileMaterialBase;
 
@@ -125,6 +139,7 @@ public class PoisonBallProjectile : Test_Projectile
             bool hit = (isOwner && _isPlayer) || (isAlly && _isAllies);
             if (!hit) return;
 
+            DispelPhysicalEffect(target, true);
             if (_isFast)
                 target.CharacterState.AddState(States.InstantHealingPoison, 0.5f, 0, _player.gameObject, _skill.Name);
             else
@@ -136,6 +151,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         if (!IsEnemy(collision.gameObject)) return;
 
+        DispelPhysicalEffect(target, false);
         _target = target;
         DamageDeal();
 
@@ -144,6 +160,15 @@ public class PoisonBallProjectile : Test_Projectile
     }
 
     #endregion
+
+    [Server]
+    private void DispelPhysicalEffect(Character target, bool isAlly)
+    {
+        if (!_isActiveHealingPoisonBall || _isReflected) return;
+
+        target.CharacterState.DispelStatesStack(StateType.Physical,
+            isAlly ? BaffDebaff.Debaff : BaffDebaff.Baff, int.MaxValue, out _);
+    }
 
     private void Reflect(Character reflector)
     {
@@ -169,7 +194,7 @@ public class PoisonBallProjectile : Test_Projectile
         _isAllies = false;
         _isPlayer = false;
 
-        MoveToTarget(target, speed);
+        MoveToTarget(GetFlightEndPoint(target), speed);
         RpcInitTransparent(_isTransparentPoisons, _playerLayer);
         
         float dist = Vector3.Distance(transform.position, target);
@@ -185,7 +210,7 @@ public class PoisonBallProjectile : Test_Projectile
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
         _directionOfFlight = (target - transform.position).normalized;
 
-        MoveToTarget(target, speed);
+        MoveToTarget(GetFlightEndPoint(target), speed);
     }
 
     public void MoveBallOnMaxDistance(Vector3 point, bool isFast)
@@ -195,9 +220,14 @@ public class PoisonBallProjectile : Test_Projectile
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
 
-        Vector3 finalPoint = transform.position + _directionOfFlight * Mathf.Min(Vector3.Distance(transform.position, point), _skill.AreaInfo.CastLength);
-        ScheduleAutoDestroy(finalPoint, speed);
-        MoveToPoint(point, speed);
+        MoveToTarget(GetFlightEndPoint(point), speed);
+    }
+
+    private Vector3 GetFlightEndPoint(Vector3 point)
+    {
+        Vector3 offset = point - transform.position;
+        offset.y = 0f;
+        return transform.position + Vector3.ClampMagnitude(offset, _maxFlightDistance);
     }
 
     #endregion
@@ -310,35 +340,41 @@ public class PoisonBallProjectile : Test_Projectile
 
     #region InitializationProjectiles
 
-    public void InitializationProjectileForPoisonBall(Character dad, Skill skill,
-        float multiplierDistance, int poisonBoneStack,
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
-        bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
-        bool isActiveVoluminousBall, bool isActiveBallEffect,
-        bool isPushTarget, bool isPlayerInvisible, bool isTransparentPoisons, int ownerLayer, bool isColdBloodCrit)
+    public void Initialize(PoisonBall skill, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isPushTarget, bool isPlayerInvisible)
     {
-        CheckActiveTalentVoluminousBall(isActiveVoluminousBall);
-
-        InitializationBoolVariables(isTargetPlayer, isTargetEnemy, isTargetAllies, isPlayerInvisible,
-            isActiveFootInstincts, isActiveRestorationOfGlands,
-            isActiveTalentHealingPoisonBall, isActiveTalentWitheringPoison, isActiveBallEffect);
-
-        _player = dad;
+        _player = skill.Hero;
         _skill = skill;
+        _poisonBall = skill;
+        _currentCountBall = skill.CurrentCountBall;
+        _isPlayer = isTargetPlayer;
+        _isEnemy = isTargetEnemy;
+        _isAllies = isTargetAllies;
         _isPushTarget = isPushTarget;
-
         _isPlayerInvisible = isPlayerInvisible;
+        _ownerLayer = _player.gameObject.layer;
 
-        _ownerLayer = ownerLayer;
-        _isTransparentPoisons = isTransparentPoisons;
-        _isColdBloodCrit = isColdBloodCrit;
+        Invoke(nameof(TransparentProjectileOnServer), 0.15f);
+    }
 
-        Invoke("TransparentProjectileOnServer", 0.15f);
+    public void ApplySettings(float fastMovementSpeed, float slowMovementSpeed, float maxFlightDistance)
+    {
+        _fastMovementSpeed = Mathf.Max(0.01f, fastMovementSpeed);
+        _slowMovementSpeed = Mathf.Max(0.01f, slowMovementSpeed);
+        _maxFlightDistance = Mathf.Max(0f, maxFlightDistance);
+    }
 
-        InitializationNumericVariables(multiplierDistance, poisonBoneStack);
-
-        InitializationComponentsForCountProjectile();
+    public void ApplyTalents(PoisonBallProjectileTalents talents)
+    {
+        _multiplierDistanceFromTalent = talents.PushDistanceBonus;
+        _poisonBoneStack = talents.PoisonBoneStacks;
+        _isActiveFootInstincts = talents.FootInstincts;
+        _isActiveRestorationOfGlands = talents.RestorationOfGlands;
+        _isActiveHealingPoisonBall = talents.HealingPoisonBall;
+        _isActiveWitheringPoison = talents.WitheringPoison;
+        _isActiveBallEffect = talents.BallEffect;
+        _isTransparentPoisons = talents.TransparentPoisons;
+        _isColdBloodCrit = talents.ColdBloodCrit;
+        CheckActiveTalentVoluminousBall(talents.VoluminousBall);
     }
 
     private void CheckActiveTalentVoluminousBall(bool isActiveVoluminousBall)
@@ -358,44 +394,6 @@ public class PoisonBallProjectile : Test_Projectile
         }
     }
 
-    private void InitializationNumericVariables(float multiplierDistance, int poisonBoneStack)
-    {
-        _multiplierDistanceFromTalent = multiplierDistance;
-        _poisonBoneStack = poisonBoneStack;
-    }
-
-    private void InitializationBoolVariables(
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
-        bool isPlayerInvisible,bool isActiveFootInstincts, 
-        bool isActiveRestorationOfGlands, bool isActiveTalentHealingPoisonBall, 
-        bool isActiveTalentWitheringPoison, bool isActiveBallEffect)
-    {
-        _isPlayer = isTargetPlayer;
-        _isAllies = isTargetAllies;
-        _isEnemy = isTargetEnemy;
-
-        _isActiveFootInstincts = isActiveFootInstincts;
-        _isActiveRestorationOfGlands = isActiveRestorationOfGlands;
-        _isActiveBallEffect = isActiveBallEffect;
-        _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
-        _isActiveWitheringPoison = isActiveTalentWitheringPoison;
-    }
-
-    private void InitializationComponentsForCountProjectile()
-    {
-        _poisonBall = _player.GetComponentInChildren<PoisonBall>();
-        _currentCountBall = _poisonBall.CurrentCountBall;
-    }
-
-    public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
-    {
-        if (_isReflected) return;
-
-        float distance = Vector3.Distance(transform.position, targetPoint);
-        float flightTime = (distance + _buffer) / speed;
-
-        Invoke(nameof(DestroyProjectile), flightTime);
-    }
     #endregion
 
     #region ServerMethods

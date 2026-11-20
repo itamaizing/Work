@@ -32,7 +32,6 @@ public class SpitPoison : Skill, IAltAbility, IColdBloodEmpowerable
 
     private int _poisonBoneStack = 0;
 
-    private float _originalCooldown;
     private float _radiusTargetCheck = 0.5f;
 
     private bool _isActiveRestorationOfGlands;
@@ -94,23 +93,20 @@ public class SpitPoison : Skill, IAltAbility, IColdBloodEmpowerable
         AnimCastEnded();
     }
 
-    protected void Start()
-    {
-        _originalCooldown = Cooldown.CooldownTime;
-    }
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
-        _mousePos = targetInfo.Points[0];
+        else Targeting.ClearTarget();
+        _mousePos = targetInfo.Points.Count > 0
+            ? targetInfo.Points[0]
+            : Targeting.Target?.Position ?? _player.transform.position;
+        ChooseTarget(Targeting.Target?.Damageable);
     }
 
     protected override IEnumerator TargetingJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
         Vector3 targetPoint = Vector3.positiveInfinity;
-
-        CooldownChange();
 
         ////CheckActiveTalents(); //TODO: Вернуть
 
@@ -183,26 +179,18 @@ public class SpitPoison : Skill, IAltAbility, IColdBloodEmpowerable
                Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, Targeting.AdditionalObstacle);
     }
 
-    private void CooldownChange()
+    protected override void UseCooldownOrCharges()
     {
-        if (_isActiveHealingSpitPoison)
+        if (!_isActiveHealingSpitPoison || !(_isOriginalTargetAllies || _isOriginalTargetPlayer))
         {
-            if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
-            {
-                if (Cooldown.CooldownTime == _originalCooldown)
-                {
-                    Cooldown.CooldownTime /= 3;
-                }
-            }
-            else
-            {
-                Cooldown.CooldownTime = _originalCooldown;
-            }
+            base.UseCooldownOrCharges();
+            return;
         }
+
+        if (Charges.UsesCharges && !Charges.IsComboPart)
+            Charges.TryUse(Charges.CooldownTime / 3f, shouldModify: false);
         else
-        {
-            Cooldown.CooldownTime = _originalCooldown;
-        }
+            Cooldown.StartCustom(Cooldown.CooldownTime / 3f);
     }
 
     //private void CheckActiveTalents()
@@ -224,30 +212,15 @@ public class SpitPoison : Skill, IAltAbility, IColdBloodEmpowerable
 
         GameObject obj = damageable.gameObject;
 
-        if (obj == _player.gameObject)
-        {
-            _isOriginalTargetPlayer = true;
-            _isOriginalTargetAllies = false;
-            _isOriginalTargetEnemy = false;
-        }
-        else if (obj.layer == LayerMask.NameToLayer("Allies"))
-        {
-            _isOriginalTargetPlayer = false;
-            _isOriginalTargetAllies = true;
-            _isOriginalTargetEnemy = false;
-        }
-        else if (obj.layer == LayerMask.NameToLayer("Enemy"))
-        {
-            _isOriginalTargetPlayer = false;
-            _isOriginalTargetAllies = false;
-            _isOriginalTargetEnemy = true;
-        }
-        else
-        {
-            _isOriginalTargetPlayer = false;
-            _isOriginalTargetAllies = false;
-            _isOriginalTargetEnemy = false;
-        }
+        var target = obj.GetComponent<Character>();
+        int ownerTeam = _player.NetworkSettings.TeamIndex;
+        int targetTeam = target != null ? target.NetworkSettings.TeamIndex : 0;
+        bool isAlly = ownerTeam != 0 && targetTeam != 0
+            ? ownerTeam == targetTeam
+            : obj.layer == LayerMask.NameToLayer("Allies");
+        _isOriginalTargetPlayer = obj == _player.gameObject;
+        _isOriginalTargetAllies = !_isOriginalTargetPlayer && isAlly;
+        _isOriginalTargetEnemy = !_isOriginalTargetPlayer && !_isOriginalTargetAllies;
     }
 
     private void Shoot(IDamageable damageable, Vector3 spawnPosition)

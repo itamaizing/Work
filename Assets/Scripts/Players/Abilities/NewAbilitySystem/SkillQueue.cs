@@ -95,6 +95,7 @@ public class SkillQueue : MonoBehaviour
                 }
 
                 _currentSkill.CastEnded += OnCastEnded;
+                _currentSkill.CastRejected += OnCastEnded;
                 CurrentCastChanged?.Invoke();
             }
         }
@@ -245,6 +246,7 @@ public class SkillQueue : MonoBehaviour
         }
 
         _currentSkill.CastEnded -= OnCastEnded;
+        _currentSkill.CastRejected -= OnCastEnded;
         _currentSkill = null;
         CurrentCastTarget = null;
         CurrentCastChanged?.Invoke();

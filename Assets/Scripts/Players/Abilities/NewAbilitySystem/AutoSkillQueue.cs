@@ -62,6 +62,7 @@ public class AutoSkillQueue : MonoBehaviour
             {
                 _currentSkill = item;
                 _currentSkill.CastEnded += OnCastEnded;
+                _currentSkill.CastRejected += OnCastEnded;
 
                 foreach (var temp in _skills)
                 {
@@ -80,6 +81,7 @@ public class AutoSkillQueue : MonoBehaviour
     private void OnCastEnded()
     {
         _currentSkill.CastEnded -= OnCastEnded;
+        _currentSkill.CastRejected -= OnCastEnded;
         _currentSkill = null;
     }
 }

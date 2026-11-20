@@ -83,6 +83,23 @@ public class InputHandler : MonoBehaviour
 		action.performed += c => { if (!IsBlocked(layer)) onPerformed(c.ReadValue<T>()); };
 	}
 
+	private void SetMovement(Vector2 movement)
+	{
+		Vector2 value = IsBlocked(InputLayer.Gameplay) ? Vector2.zero : movement;
+		if (_movementVector == value) return;
+
+		_movementVector = value;
+		OnPlayerMove?.Invoke(value);
+	}
+
+	private void OnInputBlockChanged(InputLayer mask)
+	{
+		if ((mask & InputLayer.Gameplay) != 0)
+			SetMovement(Vector2.zero);
+		else if (_inputActions != null && _inputActions.GameplayMap.Move.enabled)
+			SetMovement(_inputActions.GameplayMap.Move.ReadValue<Vector2>());
+	}
+
 	private static bool PointerHitsUI()
 	{
 		if (EventSystem.current == null)
@@ -117,7 +134,8 @@ public class InputHandler : MonoBehaviour
 
 		const InputLayer G = InputLayer.Gameplay;
 
-		BindValue<Vector2>(map.Move, G, v => OnPlayerMove?.Invoke(v));
+		map.Move.performed += c => SetMovement(c.ReadValue<Vector2>());
+		map.Move.canceled += _ => SetMovement(Vector2.zero);
 
 		Bind(map.Click, G,
 			() =>
@@ -183,14 +201,18 @@ public class InputHandler : MonoBehaviour
 
     private void OnEnable()
 	{
+		InputBlocker.Changed += OnInputBlockChanged;
 		if(_inputActions != null)
 		_inputActions.Enable();
+		OnInputBlockChanged(InputBlocker.Mask);
 	}
 
 	private void OnDisable()
 	{
+		InputBlocker.Changed -= OnInputBlockChanged;
         if (_inputActions != null)
             _inputActions.Disable();
+		SetMovement(Vector2.zero);
 	}
 
 	private void SetClickTrue()

@@ -1,78 +1,40 @@
-﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonPerSecondState : StateStackingRefreshing
-{    
-    /* For PoisonBall Ability */
-
-    private int _maxStack = 7;
-
+public class HealingPoisonPerSecondState : StateBasic
+{
+    private const float TickInterval = 1f;
     private float _currentHealingValue;
-
     private float _timeBetweenHeal;
-    private float _startTimeBetweenHeal = 1.0f;
-    private float _healMultiplier = 1f;
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Healing, StatusEffect.Poison };
 
-    private float _baseDuration;
-
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing, StatusEffect.Poison };
-
-    public float TotalHealValue { get => _currentHealingValue;}
-
+    public float TotalHealValue => _currentHealingValue;
+    public override bool IsUnique => false;
     public override States State => States.HealingPoisonPerSecond;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
+    public override string TooltipName => "Лечащий яд";
+    public override string TooltipDescription => "Исцеляет на 1 здоровье каждую секунду. Каждый следующий тик исцеляет на 1 больше. Длительность 6 секунд. Каждый эффект действует независимо.";
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
-        SetMaxStacks(_maxStack);
-
         characterState = character;
-
-        _currentHealingValue = 0.0f;
-
-        _baseDuration = durationToExit;
-        _timeBetweenHeal = _startTimeBetweenHeal;
-
-        if (personWhoMadeBuff != null)
-        {
-            var poisonBall = personWhoMadeBuff.GetComponent<PoisonBall>();
-            if (poisonBall != null)
-            {
-                int count = poisonBall.CurrentCountBall;
-                _healMultiplier = 1f + (count - 1) * 0.2f;
-            }
-        }
+        _currentHealingValue = 0f;
+        _timeBetweenHeal = TickInterval;
     }
 
     public override void UpdateState()
     {
+        if (characterState == null || !characterState.isServer) return;
+
         _timeBetweenHeal -= Time.deltaTime;
-        if (_timeBetweenHeal <= 0)
-        {
-            if (CurrentStacksCount < _maxStack)
-            {
-                MakeHeal();
-            }
+        if (_timeBetweenHeal > 0f) return;
+        _timeBetweenHeal += TickInterval;
+        _currentHealingValue += 1f;
 
-            _timeBetweenHeal = _startTimeBetweenHeal;
-        }
-    }
-
-    [Server]
-    private void MakeHeal()
-    {
-        _currentHealingValue += 1.0f * _healMultiplier;
-
-        Heal heal = new Heal
-        {
-            Value = _currentHealingValue,
-            DamageableSkill = null,
-        };
-
+        Heal heal = new Heal { Value = _currentHealingValue, DamageableSkill = null };
         characterState.Character.Health.Heal(ref heal, null);
-        //characterState.Character.DamageTracker.AddHeal(heal, true);
     }
 }

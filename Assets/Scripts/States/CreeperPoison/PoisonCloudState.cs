@@ -11,11 +11,13 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
 
     private static readonly List<StatusEffect> _effects = new();
     private readonly HashSet<Character> _visited = new();
+    private readonly HashSet<Character> _damagedTargets = new();
+    private readonly Dictionary<Character, float> _poisonBoneTimers = new();
+    private readonly List<Character> _expiredTargets = new();
 
     private PoisonBall _poisonBall;
     private Character _caster;
     private float _tickTimer;
-    private float _poisonBoneTimer;
 
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
@@ -31,7 +33,7 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
         _poisonBall = abilities != null ? abilities.GetSkill<PoisonBall>() : null;
 
         _tickTimer = TickRate;
-        _poisonBoneTimer = 0f;
+        _poisonBoneTimers.Clear();
     }
 
     public override void UpdateState()
@@ -47,13 +49,16 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
 
     private void DealAuraDamage()
     {
-        if (_caster == null || _caster.IsDead) return;
+        if (_caster == null || _caster.IsDead)
+        {
+            _poisonBoneTimers.Clear();
+            return;
+        }
 
         int team = _caster.NetworkSettings.TeamIndex;
-        bool applyBone = _poisonBoneTimer >= TimeToApplyPoisonBone
-                         && _poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone;
-        bool dealt = false;
+        bool canApplyBone = _poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone;
         _visited.Clear();
+        _damagedTargets.Clear();
 
         foreach (var col in Physics.OverlapSphere(_caster.transform.position, AuraRadius))
         {
@@ -67,18 +72,37 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
                 Value = target.Health.MaxValue * BaseDamagePercent * CurrentStacksCount,
                 Type = DamageType.Physical,
             };
-            target.Health.TryTakeDamage(ref damage, _poisonBall);
-            dealt = true;
+            if (!target.Health.TryTakeDamage(ref damage, _poisonBall) || damage.Value <= 0f)
+                continue;
+            if (!canApplyBone || target.IsDead) continue;
 
-            if (applyBone)
-                target.CharacterState.AddState(States.PoisonBone, 6f, 0f, _caster.gameObject, null);
+            _damagedTargets.Add(target);
+            _poisonBoneTimers.TryGetValue(target, out float damageTime);
+            damageTime += TickRate;
+            if (damageTime > TimeToApplyPoisonBone)
+            {
+                target.CharacterState.AddState(States.PoisonBone, 6f, 0f, _caster.gameObject, _poisonBall.Name);
+                damageTime = 0f;
+            }
+            _poisonBoneTimers[target] = damageTime;
         }
 
-        if (dealt)
+        _expiredTargets.Clear();
+        foreach (var target in _poisonBoneTimers.Keys)
         {
-            _poisonBoneTimer += TickRate;
-            if (_poisonBoneTimer >= TimeToApplyPoisonBone) _poisonBoneTimer = 0f;
+            if (!_damagedTargets.Contains(target))
+                _expiredTargets.Add(target);
         }
+        foreach (var target in _expiredTargets)
+            _poisonBoneTimers.Remove(target);
+    }
+
+    protected override void OnExit()
+    {
+        _poisonBoneTimers.Clear();
+        _visited.Clear();
+        _damagedTargets.Clear();
+        _expiredTargets.Clear();
     }
 
     public override void ReduceStack() => ExitState();

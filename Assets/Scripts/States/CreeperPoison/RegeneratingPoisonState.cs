@@ -25,6 +25,8 @@ public class RegeneratingPoisonState : StateStacking
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
+    public override string TooltipName => "Восстанавливающий яд";
+    public override string TooltipDescription => "Восстанавливает 1 здоровье в секунду за каждый стак. Максимум 2 стака. Повторное наложение обновляет длительность до 6 секунд.";
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -33,6 +35,7 @@ public class RegeneratingPoisonState : StateStacking
         _playerWithTalent = personWhoMadeBuff;
 
         _baseDuration = durationToExit;
+        _timeBetweenHeal = _startTimeBetweenHeal;
 
         if (CurrentStacksCount < MaxStacksCount)
         {
@@ -42,6 +45,8 @@ public class RegeneratingPoisonState : StateStacking
 
     public override void UpdateState()
     {
+        if (characterState == null || !characterState.isServer) return;
+
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
@@ -90,6 +95,7 @@ public class RegeneratingPoisonState : StateStacking
         CurrentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
+        _timeBetweenHeal = _startTimeBetweenHeal;
         RemainingDuration = 0;
     }
 }

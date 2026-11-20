@@ -36,6 +36,10 @@ public abstract partial class Skill
     private bool _isTargeting;
     private bool _castTriggered;
     private bool _cooldownCommitted;
+    private bool _isAwaitingCastApproval;
+    private bool? _castApproved;
+    private uint _castRequestId;
+    private uint _serverCastRequestId;
 
     private Coroutine _pipeline;
 
@@ -46,12 +50,13 @@ public abstract partial class Skill
     protected virtual bool StartsCooldownOnInterruptedCast => true;
     public bool IsTargeting => _isTargeting;
     private bool IsIdle => _state == SkillState.Inactive;
-    public bool IsExecuting => !IsIdle;
+    public bool IsExecuting => _isAwaitingCastApproval || !IsIdle;
     public bool HasQueuedTargets => _targetInfoQueue.Count > 0;
 
     public event Action<SkillState, SkillState> StateChanged;
     public event Action<SkillState> StateExited;
     public event Action<SkillState> StateEntered;
+    public event Action CastRejected;
 
     protected void SetState(SkillState to, SkillEndReason reason = SkillEndReason.Completed)
     {
@@ -179,6 +184,18 @@ public abstract partial class Skill
     
     private void EndExecution(SkillEndReason reason)
     {
+        if (_isAwaitingCastApproval)
+        {
+            _isAwaitingCastApproval = false;
+            StopCoro(ref _pipeline);
+            CmdFinishCast(_castRequestId);
+            LastEndReason = reason;
+            ResetPhantomCosts();
+            ClearData();
+            Raise(CastRejected);
+            return;
+        }
+
         if (IsIdle) return;
         bool completed = reason == SkillEndReason.Completed;
 
@@ -188,6 +205,7 @@ public abstract partial class Skill
         StopCoro(ref _channelingCoroutine);
 
         if (completed || StartsCooldownOnInterruptedCast) CommitCooldown();
+        CmdFinishCast(_castRequestId);
 
         SetState(SkillState.Inactive, reason);
 
@@ -440,7 +458,7 @@ public abstract partial class Skill
     {
         ClearQueueTarget();
 
-        if (_isTargeting || _state == SkillState.Preparing)
+        if (_isAwaitingCastApproval || _isTargeting || _state == SkillState.Preparing)
             TryCancel();
         else if (!IsExecuting)
             Targeting.ClearTempTarget();
@@ -572,28 +590,35 @@ public abstract partial class Skill
 
     #region TryCast / TryCancel / Reset
 
+    [Server]
+    public virtual bool CheckCast()
+    {
+        if (Hero == null || Hero.IsDead || !IsCanCast)
+            return false;
+        if (CooldownEnd > NetworkTime.time)
+            return false;
+        if (Charges.UsesCharges && !Charges.HasCharges)
+            return false;
+
+        return true;
+    }
+    
     public virtual bool TryCast()
     {
-        if (IsExecuting) return false;
+        if (!isClient || !isOwned || IsExecuting) return false;
 
         LoadTargetDataForCheckCast();
         if (!(IsHaveResources && IsCanCast && !IsExecuting && Hero.IsDead == false))
             return false;
 
-        if (_targetInfoQueue.Count > 0)
-        {
-            var targetInfo = _targetInfoQueue.Dequeue();
-            LoadTargetData(targetInfo);
-            LookAtTargetInfo(targetInfo);
-        }
-
-        StartPipeline();
+        var targetInfo = _targetInfoQueue.Count > 0 ? _targetInfoQueue.Dequeue() : CaptureCastTarget();
+        RequestCast(targetInfo);
         return true;
     }
-
+    
     public bool TryCast(TargetInfo targetInfo)
     {
-        if (IsExecuting) return false;
+        if (!isClient || !isOwned || IsExecuting || targetInfo == null) return false;
 
         LoadTargetDataForCheckCast();
         if (!(IsHaveResources && !IsExecuting && Hero.IsDead == false))
@@ -602,9 +627,110 @@ public abstract partial class Skill
         LoadTargetData(targetInfo);
         if (!IsCanCast) return false;
 
-        StartPipeline();
-        LookAtTargetInfo(targetInfo);
+        RequestCast(targetInfo);
         return true;
+    }
+
+    private TargetInfo CaptureCastTarget()
+    {
+        var info = new TargetInfo();
+        var target = Targeting.Target;
+        if (target?.Type == TargetType.Object) info.AddTarget(target.Targetable);
+        else if (target?.Type == TargetType.Point) info.Points.Add(target.Point);
+        return info;
+    }
+
+    private void RequestCast(TargetInfo targetInfo)
+    {
+        _isAwaitingCastApproval = true;
+        _castApproved = null;
+        if (++_castRequestId == 0) ++_castRequestId;
+
+        var targets = targetInfo.GetTargets();
+        var targetObjects = new GameObject[targets.Count];
+        for (int i = 0; i < targets.Count; i++)
+            targetObjects[i] = targets[i].Transform.gameObject;
+
+        CmdTryCast(_castRequestId, targetObjects, targetInfo.Points.ToArray(),
+            targetInfo.Roation.ToArray(), targetInfo.SelectedTarget, targetInfo.UsesSelectedTarget);
+        _pipeline = StartCoroutine(AwaitCastApproval(targetInfo));
+    }
+
+    private IEnumerator AwaitCastApproval(TargetInfo targetInfo)
+    {
+        yield return null;
+        while (!_castApproved.HasValue) yield return null;
+
+        _pipeline = null;
+        if (!_castApproved.Value || Hero.IsDead || targetInfo.LostSelectedTarget)
+        {
+            EndExecution(SkillEndReason.Interrupted);
+            yield break;
+        }
+
+        _isAwaitingCastApproval = false;
+        LoadTargetData(targetInfo);
+        LookAtTargetInfo(targetInfo);
+        StartPipeline();
+    }
+
+    [Command]
+    private void CmdTryCast(uint requestId, GameObject[] targets, Vector3[] points,
+        Quaternion[] rotations, Character selectedTarget, bool usesSelectedTarget)
+    {
+        bool approved = false;
+        if (_serverCastRequestId == 0)
+        {
+            var info = new TargetInfo
+            {
+                Points = new List<Vector3>(points),
+                Roation = new List<Quaternion>(rotations),
+                SelectedTarget = selectedTarget,
+                UsesSelectedTarget = usesSelectedTarget
+            };
+            bool validTargets = !info.LostSelectedTarget;
+            foreach (var targetObject in targets)
+            {
+                var target = targetObject != null ? targetObject.GetComponent<ITargetable>() : null;
+                if (target == null || !IsValidTarget(target) || !target.IsTargetable)
+                {
+                    validTargets = false;
+                    break;
+                }
+                info.AddTarget(target);
+            }
+
+            if (validTargets)
+            {
+                try
+                {
+                    LoadTargetData(info);
+                    approved = CheckCast();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[Skill:{Name}] Server cast validation threw: {ex}", this);
+                }
+            }
+
+            if (approved) _serverCastRequestId = requestId;
+        }
+
+        TargetCastChecked(connectionToClient, requestId, approved);
+    }
+
+    [TargetRpc]
+    private void TargetCastChecked(NetworkConnectionToClient connection, uint requestId, bool approved)
+    {
+        if (_isAwaitingCastApproval && _castRequestId == requestId)
+            _castApproved = approved;
+    }
+
+    [Command]
+    private void CmdFinishCast(uint requestId)
+    {
+        if (_serverCastRequestId == requestId)
+            _serverCastRequestId = 0;
     }
 
     private void LookAtTargetInfo(TargetInfo targetInfo)

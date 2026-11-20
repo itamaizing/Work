@@ -1,64 +1,40 @@
-using Mirror;
 using System.Collections.Generic;
 
 public class InstantHealingPoisonState : StateBasic
 {
-    /* For PoisonBall Ability */
+    private const float BaseHealingValue = 14f;
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Healing, StatusEffect.Poison };
 
-    private HealingPoisonPerSecondState _healingPoisonPerSecondState;
-
-    private int _maxStacks = 1;
-
-    private float _baseHealingValue = 14.0f;
-
-    private float _totalHealed;
-
-    private float _timeBetweenHeal;
-    private float _startTimeBetweenHeal = 1.0f;
-
-    private float _baseDuration;
-
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing, StatusEffect.Poison };
-
+    public override bool IsUnique => false;
     public override States State => States.InstantHealingPoison;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void Apply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-
-        _baseDuration = durationToExit;
     }
 
     public override void UpdateState()
     {
-        MakeHeal();
-    }
+        if (characterState == null || !characterState.isServer) return;
 
-    [Server]
-    private void MakeHeal()
-    {
-        if (characterState.CheckForState(States.HealingPoisonPerSecond))
+        HealingPoisonPerSecondState latestPoison = null;
+        foreach (var state in characterState.CurrentStates)
         {
-            _healingPoisonPerSecondState = (HealingPoisonPerSecondState)characterState.GetState(States.HealingPoisonPerSecond);
-            float multiplierHealValue = _healingPoisonPerSecondState.TotalHealValue;
-            _totalHealed = _baseHealingValue + multiplierHealValue;
-        }
-        else
-        {
-            _totalHealed = _baseHealingValue;
+            if (state is HealingPoisonPerSecondState poison &&
+                (latestPoison == null || poison.ApplicationOrder > latestPoison.ApplicationOrder))
+                latestPoison = poison;
         }
 
         Heal heal = new Heal
         {
-            Value = _totalHealed,
-            DamageableSkill = null,
+            Value = BaseHealingValue + (latestPoison?.TotalHealValue ?? 0f),
+            DamageableSkill = null
         };
-
         characterState.Character.Health.Heal(ref heal, null);
-
         ExitState();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,7 +53,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     [SerializeField] private Character _player;
     [SerializeField] private ArrowRender _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
-    [SerializeField] private GameObject pointArrowRender;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
     [SerializeField] private ColdBlood _coldBlood;
 
@@ -65,7 +64,9 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     private PoisonBallSpawnPointInfo _spawnPointInfo = new PoisonBallSpawnPointInfo();
     private PoisonBallActiveTalentsInfo _activeTalentsInfo = new PoisonBallActiveTalentsInfo();
 
-    private ArrowRender[] _arrowRenderers = new ArrowRender[4];
+    private const int PushArrowIndex = 0;
+    private const int SpeedArrowIndex = 1;
+    private ArrowRender[] _arrowRenderers = new ArrowRender[2];
     private GameObject _pointArrowInstance;
 
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
@@ -79,8 +80,11 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
 
     private int _poisonBoneStacks = 0;
 
-    private float _fastTimeCast = 0.4f;
-    private float _slowTimeCast = 1.8f;
+    [Header("Poison ball flight and cast settings")]
+    [SerializeField, Min(0.01f)] private float _fastMovementSpeed = 18f;
+    [SerializeField, Min(0.01f)] private float _slowMovementSpeed = 4f;
+    [SerializeField, Min(0f)] private float _fastTimeCast = 0.4f;
+    [SerializeField, Min(0f)] private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
     private float _baseCastWidth;
     private float _multiplierForPushDistance;
@@ -315,14 +319,9 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
 
                 if (_arrowRenderers[0] == null)
                 {
-                    CreateArrowsParallelToPlayer(_firstMousePosition);
+                    CreateCastArrows();
                     StartMouseDetectionIfNeeded();
                 }
-
-                _arrowRenderers[0]?.gameObject.SetActive(true);
-                _arrowRenderers[1]?.gameObject.SetActive(true);
-                _arrowRenderers[2]?.gameObject.SetActive(false);
-                _arrowRenderers[3]?.gameObject.SetActive(false);
 
                 Vector3 clampedPoint = originPoint;
                 if (Vector3.Distance(_player.transform.position, originPoint) > AreaInfo.CastLength)
@@ -335,6 +334,7 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
                 SkillRender.SetFixedLookPoint(targetPoint);
 
                 _firstClickDone = true;
+                UpdateCastArrows(click);
             }
 
             //CooldownChange();
@@ -351,20 +351,7 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
                 _secondMousePosition = click;
                 _secondClickDone = true;
 
-                if (Targeting.GetTempTarget()?.Character != null)
-                {
-                    if (_secondMousePosition.x < _firstMousePosition.x &&
-                        _secondMousePosition.z < _firstMousePosition.z)
-                    {
-                        SetArrowVisibility(1, true);
-                        SetArrowVisibility(3, false);
-                    }
-                    else
-                    {
-                        SetArrowVisibility(3, true);
-                        SetArrowVisibility(1, false);
-                    }
-                }
+                UpdateCastArrows(click);
             }
 
             yield return null;
@@ -374,9 +361,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (_arrowRenderers[0] != null) _arrowRenderers[0].SetDeafaultMaterail();
-                if (_arrowRenderers[1] != null) _arrowRenderers[1].SetDeafaultMaterail();
-
                 Vector3 click = Targeting.GetMousePoint();
                 _thirdClickDone = true;
                 _thirdMousePosition = click;
@@ -466,8 +450,13 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
             var targetGO = target.Character.gameObject;
 
             _poisonBallInfo.IsOriginalTargetPlayer = targetGO == _player.gameObject;
-            _poisonBallInfo.IsOriginalTargetAllies = targetGO.layer == LayerMask.NameToLayer("Allies");
-            _poisonBallInfo.IsOriginalTargetEnemy = targetGO.layer == LayerMask.NameToLayer("Enemy");
+            int ownerTeam = _player.NetworkSettings.TeamIndex;
+            int targetTeam = target.Character.NetworkSettings.TeamIndex;
+            bool isAlly = ownerTeam != 0 && targetTeam != 0
+                ? ownerTeam == targetTeam
+                : targetGO.layer == LayerMask.NameToLayer("Allies");
+            _poisonBallInfo.IsOriginalTargetAllies = !_poisonBallInfo.IsOriginalTargetPlayer && isAlly;
+            _poisonBallInfo.IsOriginalTargetEnemy = !_poisonBallInfo.IsOriginalTargetPlayer && !isAlly;
         }
         else
         {
@@ -529,7 +518,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent, coldBloodCrit);
 
-            if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
         }
         else
         {
@@ -541,7 +529,6 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, transparent,coldBloodCrit);
 
-            if (_isCanSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
         }
     }
 
@@ -560,47 +547,17 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
     }
 
-    private void CreateArrowsParallelToPlayer(Vector3 point)
+    private void CreateCastArrows()
     {
-        if (_arrowPrefab == null || pointArrowRender == null) return;
-
-        Vector3 center = Targeting.GetTarget()?.Character != null ? Targeting.GetTarget().Character.transform.position : point;
-        Vector3 playerPos = _player.transform.position;
-
-        center.y = 1.1f;
-        playerPos.y = 1.1f;
-
-        Vector3 direction = (playerPos - center).normalized;
+        if (_arrowPrefab == null) return;
 
         _pointArrowInstance = new GameObject("PoisonBallArrowCenter");
-        _pointArrowInstance.transform.position = center;
-        _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
-
-        Vector3 offset = direction * 0.6f;
-        Vector3 fartherOffset = direction * 1.2f;
-
-        Vector3[] spawnPositions = new Vector3[4]
-        {
-            center + offset,
-            center - offset,
-            center + fartherOffset,
-            center - fartherOffset
-        };
-
-        Quaternion[] rotations = new Quaternion[4]
-        {
-            Quaternion.LookRotation(playerPos - spawnPositions[0]),
-            Quaternion.LookRotation(spawnPositions[1] - playerPos),
-            Quaternion.LookRotation(playerPos - spawnPositions[2]),
-            Quaternion.LookRotation(spawnPositions[3] - playerPos),
-        };
 
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            Quaternion flippedRotation = rotations[i] * Quaternion.Euler(0, 180f, 0);
-            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], flippedRotation, _pointArrowInstance.transform);
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, _pointArrowInstance.transform);
             RotateArrowChild(_arrowRenderers[i].gameObject, -90);
-            _arrowRenderers[i].gameObject.SetActive(false);
+            _arrowRenderers[i].gameObject.SetActive(true);
         }
     }
 
@@ -614,12 +571,34 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         childArrow.localRotation = Quaternion.Euler(currentXRotation, 0, zRotation);
     }
 
-    private void SetArrowVisibility(int arrowIndex, bool isVisible)
+    private void UpdateCastArrows(Vector3 mousePosition)
     {
-        if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
-        {
-            _arrowRenderers[arrowIndex].gameObject.SetActive(isVisible);
-        }
+        Vector3 direction = GetCastDirection(_firstMousePosition, _firstClickPlayerPos);
+        Vector3 pushPoint = _secondClickDone ? _secondMousePosition : mousePosition;
+        bool isPush = IsPointAwayFromCaster(pushPoint, _firstMousePosition, _firstClickPlayerPos);
+        bool isFast = _secondClickDone &&
+            IsPointAwayFromCaster(mousePosition, _firstMousePosition, _firstClickPlayerPos);
+
+        Vector3 pushDirection = isPush ? direction : -direction;
+        Vector3 speedDirection = isFast ? direction : -direction;
+        UpdateCastArrow(PushArrowIndex, _firstMousePosition + pushDirection * 0.6f,
+            pushDirection, !_secondClickDone);
+        UpdateCastArrow(SpeedArrowIndex, _player.transform.position + direction * 1.2f,
+            speedDirection, _secondClickDone);
+        if (_arrowRenderers[SpeedArrowIndex] != null)
+            _arrowRenderers[SpeedArrowIndex].gameObject.SetActive(_secondClickDone);
+    }
+
+    private void UpdateCastArrow(int index, Vector3 position, Vector3 direction, bool isChoosing)
+    {
+        var arrow = _arrowRenderers[index];
+        if (arrow == null) return;
+
+        position.y = 1.1f;
+        arrow.transform.SetPositionAndRotation(position,
+            Quaternion.LookRotation(direction) * Quaternion.Euler(0f, 180f, 0f));
+        if (isChoosing) arrow.SetDeafaultMaterail();
+        else arrow.SetTransparentMaterial();
     }
 
     private void ClearArrows()
@@ -649,56 +628,10 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
     {
         while (_thirdClickDone == false)
         {
-            if (_pointArrowInstance != null)
-            {
-                Vector3 dir = _player.transform.position - _pointArrowInstance.transform.position;
-                dir.y = 0f;
-                if (dir != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(dir);
-            }
-
-            Vector3 currentMousePosition = Targeting.GetMousePoint();
-
-            if (_firstClickDone && !_secondClickDone)
-            {
-                UpdateArrowHighlight(0, 1, currentMousePosition);
-            }
-
-            else if (_secondClickDone && !_thirdClickDone)
-            {
-                UpdateArrowHighlight(2, 3, currentMousePosition);
-            }
+            if (_firstClickDone)
+                UpdateCastArrows(Targeting.GetMousePoint());
 
             yield return null;
-        }
-    }
-
-    private void UpdateArrowHighlight(int index1, int index2, Vector3 currentMousePosition)
-    {
-        if (_arrowRenderers[index1] == null || _arrowRenderers[index2] == null)
-            return;
-
-        Vector3 playerPos = _player.transform.position;
-        Vector3 arrowPos1 = _arrowRenderers[index1].transform.position;
-        Vector3 arrowPos2 = _arrowRenderers[index2].transform.position;
-
-        float dist1 = Vector3.Distance(currentMousePosition, arrowPos1);
-        float dist2 = Vector3.Distance(currentMousePosition, arrowPos2);
-
-        if (dist1 < dist2)
-        {
-            SetArrowVisibility(index1, true);
-            SetArrowVisibility(index2, false);
-
-            _arrowRenderers[index1].SetDeafaultMaterail();
-            _arrowRenderers[index2].SetTransparentMaterial();
-        }
-        else
-        {
-            SetArrowVisibility(index1, false);
-            SetArrowVisibility(index2, true);
-
-            _arrowRenderers[index1].SetTransparentMaterial();
-            _arrowRenderers[index2].SetDeafaultMaterail();
         }
     }
 
@@ -738,13 +671,22 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-            multiplierForPushDistance, poisonBoneStack,
-            isTargetPlayer, isTargetEnemy, isTargetAllies,
-            isActiveFootInstincts, isActiveRestorationOfGlands,
-            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-            isPushTarget, isPlayerInvisible,
-            isTransparentPoisons, ownerLayer, isColdBloodCrit);
+        poisonBallProjectile.Initialize(this, isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isPushTarget, isPlayerInvisible);
+        poisonBallProjectile.ApplySettings(_fastMovementSpeed, _slowMovementSpeed, AreaInfo.CastLength);
+        poisonBallProjectile.ApplyTalents(new PoisonBallProjectileTalents
+        {
+            PushDistanceBonus = multiplierForPushDistance,
+            PoisonBoneStacks = poisonBoneStack,
+            FootInstincts = isActiveFootInstincts,
+            RestorationOfGlands = isActiveRestorationOfGlands,
+            HealingPoisonBall = isActiveHealingPoisonBall,
+            WitheringPoison = isActiveWitheringPoison,
+            VoluminousBall = isActiveVoluminousBall,
+            BallEffect = isActiveBallEffect,
+            TransparentPoisons = isTransparentPoisons,
+            ColdBloodCrit = isColdBloodCrit
+        });
 
         poisonBallProjectile.MoveBallToTarget(targetPosition, isFast);
 
@@ -815,13 +757,22 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-            multiplierForPushDistance, poisonBoneStack,
-            isTargetPlayer, isTargetEnemy, isTargetAllies,
-            isActiveFootInstincts, isActiveRestorationOfGlands,
-            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-            isPushTarget, isPlayerInvisible,
-            isTransparentPoisons, ownerLayer, isColdBloodCrit);
+        poisonBallProjectile.Initialize(this, isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isPushTarget, isPlayerInvisible);
+        poisonBallProjectile.ApplySettings(_fastMovementSpeed, _slowMovementSpeed, AreaInfo.CastLength);
+        poisonBallProjectile.ApplyTalents(new PoisonBallProjectileTalents
+        {
+            PushDistanceBonus = multiplierForPushDistance,
+            PoisonBoneStacks = poisonBoneStack,
+            FootInstincts = isActiveFootInstincts,
+            RestorationOfGlands = isActiveRestorationOfGlands,
+            HealingPoisonBall = isActiveHealingPoisonBall,
+            WitheringPoison = isActiveWitheringPoison,
+            VoluminousBall = isActiveVoluminousBall,
+            BallEffect = isActiveBallEffect,
+            TransparentPoisons = isTransparentPoisons,
+            ColdBloodCrit = isColdBloodCrit
+        });
 
         poisonBallProjectile.MoveBallOnMaxDistance(finalPoint, isFast);
 
@@ -876,8 +827,8 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         Vector3 secondPoint = targetInfo.Points.Count > 1 ? targetInfo.Points[1] : _firstMousePosition;
         Vector3 thirdPoint = targetInfo.Points.Count > 2 ? targetInfo.Points[2] : secondPoint;
 
-        ChooseSpeed(secondPoint, anchorPlayerPos);
-        ChooseDirectionPush(thirdPoint, anchorPlayerPos);
+        ChooseDirectionPush(secondPoint, anchorPlayerPos);
+        ChooseSpeed(thirdPoint, anchorPlayerPos);
         CheckWhoTarget(Targeting.Target);
 
         _activeCastIsFast = _isFast;
@@ -886,26 +837,28 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         ApplyCastTimingForSpeed();
     }
 
-    private void ChooseSpeed(Vector3 secondPoint, Vector3 anchorPlayerPos)
+    private void ChooseSpeed(Vector3 speedPoint, Vector3 anchorPlayerPos)
     {
-        Vector3 castDirection = _firstMousePosition - anchorPlayerPos;
-        castDirection.y = 0f;
-
-        Vector3 secondClickVector = secondPoint - _firstMousePosition;
-        secondClickVector.y = 0f;
-
-        _isFast = Vector3.Dot(castDirection.normalized, secondClickVector.normalized) > 0f;
+        _isFast = IsPointAwayFromCaster(speedPoint, _firstMousePosition, anchorPlayerPos);
     }
 
-    private void ChooseDirectionPush(Vector3 thirdPoint, Vector3 anchorPlayerPos)
+    private void ChooseDirectionPush(Vector3 pushPoint, Vector3 anchorPlayerPos)
     {
-        Vector3 castDirection = _firstMousePosition - anchorPlayerPos;
-        castDirection.y = 0f;
+        _isPushTarget = IsPointAwayFromCaster(pushPoint, _firstMousePosition, anchorPlayerPos);
+    }
 
-        Vector3 thirdVector = thirdPoint - _firstMousePosition;
-        thirdVector.y = 0f;
+    private static Vector3 GetCastDirection(Vector3 castPoint, Vector3 casterPosition)
+    {
+        Vector3 direction = castPoint - casterPosition;
+        direction.y = 0f;
+        return direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.forward;
+    }
 
-        _isPushTarget = Vector3.Dot(castDirection.normalized, thirdVector.normalized) > 0f;
+    private static bool IsPointAwayFromCaster(Vector3 point, Vector3 castPoint, Vector3 casterPosition)
+    {
+        Vector3 choiceDirection = point - castPoint;
+        choiceDirection.y = 0f;
+        return Vector3.Dot(GetCastDirection(castPoint, casterPosition), choiceDirection) > 0f;
     }
 
     private void ApplyCastTimingForSpeed()
