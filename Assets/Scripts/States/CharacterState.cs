@@ -551,7 +551,7 @@ public class CharacterState : NetworkBehaviour
     public event Action<StateBasic> OnStateRemoved;
 
 
-    public Dictionary<States, StateBasic> enumToState = new Dictionary<States, StateBasic>()
+    public static Dictionary<States, StateBasic> enumToState = new Dictionary<States, StateBasic>()
     {
         #region UpdatedStates
         [States.Frozen] = new FrozenStateStacking(),

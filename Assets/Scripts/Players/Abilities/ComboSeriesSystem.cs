@@ -168,8 +168,8 @@ public class ComboSeriesSystem : Skill
 
         RemoveSeriesBuffLocal(states, opposite);
 
-        if (!states.enumToState.ContainsKey(active))
-            states.enumToState.Add(active, new IceDeathSeriesState(active));
+        if (!CharacterState.enumToState.ContainsKey(active))
+            CharacterState.enumToState.Add(active, new IceDeathSeriesState(active));
 
         if (states.GetState(active) is IceDeathSeriesState current)
         {
@@ -177,7 +177,7 @@ public class ComboSeriesSystem : Skill
             return;
         }
 
-        var template = (IceDeathSeriesState)states.enumToState[active];
+        var template = (IceDeathSeriesState)CharacterState.enumToState[active];
         template.SetSnapshot(hitCount, remaining, maximum, paused);
 
         states.AddStateLogic(active, maximum, 0f, Schools.None, _hero.gameObject, nameof(ComboSeriesSystem), isCanDodgeMagState: true);

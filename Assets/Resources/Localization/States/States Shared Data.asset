@@ -39,6 +39,18 @@ MonoBehaviour:
     m_Key: CarryGun.Bleeding.Tooltip
     m_Metadata:
       m_Items: []
+  - m_Id: 23602073165824
+    m_Key: Stupefaction.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23647493283840
+    m_Key: Stupefaction.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23679189639168
+    m_Key: Stupefaction.Tooltip
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

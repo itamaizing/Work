@@ -24,17 +24,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 68840054784
-    m_Localized: Deals {Damage} every second
+    m_Localized: Deals {Damage} every second.
     m_Metadata:
       m_Items:
       - rid: 7005414599070581089
   - m_Id: 116168581120
-    m_Localized: Deals {Damage} once per second
+    m_Localized: Deals {Damage} once per second.
     m_Metadata:
       m_Items:
       - rid: 7005414599070581089
   - m_Id: 1380432470016
-    m_Localized: Deals {PercentDamage}% max HP damage once per second. Stacks up untill {MaxDuration}
+    m_Localized: Deals {PercentDamage}% max HP damage once per second. Stacks up untill {MaxDuration}.
     m_Metadata:
       m_Items:
       - rid: 7005414599070581089
@@ -43,10 +43,22 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1403928961024
-    m_Localized: Deals {PercentDamage}% max HP damage every second
+    m_Localized: Deals {PercentDamage}% max HP damage every second.
     m_Metadata:
       m_Items:
       - rid: 7005414599070581089
+  - m_Id: 23602073165824
+    m_Localized: Daze
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23647493283840
+    m_Localized: Prevents target from moving or casting skills. Ends after taking damage.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23679189639168
+    m_Localized: Can't move or cast skills.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

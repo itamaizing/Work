@@ -35,6 +35,10 @@ MonoBehaviour:
     m_Key: InteractTarget.Label
     m_Metadata:
       m_Items: []
+  - m_Id: 13568891150336
+    m_Key: Duration
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

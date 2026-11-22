@@ -100,7 +100,7 @@ public class StateIcons : MonoBehaviour
 
     private Color GetStateColor(States state)
     {
-        if (characterState == null || !characterState.enumToState.TryGetValue(state, out var stateObj))
+        if (characterState == null || !CharacterState.enumToState.TryGetValue(state, out var stateObj))
             return _neutralColor;
 
         return stateObj.BaffDebaff switch

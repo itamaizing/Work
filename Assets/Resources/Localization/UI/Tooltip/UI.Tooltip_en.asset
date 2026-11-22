@@ -16,44 +16,32 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: 1473142bc22571d4d83df653a4e0e6a4, type: 2}
   m_Metadata:
-    m_Items:
-    - rid: 7005414599070581087
+    m_Items: []
   m_TableData:
   - m_Id: 5879357440
     m_Localized: Range
     m_Metadata:
-      m_Items:
-      - rid: 7005414599070581087
+      m_Items: []
   - m_Id: 73692864512
     m_Localized: Radius
     m_Metadata:
-      m_Items:
-      - rid: 7005414599070581087
+      m_Items: []
   - m_Id: 147374202880
     m_Localized: Cost
     m_Metadata:
-      m_Items:
-      - rid: 7005414599070581087
+      m_Items: []
   - m_Id: 233072222208
     m_Localized: Casts at
     m_Metadata:
-      m_Items:
-      - rid: 7005414599070581087
+      m_Items: []
   - m_Id: 364832088064
     m_Localized: Affects
     m_Metadata:
-      m_Items:
-      - rid: 7005414599070581087
+      m_Items: []
+  - m_Id: 13568891150336
+    m_Localized: Duration
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds:
-    - rid: 7005414599070581087
-      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_Entries: 
-        m_SharedEntries:
-        - id: 364832088064
-        - id: 233072222208
-        - id: 147374202880
-        - id: 73692864512
-        - id: 5879357440
+    RefIds: []
