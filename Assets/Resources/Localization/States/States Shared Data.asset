@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: States Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: States
+  m_TableCollectionNameGuidString: 5ed1cb6a195baa54a899c77ed1f152ef
+  m_Entries:
+  - m_Id: 5359263744
+    m_Key: Scorpion.Bleeding.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 116168581120
+    m_Key: Scorpion.Bleeding.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68840054784
+    m_Key: Scorpion.Bleeding.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1086223015936
+    m_Key: CarryGun.Bleeding.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1380432470016
+    m_Key: CarryGun.Bleeding.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1403928961024
+    m_Key: CarryGun.Bleeding.Tooltip
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7005414599070581084
+  references:
+    version: 2
+    RefIds:
+    - rid: 7005414599070581084
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1795341781565

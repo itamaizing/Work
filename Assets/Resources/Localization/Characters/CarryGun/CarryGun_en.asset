@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: CarryGun_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: f5b80733d5388d947b5c9007c00e6755, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 7005414599070581091
+  m_TableData:
+  - m_Id: 5891940352
+    m_Localized: Evolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32949395456
+    m_Localized: Piercing Wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 620575580160
+    m_Localized: Piercing Wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1026152194048
+    m_Localized: Pierces enemy with a wing, dealing {Damage}
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581091
+  - m_Id: 52255776768
+    m_Localized: Piercing Pounce
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80328253440
+    m_Localized: Evolution3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 225920933888
+    m_Localized: 'Cast speed of %%Link=Ability[{Pierce}] is increased by 40% after %%Link=Ability[Pierce] or %%Link=Ability[Pounce]'
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581091
+  - m_Id: 6778539466752
+    m_Localized: Jump Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6869337759744
+    m_Localized: Evolution5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6938988371968
+    m_Localized: 'Skills gain chance to deal critical damage x{CritRange}:
+
+      %%Link=Ability[{Pierce}]: {PierceChance}
+
+      %%Link=Ability[{Pounce}]: {PounceChance}'
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581091
+  - m_Id: 8215533182976
+    m_Localized: '%%Link=Ability[{Pierce}] gains {BaseChance}% chance to apply %%Link=State[{Bleeding}] for  {Duration}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8729427697664
+    m_Localized: Evolution6
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8791780220928
+    m_Localized: This chance is further increased after {Pierce} (+{PierceChance}) and {Pounce} (+{PounceChance})
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581091
+  references:
+    version: 2
+    RefIds:
+    - rid: 7005414599070581091
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 6938988371968
+        - id: 225920933888
+        - id: 8791780220928
+        - id: 1026152194048

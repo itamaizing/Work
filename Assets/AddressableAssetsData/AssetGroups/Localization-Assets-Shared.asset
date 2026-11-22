@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: bedb59f2d3162654ea92e17823120cfc
+  m_SerializeEntries:
+  - m_GUID: 1473142bc22571d4d83df653a4e0e6a4
+    m_Address: Assets/Resources/Localization/UI/Tooltip/UI.Tooltip Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ed1cb6a195baa54a899c77ed1f152ef
+    m_Address: Assets/Resources/Localization/States/States Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5b80733d5388d947b5c9007c00e6755
+    m_Address: Assets/Resources/Localization/Characters/CarryGun/CarryGun Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: ffee12e2ebd978947b2bc4dff0e96085, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 578e625ddc153b646ab96510a204ca87, type: 2}
+    - {fileID: 11400000, guid: 8abc759bd38c482489b2e6ec6ddd6032, type: 2}
+    - {fileID: 11400000, guid: bab7a44a8f3902b41b3b472038c6ae39, type: 2}
