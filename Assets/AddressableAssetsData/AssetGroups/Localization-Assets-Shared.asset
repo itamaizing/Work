@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ad8429d82dc04b42a15ffb73e2d80e9
+    m_Address: Assets/Resources/Localization/UI/Menu/UI.Menu Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f5b80733d5388d947b5c9007c00e6755
     m_Address: Assets/Resources/Localization/Characters/CarryGun/CarryGun Shared Data.asset
     m_ReadOnly: 1

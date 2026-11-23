@@ -23,67 +23,30 @@ public class TalentInfoPanel : MonoBehaviour
 
     public void Show(TalentData data, string rowConditionDescription = "")
     {
+        ClearCells();
         gameObject.SetActive(true);
         _name.text = data.Description;
 
-        int descCnt = data.DescriptionsForInfoPanel.Count;
-        int stateCnt = data.StateInfos.Count;
-        int pairCnt = Mathf.Max(descCnt, stateCnt);
-        TalentInfoCell cell = null;
-
-        //Condition TEXT
-        var conditionCell = Instantiate(_cellPref, transform);
-        _cells.Add(conditionCell);
-        
         string fullCondition = string.IsNullOrEmpty(rowConditionDescription)
             ? data.ConditionDescription
             : string.IsNullOrEmpty(data.ConditionDescription)
                 ? rowConditionDescription
                 : $"{data.ConditionDescription}\n{rowConditionDescription}";
 
-        conditionCell.TextDescription.text = fullCondition;
-        conditionCell.ShowDividingLine();
+        var rows = new List<GameDescriptions.DescriptionRow>();
+        GameDescriptions.DescriptionTable.AddText(rows, fullCondition);
+        if (data.DescriptionTable != null && data.DescriptionTable.HasEntries)
+            rows.AddRange(data.DescriptionTable.Build(data.DescriptionOwner));
+        else
+            AppendLegacyDescription(rows, data);
 
-        //Condition TEXT
-
-        for (int i = 0; i < pairCnt; i++)
+        foreach (var row in rows)
         {
-            if (i < descCnt)
-            {
-                var descCell = Instantiate(_cellPref, transform);
-                cell = descCell;
-                _cells.Add(descCell);
-
-                string descString = DescriptionTextProcessor.Process(data.DescriptionsForInfoPanel[i]);
-                
-                descCell.TextDescription.text = descString;
-                descCell.ShowDividingLine();
-                if (i == pairCnt - 1) descCell.HideDividingLine();
-            }
-
-            if (i < stateCnt)
-            {
-                var st = data.StateInfos[i];
-
-                var stateCell = Instantiate(_cellPref, transform);
-                _cells.Add(stateCell);
-
-                if (st.StateName != "" || st.Description != "")
-                {
-                    string description = DescriptionTextProcessor.Process(st.Description);
-                    stateCell.TextDescription.text =
-                        $"<color={DescriptionTextProcessor.ColorMap[DescriptionTextProcessor.ColorPallete.Y]}>{st.StateName}</color> {description}";
-                }
-                else
-                {
-                    stateCell.TextDescription.text = "";
-                }
-                cell.HideDividingLine();
-                stateCell.ShowDividingLine();
-                if (i == pairCnt - 1) stateCell.HideDividingLine();
-            }
+            var cell = Instantiate(_cellPref, transform);
+            _cells.Add(cell);
+            cell.Show(row);
         }
-        
+
         if (_followCursor)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
@@ -91,14 +54,40 @@ public class TalentInfoPanel : MonoBehaviour
         }
     }
 
+    private static void AppendLegacyDescription(List<GameDescriptions.DescriptionRow> rows, TalentData data)
+    {
+        int descriptions = data.DescriptionsForInfoPanel?.Count ?? 0;
+        int states = data.StateInfos?.Count ?? 0;
+        for (int i = 0; i < Mathf.Max(descriptions, states); i++)
+        {
+            if (i < descriptions)
+                GameDescriptions.DescriptionTable.AddText(rows, data.DescriptionsForInfoPanel[i]);
+            if (i < states)
+            {
+                var state = data.StateInfos[i];
+                if (!string.IsNullOrEmpty(state.StateName) || !string.IsNullOrEmpty(state.Description))
+                    GameDescriptions.DescriptionTable.AddText(rows,
+                        $"<color={DescriptionTextProcessor.ColorMap[DescriptionTextProcessor.ColorPallete.Y]}>{state.StateName}</color> {state.Description}");
+            }
+        }
+    }
+
     public void Hide()
     {
         gameObject.SetActive(false);
-        if (_cells == null) return;
-        foreach (var cell in _cells) Destroy(cell.gameObject);
+        ClearCells();
+    }
+
+    private void ClearCells()
+    {
+        foreach (var cell in _cells)
+        {
+            cell.gameObject.SetActive(false);
+            Destroy(cell.gameObject);
+        }
         _cells.Clear();
     }
-    
+
     private void PositionAtCursor()
     {
         var tooltip = (RectTransform)transform;

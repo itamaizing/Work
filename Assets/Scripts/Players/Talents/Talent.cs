@@ -33,6 +33,7 @@ public abstract class Talent : MonoBehaviour
         _rowIndex = rowIndex;
 
         _data.Init();
+        _data.DescriptionOwner = character != null ? character : GetComponentInParent<Character>();
         _data.Name = GetType().Name;
         _data.Group = groupId;
         _data.Row = rowIndex;

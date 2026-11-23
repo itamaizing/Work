@@ -11,6 +11,7 @@ public class AbilityInfo : ScriptableObject
     [SerializeField] private string _descriptionState;
     [SerializeField] private string _counter;
     [SerializeField] private Sprite _icon;
+    [SerializeField] private GameDescriptions.DescriptionTable _descriptionTable = new();
 
     private string _addingDescription;
     private HashSet<string> _addedDescriptions = new();
@@ -22,6 +23,8 @@ public class AbilityInfo : ScriptableObject
     public string DescriptionState => _descriptionState;
     public string Counter => _counter;
     public Sprite Icon => _icon;
+    public GameDescriptions.DescriptionTable DescriptionTable => _descriptionTable;
+    public string SupplementalDescription => string.Join(" ", _addedDescriptions);
 
     private void OnEnable()
     {
