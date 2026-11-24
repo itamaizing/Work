@@ -3,6 +3,18 @@ using UnityEngine;
 
 public class HealingPoisonCloudState : StateStackingRefreshing
 {
+    protected override float DescriptionTickInterval => TickRate;
+
+    public override bool TryGetDescriptionValue(string key, out object value)
+    {
+        switch (key)
+        {
+            case "PercentHealing": value = HealPercentPerStack * 100f * DescriptionStacks; return true;
+            case "PercentHealingPerStack": value = HealPercentPerStack * 100f; return true;
+            default: return base.TryGetDescriptionValue(key, out value);
+        }
+    }
+
     private const int MaxStacks = 5;
     private const float Radius = 2.5f;
     private const float HealPercentPerStack = 0.005f;
@@ -14,6 +26,8 @@ public class HealingPoisonCloudState : StateStackingRefreshing
     private ExplosionPoisonCloud _explosion;
     private float _tickTimer;
     private int _lastNotifiedStacks = -1;
+
+    protected override int DescriptionMaxStacks => characterState == null ? MaxStacks : MaxStacksCount;
 
     public override States State => States.HealingPoisonCloud;
     public override StateType Type => StateType.Physical;

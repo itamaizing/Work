@@ -1,9 +1,11 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WitheringPoisonStateStacking : StateStackingRefreshing
 {
+    protected override float DescriptionTickInterval => TickInterval;
+
     private const int MaxPoisonStacks = 2;
     private const float TickInterval = 2f;
     private const float ResourceBurnPercent = 0.01f;
@@ -19,6 +21,8 @@ public class WitheringPoisonStateStacking : StateStackingRefreshing
     private bool _isActiveTalentBindingPoison = false;
 
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Poison };
+
+    protected override int DescriptionMaxStacks => characterState == null ? MaxPoisonStacks : MaxStacksCount;
 
     public override States State => States.WitheringPoison;
     public override StateType Type => StateType.Physical;

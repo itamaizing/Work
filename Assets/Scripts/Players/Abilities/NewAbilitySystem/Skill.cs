@@ -13,8 +13,19 @@ public enum CooldownReductionMode
     Absolute
 }
 
- public abstract partial class Skill : NetworkBehaviour
+ public abstract partial class Skill : NetworkBehaviour, IDescriptionValue
 {
+    public virtual bool TryGetDescriptionValue(string key, out object value)
+    {
+        switch (key)
+        {
+            case "Damage": value = _baseDamage != null ? (object)_baseDamage : Damage; return true;
+            case "PreparingDuration": value = PreparingDuration; return true;
+            case "ChannelingDuration": value = Channeling?.CastDuration ?? 0f; return true;
+            case "Cooldown": value = Cooldown?.CooldownTime ?? 0f; return true;
+            default: value = null; return false;
+        }
+    }
     #region Variables
     #region InspectorSettings
     [Header("[Talent State]")]

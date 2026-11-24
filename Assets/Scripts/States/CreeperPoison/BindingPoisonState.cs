@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +13,8 @@ public class BindingPoisonState : StateStackingRefreshing
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get => RemainingDuration; }
+
+    protected override int DescriptionMaxStacks => characterState == null ? _maxStacks : MaxStacksCount;
 
     public override States State => States.BindingPoison;
     public override StateType Type => StateType.Physical;

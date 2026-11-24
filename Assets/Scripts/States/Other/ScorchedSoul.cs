@@ -10,6 +10,8 @@ public class ScorchedSoul : StateStackingRefreshing
     private float _baseDuration;
     private float _duration;
 
+    protected override int DescriptionMaxStacks => characterState == null ? 3 : MaxStacksCount;
+
     public override States State => States.ScorchedSoul;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override StateType Type => StateType.Immaterial;

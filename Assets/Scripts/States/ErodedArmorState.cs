@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ErodedArmorStateStacking : StateStackingRefreshing
 {
     private const float ReductionPerStackPercent = -0.05f;
+
+    protected override int DescriptionMaxStacks => characterState == null ? 3 : MaxStacksCount;
 
     public override States State => States.ErodedArmor;
     public override StateType Type => StateType.Physical;

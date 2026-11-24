@@ -28,6 +28,12 @@ public class DestructionStateStacking : StateStackingRefreshing
         }
     }
 
+    protected override int DescriptionMaxStacks => characterState == null ? (IsStackingMode ? 2 : 1) : MaxStacksCount;
+    protected override float DescriptionMaxDuration => MaxDuration >= 0f ? MaxDuration : DefaultDuration;
+    protected override float DescriptionTickInterval => TickInterval;
+    protected override object DescriptionDamage => CreateDescriptionDamage(_damagePerTickBase * DescriptionStacks, DamageType.Magical, Schools.Dark);
+    protected override object DescriptionDamagePerStack => CreateDescriptionDamage(_damagePerTickBase, DamageType.Magical, Schools.Dark);
+
     public override States State { get; }
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

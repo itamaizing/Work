@@ -166,8 +166,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         if (target == null || target.CharacterState == null) return;
 
         float remaining = (float)(endTime - NetworkTime.time);
-        var state = new LocalVisualState(States.BlockCooldown, endTime,
-            "Блокировка удара: перезарядка", "Блокировка удара против этой цели перезаряжается.", Icon);
+        var state = new LocalVisualState(States.BlockCooldown, endTime, Icon);
         target.CharacterState.AddLocalVisualState(state, remaining, Hero);
     }
 }

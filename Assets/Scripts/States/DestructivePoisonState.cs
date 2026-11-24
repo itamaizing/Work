@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +15,10 @@ public class DestructivePoisonStateStacking : StateStackingRefreshing
     private List<StatusEffect> _effects = new() { StatusEffect.Poison };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    protected override float DescriptionTickInterval => TickInterval;
+    protected override object DescriptionDamage => CreateDescriptionDamage(DamagePerTick * DescriptionStacks, DamageType.Physical, Schools.Earth);
+    protected override object DescriptionDamagePerStack => CreateDescriptionDamage(DamagePerTick, DamageType.Physical, Schools.Earth);
+
     public override States State => States.DestructivePoison;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

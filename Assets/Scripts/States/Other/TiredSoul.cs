@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class TiredSoul : StateStacking
@@ -6,6 +6,8 @@ public class TiredSoul : StateStacking
     private float _baseDuration;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    protected override int DescriptionMaxStacks => characterState == null ? 2 : MaxStacksCount;
+
     public override States State => States.TiredSoul;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

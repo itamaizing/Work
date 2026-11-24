@@ -31,6 +31,8 @@ public class FrozenStateStacking : StateStackingRefreshing
     private float _damageCount = 0f;
     
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    protected override int DescriptionMaxStacks => characterState == null ? MaxStacks : MaxStacksCount;
+
     public override States State => States.Frozen;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

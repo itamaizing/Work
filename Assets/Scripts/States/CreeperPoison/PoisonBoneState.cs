@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +28,11 @@ public class PoisonBoneStateStacking : StateStackingRefreshing
     public float StacksDuration { get =>RemainingDuration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
+    protected override int DescriptionMaxStacks => characterState == null ? (_maxStacks) : MaxStacksCount;
+    protected override float DescriptionTickInterval => _startTimeBetweenAttack;
+    protected override object DescriptionDamage => CreateDescriptionDamage(_baseDamage * DescriptionStacks, DamageType.Magical);
+    protected override object DescriptionDamagePerStack => CreateDescriptionDamage(_baseDamage, DamageType.Magical);
+
     public override States State => States.PoisonBone;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

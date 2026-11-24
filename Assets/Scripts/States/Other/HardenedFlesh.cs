@@ -1,10 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HardenedFlesh : StateStackingRefreshing
 {
     private List<StatusEffect> _effects = new() { StatusEffect.Destruction };
+
+    protected override int DescriptionMaxStacks => characterState == null ? _maxStacks : MaxStacksCount;
 
     public override States State => States.HardenedFlesh;
     public override StateType Type => StateType.Physical;

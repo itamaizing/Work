@@ -281,23 +281,24 @@ public class TalentSystem : NetworkBehaviour
     public bool SetActive(int group, int row, string name, bool value, int lvl)
    {
        var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
-       if (talentGroup == null) return false;
-
-       if (value && !talentGroup.CanOpenRow(this, row)) return false;
+       if (talentGroup == null || row < 0 || row >= talentGroup.TalentRows.Count) return false;
 
        var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
        if (talent == null) return false;
 
+       int currentLevel = talent.Data.IsOpen ? Mathf.Max(1, talent.Data.Level) : 0;
+       int targetLevel = value ? lvl : 0;
+       if (targetLevel == currentLevel) return false;
+       if (value && (lvl < 1 || lvl > Mathf.Max(1, talent.Data.MaxLvl))) return false;
+       int pointCost = targetLevel - currentLevel;
+       if (pointCost > 0 && pointCost > Points) return false;
+       if (value && !talentGroup.CanOpenRow(this, row)) return false;
+
        if (!talent.TrySetActive(value, lvl)) return false;
 
-       if (value) Points--;
-       else
-       {
-           int maxPoints = GetMaxTalentPoints();
-           if (_points < maxPoints) Points++;
-       }
+       Points -= pointCost;
 
-       if (!value)
+       if (pointCost < 0)
            Points += CascadeCloseInvalidated();
 
        return true;
@@ -348,20 +349,11 @@ public class TalentSystem : NetworkBehaviour
 
     public void SetActive(int group, int row, string name, bool value)
     {
-        //Debug.Log(" Try group" + group + " row " + row + " " + name);
-        //Debug.Log(" Has group" + _talents.Count + " row " + _talents[0].TalentRows.Count + " " + _talents[0].TalentRows[0].Talents.Count);
         var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
-
+        if (talentGroup == null || row < 0 || row >= talentGroup.TalentRows.Count) return;
         var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
-        talent.SetActive(value);
-        if (value) Points--;
-
-        else
-        {
-            int maxPoints = GetMaxTalentPoints();
-            if (_points < maxPoints) Points++;
-        }
-        //_talents[group].TalentRows[row].Talents[id].SetActive(value);
+        if (talent == null) return;
+        SetActive(group, row, name, value, value ? Mathf.Max(1, talent.Data.Level) : 0);
     }
 
     public void SwitchTalent(int id, int row, string talentName, bool isActive)

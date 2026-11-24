@@ -1,10 +1,12 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Knockdown : StateStackingRefreshing
 {
     private float _baseDuration;
+
+    protected override int DescriptionMaxStacks => characterState == null ? 3 : MaxStacksCount;
 
     public override States State => States.Knockdown;
     public override StateType Type => StateType.Physical;

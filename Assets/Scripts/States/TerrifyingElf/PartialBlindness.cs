@@ -23,6 +23,8 @@ public class PartialBlindness : StateStackingRefreshing
     //private string _talentPartialBlindnessActive;
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
+    protected override int DescriptionMaxStacks => characterState == null ? MaxStacks : MaxStacksCount;
+
     public override States State => States.PartialBlindness;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

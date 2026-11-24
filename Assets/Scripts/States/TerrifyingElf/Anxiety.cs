@@ -8,6 +8,8 @@ public class Anxiety : StateStacking
     private const int maxStacks = 3;
 
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Ability, StatusEffect.Strengthening };
+    protected override int DescriptionMaxStacks => characterState == null ? maxStacks : MaxStacksCount;
+
     public override States State => States.Anxiety;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

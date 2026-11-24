@@ -59,6 +59,121 @@ MonoBehaviour:
     m_Localized: Can't move or cast skills.
     m_Metadata:
       m_Items: []
+  - m_Id: 9100200000000001
+    m_Localized: "Destructive Poison"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000002
+    m_Localized: "Deals {DamagePerStack} per stack every {TickInterval:seconds}. Maximum stacks: {MaxStacks}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100200000000003
+    m_Localized: "Physical debuff. Total damage per tick: {Damage}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100200000000004
+    m_Localized: "Regenerating Poison"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000005
+    m_Localized: "Restores {HealingPerStack} health per stack every {TickInterval:seconds}. Maximum stacks: {MaxStacks}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100200000000006
+    m_Localized: "Physical buff. Total healing per tick: {Healing}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100200000000007
+    m_Localized: "Stun"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000008
+    m_Localized: "Prevents movement and ability use for {Duration:seconds}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100200000000009
+    m_Localized: "Physical debuff."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000001
+    m_Localized: "Time remaining: {RemainingDuration:seconds}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100300000000002
+    m_Localized: "Stacks: {Stacks} / {MaxStacks}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100300000000003
+    m_Localized: "Healing Poison"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000004
+    m_Localized: "Restores {Healing} health every {TickInterval:seconds}. Each subsequent tick restores 1 more health."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100300000000005
+    m_Localized: "Each effect acts independently."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000006
+    m_Localized: "Divine Aura"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000007
+    m_Localized: "Reduces ability cooldowns by {CooldownReduction}%."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100300000000008
+    m_Localized: "Magic buff."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000009
+    m_Localized: "Strike Block: Cooldown"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000010
+    m_Localized: "Strike Block against this target is on cooldown."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000011
+    m_Localized: ""
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000012
+    m_Localized: "Attack Series"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000013
+    m_Localized: "Hits in the series: {Stacks}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100300000000014
+    m_Localized: "Buff."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000015
+    m_Localized: "Attack Series"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000016
+    m_Localized: "Hits in the series: {Stacks}."
+    m_Metadata:
+      m_Items:
+      - rid: 7005414599070581089
+  - m_Id: 9100300000000017
+    m_Localized: "Buff."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
@@ -71,3 +186,14 @@ MonoBehaviour:
         - id: 1380432470016
         - id: 68840054784
         - id: 116168581120
+        - id: 9100200000000002
+        - id: 9100200000000003
+        - id: 9100200000000005
+        - id: 9100200000000006
+        - id: 9100200000000008
+        - id: 9100300000000001
+        - id: 9100300000000002
+        - id: 9100300000000004
+        - id: 9100300000000007
+        - id: 9100300000000013
+        - id: 9100300000000016

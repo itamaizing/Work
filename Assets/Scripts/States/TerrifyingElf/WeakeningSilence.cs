@@ -6,6 +6,10 @@ public class WeakeningSilence : StateStacking, ITickableState
     private const int MaxStacks = 6;
     private const float DamagePerStack = 3f;
 
+    protected override int DescriptionMaxStacks => characterState == null ? (MaxStacks) : MaxStacksCount;
+    protected override object DescriptionDamage => CreateDescriptionDamage(DamagePerStack * DescriptionStacks, DamageType.Magical);
+    protected override object DescriptionDamagePerStack => CreateDescriptionDamage(DamagePerStack, DamageType.Magical);
+
     public override States State => States.WeakeningSilence;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class InjectionAdrenalineState : StateBasic
@@ -16,6 +16,12 @@ public class InjectionAdrenalineState : StateBasic
     private float _originalMoveDuration;
 
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Strengthening };
+
+    protected override float DescriptionTickInterval => 1f;
+    protected override float? DescriptionPercentDamage => DamagePercentPerSecond * 100f;
+    protected override object DescriptionDamage => health != null
+        ? CreateDescriptionDamage(health.MaxValue * DamagePercentPerSecond, DamageType.None)
+        : new GameDescriptions.DescriptionUnavailable();
 
     public override States State => States.InjectionAdrenaline;
     public override StateType Type => StateType.Physical;

@@ -1,8 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingStateStackingCarry : StateStackingRefreshing, IDescriptionValue
+public class BleedingStateStackingCarry : StateStackingRefreshing
 {
     public const float DefaultDamage = 0.003f;
     private float _baseDamage;
@@ -18,21 +18,12 @@ public class BleedingStateStackingCarry : StateStackingRefreshing, IDescriptionV
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public bool TryGetDescriptionValue(string key, out object value)
-    {
-        switch (key)
-        {
-            case "PercentDamage":
-                value = (characterState == null ? DefaultDamage : _percentDamage) * 100f;
-                return true;
-            case "MaxDuration":
-                value = MaxDuration;
-                return true;
-            default:
-                value = null;
-                return false;
-        }
-    }
+    protected override float DescriptionMaxDuration => MaxDuration;
+    protected override float DescriptionTickInterval => _startTimeBetweenAttack;
+    protected override float? DescriptionPercentDamage => (characterState == null ? DefaultDamage : _percentDamage) * 100f;
+    protected override object DescriptionDamage => health != null
+        ? CreateDescriptionDamage(health.MaxValue * _percentDamage, DamageType.Physical)
+        : new GameDescriptions.DescriptionUnavailable();
 
     protected override void BaseInit(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {

@@ -1,8 +1,20 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class BurningMatterDebuff : StateStackingRefreshing
 {
+    protected override object DescriptionDamage => CreateDescriptionDamage(_damagePerMetr, DamageType.Magical, Schools.Fire);
+
+    public override bool TryGetDescriptionValue(string key, out object value)
+    {
+        if (key == "DamagePerMeter")
+        {
+            value = DescriptionDamage;
+            return true;
+        }
+        return base.TryGetDescriptionValue(key, out value);
+    }
+
     private List<StatusEffect> _effects = new List<StatusEffect>();
     protected float _damagePerMetr = 3;
     protected float _baseDamagePerMetr = 3;

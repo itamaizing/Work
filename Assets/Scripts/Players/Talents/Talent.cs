@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-public abstract class Talent : MonoBehaviour
+public abstract class Talent : MonoBehaviour, IDescriptionValue
 {
     [SerializeField]
     private TalentData _data;
@@ -33,6 +33,7 @@ public abstract class Talent : MonoBehaviour
         _rowIndex = rowIndex;
 
         _data.Init();
+        _data.DescriptionValues = this;
         _data.DescriptionOwner = character != null ? character : GetComponentInParent<Character>();
         _data.Name = GetType().Name;
         _data.Group = groupId;
@@ -48,6 +49,16 @@ public abstract class Talent : MonoBehaviour
     }
 
     public abstract void Enter();
+
+    public virtual bool TryGetDescriptionValue(string key, out object value)
+    {
+        switch (key)
+        {
+            case "Level": value = Data.Level; return true;
+            case "MaxLevel": value = Data.MaxLvl; return true;
+            default: value = null; return false;
+        }
+    }
 
     public abstract void Exit();
 

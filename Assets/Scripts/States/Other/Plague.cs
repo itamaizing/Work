@@ -12,6 +12,15 @@ public class Plague : StateStackingRefreshing
 
     private float _damageSum;
 
+    protected override int DescriptionMaxStacks => MaxStacks;
+    protected override float DescriptionMaxDuration => DurationTime;
+    protected override float DescriptionTickInterval => TickInterval;
+    protected override float? DescriptionPercentDamage => DescriptionStacks;
+    protected override float? DescriptionPercentDamagePerStack => 1f;
+    protected override object DescriptionDamage => _healthResource != null
+        ? CreateDescriptionDamage(_healthResource.MaxValue * 0.01f * DescriptionStacks, DamageType.Magical, Schools.Dark)
+        : new GameDescriptions.DescriptionUnavailable();
+
     public override States State => States.Plague;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

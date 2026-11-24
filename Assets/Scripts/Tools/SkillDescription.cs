@@ -22,22 +22,23 @@ namespace GameDescriptions
             if (info == null || !context.ActiveAbilities.Add(info)) return;
             try
             {
+                context = context.WithSkill(skill);
                 if (includeName) DescriptionTable.AddText(rows, info.Name);
                 if (info.DescriptionTable != null && info.DescriptionTable.HasEntries)
                 {
                     info.DescriptionTable.Append(rows, context);
-                    DescriptionTable.AddText(rows, info.SupplementalDescription);
+                    DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(info.SupplementalDescription, context));
                 }
                 else
                 {
-                    DescriptionTable.AddText(rows, skill != null ? skill.Description : info.AddingDescription);
+                    DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(skill != null ? skill.Description : info.AddingDescription, context));
                     if (!string.IsNullOrWhiteSpace(info.State) || !string.IsNullOrWhiteSpace(info.DescriptionState))
                         DescriptionTable.AddText(rows, $"<color=#FFFF00>{info.State}</color> {info.DescriptionState}");
                 }
                 if (skill != null)
                 {
                     if (includeStats) DescriptionTable.AddText(rows, GetStats(skill));
-                    DescriptionTable.AddText(rows, skill.AdditionalDescription);
+                    DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(skill.AdditionalDescription, context));
                 }
             }
             finally

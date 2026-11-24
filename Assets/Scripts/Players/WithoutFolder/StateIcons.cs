@@ -42,14 +42,10 @@ public class StateIcons : MonoBehaviour
             if (data.Icon != null) ico.Icon.sprite = data.Icon;
             ico.border.color = data.BorderColor == Color.white ? GetBorderColor(state.State) : data.BorderColor;
 
-            ico.ResolvedTooltipName = string.IsNullOrEmpty(data.TooltipName) ? state.TooltipName : data.TooltipName;
-            ico.ResolvedTooltipDescription = string.IsNullOrEmpty(data.TooltipDescription) ? state.TooltipDescription : data.TooltipDescription;
         }
         else
         {
             ico.border.color = GetFallbackColor(state.State);
-            ico.ResolvedTooltipName = state.TooltipName;
-            ico.ResolvedTooltipDescription = state.TooltipDescription;
         }
 
         if (state.DisplayIcon != null) ico.Icon.sprite = state.DisplayIcon;

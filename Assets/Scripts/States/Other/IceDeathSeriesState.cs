@@ -3,6 +3,7 @@ using UnityEngine;
 
 public sealed class IceDeathSeriesState : StateBasic
 {
+    protected override bool HasDescriptionRuntimeData => true;
     private readonly States _state;
     private bool _paused;
 
@@ -16,7 +17,6 @@ public sealed class IceDeathSeriesState : StateBasic
     public override int CurrentStacksCount { get; protected set; }
     public override int MaxStacksCount => int.MaxValue;
 
-    public override string TooltipName => "Серия приёмов";
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName)
     {

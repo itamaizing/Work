@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class RestorationStateStacking : StateStackingRefreshing
 {
+    protected override int DescriptionMaxStacks => characterState == null ? (IsStackingMode ? 2 : 1) : MaxStacksCount;
+    protected override float DescriptionMaxDuration => MaxDuration >= 0f ? MaxDuration : DefaultDuration;
+    protected override float DescriptionTickInterval => TickInterval;
+    protected override float? DescriptionHealing => _healPerTickBase * DescriptionStacks;
+    protected override float? DescriptionHealingPerStack => _healPerTickBase;
+
     private const float DefaultDuration = 12f;
     private const float TickInterval = 3f;
     private const double TickTolerance = 0.001;

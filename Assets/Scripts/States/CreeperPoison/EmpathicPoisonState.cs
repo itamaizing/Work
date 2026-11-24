@@ -31,6 +31,8 @@ public class EmpathicPoisonsState : StateStackingRefreshing, IDamageable
     public float StacksDuration { get => RemainingDuration; }
 
     public event Action<Damage, Skill> DamageTaken;
+    protected override int DescriptionMaxStacks => characterState == null ? _maxStacks : MaxStacksCount;
+
     public override States State => States.EmpathicPoisons;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +8,8 @@ public class ComboStateStacking : StateStackingRefreshing
     private float _durationRemaining;
     private string _skillName;
     public int InitialStackCount = 3;
+
+    protected override int DescriptionMaxStacks => characterState == null ? 3 : MaxStacksCount;
 
     public override States State => States.ComboState;
     public override StateType Type => StateType.Magic;

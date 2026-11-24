@@ -185,6 +185,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     private void OnRightClick()
     {
+        if (!_talent.IsOpen || _talent.Level < 1) return;
         if (_talent.Level >= 2)
         {
             _lvlText.text = (_talent.Level - 1).ToString();
@@ -210,6 +211,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (_talent == null || !_button.IsInteractable()) return;
         if (SaveManager.Instance.HasPendingRequests)
             return;
         if (eventData.button == PointerEventData.InputButton.Left)

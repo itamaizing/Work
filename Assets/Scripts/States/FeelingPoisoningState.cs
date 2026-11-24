@@ -8,6 +8,8 @@ public class FeelingPoisoningStateStacking : StateStackingRefreshing
     
     public override float StackLingerTime => 0.1f;
 
+    protected override int DescriptionMaxStacks => characterState == null ? MaxStacks : MaxStacksCount;
+
     public override States State => States.FeelingPoisoning;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
@@ -12,6 +12,8 @@ public class IgnitionStateStacking : StateStackingRefreshing, ITickableState
     private int _currentTick;
     private float _damageBonus;
     private float _fireBreathBonus;
+
+    protected override object DescriptionDamage => CreateDescriptionDamage((_currentTick + 1 + _damageBonus) * (1f + _fireBreathBonus), DamageType.Magical, Schools.Fire);
 
     public override States State => States.Ignition;
     public override StateType Type => StateType.Magic;

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +14,8 @@ public class Calmness : StateStackingRefreshing
     private Coroutine _regenRoutine;
 
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Healing };
+    protected override int DescriptionMaxStacks => characterState == null ? _baseMaxStacks : MaxStacksCount;
+
     public override States State => States.Calmness;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

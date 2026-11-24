@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class IrradiationState : StateStackingRefreshing
@@ -9,6 +9,8 @@ public class IrradiationState : StateStackingRefreshing
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    protected override int DescriptionMaxStacks => characterState == null ? 3 : MaxStacksCount;
+
     public override States State => States.Irradiation;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

@@ -14,6 +14,4 @@ public class StateIcoData
     public States State;
     public Sprite Icon;
     public Color BorderColor = Color.white;
-    [TextArea] public string TooltipName;
-    [TextArea] public string TooltipDescription;
 }

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +11,10 @@ public class BleedingScraderDebuff : StateStackingRefreshing
     private float _damage;
     private float _baseDamage;
     private float timerTick = 0;
+
+    protected override float DescriptionTickInterval => 1f;
+    protected override object DescriptionDamage => characterState != null
+        ? CreateDescriptionDamage(_damage, DamageType.Physical) : new GameDescriptions.DescriptionUnavailable();
 
     public override States State => States.BleedingScrader;
     public override StateType Type => StateType.Physical;

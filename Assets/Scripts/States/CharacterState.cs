@@ -38,8 +38,64 @@ public enum StateParameter
     ExtraDuration,
 }
 
-public abstract class StateBasic
+public abstract class StateBasic : IDescriptionValue
 {
+    protected virtual float DescriptionMaxDuration => MaxDuration;
+    protected virtual float DescriptionTickInterval => this is ITickableState tickable ? tickable.TickInterval : -1f;
+    protected virtual int DescriptionMaxStacks => MaxStacksCount;
+    protected virtual bool HasDescriptionRuntimeData => characterState != null;
+    protected int DescriptionStacks => HasDescriptionRuntimeData ? CurrentStacksCount : 1;
+    protected virtual object DescriptionDamage => null;
+    protected virtual object DescriptionDamagePerStack => null;
+    protected virtual float? DescriptionPercentDamage => null;
+    protected virtual float? DescriptionPercentDamagePerStack => null;
+    protected virtual float? DescriptionHealing => null;
+    protected virtual float? DescriptionHealingPerStack => null;
+
+    public virtual bool TryGetDescriptionValue(string key, out object value)
+    {
+        switch (key)
+        {
+            case "Duration":
+                value = DescriptionTime(MaxDuration >= 0f ? MaxDuration : DescriptionMaxDuration);
+                return true;
+            case "MaxDuration": value = DescriptionTime(DescriptionMaxDuration); return true;
+            case "RemainingDuration":
+                value = DescriptionTime(HasDescriptionRuntimeData ? RemainingDuration : DescriptionMaxDuration);
+                return true;
+            case "Stacks":
+            case "CurrentStacksCount": value = DescriptionStacks; return true;
+            case "MaxStacks":
+            case "MaxStacksCount": value = DescriptionMaxStacks; return true;
+            case "TickInterval":
+                value = DescriptionTickInterval >= 0f ? (object)DescriptionTickInterval : null;
+                return value != null;
+            case "Damage": value = DescriptionDamage; return value != null;
+            case "DamagePerTick":
+                value = DescriptionTickInterval >= 0f ? DescriptionDamage : null;
+                return value != null;
+            case "DamagePerStack": value = DescriptionDamagePerStack; return value != null;
+            case "PercentDamage": value = DescriptionPercentDamage; return value != null;
+            case "PercentDamagePerStack": value = DescriptionPercentDamagePerStack; return value != null;
+            case "Healing": value = DescriptionHealing; return value != null;
+            case "HealingPerTick":
+                value = DescriptionTickInterval >= 0f ? DescriptionHealing : null;
+                return value != null;
+            case "HealingPerStack": value = DescriptionHealingPerStack; return value != null;
+            case "State": value = State; return true;
+            case "StateType": value = Type; return true;
+            case "School": value = Schools; return true;
+            case "Name": value = State.ToString(); return true;
+            default: value = null; return false;
+        }
+    }
+
+    private object DescriptionTime(float time)
+        => time >= 0f ? time : HasDescriptionRuntimeData ? float.PositiveInfinity : new GameDescriptions.DescriptionUnavailable();
+
+    protected Damage CreateDescriptionDamage(float amount, DamageType type, Schools school = Schools.None)
+        => new Damage { Value = amount, Type = type, School = school, IsDot = DescriptionTickInterval > 0f, SourceSkill = skill };
+
     protected CharacterState characterState;
     protected SkillManager abilities;
     protected Health health;
@@ -69,8 +125,6 @@ public abstract class StateBasic
     public virtual int MaxStacksCount => 1;
     public double StartTime { get; private set; }
     
-    public virtual string TooltipName => State.ToString();
-    public virtual string TooltipDescription => string.Empty;
     public virtual Sprite DisplayIcon => null;
 
     protected readonly Dictionary<StateParameter, object> parameters = new();
@@ -221,8 +275,6 @@ public sealed class LocalVisualState : StateBasic
 {
     private readonly States _state;
     private readonly double _endTime;
-    private readonly string _name;
-    private readonly string _description;
     private readonly Sprite _icon;
     private readonly List<StatusEffect> _effects = new();
 
@@ -231,16 +283,12 @@ public sealed class LocalVisualState : StateBasic
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
-    public override string TooltipName => _name;
-    public override string TooltipDescription => _description;
     public override Sprite DisplayIcon => _icon;
 
-    public LocalVisualState(States state, double endTime, string name, string description, Sprite icon = null)
+    public LocalVisualState(States state, double endTime, Sprite icon = null)
     {
         _state = state;
         _endTime = endTime;
-        _name = name;
-        _description = description;
         _icon = icon;
     }
 

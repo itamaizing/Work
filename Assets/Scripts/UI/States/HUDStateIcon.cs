@@ -12,9 +12,6 @@ public class HUDStateIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     internal StateBasic State { get; private set; }
 
-    private string _tooltipName;
-    private string _tooltipDescription;
-
     internal void Bind(StateBasic state, StateIcoData data, Color color)
     {
         State = state;
@@ -24,8 +21,6 @@ public class HUDStateIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         if (_icon.sprite == null) _icon.color = new Color32(30, 30, 30, 255);
         _border.color = data != null && data.BorderColor != Color.white ? data.BorderColor : color;
         _text.color = color;
-        _tooltipName = string.IsNullOrEmpty(data?.TooltipName) ? state.TooltipName : data.TooltipName;
-        _tooltipDescription = string.IsNullOrEmpty(data?.TooltipDescription) ? state.TooltipDescription : data.TooltipDescription;
 
         if (isActiveAndEnabled) SubscribeToState();
     }
@@ -65,9 +60,7 @@ public class HUDStateIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (string.IsNullOrEmpty(_tooltipName) && string.IsNullOrEmpty(_tooltipDescription)) return;
-
-        StateTooltip.Instance?.RequestShow(this, _tooltipName, _tooltipDescription);
+        StateTooltip.Instance?.RequestShow(this, State);
     }
 
     public void OnPointerExit(PointerEventData eventData) => StateTooltip.Instance?.Hide(this);

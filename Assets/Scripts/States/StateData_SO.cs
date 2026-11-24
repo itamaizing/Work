@@ -11,7 +11,10 @@ public class StateData_SO : ScriptableObject
     public LocalizedString Description;
     public LocalizedString Tooltip;
 
-    public StateBasic StateScript => CharacterState.enumToState[State];
+    public StateBasic StateScript => CharacterState.enumToState.TryGetValue(State, out var value) ? value : null;
+
+    private void OnEnable() => GameDescriptions.StateDescription.Register(this);
+    private void OnDisable() => GameDescriptions.StateDescription.Unregister(this);
 
 #if UNITY_EDITOR
     [MenuItem("Tools/Generate Missing StateData")]

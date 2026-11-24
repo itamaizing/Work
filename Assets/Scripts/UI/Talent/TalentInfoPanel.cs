@@ -36,7 +36,7 @@ public class TalentInfoPanel : MonoBehaviour
         var rows = new List<GameDescriptions.DescriptionRow>();
         GameDescriptions.DescriptionTable.AddText(rows, fullCondition);
         if (data.DescriptionTable != null && data.DescriptionTable.HasEntries)
-            rows.AddRange(data.DescriptionTable.Build(data.DescriptionOwner));
+            rows.AddRange(data.DescriptionTable.Build(data.DescriptionOwner, values: data.DescriptionValues));
         else
             AppendLegacyDescription(rows, data);
 

@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class LightningEvadeStateStacking : StateStackingRefreshing
 {
     private float _evadePerStack = 10f; 
+
+    protected override int DescriptionMaxStacks => characterState == null ? 4 : MaxStacksCount;
 
     public override States State => States.LightningEvade;
     public override StateType Type => StateType.Physical;

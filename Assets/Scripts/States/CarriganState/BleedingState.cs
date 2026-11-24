@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +13,11 @@ public class BleedingStateStacking : StateStackingRefreshing
     private float _startTimeBetweenAttack = 1.0f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>();
+    protected override int DescriptionMaxStacks => characterState == null ? (3) : MaxStacksCount;
+    protected override float DescriptionTickInterval => _startTimeBetweenAttack;
+    protected override object DescriptionDamage => characterState != null
+        ? CreateDescriptionDamage(_baseDamage, DamageType.Physical) : new GameDescriptions.DescriptionUnavailable();
+
     public override States State => States.Bleeding;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

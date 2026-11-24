@@ -19,6 +19,12 @@ public class PoisonCloudStateStacking : StateStackingRefreshing
     private Character _caster;
     private float _tickTimer;
 
+    protected override int DescriptionMaxStacks => characterState == null ? (MaxStacks) : MaxStacksCount;
+    protected override float DescriptionTickInterval => TickRate;
+    protected override float? DescriptionPercentDamage => BaseDamagePercent * 100f * DescriptionStacks;
+    protected override float? DescriptionPercentDamagePerStack => BaseDamagePercent * 100f;
+    protected override object DescriptionDamage => new GameDescriptions.DescriptionUnavailable();
+
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

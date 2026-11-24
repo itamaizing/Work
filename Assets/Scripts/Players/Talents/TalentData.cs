@@ -9,6 +9,7 @@ public class TalentData
 	[SerializeField] private GameDescriptions.DescriptionTable _descriptionTable = new();
 	public GameDescriptions.DescriptionTable DescriptionTable => _descriptionTable;
 	public Character DescriptionOwner { get; set; }
+	public IDescriptionValue DescriptionValues { get; set; }
 	[SerializeField, TextArea] private List<string> _descriptionsForInfoPanel;
 	[SerializeField] private List<TalentStateInfo> _stateInfos = new();
 

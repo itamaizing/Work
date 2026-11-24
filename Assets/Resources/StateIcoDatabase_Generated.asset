@@ -394,8 +394,6 @@ MonoBehaviour:
   - State: 139
     Icon: {fileID: 21300000, guid: 3c3e6d241aa0f644f911b5c1a63f77bb, type: 3}
     BorderColor: {r: 1, g: 1, b: 1, a: 1}
-    TooltipName: Серия приёмов
   - State: 140
     Icon: {fileID: 21300000, guid: 060880a1a872c9d41895f9e89e58cd3a, type: 3}
     BorderColor: {r: 1, g: 1, b: 1, a: 1}
-    TooltipName: Серия приёмов

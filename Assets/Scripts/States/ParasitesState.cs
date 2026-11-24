@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ParasitesStateStacking : StateStackingRefreshing, ITickableState
@@ -9,6 +9,12 @@ public class ParasitesStateStacking : StateStackingRefreshing, ITickableState
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Poison };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    protected override float? DescriptionPercentDamage => PercentDamage * 100f * DescriptionStacks;
+    protected override float? DescriptionPercentDamagePerStack => PercentDamage * 100f;
+    protected override object DescriptionDamage => health != null
+        ? CreateDescriptionDamage(health.CurrentValue * PercentDamage * DescriptionStacks, DamageType.Physical)
+        : new GameDescriptions.DescriptionUnavailable();
+
     public override States State => States.Parasites;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

@@ -22,9 +22,7 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
         int experience = _saveData.LoadInt($"{heroKey}_Group{saveGroup}_Experience", 0);
         LevelCharacterManager.Instance.ApplyLoadedLevelData(hero, level, experience);
 
-        int talentPoints = _saveData.LoadInt($"{heroKey}_TalentPointsCount", 0);
-        hero.TalentManager.SetPoints(talentPoints);
-
+        int spentTalentPoints = 0;
         foreach (var talentGroup in hero.TalentManager.TalentsGroups)
         foreach (var row in talentGroup.TalentRows)
         foreach (var talent in row.Talents)
@@ -33,7 +31,13 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
             talent.Data.SetOpen(lvl >= 1);
             talent.Data.SetLevel(lvl);
             talentGroup.SetActive(talent.Data, lvl >= 1, lvl);
+            if (lvl > 0) spentTalentPoints += lvl;
         }
+
+        int pointBudget = LevelCharacterManager.Instance.GetCurrentLevel();
+        int defaultTalentPoints = Math.Max(0, pointBudget - spentTalentPoints);
+        int talentPoints = _saveData.LoadInt($"{heroKey}_TalentPointsCount", defaultTalentPoints);
+        hero.TalentManager.SetPoints(talentPoints);
 
         if (isStillCurrent != null && !isStillCurrent()) { onComplete?.Invoke(); return; }
 
@@ -51,7 +55,8 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
             }
         }
 
-        int freeAttributePoints = _saveSystem.LoadOrDefault($"{heroKey}_Group{saveGroup}_FreeAttributesPoints", 0);
+        int defaultAttributePoints = Math.Max(0, pointBudget - entries.Sum(entry => entry.points));
+        int freeAttributePoints = _saveSystem.LoadOrDefault($"{heroKey}_Group{saveGroup}_FreeAttributesPoints", defaultAttributePoints);
         attributesPanel?.ApplyServerAttributePoints(entries, freeAttributePoints);
 
         onComplete?.Invoke();
@@ -77,7 +82,9 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
 
         _saveSystem.Save($"{hero.Data.Name}_Group{saveGroup}_{attributeName}_Points", attribute.Modifiers);
 
-        int freePoints = _saveSystem.LoadOrDefault($"{hero.Data.Name}_Group{saveGroup}_FreeAttributesPoints", 0);
+        int defaultFreePoints = Math.Max(0, LevelCharacterManager.Instance.GetCurrentLevel() -
+            hero.AttributeSystem.GetSpentPoints() + delta);
+        int freePoints = _saveSystem.LoadOrDefault($"{hero.Data.Name}_Group{saveGroup}_FreeAttributesPoints", defaultFreePoints);
         freePoints -= delta;
         _saveSystem.Save($"{hero.Data.Name}_Group{saveGroup}_FreeAttributesPoints", freePoints);
 

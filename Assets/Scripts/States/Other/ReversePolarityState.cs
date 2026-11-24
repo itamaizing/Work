@@ -1,8 +1,14 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ReversePolarityState : StateBasic
 {
+    protected override float DescriptionTickInterval => _tickInterval;
+    protected override float? DescriptionPercentDamage => _damagePercent * 100f;
+    protected override object DescriptionDamage => health != null
+        ? CreateDescriptionDamage(health.MaxValue * _damagePercent, DamageType.Magical)
+        : new GameDescriptions.DescriptionUnavailable();
+
     public override States State => States.ReversePolarity;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

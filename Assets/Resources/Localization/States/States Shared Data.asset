@@ -51,6 +51,110 @@ MonoBehaviour:
     m_Key: Stupefaction.Tooltip
     m_Metadata:
       m_Items: []
+  - m_Id: 9100200000000001
+    m_Key: Creeper.DestructivePoison.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000002
+    m_Key: Creeper.DestructivePoison.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000003
+    m_Key: Creeper.DestructivePoison.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000004
+    m_Key: Creeper.RegeneratingPoison.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000005
+    m_Key: Creeper.RegeneratingPoison.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000006
+    m_Key: Creeper.RegeneratingPoison.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000007
+    m_Key: Stun.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000008
+    m_Key: Stun.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100200000000009
+    m_Key: Stun.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000001
+    m_Key: Common.RemainingDuration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000002
+    m_Key: Common.Stacks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000003
+    m_Key: Creeper.HealingPoisonPerSecond.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000004
+    m_Key: Creeper.HealingPoisonPerSecond.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000005
+    m_Key: Creeper.HealingPoisonPerSecond.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000006
+    m_Key: GodAuraBuff.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000007
+    m_Key: GodAuraBuff.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000008
+    m_Key: GodAuraBuff.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000009
+    m_Key: BlockCooldown.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000010
+    m_Key: BlockCooldown.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000011
+    m_Key: BlockCooldown.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000012
+    m_Key: IceDeathSeriesPhysical.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000013
+    m_Key: IceDeathSeriesPhysical.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000014
+    m_Key: IceDeathSeriesPhysical.Tooltip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000015
+    m_Key: IceDeathSeriesMagic.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000016
+    m_Key: IceDeathSeriesMagic.Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100300000000017
+    m_Key: IceDeathSeriesMagic.Tooltip
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

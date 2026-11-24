@@ -166,7 +166,6 @@ public class SaveManager : MonoBehaviour
         var talent = group.TalentRows[row].Talents.FirstOrDefault(t => t.Data.Name == idTalent);
 
         if (talent == null) return;
-        if (isActive && !manager.CanOpenTalent) return;
 
         var before = HeroProgressSnapshotBuilder.Build(hero, _attributesPanel);
 

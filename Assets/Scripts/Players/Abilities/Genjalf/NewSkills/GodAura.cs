@@ -50,7 +50,15 @@ public class GodAuraBuff : StateStackingRefreshing
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override string TooltipDescription => $"Уменьшает перезарядку способностей на {CurrentStacksCount * 10}%";
+    public override bool TryGetDescriptionValue(string key, out object value)
+    {
+        if (key == "CooldownReduction")
+        {
+            value = DescriptionStacks * 10;
+            return true;
+        }
+        return base.TryGetDescriptionValue(key, out value);
+    }
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)

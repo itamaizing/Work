@@ -16,12 +16,9 @@ public class StateIcoItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public StateBasic StateInstance;
     public States State { get; set; }
 
-    public string ResolvedTooltipName { get; set; }
-    public string ResolvedTooltipDescription { get; set; }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
-        StateTooltip.Instance?.RequestShow(this, ResolvedTooltipName, ResolvedTooltipDescription);
+        StateTooltip.Instance?.RequestShow(this, StateInstance);
     }
 
     public void OnPointerExit(PointerEventData eventData) =>

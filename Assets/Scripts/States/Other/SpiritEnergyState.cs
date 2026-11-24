@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
@@ -16,6 +16,8 @@ public class SpiritEnergyStateStacking : StateStackingRefreshing
 
     private List<StatusEffect> _effects = new() { StatusEffect.Healing };
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    protected override int DescriptionMaxStacks => characterState == null ? _baseMaxStacks : MaxStacksCount;
+
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

@@ -14,10 +14,13 @@ public class StateTooltip : MonoBehaviour
     [SerializeField] private Canvas _rootCanvas;
     [SerializeField] private Vector2 _mouseOffset = new(16f, -16f);
     [SerializeField] private float _showDelay = 0.4f;
+    [SerializeField, Min(0.05f)] private float _refreshInterval = 0.1f;
 
     private Coroutine _showRoutine;
     private bool _isShowing;
     private MonoBehaviour _owner;
+    private StateBasic _state;
+    private float _nextRefresh;
     private readonly Vector3[] _corners = new Vector3[4];
 
     private void Awake()
@@ -28,37 +31,53 @@ public class StateTooltip : MonoBehaviour
         Hide();
     }
 
-    public void RequestShow(MonoBehaviour owner, string tooltipName, string description)
+    public void RequestShow(MonoBehaviour owner, StateBasic state)
     {
         Hide();
+        if (owner == null || state == null) return;
         _owner = owner;
-        _showRoutine = StartCoroutine(ShowAfterDelay(tooltipName, description));
+        _state = state;
+        _showRoutine = StartCoroutine(ShowAfterDelay());
     }
 
-    private IEnumerator ShowAfterDelay(string tooltipName, string description)
+    private IEnumerator ShowAfterDelay()
     {
-        yield return new WaitForSeconds(_showDelay);
-        ShowImmediate(tooltipName, description);
-    }
-
-    private void ShowImmediate(string tooltipName, string description)
-    {
+        yield return new WaitForSecondsRealtime(_showDelay);
+        _showRoutine = null;
+        if (_owner == null || !_owner.isActiveAndEnabled || _state == null)
+        {
+            Hide();
+            yield break;
+        }
         _root.SetActive(true);
         _isShowing = true;
-
-        _nameText.text = tooltipName;
-
-        bool hasDescription = !string.IsNullOrEmpty(description);
-        _descriptionText.gameObject.SetActive(hasDescription);
-        if (hasDescription) _descriptionText.text = description;
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
+        RefreshContent();
         UpdatePositionToMouse();
+    }
+
+    private void RefreshContent()
+    {
+        _nextRefresh = Time.unscaledTime + Mathf.Max(0.05f, _refreshInterval);
+        GameDescriptions.StateDescription.GetTooltip(_state, out string name, out string description);
+        bool hasDescription = !string.IsNullOrEmpty(description);
+        bool changed = _nameText.text != name || _descriptionText.text != description ||
+            _descriptionText.gameObject.activeSelf != hasDescription;
+        _nameText.text = name;
+        _descriptionText.text = description;
+        _descriptionText.gameObject.SetActive(hasDescription);
+        if (changed) LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
     }
 
     private void LateUpdate()
     {
-        if (_isShowing) UpdatePositionToMouse();
+        if (!_isShowing) return;
+        if (_owner == null || !_owner.isActiveAndEnabled || _state == null)
+        {
+            Hide();
+            return;
+        }
+        if (Time.unscaledTime >= _nextRefresh) RefreshContent();
+        UpdatePositionToMouse();
     }
 
     private void UpdatePositionToMouse()
@@ -101,9 +120,12 @@ public class StateTooltip : MonoBehaviour
     {
         CancelPendingShow();
         _owner = null;
+        _state = null;
         _isShowing = false;
         _root.SetActive(false);
     }
+
+    private void OnDisable() => Hide();
 
     private void CancelPendingShow()
     {

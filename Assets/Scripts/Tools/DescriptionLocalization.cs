@@ -18,6 +18,8 @@ namespace GameDescriptions
         {
             if (formatter.GetSourceExtension<DescriptionValueSource>() == null)
                 formatter.AddExtensions(new DescriptionValueSource());
+            if (formatter.GetFormatterExtension<DescriptionValueFormatter>() == null)
+                formatter.AddExtensions(new DescriptionValueFormatter());
         }
     }
 

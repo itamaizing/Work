@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Localization;
 
@@ -15,12 +16,9 @@ namespace GameDescriptions
         public List<DescriptionEntry> Entries => _entries;
         public bool HasEntries => _entries != null && _entries.Count > 0;
 
-        public List<DescriptionRow> Build(Character owner = null, Skill skill = null)
+        public List<DescriptionRow> Build(Character owner = null, Skill skill = null, IDescriptionValue values = null)
         {
-            var context = new DescriptionContext(owner, skill);
-            var rows = new List<DescriptionRow>();
-            Append(rows, context);
-            return rows;
+            return DescriptionBuilder.BuildRows(this, new DescriptionContext(owner, skill, values));
         }
 
         internal void Append(List<DescriptionRow> rows, DescriptionContext context)
@@ -61,16 +59,48 @@ namespace GameDescriptions
             => new DescriptionRow(string.Empty, true, leftPadding, rightPadding);
     }
 
-    public sealed class DescriptionContext
+    public sealed class DescriptionContext : IDescriptionValue
     {
         public Character Owner { get; }
         public Skill Skill { get; }
-        internal HashSet<AbilityInfo> ActiveAbilities { get; } = new();
+        public IDescriptionValue Values { get; }
+        public CultureInfo Culture { get; }
+        public bool HasValues => Values != null || Skill is IDescriptionValue || Owner is IDescriptionValue;
+        internal HashSet<AbilityInfo> ActiveAbilities { get; }
+        internal HashSet<StateData_SO> ActiveStates { get; }
+        private readonly bool _useFallbackValues;
 
-        public DescriptionContext(Character owner, Skill skill)
+        public DescriptionContext(Character owner = null, Skill skill = null, IDescriptionValue values = null,
+            CultureInfo culture = null)
+            : this(owner, skill, values, culture, new HashSet<AbilityInfo>(), new HashSet<StateData_SO>(), true) { }
+
+        private DescriptionContext(Character owner, Skill skill, IDescriptionValue values, CultureInfo culture,
+            HashSet<AbilityInfo> activeAbilities, HashSet<StateData_SO> activeStates, bool useFallbackValues)
         {
             Owner = owner != null ? owner : skill != null ? skill.Hero : null;
             Skill = skill;
+            Values = values;
+            Culture = culture;
+            ActiveAbilities = activeAbilities;
+            ActiveStates = activeStates;
+            _useFallbackValues = useFallbackValues;
+        }
+
+        public DescriptionContext WithSkill(Skill skill)
+            => new DescriptionContext(Owner, skill, skill as IDescriptionValue, Culture, ActiveAbilities, ActiveStates, true);
+
+        public DescriptionContext WithValues(IDescriptionValue values, bool useFallbackValues = true)
+            => new DescriptionContext(Owner, Skill, values, Culture, ActiveAbilities, ActiveStates, useFallbackValues);
+
+        public bool TryGetDescriptionValue(string key, out object value)
+        {
+            if (Values != null && Values.TryGetDescriptionValue(key, out value)) return true;
+            if (_useFallbackValues && Skill is IDescriptionValue skill && !ReferenceEquals(skill, Values) &&
+                skill.TryGetDescriptionValue(key, out value)) return true;
+            if (_useFallbackValues && Owner is IDescriptionValue owner && !ReferenceEquals(owner, Values) &&
+                owner.TryGetDescriptionValue(key, out value)) return true;
+            value = null;
+            return false;
         }
 
         public Skill Resolve(AbilityInfo info)
@@ -96,7 +126,7 @@ namespace GameDescriptions
     {
         [TextArea] public string Text;
         public override void Append(List<DescriptionRow> rows, DescriptionContext context)
-            => DescriptionTable.AddText(rows, Text);
+            => DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(Text, context));
     }
 
     [Serializable]
@@ -106,7 +136,7 @@ namespace GameDescriptions
         public override void Append(List<DescriptionRow> rows, DescriptionContext context)
         {
             if (Text != null && !Text.IsEmpty)
-                DescriptionTable.AddText(rows, Text.GetLocalizedString());
+                DescriptionTable.AddText(rows, DescriptionLocalization.GetString(Text, context));
         }
     }
 
@@ -146,14 +176,7 @@ namespace GameDescriptions
 
         public override void Append(List<DescriptionRow> rows, DescriptionContext context)
         {
-            if (State == null) return;
-            CharacterState.enumToState.TryGetValue(State.State, out var values);
-            string name = DescriptionLocalization.GetString(State.Name, values);
-            string description = DescriptionLocalization.GetString(State.Description, values);
-            DescriptionTable.AddText(rows, $"<color={DescriptionTextProcessor.ColorMap[DescriptionTextProcessor.ColorPallete.Y]}>{name}</color> {description}");
-            string tooltip = DescriptionLocalization.GetString(State.Tooltip, values);
-            if (tooltip != description)
-                DescriptionTable.AddText(rows, tooltip);
+            StateDescription.Append(rows, State, context);
         }
     }
 }

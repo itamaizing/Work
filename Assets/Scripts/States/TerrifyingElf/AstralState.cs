@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class AstralStateStacking : StateStackingRefreshing
 {
+    protected override float DescriptionTickInterval => health != null && health.RegenerationPeriod > 0f ? health.RegenerationPeriod : 1f;
+    protected override object DescriptionDamage => characterState != null
+        ? CreateDescriptionDamage(_originalRegenerationValue, DamageType.Magical) : new GameDescriptions.DescriptionUnavailable();
+
     private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;
 

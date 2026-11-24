@@ -21,12 +21,15 @@ public class RegeneratingPoisonState : StateStacking
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing, StatusEffect.Poison };
 
+    protected override int DescriptionMaxStacks => characterState == null ? (_maxStacks) : MaxStacksCount;
+    protected override float DescriptionTickInterval => _startTimeBetweenHeal;
+    protected override float? DescriptionHealing => _baseHealingValue * DescriptionStacks;
+    protected override float? DescriptionHealingPerStack => _baseHealingValue;
+
     public override States State => States.RegeneratingPoison;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    public override string TooltipName => "Восстанавливающий яд";
-    public override string TooltipDescription => "Восстанавливает 1 здоровье в секунду за каждый стак. Максимум 2 стака. Повторное наложение обновляет длительность до 6 секунд.";
 
     public override void Apply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {

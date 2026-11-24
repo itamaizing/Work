@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
@@ -12,6 +12,8 @@ public class RetributionStateStacking : StateStackingRefreshing
 
     private List<StatusEffect> _effects;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    protected override int DescriptionMaxStacks => characterState == null ? 3 : MaxStacksCount;
+
     public override States State => States.Retribution;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

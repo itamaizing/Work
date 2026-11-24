@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fe13f202c4083478634c0b8771435a, type: 3}
+  m_Name: IceDeathSeriesPhysicalStateSO
+  m_EditorClassIdentifier: Assembly-CSharp::StateData_SO
+  State: 139
+  Name:
+    m_TableReference:
+      m_TableCollectionName: GUID:5ed1cb6a195baa54a899c77ed1f152ef
+    m_TableEntryReference:
+      m_KeyId: 9100300000000012
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Description:
+    m_TableReference:
+      m_TableCollectionName: GUID:5ed1cb6a195baa54a899c77ed1f152ef
+    m_TableEntryReference:
+      m_KeyId: 9100300000000013
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Tooltip:
+    m_TableReference:
+      m_TableCollectionName: GUID:5ed1cb6a195baa54a899c77ed1f152ef
+    m_TableEntryReference:
+      m_KeyId: 9100300000000014
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
