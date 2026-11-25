@@ -159,6 +159,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         set => _clickMask = value;
     }
     public TargetingType SkillType { get => _targetingType; }
+    public TargetLayer ClickLayers => _clickLayer;
     public TargetFaction Faction
     {
         get => _clickFaction;

@@ -1,8 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static GameDescriptions.DescriptionLocalization;
 
 namespace GameDescriptions
 {
+    public enum DescriptionParameterKind { Cooldown, Cost, Range, Area, Preparing, Channeling, Damage, School, Charges, Counter }
+
+    public readonly struct DescriptionResourceCost
+    {
+        public ResourceType Resource { get; }
+        public string Value { get; }
+        public DescriptionResourceCost(ResourceType resource, string value) { Resource = resource; Value = value; }
+    }
+
+    public readonly struct SkillDescriptionParameter
+    {
+        public DescriptionParameterKind Kind { get; }
+        public string Label { get; }
+        public string Value { get; }
+        public string CompactValue { get; }
+        public IReadOnlyList<DescriptionResourceCost> Costs { get; }
+
+        public SkillDescriptionParameter(DescriptionParameterKind kind, string label, string value,
+            string compactValue, IReadOnlyList<DescriptionResourceCost> costs = null)
+        {
+            Kind = kind;
+            Label = label;
+            Value = value;
+            CompactValue = compactValue;
+            Costs = costs;
+        }
+    }
+
     public static class SkillDescription
     {
         private const string ColorOpen = "<color=#53935E>";
@@ -24,6 +53,11 @@ namespace GameDescriptions
             {
                 context = context.WithSkill(skill);
                 if (includeName) DescriptionTable.AddText(rows, info.Name);
+                if (includeStats && skill != null)
+                {
+                    DescriptionTable.AddText(rows, GetStats(skill));
+                    rows.Add(DescriptionRow.LineBreak());
+                }
                 if (info.DescriptionTable != null && info.DescriptionTable.HasEntries)
                 {
                     info.DescriptionTable.Append(rows, context);
@@ -33,11 +67,10 @@ namespace GameDescriptions
                 {
                     DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(skill != null ? skill.Description : info.AddingDescription, context));
                     if (!string.IsNullOrWhiteSpace(info.State) || !string.IsNullOrWhiteSpace(info.DescriptionState))
-                        DescriptionTable.AddText(rows, $"<color=#FFFF00>{info.State}</color> {info.DescriptionState}");
+                        DescriptionTable.AddText(rows, $"%%link=State[{info.State}] {info.DescriptionState}");
                 }
                 if (skill != null)
                 {
-                    if (includeStats) DescriptionTable.AddText(rows, GetStats(skill));
                     DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(skill.AdditionalDescription, context));
                 }
             }
@@ -49,88 +82,128 @@ namespace GameDescriptions
 
         public static string GetStats(Skill skill)
         {
-            string text = string.Empty;
-            if (!(skill is ICounterSkill))
+            if (skill == null) return string.Empty;
+            var lines = new List<string> { GetTargetingText(skill) };
+            foreach (var parameter in GetParameters(skill))
+                lines.Add(Tooltip("Format.LabelValue", parameter.Label, parameter.Value));
+            return string.Join("\n", lines);
+        }
+
+        public static string GetTargetingText(Skill skill)
+        {
+            if (skill == null) return string.Empty;
+            var layers = skill.DescriptionClickLayers;
+            var targets = new List<string>();
+            if ((layers & TargetLayer.Unit) != 0) targets.Add(Tooltip("Target.Unit.Object"));
+            if ((layers & TargetLayer.Ground) != 0) targets.Add(Tooltip("Target.Ground.Object"));
+            if ((layers & TargetLayer.Tree) != 0) targets.Add(Tooltip("Target.Tree.Object"));
+            string text = Tooltip("Format.LabelValue", Tooltip("CastTarget.Label"), targets.Count > 0 ? string.Join(Tooltip("List.Separator"), targets) : Tooltip("Target.None.Object"));
+            if ((layers & TargetLayer.Unit) != 0)
             {
-                var costs = new List<string>();
-                if (skill.Cost?.Values != null)
-                    foreach (var cost in skill.Cost.Values)
-                        if (cost != null && cost.showInDescription)
-                            costs.Add(FormatCostLabel(cost.costType) + FormatCost(skill, cost));
-                text = costs.Count == 0 ? $"Затрата: {ColorOpen}0{ColorEnd}" : "Затрата: " + string.Join(" + ", costs);
-
-                if (skill.Channeling?.Costs != null)
-                    foreach (var cost in skill.Channeling.Costs)
-                        if (cost != null && cost.showInDescription)
-                            text += $" + {FormatCost(skill, cost)}/{skill.ManaCostRate} сек";
-
-                switch (skill.Info != null ? skill.Info.AbilityForm : default)
-                {
-
-                    case AbilityForm.Magic:
-                        text += $" магия {GetSchoolName(skill)}";
-                        break;
-
-                    case AbilityForm.Physical:
-                        break;
-
-                    default:
-                        break;
-                }
-
-                string damage = GetDamageText(skill);
-                if (!string.IsNullOrEmpty(damage))
-                {
-                    text += $"\nУрон: {ColorOpen}{damage}{ColorEnd} ед. {GetShoolNameForDamage(skill)}";
-                }
-
-                if (skill.PreparingDuration > 0)
-                    text += $"\nПодготовка: {ColorOpen}{skill.PreparingDuration} сек{ColorEnd}";
-
-                if (skill.Channeling != null && skill.ChannelingDuration > 0)
-                    text += $"\nВыполнение: {ColorOpen}{skill.ChannelingDuration} сек{ColorEnd}";
-
-                if (skill.Cooldown != null && skill.Cooldown.CooldownTime > 0)
-                    text += $"\nПерезарядка: {ColorOpen}{skill.Cooldown.CooldownTime} сек{ColorEnd}";
-
-                if (skill.Charges != null && skill.Charges.UsesCharges)
-                {
-                    float recovery = skill.Hero != null ? skill.Charges.CooldownTime : skill.Charges.BaseCooldown;
-                    text += $"\nКол-во Зарядов: {ColorOpen}{skill.Charges.MaxCharges}/{recovery} сек{ColorEnd}";
-                }
-
+                var factions = new List<string>();
+                var allowed = skill.DescriptionTargetFactions;
+                if ((allowed & TargetFaction.Self) != 0) factions.Add(Tooltip("Faction.Self.Object"));
+                if ((allowed & TargetFaction.Ally) != 0) factions.Add(Tooltip("Faction.Ally.Object"));
+                if ((allowed & TargetFaction.Enemy) != 0) factions.Add(Tooltip("Faction.Enemy.Object"));
+                if (factions.Count > 0) text += "\n" + Tooltip("Format.LabelValue", Tooltip("Targets.Label"), string.Join(Tooltip("List.Separator"), factions));
             }
-
-            else text += $"\n{skill.CounterSkill}: {ColorOpen}{skill.CurrentCounter}/{skill.MaxCounter}{ColorEnd}";
-
             return text;
         }
 
-        private static string FormatCostLabel(SkillCostType type) => type switch
+        public static string GetClickTargetsText(Skill skill)
         {
-            SkillCostType.Bonus => "дополнительно: ",
-            SkillCostType.Recast => "повторное применение: ",
-            SkillCostType.PerSmth => "дополнительная затрата: ",
-            _ => string.Empty
-        };
-
-        private static string FormatCost(Skill skill, SkillResourceCost cost)
-        {
-            float value = cost.shouldModify && skill.Hero != null && skill.Cost != null
-                ? skill.Cost.CalculateModified(cost.value, cost.type) : cost.value;
-            string resource = cost.type switch
-            {
-                ResourceType.Health => "здоровья",
-                ResourceType.Mana => "маны",
-                ResourceType.Energy => "энергии",
-                ResourceType.Rune => "рун",
-                ResourceType.Psionic => "псионики",
-                ResourceType.AttackingPsi => "атакующей псионики",
-                ResourceType.CooldownEnergy => "энергии перезарядки",
-                _ => cost.type.ToString()
-            };
-            return $"{ColorOpen}{value} ед. {resource}{ColorEnd}";
+            var targets = new List<string>();
+            var layers = skill.DescriptionClickLayers;
+            if ((layers & TargetLayer.Unit) != 0) targets.Add(Tooltip("Target.Unit.Name"));
+            if ((layers & TargetLayer.Ground) != 0) targets.Add(Tooltip("Target.Ground.Name"));
+            if ((layers & TargetLayer.Tree) != 0) targets.Add(Tooltip("Target.Tree.Name"));
+            return targets.Count > 0 ? string.Join(Tooltip("List.Separator"), targets) : Tooltip("Target.None.Name");
         }
+
+        public static string GetTargetFactionsText(Skill skill)
+        {
+            if ((skill.DescriptionClickLayers & TargetLayer.Unit) == 0) return string.Empty;
+            var factions = new List<string>();
+            var allowed = skill.DescriptionTargetFactions;
+            string Colored(string text, Color color) => $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{text}</color>";
+            if ((allowed & TargetFaction.Self) != 0) factions.Add(Colored(Tooltip("Faction.Self.Name"), G.Colors.Descriptions.Health));
+            if ((allowed & TargetFaction.Ally) != 0) factions.Add(Colored(Tooltip("Faction.Ally.Name"), G.Colors.Chat.Team1));
+            if ((allowed & TargetFaction.Enemy) != 0) factions.Add(Colored(Tooltip("Faction.Enemy.Name"), G.Colors.Chat.Team2));
+            return string.Join(Tooltip("List.Separator"), factions);
+        }
+
+        public static List<SkillDescriptionParameter> GetParameters(Skill skill)
+        {
+            var parameters = new List<SkillDescriptionParameter>();
+            if (skill == null) return parameters;
+            void Add(DescriptionParameterKind kind, string value, string compact)
+                => parameters.Add(new SkillDescriptionParameter(kind, Tooltip($"Parameter.{kind}.Label"), value, compact));
+            void Positive(DescriptionParameterKind kind, float value, string unitKey)
+            {
+                if (value > 0f) Add(kind, Highlight(Tooltip(unitKey, Number(value))), Number(value));
+            }
+
+            if (skill is ICounterSkill)
+            {
+                string counter = Tooltip("Format.Pair", Number(skill.CurrentCounter), Number(skill.MaxCounter));
+                parameters.Add(new SkillDescriptionParameter(DescriptionParameterKind.Counter, skill.CounterSkill, Highlight(counter), counter));
+            }
+            else
+            {
+                Add(DescriptionParameterKind.Cooldown, Highlight(Tooltip("Value.Time", Number(skill.DescriptionCooldown))), Number(skill.DescriptionCooldown));
+                var costs = new List<string>();
+                var compactCosts = new List<DescriptionResourceCost>();
+                if (skill.Cost?.Values != null)
+                    foreach (var cost in skill.Cost.Values)
+                        if (cost != null && cost.showInDescription)
+                        {
+                            float value = skill.GetDescriptionCost(cost);
+                            string prefix = FormatCostLabel(cost.costType);
+                            costs.Add(prefix + FormatCost(cost, value));
+                            compactCosts.Add(new DescriptionResourceCost(cost.type, prefix + Number(value)));
+                        }
+                if (skill.Channeling?.Costs != null)
+                    foreach (var cost in skill.Channeling.Costs)
+                        if (cost != null && cost.showInDescription)
+                        {
+                            float value = skill.GetDescriptionCost(cost);
+                            string period = Tooltip("Value.Time", Number(skill.ManaCostRate));
+                            costs.Add(Tooltip("Format.Pair", FormatCost(cost, value), period));
+                            compactCosts.Add(new DescriptionResourceCost(cost.type, Tooltip("Format.Pair", Number(value), period)));
+                        }
+                parameters.Add(new SkillDescriptionParameter(DescriptionParameterKind.Cost, Tooltip("ResourceCost.Label"),
+                    costs.Count > 0 ? string.Join("\n", costs) : Highlight("0"), "0", compactCosts));
+            }
+            Positive(DescriptionParameterKind.Range, skill.DescriptionCastRange, "Value.Distance");
+            Positive(DescriptionParameterKind.Area, skill.DescriptionArea, "Value.Distance");
+            Positive(DescriptionParameterKind.Preparing, skill.DescriptionPreparingDuration, "Value.Time");
+            Positive(DescriptionParameterKind.Channeling, skill.DescriptionChannelingDuration, "Value.Time");
+            string damage = GetDamageText(skill);
+            if (!string.IsNullOrEmpty(damage))
+            {
+                string school = GetSchoolNameForDamage(skill);
+                Add(DescriptionParameterKind.Damage, string.IsNullOrEmpty(school)
+                    ? Tooltip("Value.Damage", Highlight(damage)) : Tooltip("Value.DamageWithSchool", Highlight(damage), school), damage);
+            }
+            if (skill.Info != null && skill.Info.AbilityForm != AbilityForm.Physical)
+                Add(DescriptionParameterKind.School, GetSchoolName(skill), GetSchoolName(skill));
+            if (skill.Charges != null && skill.Charges.UsesCharges)
+            {
+                float recovery = skill.Hero != null ? skill.Charges.CooldownTime : skill.Charges.BaseCooldown;
+                Add(DescriptionParameterKind.Charges,
+                    Highlight(Tooltip("Format.Pair", Number(skill.Charges.MaxCharges), Tooltip("Value.Time", Number(recovery)))),
+                    Tooltip("Format.Pair", Number(skill.Charges.MaxCharges), Number(recovery)));
+            }
+            return parameters;
+        }
+
+        private static string Highlight(string text) => ColorOpen + text + ColorEnd;
+
+        private static string FormatCostLabel(SkillCostType type)
+            => type == SkillCostType.Mandatory ? string.Empty : Tooltip($"Cost.{type}.Prefix");
+
+        private static string FormatCost(SkillResourceCost cost, float value)
+            => Highlight(Tooltip("Value.ResourceCost", Number(value), Tooltip($"Resource.{cost.type}.CostName")));
 
         private static string GetDamageText(Skill skill)
         {
@@ -146,68 +219,17 @@ namespace GameDescriptions
             return value > 0 ? Mathf.RoundToInt(value).ToString() : string.Empty;
         }
 
-        private static string GetShoolNameForDamage(Skill skill)
+        private static string GetSchoolNameForDamage(Skill skill)
         {
-            switch (skill.Info != null ? skill.Info.School : Schools.None)
-            {
-                case Schools.Light:
-                    return "светом";
-
-                case Schools.Dark:
-                    return "тьмой";
-
-                case Schools.Fire:
-                    return "огнем";
-
-                case Schools.Water:
-                    return "водой";
-
-                case Schools.Air:
-                    return "воздухом";
-
-                case Schools.Earth:
-                    return "землей";
-
-                case Schools.Physical:
-                    return "";
-
-                case Schools.Discipline:
-                    return "";
-
-                case Schools.None:
-                    return "";
-
-                default:
-                    return "";
-            }
+            var school = skill.Info != null ? skill.Info.School : Schools.None;
+            return school is Schools.None or Schools.Physical or Schools.Discipline
+                ? string.Empty : Tooltip($"School.{school}.Damage");
         }
 
         private static string GetSchoolName(Skill skill)
         {
-            switch (skill.Info != null ? skill.Info.School : Schools.None)
-            {
-                case Schools.Light:
-                    return "света";
-                case Schools.Dark:
-                    return "тьмы";
-                case Schools.Fire:
-                    return "огня";
-                case Schools.Water:
-                    return "воды";
-                case Schools.Air:
-                    return "воздуха";
-                case Schools.Earth:
-                    return "земли";
-                case Schools.Physical:
-                    return "";
-                case Schools.Discipline:
-                    return "";
-                case Schools.None:
-                    return "";
-                default:
-                    return "";
-            }
+            var school = skill.Info != null ? skill.Info.School : Schools.None;
+            return school == Schools.None ? string.Empty : Tooltip($"School.{school}.Genitive");
         }
     }
 }
-

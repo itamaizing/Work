@@ -3,43 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using GameDescriptions;
+using UnityEngine;
 
 public static class DescriptionTextProcessor
 {
-    public enum ColorPallete
-    {
-        Y, B, Air, Earth, Fire, Water, Health, Mana, Energy, Rune, EvoCD,
-        Physical, Light, Dark, Discipline, Psionic, AttackingPsi
-    }
-
-    public static readonly Dictionary<ColorPallete, string> ColorMap = new()
-    {
-        { ColorPallete.Y, "#FFD836" },
-        { ColorPallete.B, "#0000FF" },
-        { ColorPallete.Air, "#E3DB94" },
-        { ColorPallete.Earth, "#DE924F" },
-        { ColorPallete.Fire, "#E85A3F" },
-        { ColorPallete.Water, "#3FB2E8" },
-        { ColorPallete.Health, "#14BD4F" },
-        { ColorPallete.Mana, "#2E82E8" },
-        { ColorPallete.Energy, "#F0EA65" },
-        { ColorPallete.Rune, "#6A9CDE" },
-        { ColorPallete.EvoCD, "#9739E3" },
-        { ColorPallete.Physical, "#FFFFFF" },
-        { ColorPallete.Light, "#FFD836" },
-        { ColorPallete.Dark, "#9739E3" },
-        { ColorPallete.Discipline, "#6A9CDE" },
-        { ColorPallete.Psionic, "#9739E3" },
-        { ColorPallete.AttackingPsi, "#E85A3F" }
-    };
-
-    public static readonly Dictionary<string, ColorPallete> ColorAliases = new(StringComparer.OrdinalIgnoreCase)
-    {
-        { "phys", ColorPallete.Physical },
-        { "CDEnergy", ColorPallete.EvoCD },
-        { "CooldownEnergy", ColorPallete.EvoCD }
-    };
-
     public readonly struct LinkStyle
     {
         public string Color { get; }
@@ -56,8 +23,8 @@ public static class DescriptionTextProcessor
     
     public static readonly Dictionary<string, LinkStyle> LinkStyles = new(StringComparer.OrdinalIgnoreCase)
     {
-        { "Skill", new LinkStyle("Y") },
-        { "State", new LinkStyle("Y") }
+        { "Skill", new LinkStyle("Skill") },
+        { "State", new LinkStyle("State") }
     };
 
     private static readonly HashSet<string> NamedColors = new(StringComparer.OrdinalIgnoreCase)
@@ -92,15 +59,16 @@ public static class DescriptionTextProcessor
         color = null;
         if (string.IsNullOrWhiteSpace(value)) return false;
         value = value.Trim().Trim('"', '\'');
-        if (ColorAliases.TryGetValue(value, out var alias) && ColorMap.TryGetValue(alias, out color))
-            return true;
-        if (Enum.TryParse(value, true, out ColorPallete palette) &&
-            Enum.IsDefined(typeof(ColorPallete), palette) && !char.IsDigit(value[0]) &&
-            ColorMap.TryGetValue(palette, out color))
-            return true;
         if (HexColor.IsMatch(value))
         {
             color = value;
+            return true;
+        }
+        if (G.Colors.TryGetDescriptionColor(value, out var paletteColor))
+        {
+            color = "#" + (paletteColor.a == 1f
+                ? ColorUtility.ToHtmlStringRGB(paletteColor)
+                : ColorUtility.ToHtmlStringRGBA(paletteColor));
             return true;
         }
         if (!NamedColors.Contains(value)) return false;

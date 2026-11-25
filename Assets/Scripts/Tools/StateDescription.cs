@@ -11,6 +11,24 @@ namespace GameDescriptions
         private static readonly LocalizedString Stacks = new("States", "Common.Stacks");
         private static bool _loaded;
 
+        public static string GetSchoolText(Schools school)
+        {
+            if (school == Schools.None) return string.Empty;
+            string text = DescriptionLocalization.Tooltip($"School.{school}.Name");
+            return DescriptionTextProcessor.TryResolveColor(school.ToString(), out var color)
+                ? $"<color={color}>{text}</color>" : text;
+        }
+
+        public static string GetDispelText(DispelType type)
+        {
+            if (type == DispelType.None) return DescriptionLocalization.Tooltip("Dispel.None");
+            var names = new List<string>();
+            if ((type & DispelType.Magic) != 0) names.Add(DescriptionLocalization.Tooltip("Dispel.Magic"));
+            if ((type & DispelType.Physic) != 0) names.Add(DescriptionLocalization.Tooltip("Dispel.Physic"));
+            if ((type & DispelType.Immaterial) != 0) names.Add(DescriptionLocalization.Tooltip("Dispel.Immaterial"));
+            return names.Count > 0 ? string.Join(DescriptionLocalization.Tooltip("List.Alternatives"), names) : type.ToString();
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()
         {
@@ -39,7 +57,17 @@ namespace GameDescriptions
             return Data.TryGetValue(state, out var result) ? result : null;
         }
 
-        public static void GetTooltip(StateBasic state, out string name, out string description)
+        public static string GetDurationText(float remaining, float maximum)
+        {
+            if (float.IsNaN(remaining)) return string.Empty;
+            if (remaining < 0f || float.IsInfinity(remaining)) return DescriptionLocalization.Tooltip("Value.InfiniteDuration");
+            string time = DescriptionLocalization.Number(remaining, "0.#");
+            if (maximum >= 0f && !float.IsInfinity(maximum))
+                time = DescriptionLocalization.Tooltip("Format.Pair", time, DescriptionLocalization.Number(maximum, "0.#"));
+            return DescriptionLocalization.Tooltip("Value.Time", time);
+        }
+
+        public static void GetTooltip(StateBasic state, out string name, out string description, bool includeRemainingTime = true)
         {
             name = string.Empty;
             description = string.Empty;
@@ -64,7 +92,7 @@ namespace GameDescriptions
                 }
             }
 
-            if (state.RemainingDuration >= 0f)
+            if (includeRemainingTime && state.RemainingDuration >= 0f)
                 DescriptionTable.AddText(rows, DescriptionLocalization.GetString(RemainingTime, context));
             if (state.MaxStacksCount > 1 && state.MaxStacksCount < int.MaxValue)
                 DescriptionTable.AddText(rows, DescriptionLocalization.GetString(Stacks, context));
@@ -103,7 +131,7 @@ namespace GameDescriptions
                 string name = DescriptionLocalization.GetString(state.Name, context);
                 string description = DescriptionLocalization.GetString(state.Description, context);
                 DescriptionTable.AddText(rows,
-                    $"<color={DescriptionTextProcessor.ColorMap[DescriptionTextProcessor.ColorPallete.Y]}>{name}</color> {description}");
+                    $"%%link=State[{name}] {description}");
                 string tooltip = DescriptionLocalization.GetString(state.Tooltip, context);
                 if (tooltip != description) DescriptionTable.AddText(rows, tooltip);
             }

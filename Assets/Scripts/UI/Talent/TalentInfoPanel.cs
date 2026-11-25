@@ -67,7 +67,7 @@ public class TalentInfoPanel : MonoBehaviour
                 var state = data.StateInfos[i];
                 if (!string.IsNullOrEmpty(state.StateName) || !string.IsNullOrEmpty(state.Description))
                     GameDescriptions.DescriptionTable.AddText(rows,
-                        $"<color={DescriptionTextProcessor.ColorMap[DescriptionTextProcessor.ColorPallete.Y]}>{state.StateName}</color> {state.Description}");
+                        $"%%link=State[{state.StateName}] {state.Description}");
             }
         }
     }

@@ -532,3 +532,12 @@ MonoBehaviour:
   _rootCanvas: {fileID: 0}
   _mouseOffset: {x: 16, y: 0}
   _showDelay: 0.4
+  _refreshInterval: 0.1
+  _icons:
+  - Kind: 0
+    Sprite: {fileID: 21300000, guid: c15c28238e9617b4faaac6fd9518e600, type: 3}
+  - Kind: 1
+    Sprite: {fileID: 21300000, guid: bfd756ca43b5130459b3db85d14eeff4, type: 3}
+  - Kind: 2
+    Sprite: {fileID: 21300000, guid: f917ba582d190c346803d622906824af, type: 3}
+  _metadataIconSize: 16

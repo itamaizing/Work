@@ -52,16 +52,15 @@ namespace GameDescriptions
 
             if (info.CurrentValue is DescriptionDuration duration)
             {
-                string unitName = IsRussian(culture) ? " сек" : " sec";
-                info.Write($"<b>{duration.Seconds.ToString("0.##", culture)}{unitName}</b>");
+                info.Write($"<b>{DescriptionLocalization.Tooltip("Value.Time", duration.Seconds.ToString("0.##", culture))}</b>");
                 return true;
             }
 
             bool seconds = format == "seconds";
             if ((context == null && !seconds) || !IsNumber(info.CurrentValue)) return false;
             string number = ((IFormattable)info.CurrentValue).ToString(seconds ? "0.##" : format, culture);
-            string unit = seconds ? IsRussian(culture) ? " сек" : " sec" : string.Empty;
-            info.Write($"<b>{number}{unit}</b>");
+            string text = seconds ? DescriptionLocalization.Tooltip("Value.Time", number) : number;
+            info.Write($"<b>{text}</b>");
             return true;
         }
 
@@ -72,8 +71,6 @@ namespace GameDescriptions
             return code >= TypeCode.SByte && code <= TypeCode.Decimal;
         }
 
-        internal static bool IsRussian(IFormatProvider culture)
-            => (culture as CultureInfo ?? CultureInfo.CurrentCulture).TwoLetterISOLanguageName == "ru";
     }
 
     public sealed class DamageDescriptionFormatter : IDescriptionValueFormatter
@@ -110,12 +107,11 @@ namespace GameDescriptions
                     return false;
             }
 
-            bool russian = DescriptionValueFormatter.IsRussian(culture);
             string amount = min == max ? min.ToString("0.##", culture)
                 : $"{min.ToString("0.##", culture)}-{max.ToString("0.##", culture)}";
             var data = new DamageArguments
             {
-                Amount = amount, DamageType = TypeName(type, russian),
+                Amount = amount, DamageType = TypeName(type),
                 Min = min, Max = max, Last = max, School = school.ToString()
             };
             string text;
@@ -123,10 +119,9 @@ namespace GameDescriptions
                 text = DescriptionLocalization.GetString(Template, data);
             else
             {
-                string template = string.IsNullOrEmpty(data.DamageType)
-                    ? russian ? "{Amount} урона" : "{Amount} damage"
-                    : russian ? "{Amount} {DamageType} урона" : "{Amount} {DamageType} damage";
-                text = DescriptionBuilder.FormatTemplate(template, data, culture);
+                text = string.IsNullOrEmpty(data.DamageType)
+                    ? DescriptionLocalization.Tooltip("Value.UntypedDamage", amount)
+                    : DescriptionLocalization.Tooltip("Value.TypedDamage", amount, data.DamageType);
             }
             result = $"<b>{text}</b>";
             return true;
@@ -135,12 +130,12 @@ namespace GameDescriptions
         private static float Modify(float value, DescriptionContext context)
             => context?.Skill != null && context.Skill.Hero != null ? context.Skill.CalculateDamage(value) : value;
 
-        private static string TypeName(DamageType type, bool russian) => type switch
+        private static string TypeName(DamageType type) => type switch
         {
-            DamageType.Physical => russian ? "физ." : "physical",
-            DamageType.Magical => russian ? "маг." : "magic",
-            DamageType.Both => russian ? "смеш." : "mixed",
-            DamageType.Inner => russian ? "внутр." : "internal",
+            DamageType.Physical => DescriptionLocalization.Tooltip("DamageType.Physical.Name"),
+            DamageType.Magical => DescriptionLocalization.Tooltip("DamageType.Magical.Name"),
+            DamageType.Both => DescriptionLocalization.Tooltip("DamageType.Both.Name"),
+            DamageType.Inner => DescriptionLocalization.Tooltip("DamageType.Inner.Name"),
             _ => string.Empty
         };
 

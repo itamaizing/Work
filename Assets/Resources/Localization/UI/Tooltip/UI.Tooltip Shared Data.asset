@@ -39,6 +39,306 @@ MonoBehaviour:
     m_Key: Duration
     m_Metadata:
       m_Items: []
+  - m_Id: 9100500000000001
+    m_Key: Format.LabelValue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000002
+    m_Key: Format.Pair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000003
+    m_Key: List.Separator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000004
+    m_Key: List.Alternatives
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000005
+    m_Key: Targets.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000006
+    m_Key: Parameter.Cooldown.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000007
+    m_Key: Parameter.Range.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000008
+    m_Key: Parameter.Area.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000009
+    m_Key: Parameter.Preparing.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000010
+    m_Key: Parameter.Channeling.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000011
+    m_Key: Parameter.Damage.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000012
+    m_Key: Parameter.School.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000013
+    m_Key: Parameter.Charges.Label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000014
+    m_Key: Value.Time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000015
+    m_Key: Value.Distance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000016
+    m_Key: Value.ResourceCost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000017
+    m_Key: Value.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000018
+    m_Key: Value.DamageWithSchool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000019
+    m_Key: Value.UntypedDamage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000020
+    m_Key: Value.TypedDamage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000021
+    m_Key: Value.InfiniteDuration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000022
+    m_Key: Cost.Bonus.Prefix
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000023
+    m_Key: Cost.Recast.Prefix
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000024
+    m_Key: Cost.PerSmth.Prefix
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000025
+    m_Key: Dispel.None
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000026
+    m_Key: Dispel.Magic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000027
+    m_Key: Dispel.Physic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000028
+    m_Key: Dispel.Immaterial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000029
+    m_Key: Target.Unit.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000030
+    m_Key: Target.Unit.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000031
+    m_Key: Target.Ground.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000032
+    m_Key: Target.Ground.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000033
+    m_Key: Target.Tree.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000034
+    m_Key: Target.Tree.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000035
+    m_Key: Target.None.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000036
+    m_Key: Target.None.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000037
+    m_Key: Faction.Self.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000038
+    m_Key: Faction.Self.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000039
+    m_Key: Faction.Ally.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000040
+    m_Key: Faction.Ally.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000041
+    m_Key: Faction.Enemy.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000042
+    m_Key: Faction.Enemy.Object
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000043
+    m_Key: School.Light.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000044
+    m_Key: School.Light.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000045
+    m_Key: School.Light.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000046
+    m_Key: School.Dark.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000047
+    m_Key: School.Dark.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000048
+    m_Key: School.Dark.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000049
+    m_Key: School.Fire.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000050
+    m_Key: School.Fire.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000051
+    m_Key: School.Fire.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000052
+    m_Key: School.Water.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000053
+    m_Key: School.Water.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000054
+    m_Key: School.Water.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000055
+    m_Key: School.Air.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000056
+    m_Key: School.Air.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000057
+    m_Key: School.Air.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000058
+    m_Key: School.Earth.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000059
+    m_Key: School.Earth.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000060
+    m_Key: School.Earth.Damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000061
+    m_Key: School.Physical.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000062
+    m_Key: School.Physical.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000063
+    m_Key: School.Discipline.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000064
+    m_Key: School.Discipline.Genitive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000065
+    m_Key: Resource.Health.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000066
+    m_Key: Resource.Mana.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000067
+    m_Key: Resource.Energy.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000068
+    m_Key: Resource.Rune.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000069
+    m_Key: Resource.Psionic.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000070
+    m_Key: Resource.AttackingPsi.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000071
+    m_Key: Resource.CooldownEnergy.CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000072
+    m_Key: DamageType.Physical.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000073
+    m_Key: DamageType.Magical.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000074
+    m_Key: DamageType.Both.Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000075
+    m_Key: DamageType.Inner.Name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

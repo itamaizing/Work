@@ -2,11 +2,28 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.SmartFormat;
 using UnityEngine.Localization.SmartFormat.Core.Extensions;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace GameDescriptions
 {
     public static class DescriptionLocalization
     {
+        private static readonly Dictionary<string, LocalizedString> TooltipStrings = new();
+
+        public static string Tooltip(string key, params object[] arguments)
+        {
+            if (!TooltipStrings.TryGetValue(key, out var text))
+            {
+                text = new LocalizedString("UI.Tooltip", key);
+                TooltipStrings.Add(key, text);
+            }
+            return text.GetLocalizedString(arguments);
+        }
+
+        public static string Number(double value, string format = "0.##")
+            => value.ToString(format, LocalizationSettings.SelectedLocale?.Identifier.CultureInfo ?? CultureInfo.CurrentCulture);
+
         public static string GetString(LocalizedString text, object values)
         {
             if (text == null || text.IsEmpty) return string.Empty;

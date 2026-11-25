@@ -42,6 +42,306 @@ MonoBehaviour:
     m_Localized: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C"
     m_Metadata:
       m_Items: []
+  - m_Id: 9100500000000001
+    m_Localized: "{0}: {1}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000002
+    m_Localized: "{0} / {1}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000003
+    m_Localized: ", "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000004
+    m_Localized: " / "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000005
+    m_Localized: "Цели"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000006
+    m_Localized: "КД"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000007
+    m_Localized: "Дальность"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000008
+    m_Localized: "AOE"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000009
+    m_Localized: "Подготовка"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000010
+    m_Localized: "Поток"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000011
+    m_Localized: "Урон"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000012
+    m_Localized: "Магия"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000013
+    m_Localized: "Заряды"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000014
+    m_Localized: "{0} сек"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000015
+    m_Localized: "{0} м"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000016
+    m_Localized: "{0} ед. {1}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000017
+    m_Localized: "{0} ед."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000018
+    m_Localized: "{0} ед. {1}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000019
+    m_Localized: "{0} урона"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000020
+    m_Localized: "{0} {1} урона"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000021
+    m_Localized: "∞"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000022
+    m_Localized: "дополнительно: "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000023
+    m_Localized: "повторное применение: "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000024
+    m_Localized: "дополнительная затрата: "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000025
+    m_Localized: "Нет"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000026
+    m_Localized: "Магическое"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000027
+    m_Localized: "Физическое"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000028
+    m_Localized: "Нематериальное"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000029
+    m_Localized: "Юнит"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000030
+    m_Localized: "юнита"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000031
+    m_Localized: "Земля"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000032
+    m_Localized: "землю"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000033
+    m_Localized: "Дерево"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000034
+    m_Localized: "дерево"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000035
+    m_Localized: "Без цели"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000036
+    m_Localized: "без цели"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000037
+    m_Localized: "Себя"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000038
+    m_Localized: "себя"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000039
+    m_Localized: "Союзников"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000040
+    m_Localized: "союзника"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000041
+    m_Localized: "Врагов"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000042
+    m_Localized: "противника"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000043
+    m_Localized: "Свет"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000044
+    m_Localized: "света"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000045
+    m_Localized: "светом"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000046
+    m_Localized: "Тьма"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000047
+    m_Localized: "тьмы"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000048
+    m_Localized: "тьмой"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000049
+    m_Localized: "Огонь"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000050
+    m_Localized: "огня"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000051
+    m_Localized: "огнём"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000052
+    m_Localized: "Вода"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000053
+    m_Localized: "воды"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000054
+    m_Localized: "водой"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000055
+    m_Localized: "Воздух"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000056
+    m_Localized: "воздуха"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000057
+    m_Localized: "воздухом"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000058
+    m_Localized: "Земля"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000059
+    m_Localized: "земли"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000060
+    m_Localized: "землёй"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000061
+    m_Localized: "Физическая"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000062
+    m_Localized: "физической школы"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000063
+    m_Localized: "Дисциплина"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000064
+    m_Localized: "дисциплины"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000065
+    m_Localized: "здоровья"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000066
+    m_Localized: "маны"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000067
+    m_Localized: "энергии"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000068
+    m_Localized: "рун"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000069
+    m_Localized: "псионики"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000070
+    m_Localized: "атакующей псионики"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000071
+    m_Localized: "энергии перезарядки"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000072
+    m_Localized: "физ."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000073
+    m_Localized: "маг."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000074
+    m_Localized: "смеш."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9100500000000075
+    m_Localized: "внутр."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

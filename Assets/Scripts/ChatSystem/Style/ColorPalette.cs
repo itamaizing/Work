@@ -8,10 +8,72 @@ public class ColorPalette : ScriptableObject
     [SerializeField] private UIColors _ui = new();
     [SerializeField] private ChatColors _chat = new();
     [SerializeField] private GameplayColors _gameplay = new();
+    [SerializeField] private DescriptionColors _descriptions = new();
 
     public UIColors UI => _ui;
     public ChatColors Chat => _chat;
     public GameplayColors Gameplay => _gameplay;
+    public DescriptionColors Descriptions => _descriptions;
+
+    public bool TryGetDescriptionColor(string name, out Color color)
+    {
+        color = default;
+        if (string.IsNullOrWhiteSpace(name)) return false;
+        switch (name.Trim().ToLowerInvariant())
+        {
+            case "y": color = UI.YellowAccent; break;
+            case "b": color = Color.blue; break;
+            case "air": color = Descriptions.Air; break;
+            case "earth": color = Descriptions.Earth; break;
+            case "fire": color = Descriptions.Fire; break;
+            case "water": color = Descriptions.Water; break;
+            case "phys":
+            case "physical": color = Descriptions.Physical; break;
+            case "light": color = Descriptions.Light; break;
+            case "dark": color = Descriptions.Dark; break;
+            case "discipline": color = Descriptions.Discipline; break;
+            case "health": color = Descriptions.Health; break;
+            case "mana": color = Descriptions.Mana; break;
+            case "energy": color = Descriptions.Energy; break;
+            case "rune": color = Descriptions.Rune; break;
+            case "evocd":
+            case "cdenergy":
+            case "cooldownenergy": color = Descriptions.CooldownEnergy; break;
+            case "psionic": color = Descriptions.Psionic; break;
+            case "attackingpsi": color = Descriptions.AttackingPsi; break;
+            case "skill": color = Descriptions.SkillLink; break;
+            case "state": color = Descriptions.StateLink; break;
+            default: return false;
+        }
+        return true;
+    }
+
+    [Serializable]
+    public class DescriptionColors
+    {
+        [Header("Schools")]
+        public Color Air = new Color32(227, 219, 148, 255);
+        public Color Earth = new Color32(222, 146, 79, 255);
+        public Color Fire = new Color32(232, 90, 63, 255);
+        public Color Water = new Color32(63, 178, 232, 255);
+        public Color Physical = Color.white;
+        public Color Light = new Color32(255, 216, 54, 255);
+        public Color Dark = new Color32(151, 57, 227, 255);
+        public Color Discipline = new Color32(106, 156, 222, 255);
+
+        [Header("Resources")]
+        public Color Health = new Color32(20, 189, 79, 255);
+        public Color Mana = new Color32(46, 130, 232, 255);
+        public Color Energy = new Color32(240, 234, 101, 255);
+        public Color Rune = new Color32(106, 156, 222, 255);
+        public Color CooldownEnergy = new Color32(151, 57, 227, 255);
+        public Color Psionic = new Color32(151, 57, 227, 255);
+        public Color AttackingPsi = new Color32(232, 90, 63, 255);
+
+        [Header("Links")]
+        public Color SkillLink = new Color32(255, 216, 54, 255);
+        public Color StateLink = new Color32(255, 216, 54, 255);
+    }
 
     [Serializable]
     public class UIColors
@@ -94,10 +156,9 @@ public class ColorPalette : ScriptableObject
     public class GameplayColors
     {
         [Serializable]
-#if !UNITY_EDITOR
-        public class Resources
-#else
-        public class ResourceColors : ISerializationCallbackReceiver
+        public class ResourceColors
+#if UNITY_EDITOR
+            : ISerializationCallbackReceiver
 #endif
         {
             [Serializable]

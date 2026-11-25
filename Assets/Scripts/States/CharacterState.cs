@@ -111,7 +111,7 @@ public abstract class StateBasic : IDescriptionValue
     public abstract StateType Type { get; }
     public abstract BaffDebaff BaffDebaff { get; }
     public abstract List<StatusEffect> Effects { get; }
-    public virtual Schools Schools { get; }
+    public virtual Schools Schools { get; } = Schools.None;
     public virtual DispelType dispelType => DispelType.None;
     public virtual DiminishingReturnGroup DrGroup => DiminishingReturnGroup.None;
 
