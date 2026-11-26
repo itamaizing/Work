@@ -20,6 +20,9 @@ public class SkillQueue : MonoBehaviour
     private Queue<Skill> _skills = new Queue<Skill>();
     private Skill _currentSkill = null;
     private TargetInfo _targetInfo;
+    private bool _waitingForApproval;
+    private float _retryCastAt;
+    private const float CastRetryDelay = 0.1f;
 
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
@@ -36,6 +39,8 @@ public class SkillQueue : MonoBehaviour
     {
         if (_skills.TryPeek(out Skill headSkill))
         {
+            if (_waitingForApproval && headSkill == _currentSkill)
+                headSkill = _skills.Skip(1).FirstOrDefault();
             if (IsBusy && headSkill is IPreemptsQueue preemptor)
             {
                 preemptor.TryPreemptCurrentCast(_currentSkill);
@@ -56,6 +61,7 @@ public class SkillQueue : MonoBehaviour
 
         if (_skills.TryPeek(out Skill skill))
         {
+            if (Time.unscaledTime < _retryCastAt) return;
             if (skill.Targeting.SkillType == TargetingType.Zone)
                 Draw(skill);
 
@@ -76,26 +82,14 @@ public class SkillQueue : MonoBehaviour
 
             if (skill.TryCast())
             {
-                RemoveFromQueue();
                 if (!skill.IsExecuting) return;
 
                 _currentSkill = skill;
+                _waitingForApproval = true;
                 CurrentCastTarget = targetInfo;
-
-                if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo infoTarget))
-                {
-                    _targetInfo = targetInfo;
-                    foreach (var item in _targetInfo.GetTargets())
-                    {
-                        if (item is Character character)
-                        {
-                            character.SelectedCircle.SwitchSelectCircle(true);
-                        }
-                    }
-                }
-
+                _currentSkill.CastStarted += OnCastStarted;
                 _currentSkill.CastEnded += OnCastEnded;
-                _currentSkill.CastRejected += OnCastEnded;
+                _currentSkill.CastRejected += OnCastRejected;
                 CurrentCastChanged?.Invoke();
             }
         }
@@ -119,30 +113,10 @@ public class SkillQueue : MonoBehaviour
     {
         if (skillForCancelling != null)
         {
-            try
-            {
-                _currentSkill.TryCancel(isForceCancel);
-
-                if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
-
-
-                if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
-                    _targetInfo = targetInfo;
-                foreach (var item in _targetInfo.GetTargets())
-                {
-                    if (item is Character character)
-                    {
-                        character.SelectedCircle.SwitchSelectCircle(false);
-                    }
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"[TryCancel] ������ ������ ������: {ex}");
-            }
-
-            return true;
+            var target = skillForCancelling == _currentSkill ? CurrentCastTarget : null;
+            bool canceled = skillForCancelling.TryCancel(isForceCancel);
+            if (canceled) ToggleSelectCircles(target, false);
+            return canceled;
         }
 
         var queuedSkill = RemoveFromQueue();
@@ -202,6 +176,8 @@ public class SkillQueue : MonoBehaviour
 
     public void RemoveNeededSkillFromQueue(Skill neededSkill)
     {
+        if (_currentSkill != null && ShouldRemoveSkill(_currentSkill, neededSkill))
+            TryCancel(_currentSkill, true);
         if (_skills.Count == 0) return;
 
         Queue<Skill> tempQueue = new Queue<Skill>();
@@ -212,8 +188,6 @@ public class SkillQueue : MonoBehaviour
             
             if (ShouldRemoveSkill(skill, neededSkill))
             {
-                TryCancel(skill,true);
-                
                 SkillDeleted?.Invoke(skill);
 
                 skill.ClearQueueTarget();
@@ -236,18 +210,37 @@ public class SkillQueue : MonoBehaviour
     }
 
 
+    private void OnCastStarted()
+    {
+        if (!_waitingForApproval || _currentSkill == null) return;
+        _waitingForApproval = false;
+        RemoveFromQueue();
+    }
+
+    private void OnCastRejected()
+    {
+        if (_currentSkill == null) return;
+        bool retry = _currentSkill.LastCastRequestCanRetry;
+        if (_waitingForApproval && !retry) RemoveFromQueue();
+        _waitingForApproval = false;
+        _retryCastAt = retry ? Time.unscaledTime + CastRetryDelay : 0f;
+        OnCastEnded();
+    }
+
     private void OnCastEnded()
     {
-
-        if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+        if (_currentSkill == null) return;
+        if (_waitingForApproval)
         {
-            _targetInfo = targetInfo;
-            foreach (var item in _targetInfo.GetTargets()) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
+            _waitingForApproval = false;
+            RemoveFromQueue();
         }
-
+        ToggleSelectCircles(CurrentCastTarget, false);
+        _currentSkill.CastStarted -= OnCastStarted;
         _currentSkill.CastEnded -= OnCastEnded;
-        _currentSkill.CastRejected -= OnCastEnded;
+        _currentSkill.CastRejected -= OnCastRejected;
         _currentSkill = null;
+        _waitingForApproval = false;
         CurrentCastTarget = null;
         CurrentCastChanged?.Invoke();
     }

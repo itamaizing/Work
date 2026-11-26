@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using System.Linq;
@@ -78,7 +78,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
-    public void PsionicsTalentTwo(bool value, string text) => isPsionicsTalentTwo = value;
+    public void PsionicsTalentTwo(bool value) => isPsionicsTalentTwo = value;
 
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;

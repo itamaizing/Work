@@ -35,10 +35,7 @@ public class TalentInfoPanel : MonoBehaviour
 
         var rows = new List<GameDescriptions.DescriptionRow>();
         GameDescriptions.DescriptionTable.AddText(rows, fullCondition);
-        if (data.DescriptionTable != null && data.DescriptionTable.HasEntries)
-            rows.AddRange(data.DescriptionTable.Build(data.DescriptionOwner, values: data.DescriptionValues));
-        else
-            AppendLegacyDescription(rows, data);
+        rows.AddRange(data.DescriptionTable.Build(data.DescriptionOwner, values: data.DescriptionValues));
 
         foreach (var row in rows)
         {
@@ -51,24 +48,6 @@ public class TalentInfoPanel : MonoBehaviour
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
             PositionAtCursor();
-        }
-    }
-
-    private static void AppendLegacyDescription(List<GameDescriptions.DescriptionRow> rows, TalentData data)
-    {
-        int descriptions = data.DescriptionsForInfoPanel?.Count ?? 0;
-        int states = data.StateInfos?.Count ?? 0;
-        for (int i = 0; i < Mathf.Max(descriptions, states); i++)
-        {
-            if (i < descriptions)
-                GameDescriptions.DescriptionTable.AddText(rows, data.DescriptionsForInfoPanel[i]);
-            if (i < states)
-            {
-                var state = data.StateInfos[i];
-                if (!string.IsNullOrEmpty(state.StateName) || !string.IsNullOrEmpty(state.Description))
-                    GameDescriptions.DescriptionTable.AddText(rows,
-                        $"%%link=State[{state.StateName}] {state.Description}");
-            }
         }
     }
 

@@ -87,8 +87,7 @@ public class TalentSaveManager
 		int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
 		character.TalentManager.SetPoints(_saveData.LoadInt($"{character.Data.Name}_TalentPointsCount"));
 
-		talent.Data.SetOpen(isActive >= 1);
-		talent.Data.SetLevel(isActive);
+		talent.Data.SetState(isActive >= 1, isActive);
 		talentGroup.SetActive(talent.Data, isActive >= 1, isActive);
 
 		if (needActive)

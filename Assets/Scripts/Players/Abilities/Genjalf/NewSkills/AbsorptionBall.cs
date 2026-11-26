@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,9 +18,9 @@ namespace Gangdollarff
 
         private Shield _shield;
         private Character _mainShieldTarget;
-        
+
         private Coroutine _aoeScanCoroutine;
-        
+
         private Transform _mainShieldTargetTransform;
 
         private float _absorbedDamage;
@@ -40,7 +40,7 @@ namespace Gangdollarff
         public bool IsManaRegenActive = false;
         private bool _isAoeShieldActive = false;
 
-        public override string AdditionalDescription => "";
+
 
         protected override int AnimTriggerPrepare => 0;
         protected override int AnimTriggerCast => 0;
@@ -59,7 +59,7 @@ namespace Gangdollarff
         {
             _isAoeShieldActive = value;
         }
-        
+
         private bool IsAllyTarget(IDamageable target) =>
             target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -196,14 +196,14 @@ namespace Gangdollarff
             RpcControlMovement(true);
             ClearSkillInfo();
         }
-        
+
         [TargetRpc]
         private void TargetRpcStartAoeScan(NetworkConnection conn, GameObject mainTarget)
         {
             _mainShieldTargetTransform = mainTarget != null ? mainTarget.transform : null;
             _aoeScanCoroutine = StartCoroutine(ClientAoeScanJob());
         }
-        
+
         [TargetRpc]
         private void TargetRpcStopAoeScan(NetworkConnection conn)
         {
@@ -248,7 +248,7 @@ namespace Gangdollarff
         {
             if (_mainShieldTarget == null || _shield == null)
                 return;
-            
+
             HashSet<Character> newTargets = new();
 
             foreach (var id in netIds)
@@ -271,7 +271,7 @@ namespace Gangdollarff
 
             ApplyAoeDiff(newTargets);
         }
-        
+
         [Server]
         private void ApplyAoeDiff(HashSet<Character> current)
         {

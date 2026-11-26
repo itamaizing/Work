@@ -10,13 +10,13 @@ public class LightTalent_3 : Talent
     public override void Enter()
     {
         manager.ActivateSkill(stunMagicPassiveSkill);
-        stunMagicPassiveSkill.DamageDarkLightStun(true, Data.DescriptionsForInfoPanel[0]);
+        stunMagicPassiveSkill.DamageDarkLightStun(true);
     }
 
     public override void Exit()
     {
         manager.DeactivateSkill(stunMagicPassiveSkill);
-        stunMagicPassiveSkill.DamageDarkLightStun(false, Data.DescriptionsForInfoPanel[0]);
+        stunMagicPassiveSkill.DamageDarkLightStun(false);
     }
 
 

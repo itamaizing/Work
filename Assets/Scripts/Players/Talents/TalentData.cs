@@ -10,8 +10,6 @@ public class TalentData
 	public GameDescriptions.DescriptionTable DescriptionTable => _descriptionTable;
 	public Character DescriptionOwner { get; set; }
 	public IDescriptionValue DescriptionValues { get; set; }
-	[SerializeField, TextArea] private List<string> _descriptionsForInfoPanel;
-	[SerializeField] private List<TalentStateInfo> _stateInfos = new();
 
 	private string _name;
 	private List<TalentData> _dependentTalents = new();
@@ -28,6 +26,7 @@ public class TalentData
 
 	public int Level => _level;
 	public bool IsOpen => _isOpen;
+	public event Action StateChanged;
 	public string Name
 	{
 		get { return _name; }
@@ -39,20 +38,23 @@ public class TalentData
 
 	public void SetLevel(int value)
     {
+        if (_level == value) return;
         _level = value;
-
-        /*if (condition != null)
-            condition.Validete(this);*/
+        StateChanged?.Invoke();
     }
     public void SetOpen(bool value)
+        => SetState(value, _level);
+
+    public void SetState(bool isOpen, int level)
     {
-        _isOpen = value;
+        bool changed = _isOpen != isOpen || _level != level;
+        _isOpen = isOpen;
+        _level = level;
 		if(condition != null && _isOpen)
 			condition.Validete(this);
+        if (changed) StateChanged?.Invoke();
     }
 
-    public List<string> DescriptionsForInfoPanel { get => _descriptionsForInfoPanel; }
-	public List<TalentStateInfo> StateInfos => _stateInfos;
 
     public void Init()
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -15,17 +15,17 @@ public class WaveSkill : Skill
     private AttributeModifier _modifierWidth = new AttributeModifier(0,ModifierType.Flat);
 
     private Vector3 _waveStartPoint;
-    private Vector3 _originalDirection = Vector3.forward; 
+    private Vector3 _originalDirection = Vector3.forward;
     private Vector3 _waveDirection;
 
-    public override string AdditionalDescription => "";
+
 
     protected override int AnimTriggerPrepare => 0;
 
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => CheckIsCanCast();
-    
+
     private bool CheckIsCanCast()
     {
         if (_waveStartPoint == Vector3.zero)
@@ -43,7 +43,7 @@ public class WaveSkill : Skill
     }
 
     private bool _isBonusSizeEnabled;
-    
+
     private void OnEnable()
     {
         Canceled += OnSkillCancel;
@@ -53,11 +53,11 @@ public class WaveSkill : Skill
     {
         Canceled -= OnSkillCancel;
     }
-    
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         StopCustomDraw();
-       
+
         if (targetInfo.Points.Count >= 2)
         {
             _waveStartPoint = targetInfo.Points[0];
@@ -159,7 +159,7 @@ public class WaveSkill : Skill
 
         _skillRender.ResetCursor();
     }
-    
+
     [Command]
     private void CmdSpawnWaveEffect(Vector3 position, Quaternion rotation)
     {
@@ -167,10 +167,10 @@ public class WaveSkill : Skill
 
         var fx = Instantiate(_waveParticlePrefab, position, rotation);
         NetworkServer.Spawn(fx);
-        
+
         StartCoroutine(DestroyAfterDelay(fx, 0.6f));
     }
-    
+
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -190,7 +190,7 @@ public class WaveSkill : Skill
         if (_lineVisual != null)
             _lineVisual.gameObject.SetActive(false);
     }
-    
+
     private void OnSkillCancel()
     {
         StopAllCoroutines();
@@ -215,7 +215,7 @@ public class WaveSkill : Skill
         }
 
         Transform pivotTransform = _previewPivot;
-        
+
         _lineVisual.gameObject.SetActive(true);
 
         Damage damage = new Damage
@@ -254,7 +254,7 @@ public class WaveSkill : Skill
 
             yield return null;
         }
-        
+
         _lineVisual.gameObject.SetActive(false);
         SkillRender.StopDrawRadius();
     }
@@ -285,13 +285,13 @@ public class WaveSkill : Skill
 
         targetInfo.Points.Add(_waveStartPoint);
         targetInfo.Points.Add(waveEndPoint);
-   
+
         StopCustomDraw();
         StopDynamicRender();
         callbackDataSaved(targetInfo);
     }
 
-    
+
     private Vector3 GetGroundMousePoint()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

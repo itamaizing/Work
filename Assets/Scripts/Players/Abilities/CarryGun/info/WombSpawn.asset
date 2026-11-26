@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: WombSpawn
   m_EditorClassIdentifier: 
   _name: "\u041C\u0430\u0442\u043A\u0430"
-  _description: 
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries: []
   _counter: 
   _icon: {fileID: 21300000, guid: ee0f08a0ce484464e9adff1b91a3cba8, type: 3}

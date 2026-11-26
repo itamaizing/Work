@@ -13,11 +13,16 @@ MonoBehaviour:
   m_Name: AbsorpationSword
   m_EditorClassIdentifier: 
   _name: "\u041F\u043E\u0433\u043B\u0449\u0430\u044E\u0449\u0438\u0439 \u043C\u0435\u0447"
-  _description: "\u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A\u0443\u043D\u0434
-    \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 1 \u0441\u043D\u0430\u0440\u044F\u0434\u043D\u043E\u0435
-    \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0435 \u043B\u0435\u0442\u044F\u0449\u0435\u0435
-    \u0432 \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D\u0430"
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries:
+    - rid: 1001
   _counter: 
   _icon: {fileID: 21300000, guid: aad58fe05c776024b9cbcc8dd111c711, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: ""
+        Text: "\u0432 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 2 \u0441\u0435\u043a\u0443\u043d\u0434 \u043f\u043e\u0433\u043b\u043e\u0449\u0430\u0435\u0442 1 \u0441\u043d\u0430\u0440\u044f\u0434\u043d\u043e\u0435 \u0437\u0430\u043a\u043b\u0438\u043d\u0430\u043d\u0438\u0435 \u043b\u0435\u0442\u044f\u0449\u0435\u0435 \u0432 \u0441\u043a\u043e\u0440\u043f\u0438\u043e\u043d\u0430"

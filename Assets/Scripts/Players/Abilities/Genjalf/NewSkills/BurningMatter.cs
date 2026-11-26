@@ -11,9 +11,9 @@ public class BurningMatter : Skill
     [SerializeField] private float _duration = 6f;
     [SerializeField] private float _radius = 1.5f;
 
-    public override string AdditionalDescription =>
-        $"Радиус: {AbilityNameBox.ColorOpen}{_radius * 2f}м{AbilityNameBox.ColorEnd}\n" +
-        $"Длительность: {AbilityNameBox.ColorOpen}{_duration} сек{AbilityNameBox.ColorEnd}";
+    public override GameDescriptions.DescriptionEntry AdditionalDescriptionEntry =>
+            new GameDescriptions.PlainText { Text = $"Радиус: {AbilityNameBox.ColorOpen}{_radius * 2f}м{AbilityNameBox.ColorEnd}\n" +
+        $"Длительность: {AbilityNameBox.ColorOpen}{_duration} сек{AbilityNameBox.ColorEnd}" };
 
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;

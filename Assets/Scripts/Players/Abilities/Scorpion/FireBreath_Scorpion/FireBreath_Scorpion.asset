@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: FireBreath_Scorpion
   m_EditorClassIdentifier: 
   _name: "\u0414\u044B\u0445\u0430\u043D\u0438\u0435 \u043E\u0433\u043D\u044F"
-  _description: 
+  _descriptionTable:
+    _entries: []
   _icon: {fileID: 21300000, guid: bdab9e283b8a84e49a7a02e778851d43, type: 3}

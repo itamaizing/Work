@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,8 +23,8 @@ namespace Gangdollarff
 
         private Transform _heroTransformClient;
 
-        public override string AdditionalDescription =>
-            $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
+        public override GameDescriptions.DescriptionEntry AdditionalDescriptionEntry =>
+            new GameDescriptions.PlainText { Text = $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}" };
 
         protected override int AnimTriggerPrepare => 0;
 

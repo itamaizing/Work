@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,8 +20,8 @@ namespace Gangdollarff
         private float _tempCastDeley = 1;
         private float _longPressThreshold = 0.25f;
 
-        public override string AdditionalDescription =>
-            $"Длительность: {AbilityNameBox.ColorOpen}{_fisuraDuration} сек{AbilityNameBox.ColorEnd}";
+        public override GameDescriptions.DescriptionEntry AdditionalDescriptionEntry =>
+            new GameDescriptions.PlainText { Text = $"Длительность: {AbilityNameBox.ColorOpen}{_fisuraDuration} сек{AbilityNameBox.ColorEnd}" };
 
         protected override int AnimTriggerPrepare => Animator.StringToHash("FisuraCast");
 

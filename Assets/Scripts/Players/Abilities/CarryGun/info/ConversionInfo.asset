@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: ConversionInfo
   m_EditorClassIdentifier: 
   _name: "\u041F\u0440\u0435\u043E\u0431\u0440\u0430\u0437\u043E\u0432\u0430\u043D\u0438\u0435"
-  _description: 
+  _descriptionTable:
+    _entries: []
   _icon: {fileID: 21300000, guid: 8b3f8dd120eb1f441a52aa4c7f186767, type: 3}

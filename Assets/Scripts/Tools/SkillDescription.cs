@@ -52,26 +52,16 @@ namespace GameDescriptions
             try
             {
                 context = context.WithSkill(skill);
-                if (includeName) DescriptionTable.AddText(rows, info.Name);
+                if (includeName) DescriptionTable.AddText(rows, $"%%link=Skill[{info.Name}]");
                 if (includeStats && skill != null)
                 {
                     DescriptionTable.AddText(rows, GetStats(skill));
-                    rows.Add(DescriptionRow.LineBreak());
                 }
-                if (info.DescriptionTable != null && info.DescriptionTable.HasEntries)
-                {
-                    info.DescriptionTable.Append(rows, context);
-                    DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(info.SupplementalDescription, context));
-                }
-                else
-                {
-                    DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(skill != null ? skill.Description : info.AddingDescription, context));
-                    if (!string.IsNullOrWhiteSpace(info.State) || !string.IsNullOrWhiteSpace(info.DescriptionState))
-                        DescriptionTable.AddText(rows, $"%%link=State[{info.State}] {info.DescriptionState}");
-                }
+                info.DescriptionTable?.Append(rows, context);
                 if (skill != null)
                 {
-                    DescriptionTable.AddText(rows, DescriptionBuilder.FormatText(skill.AdditionalDescription, context));
+                    skill.AdditionalDescriptionEntry?.Append(rows, context);
+                    skill.AppendDescriptionSupplements(rows, context);
                 }
             }
             finally

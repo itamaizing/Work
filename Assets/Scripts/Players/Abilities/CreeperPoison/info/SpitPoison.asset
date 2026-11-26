@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: SpitPoison
   m_EditorClassIdentifier: 
   _name: "\u041F\u043B\u0435\u0432\u0430\u0442\u044C\u0441\u044F \u044F\u0434\u043E\u043C"
-  _description: 
+  _descriptionTable:
+    _entries: []
   _icon: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}

@@ -151,8 +151,7 @@ public class ServerHeroProgressRepository : IHeroProgressRepository
             var talent = group?.TalentRows[entry.row].Talents.FirstOrDefault(t => t.Data.Name == entry.name);
             if (talent == null) continue;
 
-            talent.Data.SetOpen(true);
-            talent.Data.SetLevel(entry.lvl);
+            talent.Data.SetState(true, entry.lvl);
         }
 
         hero.TalentManager.SetPoints(serverData.freeTalentPoints);

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: IceShower
   m_EditorClassIdentifier: 
   _name: "\u041B\u0435\u0434\u044F\u043D\u043E\u0439 \u0434\u0443\u0448"
-  _description: 
+  _descriptionTable:
+    _entries: []
   _icon: {fileID: 21300000, guid: bd17d58dd522dcb4e82150d0973578fb, type: 3}

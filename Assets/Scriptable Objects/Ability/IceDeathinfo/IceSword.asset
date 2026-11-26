@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: IceSword
   m_EditorClassIdentifier: 
   _name: "\u041B\u0435\u0434\u044F\u043D\u043E\u0439 \u043C\u0435\u0447"
-  _description: 
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries: []
   _counter: 
   _icon: {fileID: 21300000, guid: aad58fe05c776024b9cbcc8dd111c711, type: 3}

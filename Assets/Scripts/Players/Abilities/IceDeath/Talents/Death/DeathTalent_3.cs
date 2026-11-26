@@ -8,11 +8,11 @@ public class DeathTalent_3 : Talent
 
     public override void Enter()
     {
-        ninjaResources.HardenedFleshTalent(true, Data.DescriptionsForInfoPanel[0]);
+        ninjaResources.HardenedFleshTalent(true);
     }
 
     public override void Exit()
     {
-        ninjaResources.HardenedFleshTalent(false, Data.DescriptionsForInfoPanel[0]);
+        ninjaResources.HardenedFleshTalent(false);
     }
 }

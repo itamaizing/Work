@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,16 +24,16 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
 
     public bool IsFillingDestruction { get => _isFillingDestruction; set => _isFillingDestruction = value; }
 
-    public void DamageDarkLightStun(bool value, string text)
+    public void DamageDarkLightStun(bool value)
     {
         _isDamageDarkLightStun = value;
-        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+
     }
 
     public void DamageDarkHealLightAddHealth(bool value, string text)
     {
         _isDamageDarkHealLightAddHealth = value;
-        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+
     }
     public void FillingDestruction(bool value) => _isFillingDestruction = value;
     #endregion

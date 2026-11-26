@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using Gangdollarff;
 using Mirror;
@@ -23,8 +23,8 @@ public class Quicksand : Skill, IGodLightSpell
     private float _initialRadius = 5;
     private bool _isInvisibleQuickSand;
 
-    public override string AdditionalDescription =>
-        $"Длительность: {AbilityNameBox.ColorOpen}{_quicksandDuration} сек{AbilityNameBox.ColorEnd}";
+    public override GameDescriptions.DescriptionEntry AdditionalDescriptionEntry =>
+            new GameDescriptions.PlainText { Text = $"Длительность: {AbilityNameBox.ColorOpen}{_quicksandDuration} сек{AbilityNameBox.ColorEnd}" };
 
     protected override int AnimTriggerPrepare => 0;
 

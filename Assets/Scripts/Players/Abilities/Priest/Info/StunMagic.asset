@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: StunMagic
   m_EditorClassIdentifier: 
   _name: 
-  _description: 
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries: []
   _counter: 
   _icon: {fileID: 21300000, guid: 8ad22d5ac9254b647a7f199f261c0c7e, type: 3}

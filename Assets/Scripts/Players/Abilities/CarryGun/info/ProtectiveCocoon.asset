@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: ProtectiveCocoon
   m_EditorClassIdentifier: 
   _name: "\u0417\u0430\u0449\u0438\u0442\u043D\u044B\u0439 \u043A\u043E\u043A\u043E\u043D"
-  _description: 
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries: []
   _counter: 
   _icon: {fileID: 1115175246, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}

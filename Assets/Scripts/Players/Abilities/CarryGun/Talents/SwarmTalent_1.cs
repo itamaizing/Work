@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,17 +10,19 @@ public class SwarmTalent_1 : Talent
     public override void Enter()
     {
         skillManager.ActivateSkill(tentacles);
-        AddingDescriptionSet(true);
+        SetDescriptionSupplement(true);
     }
 
     public override void Exit()
     {
         skillManager.DeactivateSkill(tentacles);
-        AddingDescriptionSet(false);
+        SetDescriptionSupplement(false);
     }
 
-    private void AddingDescriptionSet(bool value)
+    protected override void UpdateDescription() => SetDescriptionSupplement(Data.IsOpen);
+
+    private void SetDescriptionSupplement(bool value)
     {
-        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
+        tentacles.SetDescriptionSupplement(this, value, Data.DescriptionTable.FindEntry("description.0"), this);
     }
 }

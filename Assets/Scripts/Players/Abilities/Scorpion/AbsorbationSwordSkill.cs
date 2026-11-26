@@ -28,9 +28,9 @@ public class AbsorbationSwordSkill : Skill
     #endregion
     
 
-    public override string AdditionalDescription =>
-        $"Поглощает 1 снарядное заклинание.\n" +
-        $"Заряды: {Charges.RemainingCharges}/{Charges.MaxCharges} (накопление за 30 маг. урона)";
+    public override GameDescriptions.DescriptionEntry AdditionalDescriptionEntry =>
+            new GameDescriptions.PlainText { Text = $"Поглощает 1 снарядное заклинание.\n" +
+        $"Заряды: {Charges.RemainingCharges}/{Charges.MaxCharges} (накопление за 30 маг. урона)" };
 
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => 0;

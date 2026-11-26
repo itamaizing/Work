@@ -274,9 +274,8 @@ public enum CooldownReductionMode
 
     #region Scriptable Objects
     public string Name => _abilityInfo.Name;
-    public string Description { get => _abilityInfo.AddingDescription; set => _abilityInfo.AddingDescription = value; }
-    public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
-    public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
+    public string Description => GameDescriptions.DescriptionTable.ToText(GameDescriptions.SkillDescription.Build(this, false));
+    public string CounterSkill => _abilityInfo.Counter;
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     #endregion
@@ -330,11 +329,7 @@ public enum CooldownReductionMode
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
     /// </summary>
-    public virtual string AdditionalDescription { get; }
-    public void AddingDescriptionSet(bool value, string text)
-    {
-        AbilityInfoHero.AddingDescriptionSet(value, text);
-    }
+    public virtual GameDescriptions.DescriptionEntry AdditionalDescriptionEntry => null;
 
     #region Methods
     #region StartUp

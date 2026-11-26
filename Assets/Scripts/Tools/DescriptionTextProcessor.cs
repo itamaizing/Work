@@ -37,9 +37,6 @@ public static class DescriptionTextProcessor
     private static readonly Regex HexColor = new(@"^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$", RegexOptions.Compiled);
     private static readonly Regex NumericValue = new(@"^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:%|em|px)?$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex LegacyTag = new(
-        @"##(?<tag>[a-z]+)(?<value>[^\\]*?)\\(?<content>(?:[^\\##]|(?!#)#|(?<!#)#|(?!\\)\\)*?)\\##",
-        RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
     
     public static string Process(string input)
     {
@@ -50,7 +47,7 @@ public static class DescriptionTextProcessor
     public static List<DescriptionRow> ProcessRows(string input)
     {
         var parser = new Parser();
-        if (!string.IsNullOrEmpty(input)) parser.Parse(ConvertLegacy(input));
+        if (!string.IsNullOrEmpty(input)) parser.Parse(input);
         return parser.Rows;
     }
 
@@ -119,22 +116,6 @@ public static class DescriptionTextProcessor
         }
     }
 
-    private static string ConvertLegacy(string input)
-    {
-        string previous;
-        do
-        {
-            previous = input;
-            input = LegacyTag.Replace(input, match =>
-            {
-                string value = match.Groups["value"].Value.TrimStart('=');
-                return TryStyle(match.Groups["tag"].Value, value, out var open, out var close)
-                    ? open + match.Groups["content"].Value + close : match.Value;
-            });
-        } while (input != previous);
-        return input;
-    }
-
     private sealed class Parser
     {
         public List<DescriptionRow> Rows { get; } = new();
@@ -160,8 +141,7 @@ public static class DescriptionTextProcessor
                     continue;
                 }
                 bool prefix = i + 1 < end && input[i] == '%' && input[i + 1] == '%';
-                bool legacyRule = i + 3 < end && string.Compare(input, i, "##hr", 0, 4, StringComparison.OrdinalIgnoreCase) == 0;
-                if (!prefix && !legacyRule)
+                if (!prefix)
                 {
                     Append(input.Substring(i++, 1));
                     continue;
@@ -170,12 +150,7 @@ public static class DescriptionTextProcessor
                 int cursor = nameStart;
                 while (cursor < end && IsLetter(input[cursor])) cursor++;
                 string tag = input.Substring(nameStart, cursor - nameStart);
-                if (legacyRule)
-                {
-                    tag = "hr";
-                    cursor = i + 4;
-                }
-                if (legacyRule || tag.Equals("hr", StringComparison.OrdinalIgnoreCase) &&
+                if (tag.Equals("hr", StringComparison.OrdinalIgnoreCase) &&
                     (cursor == end || !IsNameCharacter(input[cursor])) &&
                     (cursor == end || input[cursor] != '=' && input[cursor] != '['))
                 {

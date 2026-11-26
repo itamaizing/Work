@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -102,13 +102,13 @@ public class NinjaResources : Skill, IPassiveSkill
     public void EnergyToRestore(bool value, string text)
     {
         _isIceRuneTalent = value;
-        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+
     }
 
-    public void HardenedFleshTalent(bool value, string text)
+    public void HardenedFleshTalent(bool value)
     {
         _isHardenedFleshTalent = value;
-        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+
     }
 
     #endregion

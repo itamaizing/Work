@@ -13,11 +13,16 @@ MonoBehaviour:
   m_Name: ChainLightning
   m_EditorClassIdentifier: Assembly-CSharp::AbilityInfo
   _name: "\u0426\u0435\u043F\u043D\u0430\u044F \u043C\u043E\u043B\u043D\u0438\u044F"
-  _description: "\u041D\u0430\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442 \u0432
-    \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430 \u043C\u043E\u043B\u043D\u0438\u044E,
-    \u043E\u0442\u0441\u043A\u0430\u043A\u0438\u0432\u0430\u044E\u0449\u0443\u044E
-    \u0434\u043E 5 \u0440\u0430\u0437."
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries:
+    - rid: 1001
   _counter: 
   _icon: {fileID: -1468931489, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: ""
+        Text: "\u041d\u0430\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442 \u0432 \u043f\u0440\u043e\u0442\u0438\u0432\u043d\u0438\u043a\u0430 \u043c\u043e\u043b\u043d\u0438\u044e, \u043e\u0442\u0441\u043a\u0430\u043a\u0438\u0432\u0430\u044e\u0449\u0443\u044e \u0434\u043e 5 \u0440\u0430\u0437."

@@ -14369,9 +14369,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0422\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0422\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: f5579b5d10247654cae4bdc55ae23486, type: 3}
@@ -14389,6 +14389,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0418\u0437\u0443\u0447\u0438\u0442\u044c \u0422\u0435\u043b\u0435\u043a\u0438\u043d\u0435\u0437"
 --- !u!114 &6565566035012974792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14402,9 +14407,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbsorptionBallTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0421\u043E \u0441\u0432\u0435\u0440\u0445 \u0432\u044B\u0441\u043E\u043A\u043E\u0447\u0430\u0441\u0442\u043D\u044B\u043C\_\u043A\u043E\u043B\u0435\u0431\u0430\u043D\u0438\u0435\u043C \_\u0432\u043E\u043A\u0440\u0443\u0433 \u0441\u0435\u0431\u044F \_\u043F\u0440\u0435\u043E\u0431\u0440\u0430\u0437\u0443\u0435\u0442 \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u0441\u0432\u0435\u0442\u0430 \u0432 \u0437\u0430\u0449\u0438\u0442\u043D\u044B\u0439 \u043A\u0443\u043F\u043E\u043B, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u0432\u0435\u0441\u044C \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0439 \u0443\u0440\u043E\u043D \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A\u0443\u043D\u0434"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
@@ -14422,6 +14427,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0421\u043e \u0441\u0432\u0435\u0440\u0445 \u0432\u044b\u0441\u043e\u043a\u043e\u0447\u0430\u0441\u0442\u043d\u044b\u043c\u00a0\u043a\u043e\u043b\u0435\u0431\u0430\u043d\u0438\u0435\u043c \u00a0\u0432\u043e\u043a\u0440\u0443\u0433 \u0441\u0435\u0431\u044f \u00a0\u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u0443\u0435\u0442 \u044d\u043d\u0435\u0440\u0433\u0438\u044e \u0441\u0432\u0435\u0442\u0430 \u0432 \u0437\u0430\u0449\u0438\u0442\u043d\u044b\u0439 \u043a\u0443\u043f\u043e\u043b, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u043f\u043e\u0433\u043b\u043e\u0449\u0430\u0435\u0442 \u0432\u0435\u0441\u044c \u043f\u043e\u043b\u0443\u0447\u0430\u0435\u043c\u044b\u0439 \u0443\u0440\u043e\u043d \u0432 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 2 \u0441\u0435\u043a\u0443\u043d\u0434"
 --- !u!114 &4710988972543738372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14435,9 +14445,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0420\u0430\u0437\u0440\u044B\u0432\u0430\u0435\u0442 \u0437\u0435\u043C\u043B\u044E \u043D\u0430 \u0434\u0432\u0435 \u0447\u0430\u0441\u0442\u0438 \u0438 \u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u0433\u043B\u0443\u0431\u043E\u043A\u0443\u044E \u0442\u0440\u0435\u0449\u0438\u043D\u0443, \u0447\u0435\u0440\u0435\u0437 \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u043D\u0435 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u043F\u0440\u043E\u0439\u0442\u0438."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0420\u0430\u0441\u043A\u043E\u043B \u0437\u0435\u043C\u043B\u0438"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
@@ -14455,6 +14465,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0420\u0430\u0437\u0440\u044b\u0432\u0430\u0435\u0442 \u0437\u0435\u043c\u043b\u044e \u043d\u0430 \u0434\u0432\u0435 \u0447\u0430\u0441\u0442\u0438 \u0438 \u0441\u043e\u0437\u0434\u0430\u0451\u0442 \u0433\u043b\u0443\u0431\u043e\u043a\u0443\u044e \u0442\u0440\u0435\u0449\u0438\u043d\u0443, \u0447\u0435\u0440\u0435\u0437 \u043a\u043e\u0442\u043e\u0440\u0443\u044e \u043d\u0435 \u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u043f\u0440\u043e\u0439\u0442\u0438."
 --- !u!114 &2261566965996094557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14468,9 +14483,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DivineEnhancementTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043D\u0430\u043D\u043E\u0441\u0438\u043C \u0443\u0440\u043E\u043D \u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u043E\u043C \u0432 2 \u0440\u0430\u0437\u0430 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0435 \u0443\u0441\u0438\u043B\u0435\u043D\u0438\u0435"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 765b5465876568f4e8e23fcd242b4b24, type: 3}
@@ -14488,6 +14503,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0423\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043d\u0430\u043d\u043e\u0441\u0438\u043c \u0443\u0440\u043e\u043d \u0413\u0430\u043d\u0433\u0434\u043e\u043b\u043b\u0430\u0440\u0444\u0444\u043e\u043c \u0432 2 \u0440\u0430\u0437\u0430 \u043d\u0430 2 \u0441\u0435\u043a\u0443\u043d\u0434\u044b."
 --- !u!114 &916624143046240507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14501,9 +14521,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0413\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0448\u0430\u0440 \u0438\u0437 \u0432\u043E\u0434\u044B \u0438 \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442 \u0435\u0433\u043E, \u043D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D \u0438 \u043E\u0442\u0431\u0440\u0430\u0441\u044B\u0432\u0430\u044F \u0432\u0440\u0430\u0433\u043E\u0432 \u043D\u0430 1 \u043C\u0435\u0442\u0440, \u0443\u0440\u043E\u043D \u0438 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043E\u0442\u0431\u0440\u043E\u0441\u0430 \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0439 \u043F\u043E \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u043C \u0446\u0435\u043B\u044F\u043C."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0425\u043B\u043E\u043F\u043E\u043A \u0432\u043E\u0434\u044B"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
@@ -14521,6 +14541,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0413\u0435\u043d\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0448\u0430\u0440 \u0438\u0437 \u0432\u043e\u0434\u044b \u0438 \u0432\u0437\u0440\u044b\u0432\u0430\u0435\u0442 \u0435\u0433\u043e, \u043d\u0430\u043d\u043e\u0441\u044f \u0443\u0440\u043e\u043d \u0438 \u043e\u0442\u0431\u0440\u0430\u0441\u044b\u0432\u0430\u044f \u0432\u0440\u0430\u0433\u043e\u0432 \u043d\u0430 1 \u043c\u0435\u0442\u0440, \u0443\u0440\u043e\u043d \u0438 \u0434\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u043e\u0442\u0431\u0440\u043e\u0441\u0430 \u043c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u043f\u043e \u0431\u043b\u0438\u0436\u0430\u0439\u0448\u0438\u043c \u0446\u0435\u043b\u044f\u043c."
 --- !u!114 &5690333344640738226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14534,11 +14559,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0437\u0430\u0440\u044F\u0434\u043E\u0432 \u0420\u0430\u0441\u043A\u043E\u043B\u0430 \u0437\u0435\u043C\u043B\u0438"
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0437\u0430\u0440\u044F\u0434\u043E\u0432 \u0425\u043B\u043E\u043F\u043A\u0430 \u0432\u043E\u0434\u044B"
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0437\u0430\u0440\u044F\u0434\u043E\u0432 \u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F "
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
+      - rid: 1002
+      - rid: 1003
     Description: "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0437\u0430\u0440\u044F\u0434\u043E\u0432"
     ConditionDescription: 
     Icon: {fileID: 0}
@@ -14557,6 +14582,21 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0423\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0437\u0430\u0440\u044f\u0434\u043e\u0432 \u0420\u0430\u0441\u043a\u043e\u043b\u0430 \u0437\u0435\u043c\u043b\u0438"
+    - rid: 1002
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.1"
+        Text: "\u0423\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0437\u0430\u0440\u044f\u0434\u043e\u0432 \u0425\u043b\u043e\u043f\u043a\u0430 \u0432\u043e\u0434\u044b"
+    - rid: 1003
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.2"
+        Text: "\u0423\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0437\u0430\u0440\u044f\u0434\u043e\u0432 \u0428\u0430\u0440 \u043f\u043e\u0433\u043b\u043e\u0449\u0435\u043d\u0438\u044f "
 --- !u!114 &3396465724686444970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14570,9 +14610,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0417\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u0446\u0435\u043B\u044C \u043F\u043E \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u043F\u043E\u043F\u0430\u043B\u043E \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0435,\_\_ \u043D\u0430 \xAB\u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u0430\xBB \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F\_ \xAB\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0437\u0430\u0440\u0442\xBB, \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435,\_ \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435 \u043C\u0430\u043D\u044B \u043D\u0430 10%, \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E \u0431\u0435\u0441\u043A\u043E\u043D\u0435\u0447\u043D\u043E\u0441\u0442\u0438, \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0437\u0430\u0440\u0442"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
@@ -14589,6 +14629,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0417\u0430 \u043a\u0430\u0436\u0434\u0443\u044e \u0446\u0435\u043b\u044c \u043f\u043e \u043a\u043e\u0442\u043e\u0440\u043e\u0439 \u043f\u043e\u043f\u0430\u043b\u043e \u0437\u0430\u043a\u043b\u0438\u043d\u0430\u043d\u0438\u0435,\u00a0\u00a0 \u043d\u0430 \u00ab\u0413\u0430\u043d\u0433\u0434\u043e\u043b\u043b\u0430\u0440\u0444\u0444\u0430\u00bb \u043d\u0430\u043a\u043b\u0430\u0434\u044b\u0432\u0430\u0435\u0442\u0441\u044f\u00a0 \u00ab\u043c\u0430\u0433\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0430\u0437\u0430\u0440\u0442\u00bb, \u0441\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u043c\u0430\u0433\u0438\u0447\u0435\u0441\u043a\u043e\u0435,\u00a0 \u0443\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u043c\u0430\u043d\u044b \u043d\u0430 10%, \u0441\u0443\u043c\u043c\u0438\u0440\u0443\u0435\u0442\u0441\u044f \u0434\u043e \u0431\u0435\u0441\u043a\u043e\u043d\u0435\u0447\u043d\u043e\u0441\u0442\u0438, \u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c 3 \u0441\u0435\u043a\u0443\u043d\u0434\u044b"
 --- !u!114 &1870278782762362650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14602,9 +14647,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExcitementDurationTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \"\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0430\u0437\u0430\u0440\u0442\u0430\" \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0434\u043E 9 \u0441\u0435\u043A\u0443\u043D\u0434"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0430\u0437\u0430\u0440\u0442\u0430"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
@@ -14622,6 +14667,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \"\u043c\u0430\u0433\u0438\u0447\u0435\u0441\u043a\u043e\u0433\u043e \u0430\u0437\u0430\u0440\u0442\u0430\" \u0443\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u0434\u043e 9 \u0441\u0435\u043a\u0443\u043d\u0434"
 --- !u!114 &3619341477206878948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14635,8 +14685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: 
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -14666,8 +14716,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: 
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
@@ -14699,8 +14749,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: added fireElement Explosion
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
@@ -14730,9 +14780,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0420\u0430\u0437 \u0432 12 \u0441\u0435\u043A\u0443\u043D\u0434 \xAB\u0448\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F\xBB \u043F\u0440\u0438  \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0438\u043C\u0435\u0435\u0442 \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0432 2 \u0440\u0430\u0437\u0430 \u0434\u043E\u043B\u044C\u0448\u0435"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0448\u0430\u0440"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -14749,6 +14799,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0420\u0430\u0437 \u0432 12 \u0441\u0435\u043a\u0443\u043d\u0434 \u00ab\u0448\u0430\u0440 \u043f\u043e\u0433\u043b\u043e\u0449\u0435\u043d\u0438\u044f\u00bb \u043f\u0440\u0438  \u043d\u0430\u043b\u043e\u0436\u0435\u043d\u0438\u0438 \u0438\u043c\u0435\u0435\u0442 \u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0432 2 \u0440\u0430\u0437\u0430 \u0434\u043e\u043b\u044c\u0448\u0435"
 --- !u!114 &3798895398071013150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14762,8 +14817,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: Baff whater clap
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -14793,8 +14848,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: school
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -14823,8 +14878,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: Baff whater clap cd
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -14854,8 +14909,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GodAbilityTalent
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: God ability
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 75313173717aca84aa7a265b4075c961, type: 3}
@@ -14885,8 +14940,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CounterSpellTalent
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: CounterSpell
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: a42f881e303f5ec41ab1065e45b5b380, type: 3}
@@ -14917,9 +14972,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightingStrikeTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0431\u044C\u0451\u0442 \u0441 \u043D\u0435\u0431\u0430 \u0432\u0440\u0430\u0433\u0430 \u043C\u043E\u043B\u043D\u0438\u0435\u0439, \u0438\u043C\u0435\u0435\u0442 15% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 \u0446\u0435\u043B\u044C \u0440\u0430\u0437\u0440\u044F\u0436\u0435\u043D\u0438\u0435 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0420\u0430\u0437\u0440\u044F\u0436\u0435\u043D\u0438\u0435 \u2013  \u0432 \u043A\u043E\u043D\u0446\u0435 \u043A\u0430\u0436\u0434\u043E\u0439 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u0441 \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u044C\u044E  50% \u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0441 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u043E\u0439 \u0438\u043B\u0438 \u043E\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0441 \u0441\u043E\u044E\u0437\u043D\u043E\u0439 \u0446\u0435\u043B\u0438  \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u044D\u0444\u0444\u0435\u043A\u0442, \u0438 \u0437\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442\u0441\u044F \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F \u0446\u0435\u043B\u0438  \u043D\u0430 50%, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u044D\u0444\u0444\u0435\u043A\u0442, \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0437\u0434\u0443\u0445\u0430."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0423\u0434\u0430\u0440 \u043C\u043E\u043B\u043D\u0438\u0435\u0439"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: afb4088ce8c9f604bba0499e15cb3202, type: 3}
@@ -14937,6 +14992,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0431\u044c\u0451\u0442 \u0441 \u043d\u0435\u0431\u0430 \u0432\u0440\u0430\u0433\u0430 \u043c\u043e\u043b\u043d\u0438\u0435\u0439, \u0438\u043c\u0435\u0435\u0442 15% \u0448\u0430\u043d\u0441 \u043d\u0430\u043b\u043e\u0436\u0438\u0442\u044c \u043d\u0430 \u0446\u0435\u043b\u044c \u0440\u0430\u0437\u0440\u044f\u0436\u0435\u043d\u0438\u0435 \u043d\u0430 2 \u0441\u0435\u043a\u0443\u043d\u0434\u044b. \u0420\u0430\u0437\u0440\u044f\u0436\u0435\u043d\u0438\u0435 \u2013  \u0432 \u043a\u043e\u043d\u0446\u0435 \u043a\u0430\u0436\u0434\u043e\u0439 \u0441\u0435\u043a\u0443\u043d\u0434\u044b \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0441 \u0432\u0435\u0440\u043e\u044f\u0442\u043d\u043e\u0441\u0442\u044c\u044e  50% \u0441\u043d\u0438\u043c\u0430\u0435\u0442 \u043f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0441 \u0432\u0440\u0430\u0436\u0435\u0441\u043a\u043e\u0439 \u0438\u043b\u0438 \u043e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0441 \u0441\u043e\u044e\u0437\u043d\u043e\u0439 \u0446\u0435\u043b\u0438  \u043c\u0430\u0433\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u044d\u0444\u0444\u0435\u043a\u0442, \u0438 \u0437\u0430\u043c\u0435\u0434\u043b\u044f\u0435\u0442\u0441\u044f \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c \u043f\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043d\u0438\u044f \u0446\u0435\u043b\u0438  \u043d\u0430 50%, \u043c\u0430\u0433\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u044d\u0444\u0444\u0435\u043a\u0442, \u0448\u043a\u043e\u043b\u0430 \u0432\u043e\u0437\u0434\u0443\u0445\u0430."
 --- !u!114 &5040640883951079247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14950,9 +15010,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbsorbationBallAllyTarget
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0448\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u043D\u0430 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F \u043D\u0430 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 893f912149befbd4980a4594fa3e744a, type: 3}
@@ -14969,6 +15029,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0448\u0430\u0440 \u043f\u043e\u0433\u043b\u043e\u0449\u0435\u043d\u0438\u044f \u043c\u043e\u0436\u043d\u043e \u043f\u0440\u0438\u043c\u0435\u043d\u044f\u0442\u044c \u043d\u0430 \u0441\u043e\u044e\u0437\u043d\u0438\u043a\u0430"
 --- !u!114 &4700997506177914789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14982,9 +15047,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbsorbationBallManaRestorationTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F \u0432 \u043A\u043E\u043D\u0446\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442 \u0432 2 \u0440\u0430\u0437\u0430 \u0431\u043E\u043B\u044C\u0448\u0435 \u043C\u0430\u043D\u044B \u043E\u0442 \u043F\u043E\u0433\u043B\u043E\u0449\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F \u043C\u0430\u043D\u0430 X2"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5b53cad99487f0147be177f5009be820, type: 3}
@@ -15001,6 +15066,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0428\u0430\u0440 \u043f\u043e\u0433\u043b\u043e\u0449\u0435\u043d\u0438\u044f \u0432 \u043a\u043e\u043d\u0446\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442 \u0432 2 \u0440\u0430\u0437\u0430 \u0431\u043e\u043b\u044c\u0448\u0435 \u043c\u0430\u043d\u044b \u043e\u0442 \u043f\u043e\u0433\u043b\u043e\u0449\u0451\u043d\u043d\u043e\u0433\u043e \u0443\u0440\u043e\u043d\u0430."
 --- !u!114 &8754650027447273081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15014,9 +15084,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuicksandTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u043B\u0438\u043D\u0438\u044E \u043F\u0435\u0441\u043A\u043E\u0432, \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u0435 \u0446\u0435\u043B\u0438 \u043F\u0440\u043E\u0445\u043E\u0434\u044F\u0449\u0438\u0435 \u0447\u0435\u0440\u0435\u0437 \u043D\u0435\u0451 \u0442\u0435\u0440\u044F\u044E\u0442 80% \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0417\u044B\u0431\u0443\u0447\u0438\u0435 \u043F\u0435\u0441\u043A\u0438"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
@@ -15034,6 +15104,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0441\u043e\u0437\u0434\u0430\u0451\u0442 \u043b\u0438\u043d\u0438\u044e \u043f\u0435\u0441\u043a\u043e\u0432, \u0432\u0440\u0430\u0436\u0435\u0441\u043a\u0438\u0435 \u0446\u0435\u043b\u0438 \u043f\u0440\u043e\u0445\u043e\u0434\u044f\u0449\u0438\u0435 \u0447\u0435\u0440\u0435\u0437 \u043d\u0435\u0451 \u0442\u0435\u0440\u044f\u044e\u0442 80% \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u0438 \u043f\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043d\u0438\u044f"
 --- !u!114 &6486027622897545265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15047,9 +15122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillThiefTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0421\u043D\u0438\u043C\u0430\u0435\u0442 \u0441 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u043E\u0439 \u0446\u0435\u043B\u0438 1 \u0431\u0430\u0444\u0444 \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430 \u0441\u0435\u0431\u044F"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: 
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: de1bca2bb34e47e4c98398017802a954, type: 3}
@@ -15067,6 +15142,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0421\u043d\u0438\u043c\u0430\u0435\u0442 \u0441 \u0432\u0440\u0430\u0436\u0435\u0441\u043a\u043e\u0439 \u0446\u0435\u043b\u0438 1 \u0431\u0430\u0444\u0444 \u0438 \u043d\u0430\u043a\u043b\u0430\u0434\u044b\u0432\u0430\u0435\u0442 \u043d\u0430 \u0441\u0435\u0431\u044f"
 --- !u!114 &3178008927153590645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15080,9 +15160,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444 \u043E\u0431\u0440\u0430\u0437\u0443\u0435\u0442 \u0432\u043E\u043B\u043D\u0443 \u0441\u043C\u044B\u0432\u0430\u044E\u0449\u0443\u044E \u0432\u0440\u0430\u0433\u043E\u0432 \u0432 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u043C \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0412\u043E\u043B\u043D\u0430"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
@@ -15100,6 +15180,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0413\u0430\u043d\u0433\u0434\u043e\u043b\u043b\u0430\u0440\u0444 \u043e\u0431\u0440\u0430\u0437\u0443\u0435\u0442 \u0432\u043e\u043b\u043d\u0443 \u0441\u043c\u044b\u0432\u0430\u044e\u0449\u0443\u044e \u0432\u0440\u0430\u0433\u043e\u0432 \u0432 \u043e\u0431\u0440\u0430\u0442\u043d\u043e\u043c \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0438"
 --- !u!114 &4777950773765639936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15113,9 +15198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GodLightTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444 \u0432\u043E\u043A\u0440\u0443\u0433 \u0441\u0435\u0431\u044F\_\u0433\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0448\u0430\u0440\_\u0438\u0437 \u0432\u043E\u0434\u044B \u0438 \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442 \u0435\u0433\u043E, \u043D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D \u0438 \u043E\u0442\u0431\u0440\u0430\u0441\u044B\u0432\u0430\u044F\_\u0432\u0440\u0430\u0433\u043E\u0432 \u043D\u0430\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u0440\u044F\u0434\u043E\u043C."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u0430\u044F \u043B\u0435\u0433\u043A\u043E\u0441\u0442\u044C"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3ef8f17a384cf20408be7fc7617759f7, type: 3}
@@ -15133,6 +15218,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0413\u0430\u043d\u0433\u0434\u043e\u043b\u043b\u0430\u0440\u0444\u0444 \u0432\u043e\u043a\u0440\u0443\u0433 \u0441\u0435\u0431\u044f\u00a0\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0448\u0430\u0440\u00a0\u0438\u0437 \u0432\u043e\u0434\u044b \u0438 \u0432\u0437\u0440\u044b\u0432\u0430\u0435\u0442 \u0435\u0433\u043e, \u043d\u0430\u043d\u043e\u0441\u044f \u0443\u0440\u043e\u043d \u0438 \u043e\u0442\u0431\u0440\u0430\u0441\u044b\u0432\u0430\u044f\u00a0\u0432\u0440\u0430\u0433\u043e\u0432 \u043d\u0430\u0445\u043e\u0434\u044f\u0449\u0438\u0445 \u0440\u044f\u0434\u043e\u043c."
 --- !u!114 &4853264508304941808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15146,9 +15236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GodAuraTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0423\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442 \u0432\u0440\u0435\u043C\u044F \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u0430 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432 \u043D\u0430 10% \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 8 \u043A\u043B\u0435\u0442\u043E\u0432"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0410\u0443\u0440\u0430 \u0431\u043E\u0433\u0430"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
@@ -15165,6 +15255,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0423\u043c\u0435\u043d\u044c\u0448\u0430\u0435\u0442 \u0432\u0440\u0435\u043c\u044f \u043a\u0443\u043b\u0434\u0430\u0443\u043d\u0430 \u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0435\u0439 \u0441\u043e\u044e\u0437\u043d\u0438\u043a\u043e\u0432 \u043d\u0430 10% \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435 8 \u043a\u043b\u0435\u0442\u043e\u0432"
 --- !u!114 &3677902011510508796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15178,9 +15273,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GodAuraStackingTalent
   _data:
-    _descriptionsForInfoPanel:
-    - ......
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0410\u0443\u0440\u0430 \u0431\u043E\u0433\u0430 \u0441\u0442\u0430\u043A"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
@@ -15198,6 +15293,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "......"
 --- !u!114 &308676296038382060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15211,8 +15311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TransformationTalent
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: "\u041F\u0440\u0435\u0432\u0440\u0430\u0449\u0435\u043D\u0438\u0435"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: ee0fb337505e68442a4822376f993c92, type: 3}
@@ -15243,9 +15343,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GangInvisibleTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0433\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444 \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u044B\u043C, \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435 \u0443\u0440\u043E\u043D\u0430 \u043D\u0435 \u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u044D\u0444\u0444\u0435\u043A\u0442, \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439 \u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u044D\u0444\u0444\u0435\u043A\u0442"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u041D\u0435\u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 8fec67b05db2c844ca3c6d4bf2d102f3, type: 3}
@@ -15263,6 +15363,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0433\u0430\u043d\u0433\u0434\u043e\u043b\u043b\u0430\u0440\u0444\u0444 \u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u043d\u0435\u0432\u0438\u0434\u0438\u043c\u044b\u043c, \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0438\u0435 \u0443\u0440\u043e\u043d\u0430 \u043d\u0435 \u0441\u043d\u0438\u043c\u0430\u0435\u0442 \u044d\u0444\u0444\u0435\u043a\u0442, \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u0435 \u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0435\u0439 \u0441\u043d\u0438\u043c\u0430\u0435\u0442 \u044d\u0444\u0444\u0435\u043a\u0442"
 --- !u!114 &7291747353363309335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15276,8 +15381,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SummonTalent
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: "\u041F\u0440\u0438\u0437\u044B\u0432 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043B\u044F"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
@@ -15308,9 +15413,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireworkBlindTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u041E\u0433\u043D\u0435\u043D\u044B\u0439 \u0444\u0435\u0439\u0435\u0440\u0432\u0435\u0440\u043A \u0438\u043C\u0435\u0435\u0442 \u0448\u0430\u043D\u0441 50% \u043E\u0441\u043B\u0435\u043F\u0438\u0442\u044C \u0446\u0435\u043B\u044C \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u043F\u043E\u0442\u043E\u043A \u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u0435"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 840c426cfdccc2548b12c7fca38a27e6, type: 3}
@@ -15327,6 +15432,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u041e\u0433\u043d\u0435\u043d\u044b\u0439 \u0444\u0435\u0439\u0435\u0440\u0432\u0435\u0440\u043a \u0438\u043c\u0435\u0435\u0442 \u0448\u0430\u043d\u0441 50% \u043e\u0441\u043b\u0435\u043f\u0438\u0442\u044c \u0446\u0435\u043b\u044c \u043d\u0430 2 \u0441\u0435\u043a\u0443\u043d\u0434\u044b"
 --- !u!114 &3042591342335496185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15340,8 +15450,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MagicInstantaneityTalent
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 7e4991e1e04622047bb6749a09522dd8, type: 3}
@@ -15372,9 +15482,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingStoneTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0433\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u043A\u0430\u043C\u0435\u043D\u044C \u0438 \u043F\u0430\u0434\u0430\u0435\u0442 \u0441\u0432\u0435\u0440\u0445\u0443 \u043D\u0430\u043D\u043E\u0441\u044F 30 \u0443\u0440\u043E\u043D\u0430 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u0446\u0435\u043B\u044F\u043C \u0438 \u043E\u0433\u043B\u0443\u0448\u0430\u044F \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u041A\u0430\u043C\u0435\u043D\u044C \u0441 \u043D\u0435\u0431\u0430"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 7764d8d6cfaf60840af322c247c9896b, type: 3}
@@ -15392,6 +15502,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u0443\u0435\u0442\u0441\u044f \u043a\u0430\u043c\u0435\u043d\u044c \u0438 \u043f\u0430\u0434\u0430\u0435\u0442 \u0441\u0432\u0435\u0440\u0445\u0443 \u043d\u0430\u043d\u043e\u0441\u044f 30 \u0443\u0440\u043e\u043d\u0430 \u0432\u0440\u0430\u0436\u0435\u0441\u043a\u0438\u043c \u0446\u0435\u043b\u044f\u043c \u0438 \u043e\u0433\u043b\u0443\u0448\u0430\u044f \u043d\u0430 2 \u0441\u0435\u043a\u0443\u043d\u0434\u044b"
 --- !u!114 &8494329667382761152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15405,9 +15520,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuicksandInvisibleTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0417\u044B\u0431\u0443\u0447\u0438\u0435 \u043F\u0435\u0441\u043A\u0438 \u0441\u0442\u0430\u043D\u043E\u0432\u044F\u0442\u0441\u044F \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u044B\u043C\u0438 \u0434\u043B\u044F \u0432\u0440\u0430\u0433\u043E\u0432 \u0447\u0435\u0440\u0435\u0437 1 \u0441\u0435\u043A\u0443\u043D\u0434\u0443. \u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430, \u0448\u0438\u0440\u0438\u043D\u0430 \u043D\u0430 1 \u043C\u0435\u0442\u0440."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u041D\u0435\u0432\u0438\u0434\u0438\u043C\u044B\u0435 \u0437\u044B\u0431\u0443\u0447\u0438\u0435 \u043F\u0435\u0441\u043A\u0438"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
@@ -15427,6 +15542,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0417\u044b\u0431\u0443\u0447\u0438\u0435 \u043f\u0435\u0441\u043a\u0438 \u0441\u0442\u0430\u043d\u043e\u0432\u044f\u0442\u0441\u044f \u043d\u0435\u0432\u0438\u0434\u0438\u043c\u044b\u043c\u0438 \u0434\u043b\u044f \u0432\u0440\u0430\u0433\u043e\u0432 \u0447\u0435\u0440\u0435\u0437 1 \u0441\u0435\u043a\u0443\u043d\u0434\u0443. \u0414\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0443\u0432\u0435\u043b\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u043d\u0430 2 \u043c\u0435\u0442\u0440\u0430, \u0448\u0438\u0440\u0438\u043d\u0430 \u043d\u0430 1 \u043c\u0435\u0442\u0440."
 --- !u!114 &8405535604584004599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15440,9 +15560,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeBackTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0412\u043E\u0432\u0437\u0440\u0430\u0449\u0430\u0435\u0442 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u043D\u0430\u0437\u0430\u0434."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0412\u043E\u0437\u0432\u0440\u0430\u0442 \u0432\u043E \u0432\u0440\u0435\u043C\u0435\u043D\u0438"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5711d4c2b5c281147ab022c75cb66999, type: 3}
@@ -15460,6 +15580,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0412\u043e\u0432\u0437\u0440\u0430\u0449\u0430\u0435\u0442 \u043d\u0430 3 \u0441\u0435\u043a\u0443\u043d\u0434\u044b \u043d\u0430\u0437\u0430\u0434."
 --- !u!114 &133323943878450836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15473,9 +15598,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImmortalityTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430 \u0441\u0435\u0431\u044F \u0431\u0435\u0441\u0441\u043C\u0435\u0440\u0442\u0438\u0435 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0438 4 \u0441\u0435\u043A\u0443\u043D\u0434, \u043D\u0435 \u0443\u043C\u0438\u0440\u0430\u0435\u0442 \u0434\u0430\u0436\u0435 \u043F\u0440\u0438 \u043D\u0443\u043B\u0435\u0432\u043E\u043C \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0411\u0435\u0441\u0441\u043C\u0435\u0440\u0442\u0438\u0435"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: c9e058e06c95fa04fbfd12767e30935e, type: 3}
@@ -15493,6 +15618,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u041d\u0430\u043a\u043b\u0430\u0434\u044b\u0432\u0430\u0435\u0442 \u043d\u0430 \u0441\u0435\u0431\u044f \u0431\u0435\u0441\u0441\u043c\u0435\u0440\u0442\u0438\u0435 \u0432 \u0442\u0435\u0447\u0435\u043d\u0438\u0438 4 \u0441\u0435\u043a\u0443\u043d\u0434, \u043d\u0435 \u0443\u043c\u0438\u0440\u0430\u0435\u0442 \u0434\u0430\u0436\u0435 \u043f\u0440\u0438 \u043d\u0443\u043b\u0435\u0432\u043e\u043c \u0437\u0434\u043e\u0440\u043e\u0432\u044c\u0435"
 --- !u!114 &2135330488917696545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15506,9 +15636,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WhirlpoolTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u0441\u043E\u0437\u0434\u0430\u0451\u0442 \u0432\u043E\u0434\u043E\u0432\u043E\u0440\u043E\u0442, \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u044E\u0449\u0438\u0439 \u0432\u0440\u0430\u0433\u043E\u0432 \u043A \u0446\u0435\u043D\u0442\u0440\u0443"
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0412\u043E\u0434\u043E\u0432\u043E\u0440\u043E\u0442"
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 9499c35003f5fb14387943ad17f06e37, type: 3}
@@ -15526,6 +15656,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u0441\u043e\u0437\u0434\u0430\u0451\u0442 \u0432\u043e\u0434\u043e\u0432\u043e\u0440\u043e\u0442, \u043f\u0440\u0438\u0442\u044f\u0433\u0438\u0432\u0430\u044e\u0449\u0438\u0439 \u0432\u0440\u0430\u0433\u043e\u0432 \u043a \u0446\u0435\u043d\u0442\u0440\u0443"
 --- !u!114 &9161470001313387124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15539,8 +15674,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireballTalent
   _data:
-    _descriptionsForInfoPanel: []
-    _stateInfos: []
+    _descriptionTable:
+      _entries: []
     Description: 
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3daccdca469e8c7408109fb56b87cf0b, type: 3}
@@ -15571,9 +15706,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SchoolSolventTalent
   _data:
-    _descriptionsForInfoPanel:
-    - "\u043A\u043E\u0433\u0434\u0430 \u0433\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444 \u0441\u0431\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0435 \u043A\u043E\u043D\u0442\u0440\u0441\u043F\u044D\u043B\u043B\u043E\u043C, \u043E\u043D \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442 \u0448\u043A\u043E\u043B\u0443 \u0434\u043B\u044F \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0440\u0430\u0441\u0441\u0442\u043E\u0432\u0440\u0438\u0442\u043B\u0435\u044C \u0448\u043A\u043E\u043B, \u043C\u043E\u0436\u043D\u043E \u043D\u0430\u043A\u043E\u043F\u0438\u0442\u044C \u0432\u0441\u0435 \u0448\u043A\u043E\u043B\u044B, \u043A\u0430\u043A\u0438\u0435 \u0448\u043A\u043E\u043B\u044B \u043D\u0430\u043A\u043E\u043F\u043B\u0435\u043D\u043D\u044B , \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C \u0440\u0430\u0441\u0441\u0442\u0432\u043E\u0440\u0438\u0442\u0435\u043B\u044C \u0448\u043A\u043E\u043B \u043A \u0446\u0435\u043B\u0438 \u0441\u043E\u044E\u0437\u043D\u043E\u0439 \u0438\u043B\u0438 \u0444\u0440\u0430\u0436\u0435\u0441\u043A\u043E\u0439, \u0432\u0441\u0435 \u0431\u0430\u0444\u044B \u0438\u043B\u0438 \u0434\u0435\u0431\u0430\u0444\u044B \u044D\u0442\u043E\u0439 \u0448\u043A\u043E\u043B\u044B \u0431\u0443\u0434\u0443\u0442 \u0441\u043D\u044F\u0442\u044B \u0441 \u0446\u0435\u043B\u0438, \u043F\u043E\u0441\u043B\u0435 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u043D\u0430\u043A\u043E\u043F\u043B\u0435\u043D\u043D\u044B\u0435 \u0448\u043A\u043E\u043B\u044B \u0442\u0435\u0440\u044F\u044E\u0442\u0441\u044F."
-    _stateInfos: []
+    _descriptionTable:
+      _entries:
+      - rid: 1001
     Description: "\u0420\u0430\u0441\u0441\u0442\u0432\u043E\u0440\u0438\u0442\u0435\u043B\u044C \u0448\u043A\u043E\u043B "
     ConditionDescription: 
     Icon: {fileID: 21300000, guid: ad21cf949ffd1354c9af7b1196ea1c83, type: 3}
@@ -15590,6 +15725,11 @@ MonoBehaviour:
     - rid: 1000
       type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: "description.0"
+        Text: "\u043a\u043e\u0433\u0434\u0430 \u0433\u0430\u043d\u0433\u0434\u043e\u043b\u043b\u0430\u0440\u0444 \u0441\u0431\u0438\u0432\u0430\u0435\u0442 \u0437\u0430\u043a\u043b\u0438\u043d\u0430\u043d\u0438\u0435 \u043a\u043e\u043d\u0442\u0440\u0441\u043f\u044d\u043b\u043b\u043e\u043c, \u043e\u043d \u043d\u0430\u043a\u0430\u043f\u043b\u0438\u0432\u0430\u0435\u0442 \u0448\u043a\u043e\u043b\u0443 \u0434\u043b\u044f \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u044f \u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0438 \u0440\u0430\u0441\u0441\u0442\u043e\u0432\u0440\u0438\u0442\u043b\u0435\u044c \u0448\u043a\u043e\u043b, \u043c\u043e\u0436\u043d\u043e \u043d\u0430\u043a\u043e\u043f\u0438\u0442\u044c \u0432\u0441\u0435 \u0448\u043a\u043e\u043b\u044b, \u043a\u0430\u043a\u0438\u0435 \u0448\u043a\u043e\u043b\u044b \u043d\u0430\u043a\u043e\u043f\u043b\u0435\u043d\u043d\u044b , \u043f\u0440\u0438\u043c\u0435\u043d\u044f\u044f \u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u044c \u0440\u0430\u0441\u0441\u0442\u0432\u043e\u0440\u0438\u0442\u0435\u043b\u044c \u0448\u043a\u043e\u043b \u043a \u0446\u0435\u043b\u0438 \u0441\u043e\u044e\u0437\u043d\u043e\u0439 \u0438\u043b\u0438 \u0444\u0440\u0430\u0436\u0435\u0441\u043a\u043e\u0439, \u0432\u0441\u0435 \u0431\u0430\u0444\u044b \u0438\u043b\u0438 \u0434\u0435\u0431\u0430\u0444\u044b \u044d\u0442\u043e\u0439 \u0448\u043a\u043e\u043b\u044b \u0431\u0443\u0434\u0443\u0442 \u0441\u043d\u044f\u0442\u044b \u0441 \u0446\u0435\u043b\u0438, \u043f\u043e\u0441\u043b\u0435 \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u044f \u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0438, \u043d\u0430\u043a\u043e\u043f\u043b\u0435\u043d\u043d\u044b\u0435 \u0448\u043a\u043e\u043b\u044b \u0442\u0435\u0440\u044f\u044e\u0442\u0441\u044f."
 --- !u!1 &4469750806910940301
 GameObject:
   m_ObjectHideFlags: 0

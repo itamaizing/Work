@@ -7,6 +7,7 @@ public class AutoSkillQueue : MonoBehaviour
 {
     private List<Skill> _skills = new();
     private Skill _currentSkill = null;
+    private bool _waitingForApproval;
 
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
@@ -61,16 +62,10 @@ public class AutoSkillQueue : MonoBehaviour
             if (item.TryCast())
             {
                 _currentSkill = item;
+                _waitingForApproval = true;
+                _currentSkill.CastStarted += OnCastStarted;
                 _currentSkill.CastEnded += OnCastEnded;
-                _currentSkill.CastRejected += OnCastEnded;
-
-                foreach (var temp in _skills)
-                {
-                    SkillDeleted?.Invoke(temp);
-                }
-                _skills.Clear();
-
-                SkillActivated?.Invoke(item);
+                _currentSkill.CastRejected += OnCastRejected;
 
                 return true;
             }
@@ -78,10 +73,29 @@ public class AutoSkillQueue : MonoBehaviour
         return false;
     }
 
+    private void OnCastStarted()
+    {
+        if (!_waitingForApproval) return;
+        _waitingForApproval = false;
+        foreach (var skill in _skills) SkillDeleted?.Invoke(skill);
+        _skills.Clear();
+        SkillActivated?.Invoke(_currentSkill);
+    }
+
+    private void OnCastRejected()
+    {
+        if (!_currentSkill.LastCastRequestCanRetry && _skills.Remove(_currentSkill))
+            SkillDeleted?.Invoke(_currentSkill);
+        _waitingForApproval = false;
+        OnCastEnded();
+    }
+
     private void OnCastEnded()
     {
+        if (_waitingForApproval) OnCastStarted();
+        _currentSkill.CastStarted -= OnCastStarted;
         _currentSkill.CastEnded -= OnCastEnded;
-        _currentSkill.CastRejected -= OnCastEnded;
+        _currentSkill.CastRejected -= OnCastRejected;
         _currentSkill = null;
     }
 }

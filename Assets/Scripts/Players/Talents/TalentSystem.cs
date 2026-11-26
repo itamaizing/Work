@@ -5,13 +5,6 @@ using System.Linq;
 using UnityEngine;
 
 
-[Serializable]
-public struct TalentStateInfo
-{
-    public string StateName;
-    [TextArea] public string Description;
-}
-
 public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<TalentsGroup> _talents;
@@ -239,8 +232,7 @@ public class TalentSystem : NetworkBehaviour
         {
             bool open = levels.TryGetValue(talent, out int level);
 
-            talent.Data.SetLevel(open ? level : 0);
-            talent.Data.SetOpen(open);
+            talent.Data.SetState(open, open ? level : 0);
         }
 
         SetPoints(freePoints);

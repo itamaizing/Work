@@ -23,6 +23,13 @@ namespace SkillSystem.States
         Interrupted,
         ForcedMiss
     }
+
+    public enum CastRequestResult
+    {
+        Accepted,
+        NotReady,
+        InvalidTarget
+    }
 }
 
 public abstract partial class Skill
@@ -37,7 +44,8 @@ public abstract partial class Skill
     private bool _castTriggered;
     private bool _cooldownCommitted;
     private bool _isAwaitingCastApproval;
-    private bool? _castApproved;
+    private CastRequestResult? _castApproval;
+    private TargetInfo _pendingQueuedTarget;
     private uint _castRequestId;
     private uint _serverCastRequestId;
 
@@ -52,6 +60,7 @@ public abstract partial class Skill
     private bool IsIdle => _state == SkillState.Inactive;
     public bool IsExecuting => _isAwaitingCastApproval || !IsIdle;
     public bool HasQueuedTargets => _targetInfoQueue.Count > 0;
+    public bool LastCastRequestCanRetry { get; private set; }
 
     public event Action<SkillState, SkillState> StateChanged;
     public event Action<SkillState> StateExited;
@@ -190,6 +199,8 @@ public abstract partial class Skill
             StopCoro(ref _pipeline);
             CmdFinishCast(_castRequestId);
             LastEndReason = reason;
+            if (!LastCastRequestCanRetry) ConsumePendingQueuedTarget();
+            _pendingQueuedTarget = null;
             ResetPhantomCosts();
             ClearData();
             Raise(CastRejected);
@@ -611,8 +622,9 @@ public abstract partial class Skill
         if (!(IsHaveResources && IsCanCast && !IsExecuting && Hero.IsDead == false))
             return false;
 
-        var targetInfo = _targetInfoQueue.Count > 0 ? _targetInfoQueue.Dequeue() : CaptureCastTarget();
-        RequestCast(targetInfo);
+        bool queued = _targetInfoQueue.Count > 0;
+        var targetInfo = queued ? _targetInfoQueue.Peek() : CaptureCastTarget();
+        RequestCast(targetInfo, queued);
         return true;
     }
     
@@ -640,10 +652,12 @@ public abstract partial class Skill
         return info;
     }
 
-    private void RequestCast(TargetInfo targetInfo)
+    private void RequestCast(TargetInfo targetInfo, bool queued = false)
     {
         _isAwaitingCastApproval = true;
-        _castApproved = null;
+        _castApproval = null;
+        LastCastRequestCanRetry = false;
+        _pendingQueuedTarget = queued ? targetInfo : null;
         if (++_castRequestId == 0) ++_castRequestId;
 
         var targets = targetInfo.GetTargets();
@@ -659,26 +673,37 @@ public abstract partial class Skill
     private IEnumerator AwaitCastApproval(TargetInfo targetInfo)
     {
         yield return null;
-        while (!_castApproved.HasValue) yield return null;
+        while (!_castApproval.HasValue) yield return null;
 
         _pipeline = null;
-        if (!_castApproved.Value || Hero.IsDead || targetInfo.LostSelectedTarget)
+        if (_castApproval.Value != CastRequestResult.Accepted || Hero.IsDead || targetInfo.LostSelectedTarget)
         {
+            LastCastRequestCanRetry = _castApproval.Value == CastRequestResult.NotReady &&
+                !Hero.IsDead && !targetInfo.LostSelectedTarget;
             EndExecution(SkillEndReason.Interrupted);
             yield break;
         }
 
         _isAwaitingCastApproval = false;
+        ConsumePendingQueuedTarget();
         LoadTargetData(targetInfo);
         LookAtTargetInfo(targetInfo);
         StartPipeline();
+    }
+
+    private void ConsumePendingQueuedTarget()
+    {
+        if (_pendingQueuedTarget != null && _targetInfoQueue.TryPeek(out var head) &&
+            ReferenceEquals(head, _pendingQueuedTarget))
+            _targetInfoQueue.Dequeue();
+        _pendingQueuedTarget = null;
     }
 
     [Command]
     private void CmdTryCast(uint requestId, GameObject[] targets, Vector3[] points,
         Quaternion[] rotations, Character selectedTarget, bool usesSelectedTarget)
     {
-        bool approved = false;
+        var result = CastRequestResult.NotReady;
         if (_serverCastRequestId == 0)
         {
             var info = new TargetInfo
@@ -689,41 +714,46 @@ public abstract partial class Skill
                 UsesSelectedTarget = usesSelectedTarget
             };
             bool validTargets = !info.LostSelectedTarget;
+            bool targetAvailable = true;
             foreach (var targetObject in targets)
             {
                 var target = targetObject != null ? targetObject.GetComponent<ITargetable>() : null;
-                if (target == null || !IsValidTarget(target) || !target.IsTargetable)
+                if (target == null || !IsValidTarget(target))
                 {
                     validTargets = false;
                     break;
                 }
+                if (!target.IsTargetable) targetAvailable = false;
                 info.AddTarget(target);
             }
 
-            if (validTargets)
+            if (!validTargets)
+                result = CastRequestResult.InvalidTarget;
+            else if (targetAvailable)
             {
                 try
                 {
                     LoadTargetData(info);
-                    approved = CheckCast();
+                    result = CheckCast() ? CastRequestResult.Accepted : CastRequestResult.NotReady;
                 }
                 catch (Exception ex)
                 {
+                    result = CastRequestResult.InvalidTarget;
                     Debug.LogError($"[Skill:{Name}] Server cast validation threw: {ex}", this);
                 }
             }
 
-            if (approved) _serverCastRequestId = requestId;
+            if (result == CastRequestResult.Accepted) _serverCastRequestId = requestId;
         }
 
-        TargetCastChecked(connectionToClient, requestId, approved);
+        TargetCastChecked(connectionToClient, requestId, result);
     }
 
     [TargetRpc]
-    private void TargetCastChecked(NetworkConnectionToClient connection, uint requestId, bool approved)
+    private void TargetCastChecked(NetworkConnectionToClient connection, uint requestId, CastRequestResult result)
     {
         if (_isAwaitingCastApproval && _castRequestId == requestId)
-            _castApproved = approved;
+            _castApproval = result;
     }
 
     [Command]

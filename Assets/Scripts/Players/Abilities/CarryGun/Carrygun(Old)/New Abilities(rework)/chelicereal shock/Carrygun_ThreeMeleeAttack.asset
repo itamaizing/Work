@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: Carrygun_ThreeMeleeAttack
   m_EditorClassIdentifier: 
   _name: "\u043F\u0440\u044B\u0436\u043E\u043A"
-  _description: "\u043F\u0440\u044B\u0433\u0430\u0435\u0442 \u043A \u0432\u0440\u0430\u0433\u0443
-    \u0438 \u0430\u0442\u0430\u043A\u0443\u0435\u0442"
+  _descriptionTable:
+    _entries:
+    - rid: 1001
   _icon: {fileID: 21300000, guid: 1362422e60efaf2429effe82d6f18557, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: ""
+        Text: "\u043f\u0440\u044b\u0433\u0430\u0435\u0442 \u043a \u0432\u0440\u0430\u0433\u0443 \u0438 \u0430\u0442\u0430\u043a\u0443\u0435\u0442"

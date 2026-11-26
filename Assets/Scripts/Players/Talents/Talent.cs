@@ -46,6 +46,9 @@ public abstract class Talent : MonoBehaviour, IDescriptionValue
             scoped.SetOwner(owner, groupId);
 
         _data.ConditionDescription = OpenCondition.ConditionDescription();
+        _data.StateChanged -= UpdateDescription;
+        _data.StateChanged += UpdateDescription;
+        UpdateDescription();
     }
 
     public abstract void Enter();
@@ -62,10 +65,12 @@ public abstract class Talent : MonoBehaviour, IDescriptionValue
 
     public abstract void Exit();
 
+    //Обновляет дополнения при изменении состояния или уровня
+    protected virtual void UpdateDescription() { }
+
     public void SetActive(bool isActive, int lvl = 0)
     {
-	    _data.SetOpen(isActive);
-	    _data.SetLevel(isActive ? lvl : 0);
+	    _data.SetState(isActive, isActive ? lvl : 0);
 	    ApplyEffect(isActive && OpenCondition.CanOpen);
     }
 

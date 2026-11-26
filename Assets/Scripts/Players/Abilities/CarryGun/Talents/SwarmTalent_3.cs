@@ -11,18 +11,20 @@ public class SwarmTalent_3 : Talent
     {
         _swarmCapacity.IsAddCharges = true;
         _tentacles.AttractionTentacleTalent(true);
-        AddingDescriptionSet(true);
+        SetDescriptionSupplement(true);
     }
 
     public override void Exit()
     {
         _swarmCapacity.IsAddCharges = false;
         _tentacles.AttractionTentacleTalent(false);
-        AddingDescriptionSet(false);
+        SetDescriptionSupplement(false);
     }
 
-    private void AddingDescriptionSet(bool value)
+    protected override void UpdateDescription() => SetDescriptionSupplement(Data.IsOpen);
+
+    private void SetDescriptionSupplement(bool value)
     {
-        _tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
+        _tentacles.SetDescriptionSupplement(this, value, Data.DescriptionTable.FindEntry("description.0"), this);
     }
 }

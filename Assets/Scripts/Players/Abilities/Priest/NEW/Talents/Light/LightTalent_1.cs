@@ -20,7 +20,7 @@ public class LightTalent_1 : Talent
         if (Data.Level >= 2)
         {
             _manager.ActivateSkill(stunMagicPassiveSkill);
-            stunMagicPassiveSkill.DamageDarkLightStun(true, Data.DescriptionsForInfoPanel[0]);
+            stunMagicPassiveSkill.DamageDarkLightStun(true);
         }
         if (Data.Level >= 3)
         {

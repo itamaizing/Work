@@ -16,6 +16,9 @@ namespace GameDescriptions
         public List<DescriptionEntry> Entries => _entries;
         public bool HasEntries => _entries != null && _entries.Count > 0;
 
+        public DescriptionEntry FindEntry(string key)
+            => string.IsNullOrEmpty(key) ? null : _entries?.FirstOrDefault(entry => entry != null && entry.Key == key);
+
         public List<DescriptionRow> Build(Character owner = null, Skill skill = null, IDescriptionValue values = null)
         {
             return DescriptionBuilder.BuildRows(this, new DescriptionContext(owner, skill, values));
@@ -118,6 +121,9 @@ namespace GameDescriptions
     [Serializable]
     public abstract class DescriptionEntry
     {
+        [Tooltip("Ключ записи для использования в дополнительных описаниях способностей.")]
+        public string Key;
+
         public abstract void Append(List<DescriptionRow> rows, DescriptionContext context);
     }
 

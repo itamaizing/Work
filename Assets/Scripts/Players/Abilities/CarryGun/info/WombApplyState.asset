@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: WombApplyState
   m_EditorClassIdentifier: 
   _name: "\u041B\u0435\u0447\u0435\u0431\u043D\u0430\u044F \u0441\u043B\u0438\u0437\u044C"
-  _description: 
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries: []
   _counter: 
   _icon: {fileID: 21300000, guid: 8dedbceeb26ea3848a08140078bb83b3, type: 3}

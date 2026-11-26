@@ -13,11 +13,16 @@ MonoBehaviour:
   m_Name: PowerOfEarth
   m_EditorClassIdentifier: 
   _name: "\u041C\u043E\u0449\u044C \u0437\u0435\u043C\u043B\u0438"
-  _description: "\u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0430\u0443\u0440\u0430,
-    \u0434\u0430\u044E\u0449\u0430\u044F \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430\u043C
-    20% \u0448\u0430\u043D\u0441\u0430 \u0441\u0442\u0430\u043D\u0430 1.5 \u0441\u0435\u043A.
-    \u043E\u0442 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0430\u0442\u0430\u043A"
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries:
+    - rid: 1001
   _counter: 
   _icon: {fileID: 21300000, guid: 7a4f972f283935c48bdee31f6ae71095, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1001
+      type: {class: PlainText, ns: GameDescriptions, asm: Assembly-CSharp}
+      data:
+        Key: ""
+        Text: "\u043f\u043e\u044f\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u0430\u0443\u0440\u0430, \u0434\u0430\u044e\u0449\u0430\u044f \u0441\u043e\u044e\u0437\u043d\u0438\u043a\u0430\u043c 20% \u0448\u0430\u043d\u0441\u0430 \u0441\u0442\u0430\u043d\u0430 1.5 \u0441\u0435\u043a. \u043e\u0442 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043a\u0438\u0445 \u0430\u0442\u0430\u043a"

@@ -28,8 +28,7 @@ public class LocalHeroProgressRepository : IHeroProgressRepository
         foreach (var talent in row.Talents)
         {
             int lvl = _saveData.LoadInt($"{heroKey}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
-            talent.Data.SetOpen(lvl >= 1);
-            talent.Data.SetLevel(lvl);
+            talent.Data.SetState(lvl >= 1, lvl);
             talentGroup.SetActive(talent.Data, lvl >= 1, lvl);
             if (lvl > 0) spentTalentPoints += lvl;
         }

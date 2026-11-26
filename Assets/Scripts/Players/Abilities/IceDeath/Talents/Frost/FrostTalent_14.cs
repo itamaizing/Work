@@ -9,17 +9,11 @@ public class FrostTalent_14 : Talent
     public override void Enter()
     {
         _icePuddle.IceDeathInIcePudleTalentActive(true);
-        //AddingDescriptionSet(true);
     }
 
     public override void Exit()
     {
         _icePuddle.IceDeathInIcePudleTalentActive(false);
-        //AddingDescriptionSet(false);
     }
 
-    //private void AddingDescriptionSet(bool value)
-    //{
-    //    _icePuddle.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
-    //}
 }

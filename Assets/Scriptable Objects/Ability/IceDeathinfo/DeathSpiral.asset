@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: DeathSpiral
   m_EditorClassIdentifier: 
   _name: "\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438"
-  _description: 
-  _state: 
-  _descriptionState: 
+  _descriptionTable:
+    _entries: []
   _counter: 
   _icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}

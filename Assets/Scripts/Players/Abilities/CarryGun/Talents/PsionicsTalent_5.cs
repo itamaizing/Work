@@ -8,11 +8,11 @@ public class PsionicsTalent_5 : Talent
 
     public override void Enter()
     {
-        cheliceraStrike.PsionicsTalentTwo(true, Data.DescriptionsForInfoPanel[0]);
+        cheliceraStrike.PsionicsTalentTwo(true);
     }
 
     public override void Exit()
     {
-        cheliceraStrike.PsionicsTalentTwo(false, Data.DescriptionsForInfoPanel[0]);
+        cheliceraStrike.PsionicsTalentTwo(false);
     }
 }

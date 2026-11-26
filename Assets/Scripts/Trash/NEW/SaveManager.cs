@@ -246,8 +246,7 @@ public class SaveManager : MonoBehaviour
             },
             onFailed: () =>
             {
-                talent.Data.SetOpen(prevOpen);
-                talent.Data.SetLevel(prevLvl);
+                talent.Data.SetState(prevOpen, prevLvl);
                 _character.TalentManager.SetActive(idGroup, row, idTalent, prevOpen);
                 OnTalentRequestFinished(idGroup, row, idTalent, key);
             });

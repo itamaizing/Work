@@ -13,7 +13,7 @@ public class SwarmTalent_2 : Talent
         skillManager.ActivateSkill(swarmCapacity);
         skillManager.ActivateSkill(_wombSpawn);
         skillManager.GetSkill<Tentacles>().ActivateWombSpawning(true);
-        AddingDescriptionSet(true);
+        SetDescriptionSupplement(true);
     }
 
     public override void Exit()
@@ -22,12 +22,14 @@ public class SwarmTalent_2 : Talent
         skillManager.DeactivateSkill(_wombSpawn);
         skillManager.GetSkill<Tentacles>().ActivateWombSpawning(false);
 
-        AddingDescriptionSet(false);
+        SetDescriptionSupplement(false);
     }
 
-    private void AddingDescriptionSet(bool value)
+    protected override void UpdateDescription() => SetDescriptionSupplement(Data.IsOpen);
+
+    private void SetDescriptionSupplement(bool value)
     {
-        swarmCapacity.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[1]);
-        _wombSpawn.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
+        swarmCapacity.SetDescriptionSupplement(this, value, Data.DescriptionTable.FindEntry("description.1"), this);
+        _wombSpawn.SetDescriptionSupplement(this, value, Data.DescriptionTable.FindEntry("description.0"), this);
     }
 }
