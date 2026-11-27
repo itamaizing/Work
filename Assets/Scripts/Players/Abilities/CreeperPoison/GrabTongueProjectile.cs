@@ -17,6 +17,8 @@ public class GrabTongueProjectile : NetworkBehaviour
 
     private float _throwDuration = 0.2f;
     private float _pullDuration = 0.6f;
+    private const float PullDistance = 3f;
+    private bool _canPull;
 
     private Coroutine _toTargetCoroutine;
     private Coroutine _pullCoroutine;
@@ -45,10 +47,13 @@ public class GrabTongueProjectile : NetworkBehaviour
         _lineRenderer.SetPosition(0, _origin != null ? _origin.position : _player.transform.position);
     }
 
-    public void Init(Character player, Character target, Vector3 endPosition)
+    public void Init(Character player, Character target, Vector3 endPosition, bool canPull, float throwDuration, float pullDuration)
     {
         _player = player;
         _target = target;
+        _canPull = canPull;
+        _throwDuration = Mathf.Max(0.01f, throwDuration);
+        _pullDuration = Mathf.Max(0.01f, pullDuration);
         _origin = player.transform;
         if (player.AttachmentPoints != null && player.AttachmentPoints.TryGetPoint(AttachmentPointType.Head, out Transform head))
             _origin = head;
@@ -100,6 +105,12 @@ public class GrabTongueProjectile : NetworkBehaviour
 
         if (isServer)
         {
+            if (!_canPull || _target == null || _target.IsDead)
+            {
+                DestroyProjectile();
+                yield break;
+            }
+
             if (_pullCoroutine != null)
                 StopCoroutine(_pullCoroutine);
 
@@ -109,12 +120,12 @@ public class GrabTongueProjectile : NetworkBehaviour
 
     private IEnumerator PullTargetToPlayer()
     {
-        if (_target == null) yield break;
+        if (!_canPull || _target == null) yield break;
 
         Transform targetTransform = _target.transform;
 
         Vector3 start = targetTransform.position;
-        Vector3 end = _player.transform.position;
+        Vector3 end = Vector3.MoveTowards(start, _player.transform.position, PullDistance);
 
         var agent = _target.GetComponent<NavMeshAgent>();
         if (agent != null && agent.enabled) agent.enabled = false;
@@ -149,7 +160,21 @@ public class GrabTongueProjectile : NetworkBehaviour
         _target.Move.StopMoveAndAnimationMove();
         _target.Move.IsMoveBlocked = false;
 
+        SynchronizeTargetPosition(end);
+
         DestroyProjectile();
+    }
+
+    private void SynchronizeTargetPosition(Vector3 position)
+    {
+        _target.transform.position = position;
+        foreach (var networkTransform in _target.GetComponents<NetworkTransformBase>())
+        {
+            if (!networkTransform.enabled || networkTransform.target != _target.transform) continue;
+
+            networkTransform.ResetState();
+            networkTransform.RpcTeleport(position);
+        }
     }
 
     private void DestroyProjectile()
@@ -166,6 +191,6 @@ public class GrabTongueProjectile : NetworkBehaviour
             _pullCoroutine = null;
         }
 
-        Destroy(gameObject);
+        NetworkServer.Destroy(gameObject);
     }
 }

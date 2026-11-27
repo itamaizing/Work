@@ -13,6 +13,8 @@ public class SneakySpit : Skill
     [SerializeField] private CreeperCombo _creeperCombo;
 
     private Coroutine _boostWindow;
+    private Character _serverBoostTarget;
+    private double _serverBoostWindowEnd;
     private bool _subscribed;
     private bool isAbilityQueue = false;
 
@@ -51,6 +53,8 @@ public class SneakySpit : Skill
 
     private void OnDisable()
     {
+        _serverBoostTarget = null;
+        _serverBoostWindowEnd = 0;
         CancelBoostWindow();
         if (!_subscribed) return;
 
@@ -74,6 +78,15 @@ public class SneakySpit : Skill
     public void TryStartSneakySpitBoostWindow(Character target)
     {
         TryStartSneakySpitBoostWindow(target, durationWindowsBoost);
+    }
+
+    [Server]
+    public void ServerStartSneakySpitBoostWindow(Character target, float windowDuration)
+    {
+        if (target == null || target.IsDead || !IsSkillActive || !isActiveAndEnabled) return;
+
+        _serverBoostTarget = target;
+        _serverBoostWindowEnd = NetworkTime.time + windowDuration;
     }
 
     public void TryStartSneakySpitBoostWindow(Character target, float windowDuration)
@@ -146,7 +159,13 @@ public class SneakySpit : Skill
     {
         Character target = Targeting.GetTarget()?.Character;
 
-        if (_boostWindow == null || Disactive || target == null) return false;
+        if (target == null) return false;
+        
+        if (isServer)
+        {
+            if (target != _serverBoostTarget || NetworkTime.time >= _serverBoostWindowEnd) return false;
+        }
+        else if (_boostWindow == null || Disactive) return false;
 
         return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius &&
                Targeting.NoObstacles(target.transform.position, transform.position, Targeting.AdditionalObstacle);
@@ -157,6 +176,7 @@ public class SneakySpit : Skill
         Character attacker = skill?.Hero;
         if (!isServer || attacker == null || connectionToClient == null) return;
 
+        ServerStartSneakySpitBoostWindow(attacker, durationWindowsBoost);
         TargetRpcStartSneakySpitBoostWindow(connectionToClient, attacker.netId);
     }
 
@@ -254,6 +274,9 @@ public class SneakySpit : Skill
     private void CmdApplySpitStates(GameObject targetObject)
     {
         if (targetObject == null || !targetObject.TryGetComponent<Character>(out var target) || target.IsDead) return;
+
+        _serverBoostTarget = null;
+        _serverBoostWindowEnd = 0;
 
         GameObject casterObj = Hero != null ? Hero.gameObject : (_playerLinks != null ? _playerLinks.gameObject : gameObject);
 

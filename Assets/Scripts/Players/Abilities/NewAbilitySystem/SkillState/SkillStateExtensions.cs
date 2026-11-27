@@ -838,9 +838,11 @@ public abstract partial class Skill
     
     #region Targeting flow
 
+    public virtual bool CanStartTargeting => true;
+
     public bool TryStartTargeting(object sessionKey = null)
     {
-        if (_isTargeting) return false;
+        if (_isTargeting || !CanStartTargeting) return false;
         TargetingSession.Begin(this, sessionKey);
 
         foreach (var skillCost in Cost.Values)

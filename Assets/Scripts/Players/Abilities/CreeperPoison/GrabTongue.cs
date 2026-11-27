@@ -19,6 +19,11 @@ public class GrabTongue : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerPrepare => 0;
+    public override float PreparingDuration
+    {
+        get => base.PreparingDuration / Mathf.Max(0.1f, GetCastSpeed());
+        set => base.PreparingDuration = value;
+    }
 
     public override void Init(SkillRenderer render, Character hero)
     {
@@ -37,13 +42,11 @@ public class GrabTongue : Skill
 
         CancelTargetSkills(_castTarget);
 
-        bool canPull = _castTarget.CharacterState.CheckForState(States.InAir);
-
         Vector3 end = _castTarget.transform.position;
         if (_castTarget.AttachmentPoints != null && _castTarget.AttachmentPoints.TryGetPoint(AttachmentPointType.Torso, out Transform torso))
             end = torso.position;
 
-        CmdSpawnProjectile(_castTarget.netIdentity, end, canPull);
+        CmdSpawnProjectile(_castTarget.netIdentity, end);
 
         yield return null;
     }
@@ -63,7 +66,7 @@ public class GrabTongue : Skill
     }
 
     [Command]
-    private void CmdSpawnProjectile(NetworkIdentity targetId, Vector3 end, bool canPull)
+    private void CmdSpawnProjectile(NetworkIdentity targetId, Vector3 end)
     {
         if (targetId == null)
             return;
@@ -72,6 +75,8 @@ public class GrabTongue : Skill
 
         if (target == null)
             return;
+
+        bool canPull = target.CharacterState.CheckForState(States.InAir);
 
         Transform origin = _player.transform;
         if (_player.AttachmentPoints != null && _player.AttachmentPoints.TryGetPoint(AttachmentPointType.Head, out Transform head))
@@ -85,16 +90,21 @@ public class GrabTongue : Skill
         if (proj == null)
             return;
 
-        proj.Init(_player, target, end);
+        float castSpeed = Mathf.Max(0.1f, GetCastSpeed());
+        float throwDuration = _throwDuration / castSpeed;
+        float pullDuration = _pullDuration / castSpeed;
+        proj.Init(_player, target, end, canPull, throwDuration, pullDuration);
 
         NetworkServer.Spawn(go);
 
-        RpcInitGrabTongueProjectile(go, target.gameObject, end);
+        RpcInitGrabTongueProjectile(go, target.gameObject, end, canPull, throwDuration, pullDuration);
     }
 
     [ClientRpc]
-    private void RpcInitGrabTongueProjectile(GameObject projectileObject, GameObject targetObject, Vector3 end)
+    private void RpcInitGrabTongueProjectile(GameObject projectileObject, GameObject targetObject, Vector3 end, bool canPull, float throwDuration, float pullDuration)
     {
+        if (isServer) return;
+
         if (projectileObject == null || targetObject == null)
             return;
 
@@ -104,7 +114,7 @@ public class GrabTongue : Skill
         if (proj == null || target == null)
             return;
 
-        proj.Init(_player, target, end);
+        proj.Init(_player, target, end, canPull, throwDuration, pullDuration);
     }
 
     protected override void ClearData()

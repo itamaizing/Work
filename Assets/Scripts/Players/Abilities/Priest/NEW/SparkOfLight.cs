@@ -63,10 +63,11 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
     public void EnableManaRestoreBoostTalent(bool value) => _manaRestoreBoostTalent = value;
     public void EnableHealingBuffTalent(bool value) => _healingBuffTalentActive = value;
-
-
-    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    private bool IsAllyTarget(Character target) =>
+        target != null && Hero.RelationTo(target) != CharacterRelation.Enemy;
+    private bool IsEnemyTarget(Character target) =>
+        target != null && Hero.RelationTo(target) == CharacterRelation.Enemy;
     
     protected override int AnimTriggerPrepare => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
@@ -255,13 +256,13 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     {
         if (target == null) return;
 
-        if (IsAllyTarget(target) || target == _hero)
+        if (IsAllyTarget(target))
         {
             float healValue = Heal(target,_healAmount);
             ApplySpiritEnergyBuff(target);
             RpcApplyInstant();
         }
-        if (IsEnemyTarget(target))
+        else if (IsEnemyTarget(target))
         {
             ApplyDamageInAltMode(target);
         }

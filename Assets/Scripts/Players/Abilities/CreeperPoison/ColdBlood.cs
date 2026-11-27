@@ -42,6 +42,10 @@ public class ColdBlood : Skill
 
     protected override bool IsCanCast => !_isWaitingForHit;
 
+    public override bool CanStartTargeting =>
+        base.CanStartTargeting && !_isWaitingForHit && !IsExecuting && TargetInfoQueue.Count == 0 &&
+        !(Hero?.Abilities?.SkillQueue?.Skills.Contains(this) ?? false);
+
     public void SetTalentActive(bool value)
     {
         _isColdBloodTalentActive = value;

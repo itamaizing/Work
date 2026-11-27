@@ -131,6 +131,11 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerPrepare => Animator.StringToHash("PoisonBallCastDelayAnimTrigger");
+    public override float PreparingDuration
+    {
+        get => base.PreparingDuration / Mathf.Max(0.1f, GetCastSpeed());
+        set => base.PreparingDuration = value;
+    }
     //protected override bool IsCanCast => CheckCanCast();
 
     public event Action ResetAbilityParameters;
@@ -871,6 +876,5 @@ public class PoisonBall : Skill, IAltAbility, IColdBloodEmpowerable
         {
             _preparingDuration = _slowTimeCast;
         }
-        _player.Animator.SetFloat("CastSpeed", _preparingDuration);
     }
 }

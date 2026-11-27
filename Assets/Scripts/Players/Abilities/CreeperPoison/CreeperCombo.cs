@@ -129,6 +129,7 @@ public class CreeperCombo : NetworkBehaviour
         _isSneakySpitWindowActive = true;
         _currentSneakySpitTarget = target;
 
+        _sneakySpit?.ServerStartSneakySpitBoostWindow(target, _sneakySpitWindowDuration);
         TargetRpcStartSneakySpitWindow(connectionToClient, target.netId, _sneakySpitWindowDuration);
         RestartSneakySpitWindowTimer();
     }
@@ -140,6 +141,7 @@ public class CreeperCombo : NetworkBehaviour
 
         _currentSneakySpitTarget = target;
 
+        _sneakySpit?.ServerStartSneakySpitBoostWindow(target, _sneakySpitWindowDuration);
         TargetRpcStartSneakySpitWindow(connectionToClient, target.netId, _sneakySpitWindowDuration);
         RestartSneakySpitWindowTimer();
     }

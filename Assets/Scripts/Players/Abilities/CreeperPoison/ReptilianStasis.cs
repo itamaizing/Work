@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using Mirror;
+using UnityEngine;
 
 public class ReptilianStasis : Skill
 {
@@ -23,7 +25,7 @@ public class ReptilianStasis : Skill
         if (Hero == null || Hero.CharacterState == null)
             yield break;
 
-        Hero.CharacterState.CmdAddState(States.ReptilianStasis, Duration, 0f, Hero.gameObject, name);
+        CmdStartStasis();
 
         yield return null; 
 
@@ -32,6 +34,27 @@ public class ReptilianStasis : Skill
             if (skill == null || skill == this) continue;
             if (skill.IsTargeting || skill.IsExecuting)
                 skill.TryCancel(true);
+        }
+    }
+
+    [Command]
+    private void CmdStartStasis()
+    {
+        if (Hero == null || Hero.CharacterState == null) return;
+        StartCoroutine(ServerStasisJob());
+    }
+
+    private IEnumerator ServerStasisJob()
+    {
+        Hero.CharacterState.AddState(States.ReptilianStasis, Duration, 0f, Hero.gameObject, name);
+
+        yield return new WaitForSeconds(Duration);
+
+        if (Hero == null || Hero.Abilities == null) yield break;
+
+        foreach (var skill in Hero.Abilities.Skills)
+        {
+            if (skill != null) skill.ResetCooldown();
         }
     }
 }

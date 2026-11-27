@@ -23,6 +23,9 @@ public class SpeedOfReptileState : StateBasic
         if (NetworkServer.active || hero.isOwned)
         {
             hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(new AttributeModifier(speed != null ? speed.CastSpeedMultiplier : 2f, ModifierType.Multiplier, this));
+
+            _moveModifier = new AttributeModifier(speed != null ? speed.MoveSpeedMultiplier : 2f, ModifierType.Multiplier, this);
+            hero.Move.AddModifier(_moveModifier);
         }
 
         if (!NetworkServer.active) return;
@@ -31,9 +34,6 @@ public class SpeedOfReptileState : StateBasic
         hero.AttributeSystem[CharacterAttributeName.EvasionPhysicalMelee].AddModifier(new AttributeModifier(evasionMultiplier, ModifierType.Multiplier, this));
         hero.AttributeSystem[CharacterAttributeName.EvasionPhysicalRange].AddModifier(new AttributeModifier(evasionMultiplier, ModifierType.Multiplier, this));
         hero.AttributeSystem[CharacterAttributeName.EvasionMagical].AddModifier(new AttributeModifier(evasionMultiplier, ModifierType.Multiplier, this));
-
-        _moveModifier = new AttributeModifier(speed != null ? speed.MoveSpeedMultiplier : 2f, ModifierType.Multiplier, this);
-        hero.Move.AddModifier(_moveModifier);
     }
 
     public override void Reapply(CharacterState character, float durationToExit, float damageToExit, Character sourceCaster, string skillName) { }
@@ -42,18 +42,20 @@ public class SpeedOfReptileState : StateBasic
     {
         var hero = characterState.Character;
         if (NetworkServer.active || hero.isOwned)
+        {
             hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].RemoveBySource(this);
+
+            if (_moveModifier != null)
+            {
+                hero.Move.RemoveModifier(_moveModifier);
+                _moveModifier = null;
+            }
+        }
 
         if (!NetworkServer.active) return;
 
         hero.AttributeSystem[CharacterAttributeName.EvasionPhysicalMelee].RemoveBySource(this);
         hero.AttributeSystem[CharacterAttributeName.EvasionPhysicalRange].RemoveBySource(this);
         hero.AttributeSystem[CharacterAttributeName.EvasionMagical].RemoveBySource(this);
-
-        if (_moveModifier != null)
-        {
-            hero.Move.RemoveModifier(_moveModifier);
-            _moveModifier = null;
-        }
     }
 }

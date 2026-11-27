@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIMenuMainWindow : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
     [SerializeField] private UIMenuMainPlayerInfoPanel _infoPanel;
     [SerializeField] private Button _saveLayoutButton;
+    [SerializeField] private TMP_Text _selectedHeroName;
 
     private HeroComponent _currentHero;
     public HeroComponent CurrentHero => _currentHero;
@@ -138,6 +140,11 @@ public class UIMenuMainWindow : MonoBehaviour
     private void UpdateCharacterPanels()
     {
         var hero = GetHero();
+
+        if (_selectedHeroName != null)
+            _selectedHeroName.text = hero != null && hero.Data != null ? hero.Data.Name : string.Empty;
+
+        if (hero == null) return;
 
         //_abilitiesPanel.Show(hero.Abilities);
 

@@ -285,7 +285,7 @@ public enum CooldownReductionMode
     public virtual bool IsHaveResources { get => IsHaveResourceOnSkill && !Cooldown.IsActive && Charges.HasCharges; }
     public List<SkillResourceCost> SkillEnergyCosts { get => Cost.TypeOf(SkillCostType.Mandatory); }
     public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => Cost.TypeOf(SkillCostType.Bonus); }
-    public float PreparingDuration { get => Buff.CastSpeed.GetBuffedValue(_preparingDuration); set => _preparingDuration = value; }
+    public virtual float PreparingDuration { get => Buff.CastSpeed.GetBuffedValue(_preparingDuration); set => _preparingDuration = value; }
     public bool IsCasting => IsExecuting;
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
     public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }

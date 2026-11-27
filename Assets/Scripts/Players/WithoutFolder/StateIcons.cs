@@ -29,6 +29,8 @@ public class StateIcons : MonoBehaviour
             if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
     }
 
+    private void OnDestroy() => DeactivateAll();
+
     public void RegisterState(StateBasic state)
     {
         if (state.IsHidden || _iconByState.ContainsKey(state)) return;
@@ -79,12 +81,24 @@ public class StateIcons : MonoBehaviour
     {
         if (!_iconByState.TryGetValue(state, out var ico)) return;
 
+        if (ico == null || ico.FadeFront == null)
+        {
+            UnregisterState(state);
+            return;
+        }
+
         ico.FadeFront.fillAmount = max > 0f ? Mathf.Clamp01(1f - current / max) : 0f;
     }
 
     private void HandleTextChanged(StateBasic state, string text)
     {
         if (!_iconByState.TryGetValue(state, out var ico)) return;
+
+        if (ico == null || ico.Text == null)
+        {
+            UnregisterState(state);
+            return;
+        }
 
         ico.Text.text = text;
         ico.Text.gameObject.SetActive(!string.IsNullOrEmpty(text));

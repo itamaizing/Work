@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Mirror;
 
 public class ReptilianStasisStateStacking : StateStacking
 {
@@ -37,15 +36,6 @@ public class ReptilianStasisStateStacking : StateStacking
             _owner.Move.IsMoveBlocked = false;
         }
         _owner.Abilities?.SetAbilitiesDisactive(false);
-        
-        if (NetworkServer.active && _owner.Abilities != null)
-        {
-            foreach (var skill in _owner.Abilities.Skills)
-            {
-                if (skill == null) continue;
-                skill.ResetCooldown();
-            }
-        }
     }
 
     public override void ReduceStack() => ExitState();

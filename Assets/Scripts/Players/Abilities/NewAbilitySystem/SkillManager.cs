@@ -409,6 +409,7 @@ public class SkillManager : MonoBehaviour
         if (_selectedSkills[index] == null) return false;
         if (_selectedSkills[index] is IPassiveSkill) return false;
         if (_selectedSkills[index].Disactive) return false;
+        if (!_selectedSkills[index].CanStartTargeting) return false;
 
         if (_selectedSkill != null && _selectedSkill.IsTargeting == true)
         {
@@ -448,7 +449,7 @@ public class SkillManager : MonoBehaviour
 
     public void SelectAndPrepareSkill(Skill skill, object sessionKey = null)
     {
-        if (skill == null || skill.Disactive) return;
+        if (skill == null || skill.Disactive || !skill.CanStartTargeting) return;
 
         if (_selectedSkill != skill)
         {
